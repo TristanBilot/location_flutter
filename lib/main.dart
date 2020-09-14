@@ -69,12 +69,41 @@ class _MyHomePageState extends State<MyHomePage> {
   final geo = Geoflutterfire();
   final _firestore = FirebaseFirestore.instance;
 
-  void testFireStore() {
-    GeoFirePoint myLocation =
-        geo.point(latitude: 12.960632, longitude: 77.641603);
+  void putLocationToFireStore() async {
+    _locationData = await location.getLocation();
+    // GeoFirePoint geoPoint = geo.point(
+    //     latitude: _locationData.latitude, longitude: _locationData.longitude);
+    GeoFirePoint paris13 = geo.point(latitude: 48.824557, longitude: 2.363241);
+    GeoFirePoint paris13_2 =
+        geo.point(latitude: 48.824735, longitude: 2.362852);
+
     _firestore
         .collection('locations')
-        .add({'name': 'random name', 'position': myLocation.data});
+        .add({'name': 'random name', 'position': paris13.data});
+
+    _firestore
+        .collection('locations')
+        .add({'name': 'random name', 'position': paris13_2.data});
+  }
+
+  void getUserArea() async {
+    final ref = _firestore.collection('locations');
+    _locationData = await location.getLocation();
+    // GeoFirePoint center = geo.point(
+    // latitude: _locationData.latitude, longitude: _locationData.longitude);
+    GeoFirePoint center = geo.point(latitude: 48.824557, longitude: 2.363241);
+
+    final radius = 0.05; // 50 meters area
+    final field = 'position';
+    Stream<List<DocumentSnapshot>> stream = geo
+        .collection(collectionRef: ref)
+        .within(center: center, radius: radius, field: field);
+
+    stream.forEach((list) {
+      list.forEach((user) {
+        print(user.data());
+      });
+    });
   }
 
   void enableService() async {
@@ -116,7 +145,8 @@ class _MyHomePageState extends State<MyHomePage> {
       enableService();
       grant();
       getLocationData();
-      testFireStore();
+      // putLocationToFireStore();
+      getUserArea();
     });
   }
 
