@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "763599612774",
+    "firebase_url": "https://location-abed9.firebaseio.com",
+    "project_id": "location-abed9",
+    "storage_bucket": "location-abed9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:763599612774:android:942d7b43f7bafc949d36a7",
+        "android_client_info": {
+          "package_name": "com.example.location"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "763599612774-ii5pm9gmie1ss86l7o6pv7csosavebeb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAw-RnWKDSkQSEsCzp0k8dIbRVsly2ZOlI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "763599612774-ii5pm9gmie1ss86l7o6pv7csosavebeb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
