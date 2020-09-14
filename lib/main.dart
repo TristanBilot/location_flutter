@@ -99,8 +99,8 @@ class _MyHomePageState extends State<MyHomePage> {
         .collection(collectionRef: ref)
         .within(center: center, radius: radius, field: field);
 
-    stream.forEach((list) {
-      list.forEach((user) {
+    stream.listen((List<DocumentSnapshot> users) {
+      users.forEach((user) {
         print(user.data());
       });
     });
