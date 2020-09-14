@@ -97,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final field = 'position';
     Stream<List<DocumentSnapshot>> stream = geo
         .collection(collectionRef: ref)
-        .within(center: center, radius: radius, field: field);
+        .within(center: center, radius: radius, field: field, strictMode: true);
 
     stream.forEach((list) {
       list.forEach((user) {
