@@ -3,6 +3,8 @@ import 'package:location/location.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'map.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -65,9 +67,14 @@ class _MyHomePageState extends State<MyHomePage> {
   PermissionStatus _permissionGranted;
   LocationData _locationData;
 
-// Init firestore and geoFlutterFire
+  // Init firestore and geoFlutterFire
   final geo = Geoflutterfire();
   final _firestore = FirebaseFirestore.instance;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   void putLocationToFireStore() async {
     _locationData = await location.getLocation();
@@ -100,8 +107,11 @@ class _MyHomePageState extends State<MyHomePage> {
         .within(center: center, radius: radius, field: field);
 
     stream.listen((List<DocumentSnapshot> users) {
+      // users.sort((a, b) => a.data()['distance'] < b.data()['distance']);
       users.forEach((user) {
-        print(user.data());
+        final geoPoint = user.data()['position']['geopoint'];
+        if (geoPoint.latitude != center.latitude &&
+            geoPoint.longitude != center.longitude) print(user.data());
       });
     });
   }
@@ -184,9 +194,11 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Container(height: 500, width: 374, child: MapPage()),
             Text(
               'You have pushed the button this many times:',
             ),
+            Image(image: Image.asset('assets/user.png').image),
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
