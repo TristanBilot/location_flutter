@@ -66,23 +66,35 @@ class MapPageState extends State<MapPage> {
     });
   }
 
-  _downloadAndStoreImage(String url, String path, String preview) async {
-    var buffer = await http.readBytes(url);
+  void _downloadAndStoreImage(String url) async {
+    final Uint8List buffer = await http.readBytes(url);
+    final String systemPath = await _localPath;
+    final String tmpPathStr = systemPath + 'tmp.png';
+    final String outputPathStr = systemPath + 'output.png';
+    final File tmpFile = File(tmpPathStr);
+    final newHeight = 100, newWidth = 100;
 
-    File f = new File(path);
-    RandomAccessFile rf = await f.open(mode: FileMode.write);
+    RandomAccessFile rf = await tmpFile.open(mode: FileMode.write);
     await rf.writeFrom(buffer);
     await rf.flush();
     await rf.close();
 
-    image.Image img = image.decodeImage(await new File(path).readAsBytes());
-    image.Image thumbnail = image.copyResize(img, height: 100, width: 100);
+    /* open the tmp file which will be resized and then create a copy */
+    image.Image resizedImg =
+        image.decodeImage(await new File(tmpPathStr).readAsBytes());
+    /* resizing */
+    image.Image resizedResult =
+        image.copyResize(resizedImg, height: newHeight, width: newWidth);
 
-    new File(preview)
-      ..writeAsBytes(image.encodePng(thumbnail)).then((file) async {
-        await uploadFile(file);
+    /* write the resized image to the disk and delete both 2 created files */
+    new File(outputPathStr)
+      ..writeAsBytes(image.encodePng(resizedResult)).then((outputFile) async {
+        /* after resizing the image, upload it to Firebase */
+        await uploadFile(outputFile);
 
-        f.deleteSync();
+        /* clear useless files created for resizing */
+        tmpFile.deleteSync();
+        outputFile.deleteSync();
       });
   }
 
@@ -98,9 +110,7 @@ class MapPageState extends State<MapPage> {
     //   _pinLocationIcon = onValue;
     // });
     _downloadAndStoreImage(
-        'https://firebasestorage.googleapis.com/v0/b/location-abed9.appspot.com/o/user..jpg?alt=media&token=197bbb90-3981-4382-b950-7f230e8a7139',
-        '/Users/bilott/test.jpg',
-        '/Users/bilott/preview.jpg');
+        'https://firebasestorage.googleapis.com/v0/b/location-abed9.appspot.com/o/user..jpg?alt=media&token=197bbb90-3981-4382-b950-7f230e8a7139');
   }
 
   @override
