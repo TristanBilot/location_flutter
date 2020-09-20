@@ -46,17 +46,20 @@ class MapPageState extends State<MapPage> {
   }
 
   Future uploadFile(File file) async {
-    StorageReference storageReference =
-        FirebaseStorage.instance.ref().child('photos/test.png');
-    StorageUploadTask uploadTask = storageReference.putFile(file);
+    final String firebasePhotoPath = 'photos/';
+    final String userFirebaseId = '?.png';
+    final String firebaseURI = 'https://firebasestorage.googleapis.com';
+
+    final StorageReference ref = FirebaseStorage.instance
+        .ref()
+        .child(firebasePhotoPath + userFirebaseId);
+    final StorageUploadTask uploadTask = ref.putFile(file);
 
     await uploadTask.onComplete;
     print('File Uploaded');
-    storageReference.getDownloadURL().then((fileURL) async {
-      final uploadedFileURL = fileURL.substring(38);
-
-      Uint8List data = (await NetworkAssetBundle(
-                  Uri.parse('https://firebasestorage.googleapis.com'))
+    ref.getDownloadURL().then((fileURL) async {
+      final String uploadedFileURL = fileURL.substring(firebaseURI.length);
+      final Uint8List data = (await NetworkAssetBundle(Uri.parse(firebaseURI))
               .load(uploadedFileURL))
           .buffer
           .asUint8List();
@@ -72,7 +75,7 @@ class MapPageState extends State<MapPage> {
     final String tmpPathStr = systemPath + 'tmp.png';
     final String outputPathStr = systemPath + 'output.png';
     final File tmpFile = File(tmpPathStr);
-    final newHeight = 100, newWidth = 100;
+    final newHeight = 200, newWidth = 200;
 
     RandomAccessFile rf = await tmpFile.open(mode: FileMode.write);
     await rf.writeFrom(buffer);
@@ -80,10 +83,10 @@ class MapPageState extends State<MapPage> {
     await rf.close();
 
     /* open the tmp file which will be resized and then create a copy */
-    image.Image resizedImg =
+    final image.Image resizedImg =
         image.decodeImage(await new File(tmpPathStr).readAsBytes());
     /* resizing */
-    image.Image resizedResult =
+    final image.Image resizedResult =
         image.copyResize(resizedImg, height: newHeight, width: newWidth);
 
     /* write the resized image to the disk and delete both 2 created files */
@@ -91,7 +94,6 @@ class MapPageState extends State<MapPage> {
       ..writeAsBytes(image.encodePng(resizedResult)).then((outputFile) async {
         /* after resizing the image, upload it to Firebase */
         await uploadFile(outputFile);
-
         /* clear useless files created for resizing */
         tmpFile.deleteSync();
         outputFile.deleteSync();
