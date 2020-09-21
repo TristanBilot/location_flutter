@@ -12,6 +12,7 @@ import 'package:http/http.dart' as http;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'user.dart';
+import 'areaFetcher.dart';
 
 class MapPage extends StatefulWidget {
   @override
@@ -22,13 +23,12 @@ class MapPageState extends State<MapPage> {
   BitmapDescriptor _pinLocationIcon;
   Set<Marker> _markers = {};
   Completer<GoogleMapController> _controller = Completer();
+  AreaFetcher _areaFetcher = AreaFetcher();
 
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
     return directory.path;
   }
-
-  void refreshMap(List<User> users) {}
 
   Future<File> _cropCirclePhoto(String imagePath) async {
     return await ImageCropper.cropImage(
@@ -80,58 +80,69 @@ class MapPageState extends State<MapPage> {
     await _uploadFile(tmpFile);
   }
 
-  //  void _downloadAndStoreImage(String url) async {
-  //   final Uint8List buffer = await http.readBytes(url);
-  //   final String systemPath = await _localPath;
-  //   final String tmpPathStr = systemPath + 'tmp.png';
-  //   final String outputPathStr = systemPath + 'output.png';
-  //   final newHeight = 200, newWidth = 200;
+  void old(String url) async {
+    final Uint8List buffer = await http.readBytes(url);
+    final String systemPath = await _localPath;
+    final String tmpPathStr = systemPath + 'tmp.png';
+    final String outputPathStr = systemPath + 'output.png';
+    final newHeight = 200, newWidth = 200;
 
-  //   /* image picking and croping */
-  //   final picker = ImagePicker();
-  //   final pickedFile = await picker.getImage(source: ImageSource.camera);
-  //   final File tmpFile = await _cropCirclePhoto(pickedFile.path);
+    /* image picking and croping */
+    final picker = ImagePicker();
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
+    final File tmpFile = await _cropCirclePhoto(pickedFile.path);
 
-  //   // RandomAccessFile rf = await tmpFile.open(mode: FileMode.write);
-  //   // await rf.writeFrom(buffer);
-  //   // await rf.flush();
-  //   // await rf.close();
+    // RandomAccessFile rf = await tmpFile.open(mode: FileMode.write);
+    // await rf.writeFrom(buffer);
+    // await rf.flush();
+    // await rf.close();
 
-  //   /* open the tmp file which will be resized and then create a copy */
-  //   final image.Image resizedImg =
-  //       image.decodeImage(await new File(tmpPathStr).readAsBytes());
-  //   /* resizing */
-  //   final image.Image resizedResult =
-  //       image.copyResize(resizedImg, height: newHeight, width: newWidth);
+    /* open the tmp file which will be resized and then create a copy */
+    final image.Image resizedImg =
+        image.decodeImage(await new File(tmpPathStr).readAsBytes());
+    /* resizing */
+    final image.Image resizedResult =
+        image.copyResize(resizedImg, height: newHeight, width: newWidth);
 
-  //   /* write the resized image to the disk and delete both 2 created files */
-  //   new File(outputPathStr)
-  //     ..writeAsBytes(image.encodePng(resizedResult)).then((outputFile) async {
-  //       /* after resizing the image, upload it to Firebase */
-  //       await _uploadFile(outputFile);
-  //       /* clear useless files created for resizing */
-  //       tmpFile.deleteSync();
-  //       outputFile.deleteSync();
-  //     });
-  // }
+    /* write the resized image to the disk and delete both 2 created files */
+    new File(outputPathStr)
+      ..writeAsBytes(image.encodePng(resizedResult)).then((outputFile) async {
+        /* after resizing the image, upload it to Firebase */
+        await _uploadFile(outputFile);
+        /* clear useless files created for resizing */
+        tmpFile.deleteSync();
+        outputFile.deleteSync();
+      });
+  }
 
   @override
   void initState() {
     super.initState();
-    _downloadAndStoreImage();
+
+    Set<Marker> updatedmarkers = {};
+    _areaFetcher.fetch((user) {
+      setState(() {
+        _markers.add(Marker(
+            markerId: MarkerId(user.id),
+            icon: user.icon,
+            position: user.coord));
+      });
+    });
+
+    // _downloadAndStoreImage();
   }
 
   @override
   Widget build(BuildContext context) {
-    LatLng pinPosition = LatLng(48.824557, 2.363241);
+    LatLng pinPosition = LatLng(48.825024, 2.347900);
 
     CameraPosition initialLocation =
         CameraPosition(zoom: 16, bearing: 30, target: pinPosition);
 
-    _markers.add(Marker(
-        markerId: MarkerId('<MARKER_ID>'),
-        position: pinPosition,
-        icon: _pinLocationIcon));
+    // _markers.add(Marker(
+    //     markerId: MarkerId('<MARKER_ID>'),
+    //     position: pinPosition,
+    //     icon: _pinLocationIcon));
 
     return Stack(children: [
       GoogleMap(
@@ -142,11 +153,10 @@ class MapPageState extends State<MapPage> {
             _controller.complete(controller);
             Future.delayed(Duration(milliseconds: 10000), () {
               setState(() {
-                print('hey');
-                // _markers.add(Marker(
-                //     markerId: MarkerId('<MARKER_ID>'),
-                //     position: pinPosition,
-                //     icon: _pinLocationIcon));
+                _markers.add(Marker(
+                    markerId: MarkerId('<MARKER_ID>'),
+                    position: pinPosition,
+                    icon: _pinLocationIcon));
               });
             });
           })

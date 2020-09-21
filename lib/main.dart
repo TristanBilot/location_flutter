@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Real time Location'),
     );
   }
 }
@@ -52,13 +52,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _incrementCounter() {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
       _counter++;
-      _areaFetcher.fetch();
+      // _areaFetcher.fetch();
     });
   }
 
@@ -73,19 +68,19 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(height: 400, width: 374, child: MapPage()),
-            StreamBuilder(
-                stream: _areaFetcher.stream,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.active &&
-                      snapshot.data != null) {
-                    print("name " + snapshot.data.name);
-                    return Text(
-                      snapshot.data.name,
-                      style: TextStyle(fontSize: 30),
-                    );
-                  }
-                  return Text('nothing');
-                }),
+            // StreamBuilder(
+            //     stream: _areaFetcher.stream,
+            //     builder: (context, snapshot) {
+            //       if (snapshot.connectionState == ConnectionState.active &&
+            //           snapshot.data != null) {
+            //         print("name " + snapshot.data.name);
+            //         return Text(
+            //           snapshot.data.name,
+            //           style: TextStyle(fontSize: 30),
+            //         );
+            //       }
+            //       return Text('nothing');
+            //     }),
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
