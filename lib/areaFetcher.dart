@@ -80,7 +80,7 @@ class AreaFetcher {
 
   Future<void> _getFireStoreImageFromId(String id, Function completion) async {
     final String firebasePhotoPath = 'photos/';
-    final String userFirebaseId = '?.png';
+    final String userFirebaseId = 'sdsdsd.png';
     final String firebaseURI = 'https://firebasestorage.googleapis.com';
 
     final StorageReference ref = FirebaseStorage.instance
