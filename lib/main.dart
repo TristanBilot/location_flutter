@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:location/location.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:geoflutterfire/geoflutterfire.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'map.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'areaFetcher.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,26 +10,12 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Real time location',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.blue,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: MyHomePage(title: 'Flutter Demo Home Page'),
@@ -60,88 +43,11 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-
-  Location location = new Location();
-
-  bool _serviceEnabled;
-  PermissionStatus _permissionGranted;
-  LocationData _locationData;
-
-  // Init firestore and geoFlutterFire
-  final geo = Geoflutterfire();
-  final _firestore = FirebaseFirestore.instance;
+  AreaFetcher _areaFetcher = AreaFetcher();
 
   @override
   void initState() {
     super.initState();
-  }
-
-  void putLocationToFireStore() async {
-    _locationData = await location.getLocation();
-    // GeoFirePoint geoPoint = geo.point(
-    //     latitude: _locationData.latitude, longitude: _locationData.longitude);
-    GeoFirePoint paris13 = geo.point(latitude: 48.824557, longitude: 2.363241);
-    GeoFirePoint paris13_2 =
-        geo.point(latitude: 48.824735, longitude: 2.362852);
-
-    _firestore
-        .collection('locations')
-        .add({'name': 'random name', 'position': paris13.data});
-
-    _firestore
-        .collection('locations')
-        .add({'name': 'random name', 'position': paris13_2.data});
-  }
-
-  void getUserArea() async {
-    final ref = _firestore.collection('locations');
-    _locationData = await location.getLocation();
-    // GeoFirePoint center = geo.point(
-    // latitude: _locationData.latitude, longitude: _locationData.longitude);
-    GeoFirePoint center = geo.point(latitude: 48.824557, longitude: 2.363241);
-
-    final radius = 0.05; // 50 meters area
-    final field = 'position';
-    Stream<List<DocumentSnapshot>> stream = geo
-        .collection(collectionRef: ref)
-        .within(center: center, radius: radius, field: field);
-
-    stream.listen((List<DocumentSnapshot> users) {
-      // users.sort((a, b) => a.data()['distance'] < b.data()['distance']);
-      users.forEach((user) {
-        final geoPoint = user.data()['position']['geopoint'];
-        if (geoPoint.latitude != center.latitude &&
-            geoPoint.longitude != center.longitude) print(user.data());
-      });
-    });
-  }
-
-  void enableService() async {
-    _serviceEnabled = await location.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
-      if (!_serviceEnabled) {
-        return;
-      }
-    }
-  }
-
-  void grant() async {
-    _permissionGranted = await location.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
-        return;
-      }
-    }
-  }
-
-  void getLocationData() async {
-    _locationData = await location.getLocation();
-    print(_locationData);
-    // location.onLocationChanged.listen((LocationData currentLocation) {
-    //   // Use current location
-    // });
   }
 
   void _incrementCounter() {
@@ -152,53 +58,34 @@ class _MyHomePageState extends State<MyHomePage> {
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
       _counter++;
-      enableService();
-      grant();
-      getLocationData();
-      // putLocationToFireStore();
-      getUserArea();
+      _areaFetcher.fetch();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Container(height: 500, width: 374, child: MapPage()),
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Image(image: Image.asset('assets/user.png').image),
+            Container(height: 400, width: 374, child: MapPage()),
+            StreamBuilder(
+                stream: _areaFetcher.stream,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.active &&
+                      snapshot.data != null) {
+                    print("name " + snapshot.data.name);
+                    return Text(
+                      snapshot.data.name,
+                      style: TextStyle(fontSize: 30),
+                    );
+                  }
+                  return Text('nothing');
+                }),
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
@@ -210,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 }

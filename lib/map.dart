@@ -9,6 +9,9 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image/image.dart' as image;
 import 'package:http/http.dart' as http;
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
+import 'user.dart';
 
 class MapPage extends StatefulWidget {
   @override
@@ -25,27 +28,27 @@ class MapPageState extends State<MapPage> {
     return directory.path;
   }
 
-  Future<File> get _localFile async {
-    final path = await _localPath;
-    return File('$path/counter.txt');
+  void refreshMap(List<User> users) {}
+
+  Future<File> _cropCirclePhoto(String imagePath) async {
+    return await ImageCropper.cropImage(
+        sourcePath: imagePath,
+        cropStyle: CropStyle.circle,
+        maxWidth: 150,
+        maxHeight: 150,
+        aspectRatioPresets: [
+          CropAspectRatioPreset.square,
+          CropAspectRatioPreset.ratio3x2,
+          CropAspectRatioPreset.original,
+          CropAspectRatioPreset.ratio4x3,
+          CropAspectRatioPreset.ratio16x9
+        ],
+        iosUiSettings: IOSUiSettings(
+          minimumAspectRatio: 1.0,
+        ));
   }
 
-  Future<File> write(int counter) async {
-    final file = await _localFile;
-    return file.writeAsString('$counter');
-  }
-
-  Future<int> read() async {
-    try {
-      final file = await _localFile;
-      String contents = await file.readAsString();
-      return int.parse(contents);
-    } catch (e) {
-      return 0;
-    }
-  }
-
-  Future uploadFile(File file) async {
+  Future _uploadFile(File file) async {
     final String firebasePhotoPath = 'photos/';
     final String userFirebaseId = '?.png';
     final String firebaseURI = 'https://firebasestorage.googleapis.com';
@@ -69,58 +72,66 @@ class MapPageState extends State<MapPage> {
     });
   }
 
-  void _downloadAndStoreImage(String url) async {
-    final Uint8List buffer = await http.readBytes(url);
-    final String systemPath = await _localPath;
-    final String tmpPathStr = systemPath + 'tmp.png';
-    final String outputPathStr = systemPath + 'output.png';
-    final File tmpFile = File(tmpPathStr);
-    final newHeight = 200, newWidth = 200;
-
-    RandomAccessFile rf = await tmpFile.open(mode: FileMode.write);
-    await rf.writeFrom(buffer);
-    await rf.flush();
-    await rf.close();
-
-    /* open the tmp file which will be resized and then create a copy */
-    final image.Image resizedImg =
-        image.decodeImage(await new File(tmpPathStr).readAsBytes());
-    /* resizing */
-    final image.Image resizedResult =
-        image.copyResize(resizedImg, height: newHeight, width: newWidth);
-
-    /* write the resized image to the disk and delete both 2 created files */
-    new File(outputPathStr)
-      ..writeAsBytes(image.encodePng(resizedResult)).then((outputFile) async {
-        /* after resizing the image, upload it to Firebase */
-        await uploadFile(outputFile);
-        /* clear useless files created for resizing */
-        tmpFile.deleteSync();
-        outputFile.deleteSync();
-      });
+  void _downloadAndStoreImage() async {
+    /* image picking and croping */
+    final picker = ImagePicker();
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    final File tmpFile = await _cropCirclePhoto(pickedFile.path);
+    await _uploadFile(tmpFile);
   }
+
+  //  void _downloadAndStoreImage(String url) async {
+  //   final Uint8List buffer = await http.readBytes(url);
+  //   final String systemPath = await _localPath;
+  //   final String tmpPathStr = systemPath + 'tmp.png';
+  //   final String outputPathStr = systemPath + 'output.png';
+  //   final newHeight = 200, newWidth = 200;
+
+  //   /* image picking and croping */
+  //   final picker = ImagePicker();
+  //   final pickedFile = await picker.getImage(source: ImageSource.camera);
+  //   final File tmpFile = await _cropCirclePhoto(pickedFile.path);
+
+  //   // RandomAccessFile rf = await tmpFile.open(mode: FileMode.write);
+  //   // await rf.writeFrom(buffer);
+  //   // await rf.flush();
+  //   // await rf.close();
+
+  //   /* open the tmp file which will be resized and then create a copy */
+  //   final image.Image resizedImg =
+  //       image.decodeImage(await new File(tmpPathStr).readAsBytes());
+  //   /* resizing */
+  //   final image.Image resizedResult =
+  //       image.copyResize(resizedImg, height: newHeight, width: newWidth);
+
+  //   /* write the resized image to the disk and delete both 2 created files */
+  //   new File(outputPathStr)
+  //     ..writeAsBytes(image.encodePng(resizedResult)).then((outputFile) async {
+  //       /* after resizing the image, upload it to Firebase */
+  //       await _uploadFile(outputFile);
+  //       /* clear useless files created for resizing */
+  //       tmpFile.deleteSync();
+  //       outputFile.deleteSync();
+  //     });
+  // }
 
   @override
   void initState() {
     super.initState();
-    // BitmapDescriptor.fromAssetImage(
-    //         ImageConfiguration(
-    //           devicePixelRatio: 5.5,
-    //         ),
-    //         'assets/hihi.jpg')
-    //     .then((onValue) {
-    //   _pinLocationIcon = onValue;
-    // });
-    _downloadAndStoreImage(
-        'https://firebasestorage.googleapis.com/v0/b/location-abed9.appspot.com/o/user..jpg?alt=media&token=197bbb90-3981-4382-b950-7f230e8a7139');
+    _downloadAndStoreImage();
   }
 
   @override
   Widget build(BuildContext context) {
-    LatLng pinPosition = LatLng(37.3797536, -122.1017334);
+    LatLng pinPosition = LatLng(48.824557, 2.363241);
 
     CameraPosition initialLocation =
         CameraPosition(zoom: 16, bearing: 30, target: pinPosition);
+
+    _markers.add(Marker(
+        markerId: MarkerId('<MARKER_ID>'),
+        position: pinPosition,
+        icon: _pinLocationIcon));
 
     return Stack(children: [
       GoogleMap(
@@ -129,12 +140,13 @@ class MapPageState extends State<MapPage> {
           initialCameraPosition: initialLocation,
           onMapCreated: (GoogleMapController controller) {
             _controller.complete(controller);
-            Future.delayed(Duration(milliseconds: 3000), () {
+            Future.delayed(Duration(milliseconds: 10000), () {
               setState(() {
-                _markers.add(Marker(
-                    markerId: MarkerId('<MARKER_ID>'),
-                    position: pinPosition,
-                    icon: _pinLocationIcon));
+                print('hey');
+                // _markers.add(Marker(
+                //     markerId: MarkerId('<MARKER_ID>'),
+                //     position: pinPosition,
+                //     icon: _pinLocationIcon));
               });
             });
           })
