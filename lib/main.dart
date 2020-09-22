@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'map.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'facebookAuthController.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,15 +10,21 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  final mapPageTitle = 'Real time Location';
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Real time location',
+      initialRoute: '/map',
+      routes: <String, WidgetBuilder>{
+        '/map': (BuildContext context) => MyHomePage(title: mapPageTitle),
+      },
+      title: mapPageTitle,
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Real time Location'),
+      home: MyHomePage(title: mapPageTitle),
     );
   }
 }
@@ -43,41 +48,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-  var _facebookLogin = FacebookLogin();
+  final _facebookAuthController = FacebookAuthController();
 
   @override
   void initState() {
     super.initState();
-  }
-
-  void _incrementCounter() {
-    _facebookLogin
-        .logInWithReadPermissions(['email', 'public_profile']).then((result) {
-      switch (result.status) {
-        case FacebookLoginStatus.loggedIn:
-          FirebaseAuth.instance
-              .signInWithCredential(
-                  FacebookAuthProvider.credential(result.accessToken.token))
-              .then((signedInUser) {
-            print(signedInUser.additionalUserInfo.username);
-            Navigator.of(context).pushReplacementNamed('/homepage');
-          }).catchError((e) => print(e));
-          print('CONNECTED');
-          break;
-        case FacebookLoginStatus.cancelledByUser:
-          print('Login cancelled by the user.');
-          break;
-        case FacebookLoginStatus.error:
-          print('Something went wrong with the login process.\n'
-              'Here\'s the error Facebook gave us: ${result.errorMessage}');
-          break;
-      }
-    });
-
-    // setState(() {
-    //   _counter++;
-    // });
   }
 
   @override
@@ -91,15 +66,15 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(height: 400, width: 374, child: MapPage()),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
+            FlatButton(
+              onPressed: () => _facebookAuthController.logOut,
+              child: Icon(Icons.remove_circle),
+            )
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: () => _facebookAuthController.logIn(context),
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ),
