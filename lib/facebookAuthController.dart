@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'facebookUserJSON.dart';
+import 'repository.dart';
+import 'areaFetcher.dart';
 
 class FacebookAuthController {
+  final _areaFetcher = AreaFetcher();
   final _facebookLogin = FacebookLogin();
   final _graphDataURL =
       'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email,picture&access_token=';
@@ -33,6 +36,7 @@ class FacebookAuthController {
           completion(fbUser);
 
           if (fbUser.hasPicture) {
+            await _areaFetcher.insertUser(fbUser);
             Navigator.of(context).pushReplacementNamed('/map');
           } else {
             /* redirect to picker */

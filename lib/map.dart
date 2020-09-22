@@ -26,7 +26,7 @@ class MapPageState extends State<MapPage> {
     _areaFetcher.fetch((user) {
       setState(() {
         _markers.add(Marker(
-            markerId: MarkerId(user.id),
+            markerId: MarkerId(user.email),
             icon: user.icon,
             position: user.coord));
       });
@@ -36,7 +36,7 @@ class MapPageState extends State<MapPage> {
   @override
   Widget build(BuildContext context) {
     CameraPosition initialLocation =
-        CameraPosition(zoom: 18, bearing: 30, target: Store.parisPosition);
+        CameraPosition(zoom: 16, bearing: 30, target: Store.parisPosition);
 
     return GoogleMap(
         myLocationEnabled: true,
