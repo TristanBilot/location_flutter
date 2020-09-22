@@ -8,6 +8,7 @@ import 'package:location_project/repository.dart';
 import 'dart:typed_data';
 import 'user.dart';
 import 'dart:async';
+import 'store.dart';
 
 class AreaFetcher {
   bool _serviceEnabled;
@@ -47,8 +48,9 @@ class AreaFetcher {
 
   Future<void> _fetchUserArea(Function completion) async {
     final ref = _firestore.collection('locations');
-    final GeoFirePoint center =
-        _geo.point(latitude: 48.825024, longitude: 2.347900);
+    final GeoFirePoint center = _geo.point(
+        latitude: Store.parisPosition.latitude,
+        longitude: Store.parisPosition.longitude);
 
     final radius = 0.05; // 50 meters area
     final field = 'position';

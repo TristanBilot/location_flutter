@@ -2,6 +2,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'areaFetcher.dart';
+import 'store.dart';
 
 class MapPage extends StatefulWidget {
   @override
@@ -30,10 +31,8 @@ class MapPageState extends State<MapPage> {
 
   @override
   Widget build(BuildContext context) {
-    LatLng pinPosition = LatLng(48.825024, 2.347900);
-
     CameraPosition initialLocation =
-        CameraPosition(zoom: 16, bearing: 30, target: pinPosition);
+        CameraPosition(zoom: 18, bearing: 30, target: Store.parisPosition);
 
     return Stack(children: [
       GoogleMap(
@@ -42,13 +41,11 @@ class MapPageState extends State<MapPage> {
           initialCameraPosition: initialLocation,
           onMapCreated: (GoogleMapController controller) {
             _controller.complete(controller);
-            Future.delayed(Duration(milliseconds: 10000), () {
-              setState(() {
-                _markers.add(Marker(
-                    markerId: MarkerId('<MARKER_ID>'),
-                    position: pinPosition,
-                    icon: _pinLocationIcon));
-              });
+            setState(() {
+              _markers.add(Marker(
+                  markerId: MarkerId('0'),
+                  position: Store.parisPosition,
+                  icon: _pinLocationIcon));
             });
           })
     ]);
