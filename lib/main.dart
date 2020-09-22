@@ -43,7 +43,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-  AreaFetcher _areaFetcher = AreaFetcher();
 
   @override
   void initState() {
@@ -53,7 +52,6 @@ class _MyHomePageState extends State<MyHomePage> {
   void _incrementCounter() {
     setState(() {
       _counter++;
-      // _areaFetcher.fetch();
     });
   }
 
@@ -68,19 +66,6 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(height: 400, width: 374, child: MapPage()),
-            // StreamBuilder(
-            //     stream: _areaFetcher.stream,
-            //     builder: (context, snapshot) {
-            //       if (snapshot.connectionState == ConnectionState.active &&
-            //           snapshot.data != null) {
-            //         print("name " + snapshot.data.name);
-            //         return Text(
-            //           snapshot.data.name,
-            //           style: TextStyle(fontSize: 30),
-            //         );
-            //       }
-            //       return Text('nothing');
-            //     }),
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headline4,

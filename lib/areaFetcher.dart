@@ -4,6 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location/location.dart';
 import 'package:flutter/services.dart';
+import 'package:location_project/repository.dart';
 import 'dart:typed_data';
 import 'user.dart';
 import 'dart:async';
@@ -13,66 +14,71 @@ class AreaFetcher {
   PermissionStatus _permissionGranted;
   LocationData _locationData;
 
-  final location = new Location();
-  final geo = Geoflutterfire();
+  final _location = new Location();
+  final _geo = Geoflutterfire();
   final _firestore = FirebaseFirestore.instance;
+  final _repo = Repository();
 
   Future<void> fetch(Function completion) async {
     _enableService();
     _grant();
     _getLocationData();
-    // putLocationToFireStore();
+    // _putLocationToFireStore();
     return _fetchUserArea(completion);
   }
 
-  Future<void> putLocationToFireStore() async {
-    _locationData = await location.getLocation();
-    // GeoFirePoint geoPoint = geo.point(
+  /* ++++++++++ private methods ++++++++++ */
+
+  Future<void> _putLocationToFireStore() async {
+    _locationData = await _location.getLocation();
+    // GeoFirePoint geoPoint = _geo.point(
     //     latitude: _locationData.latitude, longitude: _locationData.longitude);
-    GeoFirePoint paris13 = geo.point(latitude: 48.825194, longitude: 2.347420);
+    GeoFirePoint paris13 = _geo.point(latitude: 48.825194, longitude: 2.347420);
     GeoFirePoint paris13_2 =
-        geo.point(latitude: 48.824710, longitude: 2.348482);
+        _geo.point(latitude: 48.824710, longitude: 2.348482);
 
     _firestore
         .collection('locations')
         .add({'name': 'Tristan', 'position': paris13.data});
-
     _firestore
         .collection('locations')
         .add({'name': 'Camille', 'position': paris13_2.data});
   }
 
-  /* ++++++++++ private methods ++++++++++ */
-
   Future<void> _fetchUserArea(Function completion) async {
     final ref = _firestore.collection('locations');
-    _locationData = await location.getLocation();
-    // GeoFirePoint center = geo.point(
-    // latitude: _locationData.latitude, longitude: _locationData.longitude);
-    GeoFirePoint center = geo.point(latitude: 48.825024, longitude: 2.347900);
+    final GeoFirePoint center =
+        _geo.point(latitude: 48.825024, longitude: 2.347900);
 
     final radius = 0.05; // 50 meters area
     final field = 'position';
-    Stream<List<DocumentSnapshot>> stream = geo
+    _locationData = await _location.getLocation();
+    // GeoFirePoint center = _geo.point(
+    // latitude: _locationData.latitude, longitude: _locationData.longitude);
+
+    Stream<List<DocumentSnapshot>> stream = _geo
         .collection(collectionRef: ref)
         .within(center: center, radius: radius, field: field);
+    return _listenAreaStream(stream, center, completion);
+  }
 
+  Future<void> _listenAreaStream(Stream<List<DocumentSnapshot>> stream,
+      GeoFirePoint center, Function completion) async {
     stream.listen((List<DocumentSnapshot> users) async {
       users.forEach((user) async {
         final geoPoint = user.data()['position']['geopoint'];
         if (geoPoint.latitude != center.latitude &&
             geoPoint.longitude != center.longitude) {
           // list of users
-          await _getFireStoreImageFromId(user.id, (icon) {
-            final newUser = User(
-                id: user.id,
-                name: user.data()['name'],
-                coord: LatLng(geoPoint.latitude, geoPoint.longitude),
-                icon: icon);
-            completion(newUser);
-          });
+          final icon = await _repo.fetchUserIcon(user.id);
+          final newUser = User(
+              id: user.id,
+              name: user.data()['name'],
+              coord: LatLng(geoPoint.latitude, geoPoint.longitude),
+              icon: icon);
+          completion(newUser);
 
-          print('geo: ' + user.data()['name'].toString());
+          print('_geo: ' + user.data()['name'].toString());
         }
       });
     });
@@ -99,9 +105,9 @@ class AreaFetcher {
   }
 
   void _enableService() async {
-    _serviceEnabled = await location.serviceEnabled();
+    _serviceEnabled = await _location.serviceEnabled();
     if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
+      _serviceEnabled = await _location.requestService();
       if (!_serviceEnabled) {
         return;
       }
@@ -109,9 +115,9 @@ class AreaFetcher {
   }
 
   void _grant() async {
-    _permissionGranted = await location.hasPermission();
+    _permissionGranted = await _location.hasPermission();
     if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
+      _permissionGranted = await _location.requestPermission();
       if (_permissionGranted != PermissionStatus.granted) {
         return;
       }
@@ -119,7 +125,7 @@ class AreaFetcher {
   }
 
   void _getLocationData() async {
-    _locationData = await location.getLocation();
+    _locationData = await _location.getLocation();
     print(_locationData);
     // location.onLocationChanged.listen((LocationData currentLocation) {
     //   // Use current location
