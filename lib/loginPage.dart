@@ -10,7 +10,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _facebookAuthController = FacebookAuthController();
+  final _facebookAuthController = FacebookAuthController.instance;
 
   @override
   void initState() {
@@ -24,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
         title: Text('Log in'),
       ),
       body: FacebookSignInButton(
-        onPressed: () => _facebookAuthController.logIn(context, (a) => {}),
+        onPressed: () => _facebookAuthController.logIn(context),
       ),
     );
   }

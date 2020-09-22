@@ -4,16 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'facebookUserJSON.dart';
-import 'repository.dart';
 import 'areaFetcher.dart';
 
 class FacebookAuthController {
+  static FacebookAuthController instance;
+
   final _areaFetcher = AreaFetcher();
   final _facebookLogin = FacebookLogin();
   final _graphDataURL =
-      'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email,picture&access_token=';
+      'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email,picture.height(100)&access_token=';
 
-  Future<void> logIn(BuildContext context, Function completion) async {
+  static FacebookAuthController init() {
+    return instance = instance == null ? FacebookAuthController() : instance;
+  }
+
+  Future<void> logIn(BuildContext context) async {
     _facebookLogin.loginBehavior = FacebookLoginBehavior.webViewOnly;
 
     final _ = await _facebookLogin.logInWithReadPermissions(
@@ -24,6 +29,7 @@ class FacebookAuthController {
           final _ = await FirebaseAuth.instance
               .signInWithCredential(FacebookAuthProvider.credential(token));
 
+          /* get Facebook profile */
           final graphResponse = await http.get(_graphDataURL + token);
           final data = json.decode(graphResponse.body);
           FacebookUserJSON fbUser = FacebookUserJSON(
@@ -33,7 +39,6 @@ class FacebookAuthController {
               data['picture']['data']['url'],
               !data['picture']['data']['is_silhouette']);
           print(fbUser.toString());
-          completion(fbUser);
 
           if (fbUser.hasPicture) {
             await _areaFetcher.insertUser(fbUser);
@@ -43,6 +48,7 @@ class FacebookAuthController {
           }
 
           print('CONNECTED');
+          await logOut(); // LOG OUT
           break;
 
         case FacebookLoginStatus.cancelledByUser:

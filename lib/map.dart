@@ -4,6 +4,7 @@ import 'package:location_project/iconPicker.dart';
 import 'dart:async';
 import 'areaFetcher.dart';
 import 'store.dart';
+import 'facebookAuthController.dart';
 
 class MapPage extends StatefulWidget {
   @override
@@ -38,18 +39,26 @@ class MapPageState extends State<MapPage> {
     CameraPosition initialLocation =
         CameraPosition(zoom: 16, bearing: 30, target: Store.parisPosition);
 
-    return GoogleMap(
-        myLocationEnabled: true,
-        markers: _markers,
-        initialCameraPosition: initialLocation,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-          setState(() {
-            _markers.add(Marker(
-                markerId: MarkerId('0'),
-                position: Store.parisPosition,
-                icon: _pinLocationIcon));
-          });
-        });
+    return Stack(
+      children: [
+        GoogleMap(
+            myLocationEnabled: true,
+            markers: _markers,
+            initialCameraPosition: initialLocation,
+            onMapCreated: (GoogleMapController controller) {
+              _controller.complete(controller);
+              setState(() {
+                _markers.add(Marker(
+                    markerId: MarkerId('0'),
+                    position: Store.parisPosition,
+                    icon: _pinLocationIcon));
+              });
+            }),
+        FlatButton(
+          child: Icon(Icons.remove),
+          onPressed: () => FacebookAuthController.instance.logOut(),
+        )
+      ],
+    );
   }
 }

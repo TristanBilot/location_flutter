@@ -40,14 +40,14 @@ class AreaFetcher {
         latitude: Store.parisPosition.latitude,
         longitude: Store.parisPosition.longitude);
 
-    _firestore.collection('locations').doc(user.email).set({
+    await _firestore.collection('locations').doc(user.email).set({
       'last_name': user.lastName,
       'first_name': user.firstName,
       'position': geoPoint.data,
     });
 
     File userPicture = await _repo.urlToFile(user.pictureURL);
-    _repo.uploadFile(userPicture, user.email + '.png');
+    return await _repo.uploadFile(userPicture, user.email + '.png');
   }
 
   /* ++++++++++ private methods ++++++++++ */
