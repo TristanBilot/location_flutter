@@ -3,8 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'facebookUserJSON.dart';
+import '../model/facebookUserJSON.dart';
 import 'areaFetcher.dart';
+
+/*
+ * static FacebookAuthController init()
+ * Future<void> logIn(BuildContext context) async
+ * Future<void> logOut() async
+ */
 
 class FacebookAuthController {
   static FacebookAuthController instance;
@@ -41,6 +47,7 @@ class FacebookAuthController {
           print(fbUser.toString());
 
           if (fbUser.hasPicture) {
+            /* insert/update user's data and profile picture */
             await _areaFetcher.insertUser(fbUser);
             Navigator.of(context).pushReplacementNamed('/map');
           } else {

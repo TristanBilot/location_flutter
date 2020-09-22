@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'map.dart';
-import 'loginPage.dart';
-import 'facebookAuthController.dart';
+import 'view/map.dart';
+import 'view/loginPage.dart';
+import 'interactor/facebookAuthController.dart';
+import 'interactor/locationController.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await LocationController.init();
   await FacebookAuthController.init().logOut(); // ONLY FOR TESTS
   runApp(MyApp());
 }

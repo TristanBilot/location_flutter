@@ -1,0 +1,45 @@
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter/material.dart';
+import 'dart:async';
+import '../interactor/areaFetcher.dart';
+import '../store.dart';
+
+class MapPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => MapPageState();
+}
+
+class MapPageState extends State<MapPage> {
+  Set<Marker> _markers = {};
+
+  final Completer<GoogleMapController> _controller = Completer();
+  final AreaFetcher _areaFetcher = AreaFetcher();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _areaFetcher.fetch((user) {
+      setState(() {
+        _markers.add(Marker(
+            markerId: MarkerId(user.email),
+            icon: user.icon,
+            position: user.coord));
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    CameraPosition initialLocation =
+        CameraPosition(zoom: 16, bearing: 30, target: Store.parisPosition);
+
+    return GoogleMap(
+        myLocationEnabled: true,
+        markers: _markers,
+        initialCameraPosition: initialLocation,
+        onMapCreated: (GoogleMapController controller) {
+          _controller.complete(controller);
+        });
+  }
+}
