@@ -3,17 +3,23 @@ import 'package:location/location.dart';
 class LocationController {
   static bool _serviceEnabled;
   static PermissionStatus _permissionGranted;
-  static LocationData _locationData;
-
   static Location _location;
 
+  /*
+  ^ FUNCTION
+  * This method should be used at first and after that,
+  * only use the static methods.
+  */
   static Future init() async {
     _location = new Location();
     _enableService();
     _grant();
-    _getLocationData();
   }
 
+  /*
+  ^ FUNCTION
+  * Returns the current location of the device.
+  */
   static Future<LocationData> getLocation() async {
     return _location.getLocation();
   }
@@ -38,10 +44,8 @@ class LocationController {
     }
   }
 
-  static void _getLocationData() async {
-    _locationData = await _location.getLocation();
-    print(_locationData);
-    // location.onLocationChanged.listen((LocationData currentLocation) {
+  static void _onLocationChanged() async {
+    // _location.onLocationChanged.listen((LocationData currentLocation) {
     //   // Use current location
     // });
   }

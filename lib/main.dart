@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'view/map.dart';
-import 'view/loginPage.dart';
-import 'interactor/facebookAuthController.dart';
-import 'interactor/locationController.dart';
+import 'interactors/authRepository.dart';
+import 'helpers/locationController.dart';
+import 'pages/loginPage.dart';
+import 'pages/mapPage.dart';
+import 'stores/routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,48 +15,20 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  final mapPageTitle = 'Real time Location';
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/login',
+      initialRoute: Routes.login.value,
       routes: <String, WidgetBuilder>{
-        '/login': (BuildContext context) => LoginPage(),
-        '/map': (BuildContext context) => MyHomePage(title: mapPageTitle),
+        Routes.login.value: (BuildContext context) => LoginPage(),
+        Routes.map.value: (BuildContext context) => MapPage(),
       },
-      title: mapPageTitle,
+      title: 'je sais pas',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       // home: LoginPage(),
     );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-        ),
-        body: Stack(
-          children: [MapPage()],
-        ));
   }
 }

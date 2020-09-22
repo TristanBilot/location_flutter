@@ -1,15 +1,15 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
-import '../interactor/areaFetcher.dart';
-import '../store.dart';
+import '../interactors/areaFetcher.dart';
+import '../stores/store.dart';
 
-class MapPage extends StatefulWidget {
+class Map extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => MapPageState();
+  State<StatefulWidget> createState() => MapState();
 }
 
-class MapPageState extends State<MapPage> {
+class MapState extends State<Map> {
   Set<Marker> _markers = {};
 
   final Completer<GoogleMapController> _controller = Completer();
