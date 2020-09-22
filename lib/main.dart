@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'map.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,6 +44,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  var _facebookLogin = FacebookLogin();
 
   @override
   void initState() {
@@ -49,9 +52,32 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _incrementCounter() {
-    setState(() {
-      _counter++;
+    _facebookLogin
+        .logInWithReadPermissions(['email', 'public_profile']).then((result) {
+      switch (result.status) {
+        case FacebookLoginStatus.loggedIn:
+          FirebaseAuth.instance
+              .signInWithCredential(
+                  FacebookAuthProvider.credential(result.accessToken.token))
+              .then((signedInUser) {
+            print(signedInUser.additionalUserInfo.username);
+            Navigator.of(context).pushReplacementNamed('/homepage');
+          }).catchError((e) => print(e));
+          print('CONNECTED');
+          break;
+        case FacebookLoginStatus.cancelledByUser:
+          print('Login cancelled by the user.');
+          break;
+        case FacebookLoginStatus.error:
+          print('Something went wrong with the login process.\n'
+              'Here\'s the error Facebook gave us: ${result.errorMessage}');
+          break;
+      }
     });
+
+    // setState(() {
+    //   _counter++;
+    // });
   }
 
   @override
