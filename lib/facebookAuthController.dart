@@ -11,12 +11,13 @@ class FacebookAuthController {
       'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email,picture&access_token=';
 
   Future<void> logIn(BuildContext context, Function completion) async {
+    _facebookLogin.loginBehavior = FacebookLoginBehavior.webViewOnly;
+
     final _ = await _facebookLogin.logInWithReadPermissions(
         ['email', 'public_profile']).then((result) async {
-      final token = result.accessToken.token;
-
       switch (result.status) {
         case FacebookLoginStatus.loggedIn:
+          final token = result.accessToken.token;
           final _ = await FirebaseAuth.instance
               .signInWithCredential(FacebookAuthProvider.credential(token));
 
