@@ -15,7 +15,11 @@ class Repository {
   Future<BitmapDescriptor> fetchUserIcon(String name) async {
     final StorageReference ref = _getFirestoreImageReference(
         (name ?? '?') + Store.defaultProfilePictureExtension);
-    final String firestoreURL = await ref.getDownloadURL();
+
+    final String firestoreURL = await ref.getDownloadURL().catchError((error) {
+      print('[-] An error occured when getting the picture from Storage : ' +
+          error);
+    });
     final String uploadedFileURL =
         firestoreURL.substring(_firestoreBaseURL.length);
 
