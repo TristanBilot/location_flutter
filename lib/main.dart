@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: Routes.login.value,
+      initialRoute: Routes.map.value,
       routes: <String, WidgetBuilder>{
         Routes.login.value: (BuildContext context) => LoginPage(),
         Routes.map.value: (BuildContext context) => MapPage(),
