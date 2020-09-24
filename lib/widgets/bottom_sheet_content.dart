@@ -1,8 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../models/user.dart';
 
 class BottomSheetContent extends StatelessWidget {
-  const BottomSheetContent({Key key}) : super(key: key);
+  final User user;
+
+  const BottomSheetContent({Key key, @required this.user}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +27,8 @@ class BottomSheetContent extends StatelessWidget {
                       width: 1, color: Colors.grey, style: BorderStyle.solid),
                   shape: BoxShape.circle,
                   image: DecorationImage(
-                      image: AssetImage('assets/hihi.jpg'), fit: BoxFit.fill),
+                      image: CachedNetworkImageProvider(user.pictureURL),
+                      fit: BoxFit.fill),
                 ),
               ),
             ),

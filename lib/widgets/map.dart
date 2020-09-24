@@ -31,6 +31,7 @@ class MapState extends State<Map> {
             position: user.coord,
             onTap: () {
               showFloatingModalBottomSheet(
+                  user: user,
                   context: context,
                   builder: (context) {
                     return Column(children: [
