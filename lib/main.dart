@@ -5,14 +5,12 @@ import 'helpers/location_controller.dart';
 import 'pages/login_page.dart';
 import 'pages/map_page.dart';
 import 'stores/routes.dart';
-import 'stores/cache_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await LocationController.init();
   await FacebookAuthController.init().logOut(); // ONLY FOR TESTS
-  CacheManager.init();
   runApp(MyApp());
 }
 
