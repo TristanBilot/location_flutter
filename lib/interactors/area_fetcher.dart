@@ -5,6 +5,7 @@ import 'dart:async';
 import '../stores/repository.dart';
 import '../models/user.dart';
 import '../stores/store.dart';
+import '../stores/cache_manager.dart';
 
 class AreaFetcher {
   final _geo = Geoflutterfire();
@@ -47,16 +48,23 @@ class AreaFetcher {
       users.forEach((user) async {
         final geoPoint = user.data()['position']['geopoint'];
         // if (geoPoint.latitude != center.latitude &&
-        //     geoPoint.longitude != center.longitude) {
-        final icon = await _repo.fetchUserIcon(user.id);
-        final downloadURL = await _repo.getPictureDownloadURL(user.id);
-        final newUser = User(
-            user.id,
-            user.data()['first_name'],
-            user.data()['last_name'],
-            LatLng(geoPoint.latitude, geoPoint.longitude),
-            icon,
-            downloadURL);
+        //     geoPoint.longitude != center.longitude){
+        User newUser;
+        if (CacheManager.userExists(user.id)) {
+          newUser = CacheManager.getUser(user.id);
+          newUser.coord = LatLng(geoPoint.latitude, geoPoint.longitude);
+        } else {
+          final icon = await _repo.fetchUserIcon(user.id);
+          final downloadURL = await _repo.getPictureDownloadURL(user.id);
+          newUser = User(
+              user.id,
+              user.data()['first_name'],
+              user.data()['last_name'],
+              LatLng(geoPoint.latitude, geoPoint.longitude),
+              icon,
+              downloadURL);
+        }
+        CacheManager.putUser(newUser);
         completion(newUser);
         print('=> in area: ' + newUser.email);
         // }
