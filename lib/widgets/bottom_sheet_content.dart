@@ -19,17 +19,24 @@ class BottomSheetContent extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Center(
-              child: Container(
-                width: 110,
-                height: 110,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                      width: 1, color: Colors.grey, style: BorderStyle.solid),
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                      image: CachedNetworkImageProvider(user.pictureURL),
-                      fit: BoxFit.fill),
+              child: CachedNetworkImage(
+                imageUrl: user.pictureURL,
+                imageBuilder: (context, imageProvider) => Container(
+                  width: 110,
+                  height: 110,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                        width: 1, color: Colors.grey, style: BorderStyle.solid),
+                    shape: BoxShape.circle,
+                    image:
+                        DecorationImage(image: imageProvider, fit: BoxFit.fill),
+                  ),
                 ),
+                placeholder: (context, url) => CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.grey),
+                  strokeWidth: 3.0,
+                ),
+                errorWidget: (context, url, error) => Icon(Icons.error),
               ),
             ),
             Padding(
