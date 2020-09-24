@@ -4,6 +4,8 @@ import 'package:location_project/widgets/bottom_sheet.dart';
 import 'dart:async';
 import '../interactors/area_fetcher.dart';
 import '../stores/store.dart';
+import '../stores/conf.dart';
+import '../helpers/location_controller.dart';
 
 class Map extends StatefulWidget {
   @override
@@ -12,6 +14,7 @@ class Map extends StatefulWidget {
 
 class MapState extends State<Map> {
   Set<Marker> _markers = {};
+  Set<Circle> _circles;
 
   final Completer<GoogleMapController> _controller = Completer();
   final AreaFetcher _areaFetcher = AreaFetcher();
@@ -22,6 +25,19 @@ class MapState extends State<Map> {
     _fetchUsersAroundMe();
   }
 
+  void _drawCircleArea() async {
+    final location = await LocationController.getLocation();
+    _circles = Set.from([
+      Circle(
+        fillColor: Color.fromARGB(30, 0, 0, 0),
+        strokeWidth: 1,
+        circleId: CircleId('area'),
+        center: LatLng(location.latitude, location.longitude),
+        radius: AreaFetcher.radius,
+      )
+    ]);
+  }
+
   void _fetchUsersAroundMe() {
     _areaFetcher.fetch((user) {
       setState(() {
@@ -30,17 +46,7 @@ class MapState extends State<Map> {
             icon: user.icon,
             position: user.coord,
             onTap: () {
-              showFloatingModalBottomSheet(
-                  user: user,
-                  context: context,
-                  builder: (context) {
-                    return Column(children: [
-                      ListTile(
-                        leading: Icon(Icons.ac_unit),
-                        title: Text('my list'),
-                      )
-                    ]);
-                  });
+              showFloatingModalBottomSheet(user: user, context: context);
             }));
       });
     });
@@ -49,14 +55,18 @@ class MapState extends State<Map> {
   @override
   Widget build(BuildContext context) {
     CameraPosition initialLocation =
-        CameraPosition(zoom: 16, bearing: 30, target: Store.parisPosition);
+        CameraPosition(zoom: 18, target: Store.parisPosition);
 
     return GoogleMap(
         myLocationEnabled: true,
         markers: _markers,
+        circles: Conf.displayAreaCircle ? _circles : null,
         initialCameraPosition: initialLocation,
+        onCameraMove: null,
+        /* TODO */
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
+          _drawCircleArea();
         });
   }
 }

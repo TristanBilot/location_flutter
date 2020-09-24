@@ -30,7 +30,6 @@ class FloatingModal extends StatelessWidget {
 Future<T> showFloatingModalBottomSheet<T>({
   @required User user,
   @required BuildContext context,
-  @required WidgetBuilder builder,
   Color backgroundColor,
 }) async {
   final result = await showCustomModalBottomSheet(

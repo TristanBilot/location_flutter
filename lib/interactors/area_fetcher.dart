@@ -12,6 +12,8 @@ class AreaFetcher {
   final _firestore = FirebaseFirestore.instance;
   final _repo = Repository();
 
+  static final double radius = 50; // 50 meters area
+
   /*
   ^ FUNCTION
   * Get the current location and fetch all the users
@@ -23,15 +25,13 @@ class AreaFetcher {
     final GeoFirePoint center = _geo.point(
         latitude: Store.parisPosition.latitude,
         longitude: Store.parisPosition.longitude);
-
-    final radius = 0.05; // 50 meters area
     final field = 'position';
     // final locationData = await LocationController.getLocation();
     // GeoFirePoint center = _geo.point(latitude: locationData.latitude, longitude: locationData.longitude);
 
     Stream<List<DocumentSnapshot>> stream = _geo
         .collection(collectionRef: ref)
-        .within(center: center, radius: radius, field: field);
+        .within(center: center, radius: radius / 1000, field: field);
     return _listenAreaStream(stream, center, completion);
   }
 
