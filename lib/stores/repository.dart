@@ -7,19 +7,13 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'dart:math';
 import 'store.dart';
-import '../helpers/iconPicker.dart';
+import '../helpers/icon_picker.dart';
 
 class Repository {
   final String _firestoreBaseURL = 'https://firebasestorage.googleapis.com';
 
-  Future<BitmapDescriptor> fetchUserIcon(String name) async {
-    final StorageReference ref = _getFirestoreImageReference(
-        (name ?? '?') + Store.defaultProfilePictureExtension);
-
-    final String firestoreURL = await ref.getDownloadURL().catchError((error) {
-      print('[-] An error occured when getting the picture from Storage : ' +
-          error);
-    });
+  Future<BitmapDescriptor> fetchUserIcon(String id) async {
+    final String firestoreURL = await getPictureDownloadURL(id);
     final String uploadedFileURL =
         firestoreURL.substring(_firestoreBaseURL.length);
 
@@ -28,7 +22,19 @@ class Repository {
                 .load(uploadedFileURL))
             .buffer
             .asUint8List();
+
     return BitmapDescriptor.fromBytes(data);
+  }
+
+  Future<String> getPictureDownloadURL(String id) async {
+    final StorageReference ref = _getFirestoreImageReference(
+        (id ?? '?') + Store.defaultProfilePictureExtension);
+
+    final String firestoreURL = await ref.getDownloadURL().catchError((error) {
+      print('[-] An error occured when getting the picture from Storage : ' +
+          error);
+    });
+    return firestoreURL;
   }
 
   Future<void> pickImageAndUpload() async {

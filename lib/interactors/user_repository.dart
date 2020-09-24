@@ -2,7 +2,7 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:io';
 import '../stores/repository.dart';
-import '../models/facebookUserJSON.dart';
+import '../models/user.dart';
 import '../stores/store.dart';
 
 class UserRepository {
@@ -17,14 +17,14 @@ class UserRepository {
   * Insert the last_name, first_name and position with the key 'email'
   * of the user, the picture is sent to the storage
   */
-  Future<void> insertUser(FacebookUserJSON user) async {
+  Future<void> insertOrUpdateUser(User user) async {
     // final locationData = await LocationController.getLocation();
     // GeoFirePoint geoPoint = _geo.point(latitude: locationData.latitude, longitude: locationData.longitude);
     final GeoFirePoint geoPoint = Store.parisGeoPosition;
     await _firestore.collection('locations').doc(user.email).set({
       'last_name': user.lastName,
       'first_name': user.firstName,
-      'position': geoPoint.data,
+      'position': geoPoint.data, // should be replaced in prod
     });
     File userPicture = await _repo.urlToFile(user.pictureURL);
     return await _repo.uploadFile(

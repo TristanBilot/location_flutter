@@ -1,9 +1,8 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:location_project/widgets/bottomSheet.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:location_project/widgets/bottom_sheet.dart';
 import 'dart:async';
-import '../interactors/areaFetcher.dart';
+import '../interactors/area_fetcher.dart';
 import '../stores/store.dart';
 
 class Map extends StatefulWidget {

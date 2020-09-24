@@ -49,12 +49,14 @@ class AreaFetcher {
         // if (geoPoint.latitude != center.latitude &&
         //     geoPoint.longitude != center.longitude) {
         final icon = await _repo.fetchUserIcon(user.id);
+        final downloadURL = await _repo.getPictureDownloadURL(user.id);
         final newUser = User(
-            email: user.id,
-            firstName: user.data()['first_name'],
-            lastName: user.data()['last_name'],
-            coord: LatLng(geoPoint.latitude, geoPoint.longitude),
-            icon: icon);
+            user.id,
+            user.data()['first_name'],
+            user.data()['last_name'],
+            LatLng(geoPoint.latitude, geoPoint.longitude),
+            icon,
+            downloadURL);
         completion(newUser);
         print('=> in area: ' + newUser.email);
         // }

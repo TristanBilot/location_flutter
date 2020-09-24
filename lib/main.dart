@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'interactors/authRepository.dart';
-import 'helpers/locationController.dart';
-import 'pages/loginPage.dart';
-import 'pages/mapPage.dart';
+import 'interactors/auth_repository.dart';
+import 'helpers/location_controller.dart';
+import 'pages/login_page.dart';
+import 'pages/map_page.dart';
 import 'stores/routes.dart';
 
 void main() async {

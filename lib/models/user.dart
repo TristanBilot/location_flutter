@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class User {
@@ -7,11 +6,15 @@ class User {
   String lastName;
   LatLng coord;
   BitmapDescriptor icon;
+  String pictureURL;
 
-  User(
-      {@required this.email,
-      @required this.firstName,
-      @required this.lastName,
-      @required this.coord,
-      @required this.icon});
+  User(String email, String firstName, String lastName, LatLng coord,
+      BitmapDescriptor icon, String pictureURL) {
+    this.lastName = lastName;
+    this.firstName = firstName;
+    this.email = email;
+    this.coord = coord;
+    this.icon = icon;
+    this.pictureURL = pictureURL;
+  }
 }
