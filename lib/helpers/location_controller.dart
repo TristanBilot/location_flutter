@@ -1,3 +1,4 @@
+import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:location/location.dart';
 
 class LocationController {
@@ -22,6 +23,16 @@ class LocationController {
   */
   static Future<LocationData> getLocation() async {
     return _location.getLocation();
+  }
+
+  /*
+  ^ FUNCTION
+  * Returns the current location of the device as a GeoFirePoint.
+  */
+  static Future<GeoFirePoint> getLocationGeoFirePoint() async {
+    final location = await getLocation();
+    return Geoflutterfire()
+        .point(latitude: location.latitude, longitude: location.longitude);
   }
 
   static void _enableService() async {

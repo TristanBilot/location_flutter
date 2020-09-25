@@ -1,11 +1,13 @@
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:location_project/helpers/location_controller.dart';
 import 'dart:async';
 import '../stores/repository.dart';
 import '../models/user.dart';
 import '../stores/store.dart';
 import '../stores/cache_manager.dart';
+import '../stores/conf.dart';
 
 class AreaFetcher {
   final _geo = Geoflutterfire();
@@ -22,12 +24,10 @@ class AreaFetcher {
   */
   Future<void> fetch(Function completion) async {
     final ref = _firestore.collection('locations');
-    final GeoFirePoint center = _geo.point(
-        latitude: Store.parisPosition.latitude,
-        longitude: Store.parisPosition.longitude);
+    final GeoFirePoint center = Conf.testMode
+        ? Store.parisGeoPosition
+        : LocationController.getLocationGeoFirePoint();
     final field = 'position';
-    // final locationData = await LocationController.getLocation();
-    // GeoFirePoint center = _geo.point(latitude: locationData.latitude, longitude: locationData.longitude);
 
     Stream<List<DocumentSnapshot>> stream = _geo
         .collection(collectionRef: ref)

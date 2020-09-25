@@ -19,6 +19,8 @@ class MapState extends State<Map> {
   final Completer<GoogleMapController> _controller = Completer();
   final AreaFetcher _areaFetcher = AreaFetcher();
 
+  var _location;
+
   @override
   void initState() {
     super.initState();
@@ -26,19 +28,20 @@ class MapState extends State<Map> {
   }
 
   void _drawCircleArea() async {
-    final location = await LocationController.getLocation();
+    _location = await LocationController.getLocation();
     _circles = Set.from([
       Circle(
         fillColor: Color.fromARGB(30, 0, 0, 0),
         strokeWidth: 1,
         circleId: CircleId('area'),
-        center: LatLng(location.latitude, location.longitude),
+        center: LatLng(_location.latitude, _location.longitude),
         radius: AreaFetcher.radius,
       )
     ]);
   }
 
-  void _fetchUsersAroundMe() {
+  void _fetchUsersAroundMe() async {
+    _location = await LocationController.getLocation();
     _areaFetcher.fetch((user) {
       setState(() {
         _markers.add(Marker(
@@ -54,10 +57,14 @@ class MapState extends State<Map> {
 
   @override
   Widget build(BuildContext context) {
-    CameraPosition initialLocation =
-        CameraPosition(zoom: 18, target: Store.parisPosition);
+    CameraPosition initialLocation = CameraPosition(
+        zoom: 18,
+        target: Conf.testMode
+            ? Store.parisPosition
+            : LatLng(_location.latitude, _location.longitude));
 
     return GoogleMap(
+        mapType: MapType.normal,
         myLocationEnabled: true,
         markers: _markers,
         circles: Conf.displayAreaCircle ? _circles : null,
