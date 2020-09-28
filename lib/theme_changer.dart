@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 
-class ThemeChanger with ChangeNotifier {
-  ThemeData _themeData;
+class ThemeChanger with ChangeNotifier, WidgetsBindingObserver {
+  Brightness _theme;
 
-  ThemeChanger(this._themeData);
+  ThemeChanger() {
+    WidgetsBinding.instance.addObserver(this);
+    _theme = WidgetsBinding.instance.window.platformBrightness;
+  }
 
-  getTheme() => _themeData;
-  setTheme(ThemeData theme) {
-    _themeData = theme;
+  getTheme() => _theme;
 
+  setTheme(Brightness theme) {
+    _theme = theme;
     notifyListeners();
   }
 }

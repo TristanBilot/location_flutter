@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:location_project/theme_changer.dart';
 import 'interactors/auth_repository.dart';
 import 'helpers/location_controller.dart';
-import 'pages/login_page.dart';
-import 'pages/map_page.dart';
-import 'stores/routes.dart';
 import 'stores/cache_manager.dart';
+import 'package:provider/provider.dart';
+import 'theme_changer.dart';
+import 'pages/app.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,18 +20,6 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      initialRoute: Routes.map.value,
-      routes: <String, WidgetBuilder>{
-        Routes.login.value: (BuildContext context) => LoginPage(),
-        Routes.map.value: (BuildContext context) => MapPage(),
-      },
-      title: 'je sais pas',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      // home: LoginPage(),
-    );
+    return App();
   }
 }
