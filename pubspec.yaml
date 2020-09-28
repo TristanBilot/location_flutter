@@ -41,6 +41,7 @@ dependencies:
   flutter_auth_buttons: ^0.10.0
   modal_bottom_sheet: ^0.2.2
   cached_network_image: ^2.3.2+1
+  provider:
 
   
   # The following adds the Cupertino Icons font to your application.

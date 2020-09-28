@@ -389,7 +389,7 @@ DEPENDENCIES:
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  trunk:
     - abseil
     - Bolts
     - BoringSSL-GRPC
@@ -482,6 +482,6 @@ SPEC CHECKSUMS:
   sqflite: 4001a31ff81d210346b500c55b17f4d6c7589dd0
   TOCropViewController: 2a1ae1242600b1f2d996fd91a5268b2309a33b5c
 
-PODFILE CHECKSUM: 79484f67eb642f5e0905aac81455d3fd24fa5395
+PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
 
 COCOAPODS: 1.8.4
