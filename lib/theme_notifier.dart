@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
-class ThemeChanger with ChangeNotifier, WidgetsBindingObserver {
+class ThemeNotifier extends ChangeNotifier {
   Brightness _theme;
 
-  ThemeChanger() {
-    WidgetsBinding.instance.addObserver(this);
+  ThemeNotifier() {
     _theme = WidgetsBinding.instance.window.platformBrightness;
   }
 

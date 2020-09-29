@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
-import 'package:location_project/theme_changer.dart';
+import '../theme_notifier.dart';
 import 'package:provider/provider.dart';
 import '../interactors/auth_repository.dart';
+import '../helpers/brightness_handler.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
@@ -11,44 +12,31 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
+class _LoginPageState extends State<LoginPage> {
   final _facebookAuthController = FacebookAuthController.instance;
-  final _themeChanger = ThemeChanger();
+  BrightnessHandler _brightnessHandler;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  void didChangePlatformBrightness() {
-    final Brightness brightness =
-        WidgetsBinding.instance.window.platformBrightness;
-    print('hey');
-    _themeChanger.setTheme(brightness);
+    _brightnessHandler = BrightnessHandler(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ThemeChanger>(
-      builder: (context, themeChanger, child) {
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(
-                themeChanger.getTheme() == Brightness.dark ? 'dark' : 'light'),
-          ),
-          body: FacebookSignInButton(
-            onPressed: () => _facebookAuthController.logIn(context),
-          ),
-        );
-      },
-    );
+    final themeNotifier = Provider.of<ThemeNotifier>(context);
+
+    return Scaffold(
+        appBar: AppBar(title: Text('Log in')),
+        body: Stack(
+          alignment: Alignment.topLeft,
+          children: [
+            FacebookSignInButton(
+              onPressed: () => _facebookAuthController.logIn(context),
+            ),
+            Text(
+                themeNotifier.getTheme() == Brightness.dark ? 'dark' : 'light'),
+          ],
+        ));
   }
 }

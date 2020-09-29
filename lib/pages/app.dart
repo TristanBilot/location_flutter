@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:location_project/theme_changer.dart';
+import 'package:location_project/theme_notifier.dart';
 import '../pages/login_page.dart';
 import '../pages/map_page.dart';
 import '../stores/routes.dart';
@@ -15,22 +15,23 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
-    // final theme = Provider.of<ThemeChanger>(context);
-
-    return MaterialApp(
-      initialRoute: Routes.map.value,
-      routes: <String, WidgetBuilder>{
-        Routes.login.value: (BuildContext context) => LoginPage(),
-        Routes.map.value: (BuildContext context) => MapPage(),
-      },
-      title: 'je sais pas',
-      // theme: theme.getTheme()
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-
-      home: LoginPage(),
-    );
+    return ChangeNotifierProvider<ThemeNotifier>(
+        create: (context) => ThemeNotifier(),
+        builder: (context, child) {
+          return MaterialApp(
+            initialRoute: Routes.login.value,
+            routes: <String, WidgetBuilder>{
+              Routes.login.value: (context) => LoginPage(),
+              Routes.map.value: (context) => MapPage(),
+            },
+            darkTheme: ThemeData.dark(),
+            title: 'je sais pas',
+            // theme: Provider.of<ThemeNotifier>(context).getTheme() ==
+            //         Brightness.dark
+            //     ? ThemeData.dark()
+            //     : ThemeData.light(),
+            home: LoginPage(),
+          );
+        });
   }
 }
