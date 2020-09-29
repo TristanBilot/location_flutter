@@ -75,21 +75,27 @@ class MapState extends State<Map> with WidgetsBindingObserver {
     });
   }
 
+  Future _setMapStyle() async {
+    final controller = await _controller.future;
+    Provider.of<ThemeNotifier>(context, listen: false).doStuff(
+        () => controller.setMapStyle(_lightMapStyle),
+        () => controller.setMapStyle(_darkMapStyle));
+  }
+
   @override
   void didChangePlatformBrightness() {
     final brightness = WidgetsBinding.instance.window.platformBrightness;
     setState(() {
       Provider.of<ThemeNotifier>(context, listen: false).setTheme(brightness);
-      _manageMap();
+      _setMapStyle();
       _drawCircleArea();
     });
   }
 
-  Future _manageMap() async {
-    final controller = await _controller.future;
-    Provider.of<ThemeNotifier>(context, listen: false).doStuff(
-        () => controller.setMapStyle(_lightMapStyle),
-        () => controller.setMapStyle(_darkMapStyle));
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override
@@ -112,7 +118,7 @@ class MapState extends State<Map> with WidgetsBindingObserver {
           _controller.complete(controller);
 
           _drawCircleArea();
-          _manageMap();
+          _setMapStyle();
         });
   }
 }
