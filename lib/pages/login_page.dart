@@ -3,7 +3,6 @@ import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import '../theme_notifier.dart';
 import 'package:provider/provider.dart';
 import '../interactors/auth_repository.dart';
-import '../helpers/brightness_handler.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
@@ -14,12 +13,10 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _facebookAuthController = FacebookAuthController.instance;
-  BrightnessHandler _brightnessHandler;
 
   @override
   void initState() {
     super.initState();
-    _brightnessHandler = BrightnessHandler(context);
   }
 
   @override

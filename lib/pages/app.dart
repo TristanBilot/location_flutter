@@ -19,7 +19,7 @@ class _AppState extends State<App> {
         create: (context) => ThemeNotifier(),
         builder: (context, child) {
           return MaterialApp(
-            initialRoute: Routes.login.value,
+            initialRoute: Routes.map.value,
             routes: <String, WidgetBuilder>{
               Routes.login.value: (context) => LoginPage(),
               Routes.map.value: (context) => MapPage(),
@@ -30,7 +30,7 @@ class _AppState extends State<App> {
             //         Brightness.dark
             //     ? ThemeData.dark()
             //     : ThemeData.light(),
-            home: LoginPage(),
+            // home: LoginPage(),
           );
         });
   }
