@@ -4,21 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:provider/provider.dart';
 
 import '../helpers/location_controller.dart';
 import '../interactors/area_fetcher.dart';
 import '../stores/conf.dart';
 import '../stores/store.dart';
-import '../theme_notifier.dart';
 import 'bottom_sheet.dart';
 
 class Map extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => MapState();
+  State<StatefulWidget> createState() => _MapState();
 }
 
-class MapState extends State<Map> with WidgetsBindingObserver {
+class _MapState extends State<Map> with WidgetsBindingObserver {
   Set<Marker> _markers = {};
   Set<Circle> _circles;
 
@@ -26,6 +24,7 @@ class MapState extends State<Map> with WidgetsBindingObserver {
   final AreaFetcher _areaFetcher = AreaFetcher();
 
   LocationData _location;
+
   String _darkMapStyle;
   String _lightMapStyle;
 
@@ -41,6 +40,15 @@ class MapState extends State<Map> with WidgetsBindingObserver {
     _darkMapStyle = await rootBundle.loadString('assets/map_styles/dark.json');
     _lightMapStyle =
         await rootBundle.loadString('assets/map_styles/light.json');
+  }
+
+  Future _setMapStyle() async {
+    final controller = await _controller.future;
+    final theme = WidgetsBinding.instance.window.platformBrightness;
+    if (theme == Brightness.dark)
+      controller.setMapStyle(_darkMapStyle);
+    else
+      controller.setMapStyle(_lightMapStyle);
   }
 
   void _drawCircleArea() async {
@@ -75,20 +83,10 @@ class MapState extends State<Map> with WidgetsBindingObserver {
     });
   }
 
-  Future _setMapStyle() async {
-    final controller = await _controller.future;
-    Provider.of<ThemeNotifier>(context, listen: false).doStuff(
-        () => controller.setMapStyle(_lightMapStyle),
-        () => controller.setMapStyle(_darkMapStyle));
-  }
-
   @override
   void didChangePlatformBrightness() {
-    final brightness = WidgetsBinding.instance.window.platformBrightness;
     setState(() {
-      Provider.of<ThemeNotifier>(context, listen: false).setTheme(brightness);
       _setMapStyle();
-      _drawCircleArea();
     });
   }
 
@@ -113,12 +111,10 @@ class MapState extends State<Map> with WidgetsBindingObserver {
         circles: Conf.displayAreaCircle ? _circles : null,
         initialCameraPosition: initialLocation,
         onCameraMove: null,
-        /* TODO */
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
-
-          _drawCircleArea();
           _setMapStyle();
+          _drawCircleArea();
         });
   }
 }
