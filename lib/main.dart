@@ -12,7 +12,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await LocationController.init();
-  await FacebookAuthController.init().logOut(); // ONLY FOR TESTS
+  FacebookAuthController.init(); //.logOut(); // ONLY FOR TESTS
   CacheManager.init();
   runApp(MyApp());
 }

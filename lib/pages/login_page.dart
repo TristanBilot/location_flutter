@@ -32,7 +32,8 @@ class _LoginPageState extends State<LoginPage> {
               onPressed: () => _facebookAuthController.logIn(context),
             ),
             Text(
-                themeNotifier.getTheme() == Brightness.dark ? 'dark' : 'light'),
+                // themeNotifier.getTheme() == Brightness.dark ? 'dark' : 'light'),
+                'toto')
           ],
         ));
   }
