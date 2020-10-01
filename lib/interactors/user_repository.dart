@@ -22,7 +22,7 @@ class UserRepository {
   Future<void> insertOrUpdateUser(User user) async {
     final GeoFirePoint geoPoint = Conf.testMode
         ? Store.parisGeoPosition
-        : await LocationController.getLocationGeoFirePoint();
+        : LocationController.locationGeoPoint;
     await _firestore.collection('locations').doc(user.email).set({
       'last_name': user.lastName,
       'first_name': user.firstName,

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
+import '../stores/cache_manager.dart';
 import '../helpers/location_controller.dart';
 import '../interactors/area_fetcher.dart';
 import '../stores/conf.dart';
@@ -23,8 +24,6 @@ class _MapState extends State<Map> with WidgetsBindingObserver {
   final Completer<GoogleMapController> _controller = Completer();
   final AreaFetcher _areaFetcher = AreaFetcher();
 
-  LocationData _location;
-
   String _darkMapStyle;
   String _lightMapStyle;
 
@@ -32,17 +31,12 @@ class _MapState extends State<Map> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-
+    print('1');
     // setState(() {
-    _loadMapStyles();
     _fetchUsersAroundMe();
-    _setMapStyle();
+    _loadMapStyles();
     _drawCircleArea();
     // });
-  }
-
-  Future _getCurrentLocation() async {
-    _location = await LocationController.getLocation();
   }
 
   Future _loadMapStyles() async {
@@ -70,14 +64,13 @@ class _MapState extends State<Map> with WidgetsBindingObserver {
         strokeColor: lightBorder,
         strokeWidth: 1,
         circleId: CircleId('area'),
-        center: LatLng(_location.latitude, _location.longitude),
+        center: LocationController.location,
         radius: AreaFetcher.radius,
       )
     ]);
   }
 
   Future _fetchUsersAroundMe() async {
-    _location = await LocationController.getLocation();
     _areaFetcher.fetch((user) {
       setState(() {
         _markers.add(Marker(
@@ -106,45 +99,21 @@ class _MapState extends State<Map> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    // CameraPosition initialLocation = CameraPosition(
-    //     zoom: 18,
-    //     target: Conf.testMode
-    //         ? Store.parisPosition
-    //         : LatLng(_location.latitude, _location.longitude));
+    CameraPosition initialLocation = CameraPosition(
+        zoom: 18,
+        target:
+            Conf.testMode ? Store.parisPosition : LocationController.location);
 
-    return FutureBuilder(
-      future: _getCurrentLocation(),
-      builder: (newContext, snapshot) {
-        switch (snapshot.connectionState) {
-          case ConnectionState.waiting:
-            return CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.grey),
-              strokeWidth: 3.0,
-            );
-          case ConnectionState.done:
-            return GoogleMap(
-                mapType: MapType.normal,
-                myLocationEnabled: true,
-                markers: _markers,
-                circles: Conf.displayAreaCircle ? _circles : null,
-                initialCameraPosition: CameraPosition(
-                    zoom: 18,
-                    target: Conf.testMode
-                        ? Store.parisPosition
-                        : LatLng(_location.latitude, _location.longitude)),
-                onCameraMove: null,
-                onMapCreated: (GoogleMapController controller) {
-                  _controller.complete(controller);
-                  _fetchUsersAroundMe();
-                });
-          case ConnectionState.none:
-            return Text('none');
-          case ConnectionState.active:
-            return Text('active');
-          default:
-            return Text('e');
-        }
-      },
-    );
+    return GoogleMap(
+        mapType: MapType.normal,
+        myLocationEnabled: true,
+        markers: _markers,
+        circles: Conf.displayAreaCircle ? _circles : null,
+        initialCameraPosition: initialLocation,
+        onMapCreated: (GoogleMapController controller) {
+          _controller.complete(controller);
+          print('2');
+          _setMapStyle();
+        });
   }
 }

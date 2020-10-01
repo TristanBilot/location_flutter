@@ -75,7 +75,6 @@ class FacebookAuthController {
     /* get Facebook profile */
     final graphResponse = await http.get(_graphDataURL + token);
     final data = json.decode(graphResponse.body);
-    final location = await LocationController.getLocation();
     final id = data['email'];
     final icon = await _repo.fetchUserIcon(id);
     // final downloadURL = await _repo.getPictureDownloadURL(id);
@@ -84,7 +83,7 @@ class FacebookAuthController {
         data['email'],
         data['first_name'],
         data['last_name'],
-        LatLng(location.latitude, location.longitude),
+        LocationController.location,
         icon,
         data['picture']['data']['url']);
 

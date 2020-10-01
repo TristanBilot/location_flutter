@@ -24,9 +24,10 @@ class AreaFetcher {
   */
   Future<void> fetch(Function completion) async {
     final ref = _firestore.collection('locations');
+
     final GeoFirePoint center = Conf.testMode
         ? Store.parisGeoPosition
-        : await LocationController.getLocationGeoFirePoint();
+        : LocationController.locationGeoPoint;
     final field = 'position';
 
     Stream<List<DocumentSnapshot>> stream = _geo

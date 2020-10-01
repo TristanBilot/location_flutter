@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
-import 'package:location_project/interactors/user_repository.dart';
-import '../theme_notifier.dart';
-import 'package:provider/provider.dart';
+
 import '../interactors/auth_repository.dart';
 import '../stores/routes.dart';
 
@@ -19,7 +17,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    UserRepository().putCarrieresDataset();
   }
 
   @override
