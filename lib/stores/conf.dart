@@ -1,4 +1,4 @@
 class Conf {
-  static bool testMode = true;
+  static bool testMode = false;
   static bool displayAreaCircle = true;
 }

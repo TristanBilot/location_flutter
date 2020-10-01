@@ -8,6 +8,7 @@ class Store {
       latitude: Store.parisPosition.latitude,
       longitude: Store.parisPosition.longitude);
 
+  static final defaultProfilePictureName = '?';
   static final defaultProfilePictureExtension = '.png';
   static final fireStoreUserIconPath = 'photos/';
 }

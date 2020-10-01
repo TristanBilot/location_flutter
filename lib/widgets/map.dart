@@ -32,8 +32,17 @@ class _MapState extends State<Map> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+
+    // setState(() {
     _loadMapStyles();
     _fetchUsersAroundMe();
+    _setMapStyle();
+    _drawCircleArea();
+    // });
+  }
+
+  Future _getCurrentLocation() async {
+    _location = await LocationController.getLocation();
   }
 
   Future _loadMapStyles() async {
@@ -55,7 +64,6 @@ class _MapState extends State<Map> with WidgetsBindingObserver {
     final lightCircle = Color.fromARGB(30, 33, 155, 243);
     final lightBorder = Color.fromARGB(170, 25, 118, 210);
 
-    _location = await LocationController.getLocation();
     _circles = Set.from([
       Circle(
         fillColor: lightCircle,
@@ -68,7 +76,7 @@ class _MapState extends State<Map> with WidgetsBindingObserver {
     ]);
   }
 
-  void _fetchUsersAroundMe() async {
+  Future _fetchUsersAroundMe() async {
     _location = await LocationController.getLocation();
     _areaFetcher.fetch((user) {
       setState(() {
@@ -98,23 +106,45 @@ class _MapState extends State<Map> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    CameraPosition initialLocation = CameraPosition(
-        zoom: 18,
-        target: Conf.testMode
-            ? Store.parisPosition
-            : LatLng(_location.latitude, _location.longitude));
+    // CameraPosition initialLocation = CameraPosition(
+    //     zoom: 18,
+    //     target: Conf.testMode
+    //         ? Store.parisPosition
+    //         : LatLng(_location.latitude, _location.longitude));
 
-    return GoogleMap(
-        mapType: MapType.normal,
-        myLocationEnabled: true,
-        markers: _markers,
-        circles: Conf.displayAreaCircle ? _circles : null,
-        initialCameraPosition: initialLocation,
-        onCameraMove: null,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-          _setMapStyle();
-          _drawCircleArea();
-        });
+    return FutureBuilder(
+      future: _getCurrentLocation(),
+      builder: (newContext, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting:
+            return CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.grey),
+              strokeWidth: 3.0,
+            );
+          case ConnectionState.done:
+            return GoogleMap(
+                mapType: MapType.normal,
+                myLocationEnabled: true,
+                markers: _markers,
+                circles: Conf.displayAreaCircle ? _circles : null,
+                initialCameraPosition: CameraPosition(
+                    zoom: 18,
+                    target: Conf.testMode
+                        ? Store.parisPosition
+                        : LatLng(_location.latitude, _location.longitude)),
+                onCameraMove: null,
+                onMapCreated: (GoogleMapController controller) {
+                  _controller.complete(controller);
+                  _fetchUsersAroundMe();
+                });
+          case ConnectionState.none:
+            return Text('none');
+          case ConnectionState.active:
+            return Text('active');
+          default:
+            return Text('e');
+        }
+      },
+    );
   }
 }

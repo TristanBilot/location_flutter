@@ -26,15 +26,23 @@ class Repository {
     return BitmapDescriptor.fromBytes(data);
   }
 
-  Future<String> getPictureDownloadURL(String id) async {
-    final StorageReference ref = _getFirestoreImageReference(
-        (id ?? '?') + Store.defaultProfilePictureExtension);
+  Future<dynamic> getPictureDownloadURL(String id) async {
+    return new Future.sync(() {
+      StorageReference ref = _getFirestoreImageReference(
+          (id ?? Store.defaultProfilePictureName) +
+              Store.defaultProfilePictureExtension);
 
-    final String firestoreURL = await ref.getDownloadURL().catchError((error) {
-      print('[-] An error occured when getting the picture from Storage : ' +
-          error);
+      return ref.getDownloadURL().then((url) => url).catchError((_) {
+        ref = _getFirestoreImageReference(Store.defaultProfilePictureName +
+            Store.defaultProfilePictureExtension);
+        return ref.getDownloadURL().then((url) => url).catchError((error) {
+          print(
+              '++++ Error: the user does not have an image and the default image is not found in Firestore.');
+        });
+      });
+
+      /* if the picture is not found, set the default user image in FireStore */
     });
-    return firestoreURL;
   }
 
   Future<void> pickImageAndUpload() async {

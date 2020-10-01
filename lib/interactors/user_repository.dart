@@ -22,7 +22,7 @@ class UserRepository {
   Future<void> insertOrUpdateUser(User user) async {
     final GeoFirePoint geoPoint = Conf.testMode
         ? Store.parisGeoPosition
-        : LocationController.getLocationGeoFirePoint();
+        : await LocationController.getLocationGeoFirePoint();
     await _firestore.collection('locations').doc(user.email).set({
       'last_name': user.lastName,
       'first_name': user.firstName,
@@ -37,9 +37,38 @@ class UserRepository {
   ^ PRIVATE FUNCTION
   * This method is only for testing purpose, to insert mock data to the firestore db 
   */
-  Future<void> _putLocationToFireStore() async {
+  Future<void> putCarrieresDataset() async {
     // final locationData = await LocationController.getLocation();
-    // GeoFirePoint geoPoint = _geo.point(latitude: locationData.latitude, longitude: locationData.longitude);
+    // GeoFirePoint geoPoint = _geo.point(
+    //     latitude: locationData.latitude, longitude: locationData.longitude);
+
+    GeoFirePoint carrieres =
+        _geo.point(latitude: 48.91604, longitude: 2.179678);
+    GeoFirePoint carrieres_2 =
+        _geo.point(latitude: 48.916010, longitude: 2.179672);
+
+    // _firestore.collection('locations').doc('carrieres@hotmail.fr').set({
+    //   'first_name': 'Tristan',
+    //   'last_name': 'Bilot',
+    //   'position': geoPoint.data
+    // });
+    _firestore.collection('locations').doc('carrieres2@hotmail.fr').set({
+      'first_name': 'Kendall',
+      'last_name': 'Jenner',
+      'position': carrieres.data
+    });
+    _firestore.collection('locations').doc('carrieres3@hotmail.fr').set({
+      'first_name': 'Camille',
+      'last_name': 'Houly',
+      'position': carrieres_2.data
+    });
+  }
+
+  Future<void> putParisDataSet() async {
+    // final locationData = await LocationController.getLocation();
+    // GeoFirePoint geoPoint = _geo.point(
+    //     latitude: locationData.latitude, longitude: locationData.longitude);
+
     GeoFirePoint paris13 = _geo.point(latitude: 48.825194, longitude: 2.347420);
     GeoFirePoint paris13_2 =
         _geo.point(latitude: 48.824710, longitude: 2.348482);

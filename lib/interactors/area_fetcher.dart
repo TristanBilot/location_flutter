@@ -26,7 +26,7 @@ class AreaFetcher {
     final ref = _firestore.collection('locations');
     final GeoFirePoint center = Conf.testMode
         ? Store.parisGeoPosition
-        : LocationController.getLocationGeoFirePoint();
+        : await LocationController.getLocationGeoFirePoint();
     final field = 'position';
 
     Stream<List<DocumentSnapshot>> stream = _geo
