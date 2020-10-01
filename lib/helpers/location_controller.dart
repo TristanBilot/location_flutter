@@ -2,12 +2,15 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart' as locator;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import '../stores/location_cache.dart';
+import 'package:location_project/caches/user_cache.dart';
+import '../caches/location_cache.dart';
+import '../interactors/user_repository.dart';
 
 class LocationController {
   static bool _serviceEnabled;
   static PermissionStatus _permissionGranted;
   static Location _location;
+  static UserRepository _userRepository;
 
   /*
   ^ FUNCTION
@@ -15,7 +18,8 @@ class LocationController {
   * only use the static methods.
   */
   static Future init() async {
-    _location = new Location();
+    _location = Location();
+    _userRepository = UserRepository();
     await _enableService();
     await _grant();
     _handleLocation();
@@ -32,7 +36,14 @@ class LocationController {
             desiredAccuracy: locator.LocationAccuracy.best,
             timeLimit: Duration(milliseconds: 500))
         .listen((locator.Position position) async {
+      /* update the location in cache */
       LocationCache.putLocation(LatLng(position.latitude, position.longitude));
+      /* get the location from cache and send it to Firestore */
+      // final loggedUser = UserCache.getLoggedUser;
+      // if (loggedUser != null) {
+      //   _userRepository.updateUserLocation(
+      //       loggedUser, LocationCache.locationGeoPoint);
+      // }
     });
   }
 

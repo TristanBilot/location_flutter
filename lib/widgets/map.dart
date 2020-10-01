@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:location_project/caches/location_cache.dart';
 
-import '../stores/cache_manager.dart';
+import '../caches/user_cache.dart';
 import '../helpers/location_controller.dart';
 import '../interactors/area_fetcher.dart';
 import '../stores/conf.dart';
@@ -61,7 +62,7 @@ class _MapState extends State<Map> with WidgetsBindingObserver {
         strokeColor: lightBorder,
         strokeWidth: 1,
         circleId: CircleId('area'),
-        center: LocationController.location,
+        center: LocationCache.location,
         radius: AreaFetcher.radius,
       )
     ]);
@@ -98,8 +99,7 @@ class _MapState extends State<Map> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     CameraPosition initialLocation = CameraPosition(
         zoom: 18,
-        target:
-            Conf.testMode ? Store.parisPosition : LocationController.location);
+        target: Conf.testMode ? Store.parisPosition : LocationCache.location);
 
     return GoogleMap(
         mapType: MapType.normal,

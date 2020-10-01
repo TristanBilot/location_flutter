@@ -3,9 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:location_project/caches/location_cache.dart';
+import 'package:location_project/caches/user_cache.dart';
 import 'dart:convert';
 
-import '../stores/repository.dart';
+import 'image_repository.dart';
 import '../models/user.dart' as my;
 import 'user_repository.dart';
 
@@ -13,7 +14,7 @@ class FacebookAuthController {
   static FacebookAuthController instance;
 
   final _userRepo = UserRepository();
-  final _repo = Repository();
+  final _repo = ImageRepository();
   final _facebookLogin = FacebookLogin();
   final _graphDataURL =
       'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email,picture.height(100)&access_token=';
@@ -77,7 +78,6 @@ class FacebookAuthController {
     final data = json.decode(graphResponse.body);
     final id = data['email'];
     final icon = await _repo.fetchUserIcon(id);
-    // final downloadURL = await _repo.getPictureDownloadURL(id);
 
     my.User fbUser = my.User(
         data['email'],
@@ -92,7 +92,8 @@ class FacebookAuthController {
       await _userRepo.insertOrUpdateUser(fbUser);
       Navigator.of(context).pushReplacementNamed('/map');
     } else {/* redirect to picker */}
+    /* init of the UserCache, no use should be done before that */
+    UserCache.init(fbUser);
     print('[+] ' + fbUser.email + ' connected !');
-    await logOut(); // LOG OUT
   }
 }

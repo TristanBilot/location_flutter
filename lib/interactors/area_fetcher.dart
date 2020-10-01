@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/caches/location_cache.dart';
 import 'package:location_project/helpers/location_controller.dart';
 import 'dart:async';
-import '../stores/repository.dart';
+import 'image_repository.dart';
 import '../models/user.dart';
 import '../stores/store.dart';
 import '../caches/user_cache.dart';
@@ -13,7 +13,7 @@ import '../stores/conf.dart';
 class AreaFetcher {
   final _geo = Geoflutterfire();
   final _firestore = FirebaseFirestore.instance;
-  final _repo = Repository();
+  final _imageRepo = ImageRepository();
 
   static final double radius = 50; // 50 meters area
 
@@ -55,8 +55,8 @@ class AreaFetcher {
           newUser = UserCache.getUser(user.id);
           newUser.coord = LatLng(geoPoint.latitude, geoPoint.longitude);
         } else {
-          final icon = await _repo.fetchUserIcon(user.id);
-          final downloadURL = await _repo.getPictureDownloadURL(user.id);
+          final icon = await _imageRepo.fetchUserIcon(user.id);
+          final downloadURL = await _imageRepo.getPictureDownloadURL(user.id);
           newUser = User(
               user.id,
               user.data()['first_name'],

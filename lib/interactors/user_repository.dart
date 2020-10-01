@@ -2,7 +2,7 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/caches/location_cache.dart';
 import 'dart:io';
-import '../stores/repository.dart';
+import 'repository.dart';
 import '../models/user.dart';
 import '../stores/store.dart';
 import '../stores/conf.dart';
@@ -10,7 +10,7 @@ import '../stores/conf.dart';
 class UserRepository {
   final _geo = Geoflutterfire();
   final _firestore = FirebaseFirestore.instance;
-  final _repo = Repository();
+  final _repo = ImageRepository();
 
   /*
   ^ FUNCTION

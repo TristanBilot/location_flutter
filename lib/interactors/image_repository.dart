@@ -6,10 +6,10 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'dart:math';
-import 'store.dart';
+import '../stores/store.dart';
 import '../helpers/icon_picker.dart';
 
-class Repository {
+class ImageRepository {
   final String _firestoreBaseURL = 'https://firebasestorage.googleapis.com';
 
   Future<BitmapDescriptor> fetchUserIcon(String id) async {
