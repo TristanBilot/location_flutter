@@ -31,12 +31,9 @@ class _MapState extends State<Map> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    print('1');
-    // setState(() {
+    _loadMapStyles().then((_) => _setMapStyle());
     _fetchUsersAroundMe();
-    _loadMapStyles();
-    _drawCircleArea();
-    // });
+    // _drawCircleArea();
   }
 
   Future _loadMapStyles() async {
@@ -112,8 +109,6 @@ class _MapState extends State<Map> with WidgetsBindingObserver {
         initialCameraPosition: initialLocation,
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
-          print('2');
-          _setMapStyle();
         });
   }
 }

@@ -1,11 +1,11 @@
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:location_project/caches/location_cache.dart';
 import 'dart:io';
 import '../stores/repository.dart';
 import '../models/user.dart';
 import '../stores/store.dart';
 import '../stores/conf.dart';
-import '../helpers/location_controller.dart';
 
 class UserRepository {
   final _geo = Geoflutterfire();
@@ -20,9 +20,8 @@ class UserRepository {
   * of the user, the picture is sent to the storage
   */
   Future<void> insertOrUpdateUser(User user) async {
-    final GeoFirePoint geoPoint = Conf.testMode
-        ? Store.parisGeoPosition
-        : LocationController.locationGeoPoint;
+    final GeoFirePoint geoPoint =
+        Conf.testMode ? Store.parisGeoPosition : LocationCache.locationGeoPoint;
     await _firestore.collection('locations').doc(user.email).set({
       'last_name': user.lastName,
       'first_name': user.firstName,
@@ -31,6 +30,13 @@ class UserRepository {
     File userPicture = await _repo.urlToFile(user.pictureURL);
     return await _repo.uploadFile(
         userPicture, user.email + Store.defaultProfilePictureExtension);
+  }
+
+  Future<void> updateUserLocation(User user, GeoFirePoint location) async {
+    await _firestore.collection('locations').doc(user.email).update({
+      'position': location.data,
+    });
+    // ++++ need catch error
   }
 
   /*

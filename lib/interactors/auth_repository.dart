@@ -1,10 +1,10 @@
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:location_project/caches/location_cache.dart';
 import 'dart:convert';
-import '../helpers/location_controller.dart';
+
 import '../stores/repository.dart';
 import '../models/user.dart' as my;
 import 'user_repository.dart';
@@ -83,7 +83,7 @@ class FacebookAuthController {
         data['email'],
         data['first_name'],
         data['last_name'],
-        LocationController.location,
+        LocationCache.location,
         icon,
         data['picture']['data']['url']);
 

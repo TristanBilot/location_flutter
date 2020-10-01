@@ -2,16 +2,12 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart' as locator;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../stores/location_cache.dart';
 
 class LocationController {
   static bool _serviceEnabled;
   static PermissionStatus _permissionGranted;
   static Location _location;
-  static LatLng _cachedLocation;
-
-  static LatLng get location => _cachedLocation;
-  static GeoFirePoint get locationGeoPoint =>
-      GeoFirePoint(_cachedLocation.latitude, _cachedLocation.longitude);
 
   /*
   ^ FUNCTION
@@ -28,7 +24,7 @@ class LocationController {
   /*
   ^ PRIVATE FUNCTION
   * When launched (at the start of the app), update every 0.5s
-  * the position of the device in a cache variable.
+  * the position of the device in a cache.
   */
   static void _handleLocation() {
     locator
@@ -36,7 +32,7 @@ class LocationController {
             desiredAccuracy: locator.LocationAccuracy.best,
             timeLimit: Duration(milliseconds: 500))
         .listen((locator.Position position) async {
-      _cachedLocation = LatLng(position.latitude, position.longitude);
+      LocationCache.putLocation(LatLng(position.latitude, position.longitude));
     });
   }
 

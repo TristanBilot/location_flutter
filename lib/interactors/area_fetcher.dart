@@ -1,12 +1,13 @@
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:location_project/caches/location_cache.dart';
 import 'package:location_project/helpers/location_controller.dart';
 import 'dart:async';
 import '../stores/repository.dart';
 import '../models/user.dart';
 import '../stores/store.dart';
-import '../stores/cache_manager.dart';
+import '../caches/user_cache.dart';
 import '../stores/conf.dart';
 
 class AreaFetcher {
@@ -25,9 +26,8 @@ class AreaFetcher {
   Future<void> fetch(Function completion) async {
     final ref = _firestore.collection('locations');
 
-    final GeoFirePoint center = Conf.testMode
-        ? Store.parisGeoPosition
-        : LocationController.locationGeoPoint;
+    final GeoFirePoint center =
+        Conf.testMode ? Store.parisGeoPosition : LocationCache.locationGeoPoint;
     final field = 'position';
 
     Stream<List<DocumentSnapshot>> stream = _geo
@@ -51,8 +51,8 @@ class AreaFetcher {
         // if (geoPoint.latitude != center.latitude &&
         //     geoPoint.longitude != center.longitude){
         User newUser;
-        if (CacheManager.keyExists(user.id)) {
-          newUser = CacheManager.get(user.id);
+        if (UserCache.userExists(user.id)) {
+          newUser = UserCache.getUser(user.id);
           newUser.coord = LatLng(geoPoint.latitude, geoPoint.longitude);
         } else {
           final icon = await _repo.fetchUserIcon(user.id);
@@ -65,7 +65,7 @@ class AreaFetcher {
               icon,
               downloadURL);
         }
-        CacheManager.put(newUser.email, newUser);
+        UserCache.putUser(newUser);
         completion(newUser);
         print('=> in area: ' + newUser.email);
         // }
