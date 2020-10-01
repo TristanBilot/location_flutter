@@ -1,5 +1,4 @@
 import 'dart:collection';
-import '../models/user.dart';
 
 class CacheManager {
   static HashMap<String, dynamic> _cache;
@@ -8,23 +7,15 @@ class CacheManager {
     _cache = HashMap();
   }
 
-  static void putUser(User user) {
-    _cache[user.email] = user;
-  }
-
-  static void putDyn(String key, dynamic value) {
+  static void put(String key, dynamic value) {
     _cache[key] = value;
   }
 
-  static dynamic getDyn(String key) {
+  static dynamic get(String key) {
     return _cache[key];
   }
 
-  static User getUser(String id) {
-    return _cache[id];
-  }
-
-  static bool userExists(String id) {
-    return _cache.containsKey(id);
+  static bool keyExists(String key) {
+    return _cache.containsKey(key);
   }
 }

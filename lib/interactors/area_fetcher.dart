@@ -51,8 +51,8 @@ class AreaFetcher {
         // if (geoPoint.latitude != center.latitude &&
         //     geoPoint.longitude != center.longitude){
         User newUser;
-        if (CacheManager.userExists(user.id)) {
-          newUser = CacheManager.getUser(user.id);
+        if (CacheManager.keyExists(user.id)) {
+          newUser = CacheManager.get(user.id);
           newUser.coord = LatLng(geoPoint.latitude, geoPoint.longitude);
         } else {
           final icon = await _repo.fetchUserIcon(user.id);
@@ -65,7 +65,7 @@ class AreaFetcher {
               icon,
               downloadURL);
         }
-        CacheManager.putUser(newUser);
+        CacheManager.put(newUser.email, newUser);
         completion(newUser);
         print('=> in area: ' + newUser.email);
         // }
