@@ -2,7 +2,6 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/caches/location_cache.dart';
-import 'package:location_project/helpers/location_controller.dart';
 import 'dart:async';
 import 'image_repository.dart';
 import '../models/user.dart';
@@ -10,12 +9,18 @@ import '../stores/store.dart';
 import '../caches/user_cache.dart';
 import '../stores/conf.dart';
 
-class AreaFetcher {
-  final _geo = Geoflutterfire();
-  final _firestore = FirebaseFirestore.instance;
-  final _imageRepo = ImageRepository();
+class AreaFetchingRepository {
+  Geoflutterfire _geo;
+  FirebaseFirestore _firestore;
+  ImageRepository _imageRepo;
 
   static final double radius = 50; // 50 meters area
+
+  AreaFetchingRepository() {
+    _geo = Geoflutterfire();
+    _firestore = FirebaseFirestore.instance;
+    _imageRepo = ImageRepository();
+  }
 
   /*
   ^ FUNCTION
@@ -51,10 +56,7 @@ class AreaFetcher {
         // if (geoPoint.latitude != center.latitude &&
         //     geoPoint.longitude != center.longitude){
         User newUser;
-        if (UserCache.userExists(user.id)) {
-          newUser = UserCache.getUser(user.id);
-          newUser.coord = LatLng(geoPoint.latitude, geoPoint.longitude);
-        } else {
+        if (!UserCache.isInit || !UserCache.userExists(user.id)) {
           final icon = await _imageRepo.fetchUserIcon(user.id);
           final downloadURL = await _imageRepo.getPictureDownloadURL(user.id);
           newUser = User(
@@ -64,8 +66,13 @@ class AreaFetcher {
               LatLng(geoPoint.latitude, geoPoint.longitude),
               icon,
               downloadURL);
+        } else {
+          newUser = UserCache.getUser(user.id);
+          newUser.coord = LatLng(geoPoint.latitude, geoPoint.longitude);
         }
-        UserCache.putUser(newUser);
+        if (UserCache.isInit) {
+          UserCache.putUser(newUser);
+        }
         completion(newUser);
         print('=> in area: ' + newUser.email);
         // }

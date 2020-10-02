@@ -5,10 +5,12 @@ import '../models/user.dart';
 
 class UserCache {
   static HashMap<String, User> _cache;
+  static bool isInit = false;
 
   static void init(User loggedUser) {
     _cache = HashMap();
     _putLoggedUser(loggedUser);
+    isInit = true;
   }
 
   /* 

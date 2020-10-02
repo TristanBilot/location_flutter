@@ -3,12 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
 import 'package:location_project/caches/location_cache.dart';
+import 'package:location_project/repositories/area_fetching_repository.dart';
 
-import '../caches/user_cache.dart';
-import '../helpers/location_controller.dart';
-import '../interactors/area_fetcher.dart';
 import '../stores/conf.dart';
 import '../stores/store.dart';
 import 'bottom_sheet.dart';
@@ -19,11 +16,17 @@ class Map extends StatefulWidget {
 }
 
 class _MapState extends State<Map> with WidgetsBindingObserver {
-  Set<Marker> _markers = {};
+  Set<Marker> _markers;
   Set<Circle> _circles;
 
-  final Completer<GoogleMapController> _controller = Completer();
-  final AreaFetcher _areaFetcher = AreaFetcher();
+  Completer<GoogleMapController> _controller;
+  AreaFetchingRepository _areaFetcher;
+
+  _MapState() {
+    _markers = {};
+    _controller = Completer();
+    _areaFetcher = AreaFetchingRepository();
+  }
 
   String _darkMapStyle;
   String _lightMapStyle;
@@ -63,7 +66,7 @@ class _MapState extends State<Map> with WidgetsBindingObserver {
         strokeWidth: 1,
         circleId: CircleId('area'),
         center: LocationCache.location,
-        radius: AreaFetcher.radius,
+        radius: AreaFetchingRepository.radius,
       )
     ]);
   }

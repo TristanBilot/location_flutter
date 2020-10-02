@@ -4,7 +4,7 @@ import 'package:geolocator/geolocator.dart' as locator;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location_project/caches/user_cache.dart';
 import '../caches/location_cache.dart';
-import '../interactors/user_repository.dart';
+import '../repositories/user_repository.dart';
 
 class LocationController {
   static bool _serviceEnabled;

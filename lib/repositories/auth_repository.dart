@@ -10,22 +10,18 @@ import 'image_repository.dart';
 import '../models/user.dart' as my;
 import 'user_repository.dart';
 
-class FacebookAuthController {
-  static FacebookAuthController instance;
-
-  final _userRepo = UserRepository();
-  final _repo = ImageRepository();
-  final _facebookLogin = FacebookLogin();
+class AuthRepository {
   final _graphDataURL =
       'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email,picture.height(100)&access_token=';
 
-  /* 
-  ^ FUNCTION 
-  * This sould be the first function used to init this class
-  * Only use the `instance` field like FacebookAuthController.instance.
-  */
-  static FacebookAuthController init() {
-    return instance = instance == null ? FacebookAuthController() : instance;
+  UserRepository _userRepo;
+  ImageRepository _repo;
+  FacebookLogin _facebookLogin;
+
+  AuthRepository() {
+    _userRepo = UserRepository();
+    _repo = ImageRepository();
+    _facebookLogin = FacebookLogin();
   }
 
   /* 

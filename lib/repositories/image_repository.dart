@@ -33,6 +33,7 @@ class ImageRepository {
               Store.defaultProfilePictureExtension);
 
       return ref.getDownloadURL().then((url) => url).catchError((_) {
+        /* if the picture is not found, set the default user image in FireStore */
         ref = _getFirestoreImageReference(Store.defaultProfilePictureName +
             Store.defaultProfilePictureExtension);
         return ref.getDownloadURL().then((url) => url).catchError((error) {
@@ -40,8 +41,6 @@ class ImageRepository {
               '++++ Error: the user does not have an image and the default image is not found in Firestore.');
         });
       });
-
-      /* if the picture is not found, set the default user image in FireStore */
     });
   }
 

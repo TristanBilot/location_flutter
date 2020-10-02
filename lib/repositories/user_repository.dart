@@ -2,15 +2,21 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/caches/location_cache.dart';
 import 'dart:io';
-import 'repository.dart';
+import 'image_repository.dart';
 import '../models/user.dart';
 import '../stores/store.dart';
 import '../stores/conf.dart';
 
 class UserRepository {
-  final _geo = Geoflutterfire();
-  final _firestore = FirebaseFirestore.instance;
-  final _repo = ImageRepository();
+  Geoflutterfire _geo;
+  FirebaseFirestore _firestore;
+  ImageRepository _imageRepo;
+
+  UserRepository() {
+    _geo = Geoflutterfire();
+    _firestore = FirebaseFirestore.instance;
+    _imageRepo = ImageRepository();
+  }
 
   /*
   ^ FUNCTION
@@ -27,8 +33,8 @@ class UserRepository {
       'first_name': user.firstName,
       'position': geoPoint.data,
     });
-    File userPicture = await _repo.urlToFile(user.pictureURL);
-    return await _repo.uploadFile(
+    File userPicture = await _imageRepo.urlToFile(user.pictureURL);
+    return await _imageRepo.uploadFile(
         userPicture, user.email + Store.defaultProfilePictureExtension);
   }
 
