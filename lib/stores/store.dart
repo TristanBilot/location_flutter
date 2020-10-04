@@ -4,6 +4,7 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 class Store {
   static final parisPosition = LatLng(48.825024, 2.347900);
   static final carrieresposition = LatLng(48.915957, 2.179777);
+  static final downloadedFbProfileImageSize = 200; // in pixels
 
   static final parisGeoPosition = Geoflutterfire().point(
       latitude: Store.parisPosition.latitude,

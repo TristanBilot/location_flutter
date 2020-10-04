@@ -46,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 onPressed: () =>
-                    Navigator.pushNamed(context, Routes.map.value)),
+                    Navigator.pushReplacementNamed(context, Routes.map.value)),
             Spacer(),
           ],
         ))));

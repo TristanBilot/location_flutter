@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:location_project/caches/location_cache.dart';
 import 'package:location_project/repositories/area_fetching_repository.dart';
 
@@ -71,9 +72,16 @@ class _MapState extends State<Map> with WidgetsBindingObserver {
     ]);
   }
 
+  /*
+  * mandatory to use in _fetchUsersAroundMe() to avoid retaining.
+  */
+  void setStateIfMounted(Function f) {
+    if (mounted) setState(f);
+  }
+
   Future _fetchUsersAroundMe() async {
     _areaFetcher.fetch((user) {
-      setState(() {
+      setStateIfMounted(() {
         _markers.add(Marker(
             markerId: MarkerId(user.email),
             icon: user.icon,
