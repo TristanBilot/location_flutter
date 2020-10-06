@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'package:location_project/main.dart';
 
 import '../models/user.dart';
 

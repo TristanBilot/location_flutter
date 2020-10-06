@@ -30,7 +30,7 @@ class _PositionedAppIconState extends State<PositionedAppIcon> {
     return Positioned(
         /* be careful: -20 is because of the scaffold default padding */
         left: (MediaQuery.of(context).size.width / 2) - (_iconSize / 2) - 20,
-        top: 70,
+        top: MediaQuery.of(context).padding.top + (_iconSize / 2),
         child: FlatButton(
           onPressed: () => _tabController.animateTo(_initialIndex),
           child: Image.asset(
