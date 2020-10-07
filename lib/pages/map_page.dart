@@ -11,9 +11,9 @@ class MapPage extends StatefulWidget {
 
 class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   final List<Tab> tabs = <Tab>[
-    Tab(icon: Icon(Icons.settings)),
-    Tab(child: Text('')),
     Tab(icon: Icon(Icons.account_circle)),
+    Tab(child: Text('')),
+    Tab(icon: Icon(Icons.textsms))
   ];
   final _initialIndex = 1;
   TabController _tabController;
