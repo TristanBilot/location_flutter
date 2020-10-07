@@ -20,7 +20,6 @@ class _AppState extends State<App> {
         Routes.map.value: (context) => MapPage(),
       },
       darkTheme: ThemeData.dark(),
-      title: 'je sais pas',
       // theme: Provider.of<ThemeNotifier>(context).getTheme() ==
       //         Brightness.dark
       //     ? ThemeData.dark()

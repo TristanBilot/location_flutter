@@ -10,6 +10,7 @@ import 'package:location_project/repositories/area_fetching_repository.dart';
 import '../stores/conf.dart';
 import '../stores/store.dart';
 import 'bottom_sheet.dart';
+import 'user_marker.dart';
 
 class Map extends StatefulWidget {
   @override
@@ -17,7 +18,7 @@ class Map extends StatefulWidget {
 }
 
 class _MapState extends State<Map> with WidgetsBindingObserver {
-  Set<Marker> _markers;
+  Set<UserMarker> _markers;
   Set<Circle> _circles;
 
   Completer<GoogleMapController> _controller;
@@ -82,8 +83,8 @@ class _MapState extends State<Map> with WidgetsBindingObserver {
   Future _fetchUsersAroundMe() async {
     _areaFetcher.fetch((user) {
       setStateIfMounted(() {
-        _markers.add(Marker(
-            markerId: MarkerId(user.email),
+        _markers.add(UserMarker(
+            user: user,
             icon: user.icon,
             position: user.coord,
             onTap: () {

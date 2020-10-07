@@ -37,6 +37,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
           ),
         ),
         body: TabBarView(
+          physics: NeverScrollableScrollPhysics(),
           controller: _tabController,
           children: [
             Icon(Icons.directions_bike),
@@ -47,25 +48,5 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
       ),
       PositionedAppIcon(_tabController, _initialIndex)
     ]);
-
-    //     length: tabs.length,
-    //     initialIndex: 1,
-    //     child: Scaffold(
-    //       appBar: AppBar(
-    //           bottom: TabBar(
-    //         tabs: tabs,
-    //       )),
-    //       body: TabBarView(
-    //         physics: NeverScrollableScrollPhysics(),
-    //         children: [
-    //           Icon(Icons.directions_bike),
-    //           Map(),
-    //           Icon(Icons.directions_bike),
-    //         ],
-    //       ),
-    //     ),
-    //   ),
-    //   PositionedAppIcon()
-    // ]);
   }
 }
