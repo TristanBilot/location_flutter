@@ -88,7 +88,8 @@ class _MapState extends State<Map> with WidgetsBindingObserver {
             icon: user.icon,
             position: user.coord,
             onTap: () {
-              showFloatingModalBottomSheet(user: user, context: context);
+              settingModalBottomSheet(context, user);
+              // showFloatingModalBottomSheet(user: user, context: context);
             }));
       });
     });

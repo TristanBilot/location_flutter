@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'bottom_sheet_content.dart';
-import '../models/user.dart';
+import 'package:location_project/widgets/user_card.dart';
 
 class FloatingModal extends StatelessWidget {
   final Widget child;
@@ -27,20 +25,21 @@ class FloatingModal extends StatelessWidget {
   }
 }
 
-Future<T> showFloatingModalBottomSheet<T>({
-  @required User user,
-  @required BuildContext context,
-  Color backgroundColor,
-}) async {
-  final result = await showCustomModalBottomSheet(
+void settingModalBottomSheet(context, user) {
+  showGeneralDialog(
+      barrierColor: Colors.black.withOpacity(0.5),
+      transitionBuilder: (context, a1, a2, widget) {
+        return Transform.scale(
+          scale: a1.value,
+          child: Opacity(
+            opacity: a1.value,
+            child: UserCard(user),
+          ),
+        );
+      },
+      transitionDuration: Duration(milliseconds: 200),
+      barrierDismissible: true,
+      barrierLabel: '',
       context: context,
-      builder: (context, scrollController) => BottomSheetContent(
-            user: user,
-          ),
-      containerWidget: (_, animation, child) => FloatingModal(
-            child: child,
-          ),
-      expand: false);
-
-  return result;
+      pageBuilder: (context, animation1, animation2) {});
 }
