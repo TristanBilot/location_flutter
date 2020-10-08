@@ -5,7 +5,9 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:location_project/caches/location_cache.dart';
+import 'package:location_project/models/user.dart';
 import 'package:location_project/repositories/area_fetching_repository.dart';
+import 'package:location_project/stores/map_store.dart';
 import 'package:location_project/widgets/user_card.dart';
 
 import '../stores/conf.dart';
@@ -20,6 +22,7 @@ class Map extends StatefulWidget {
 class MapState extends State<Map> with WidgetsBindingObserver {
   Set<UserMarker> _markers;
   Set<Circle> _circles;
+  MapStore _store;
 
   Completer<GoogleMapController> _controller;
   AreaFetchingRepository _areaFetcher;
@@ -32,6 +35,7 @@ class MapState extends State<Map> with WidgetsBindingObserver {
     _markers = {};
     _controller = Completer();
     _areaFetcher = AreaFetchingRepository();
+    _store = MapStore.instance;
   }
 
   String _darkMapStyle;
@@ -94,6 +98,9 @@ class MapState extends State<Map> with WidgetsBindingObserver {
   Future _fetchUsersAroundMe() async {
     _areaFetcher.fetch((user) {
       setStateIfMounted(() {
+        // may be faster but need 2 times checkinf for unliked
+        // users in the code, here for first load and in the build()
+        // if (!_store.isUserUnliked(user.email)) {
         _markers.add(UserMarker(
             user: user,
             icon: user.icon,
@@ -102,21 +109,23 @@ class MapState extends State<Map> with WidgetsBindingObserver {
               setState(() {
                 isModalDisplayed = true;
                 _restBarrierColor();
-                _showUserCard(context, user, this);
+                _showUserCard(context, user, this, _store);
               });
             }));
+        // }
       });
     });
   }
 
-  void _showUserCard(context, user, mapState) {
+  void _showUserCard(
+      BuildContext context, User user, MapState state, MapStore store) {
     showGeneralDialog(
         transitionBuilder: (context, a1, a2, widget) {
           return Transform.scale(
             scale: a1.value,
             child: Opacity(
               opacity: a1.value,
-              child: UserCard(user, mapState),
+              child: UserCard(store, state, user),
             ),
           );
         },
@@ -127,6 +136,12 @@ class MapState extends State<Map> with WidgetsBindingObserver {
         barrierLabel: '',
         context: context,
         pageBuilder: (context, animation1, animation2) {});
+  }
+
+  void update(Function completion) {
+    setState(() {
+      completion();
+    });
   }
 
   @override
@@ -152,17 +167,26 @@ class MapState extends State<Map> with WidgetsBindingObserver {
       GoogleMap(
           mapType: MapType.normal,
           myLocationEnabled: true,
-          markers: _markers,
+          markers: _markers
+            ..removeWhere((m) => _store.isUserUnliked(m.user.email)),
           circles: Conf.displayAreaCircle ? _circles : null,
           initialCameraPosition: initialLocation,
           onMapCreated: (GoogleMapController controller) {
             _controller.complete(controller);
           }),
+      // barrier background dark container used when user card displayed
       isModalDisplayed
           ? Container(
               color: barrierColor,
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
+              child: GestureDetector(onTap: () {
+                setState(() {
+                  isModalDisplayed = false;
+                  barrierColor = Colors.red;
+                });
+                Navigator.of(context, rootNavigator: true).pop(true);
+              }),
             )
           : Container()
     ]);
