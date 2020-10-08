@@ -49,12 +49,14 @@ class UserCardContent extends StatelessWidget {
                   ),
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.fromLTRB(0, 10, 0, 30),
+                      padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
                       child: RichText(
                         text: TextSpan(
                           children: [
                             TextSpan(
-                              text: '32 meters',
+                              text: user.distance == 0
+                                  ? ''
+                                  : '${user.distance} meters',
                               style: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w300,

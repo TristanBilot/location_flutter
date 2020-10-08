@@ -82,7 +82,8 @@ class AuthRepository {
         data['last_name'],
         LocationCache.location,
         icon,
-        data['picture']['data']['url']);
+        data['picture']['data']['url'],
+        0);
 
     final hasPicture = !data['picture']['data']['is_silhouette'];
     if (hasPicture) {

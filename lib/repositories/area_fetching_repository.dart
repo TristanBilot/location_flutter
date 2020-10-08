@@ -2,6 +2,7 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/caches/location_cache.dart';
+import 'package:latlong/latlong.dart' as LatLong;
 import 'dart:async';
 import 'image_repository.dart';
 import '../models/user.dart';
@@ -34,7 +35,6 @@ class AreaFetchingRepository {
     final GeoFirePoint center =
         Conf.testMode ? Store.parisGeoPosition : LocationCache.locationGeoPoint;
     final field = 'position';
-
     Stream<List<DocumentSnapshot>> stream = _geo
         .collection(collectionRef: ref)
         .within(center: center, radius: radius / 1000, field: field);
@@ -53,6 +53,12 @@ class AreaFetchingRepository {
     stream.listen((List<DocumentSnapshot> users) async {
       users.forEach((user) async {
         final geoPoint = user.data()['position']['geopoint'];
+        final geoFirePoint =
+            GeoFirePoint(geoPoint.latitude, geoPoint.longitude);
+        final distance = (GeoFirePoint.distanceBetween(
+                    to: center.coords, from: geoFirePoint.coords) *
+                1000)
+            .toInt();
         // if (geoPoint.latitude != center.latitude &&
         //     geoPoint.longitude != center.longitude){
         User newUser;
@@ -65,7 +71,8 @@ class AreaFetchingRepository {
               user.data()['last_name'],
               LatLng(geoPoint.latitude, geoPoint.longitude),
               icon,
-              downloadURL);
+              downloadURL,
+              distance);
         } else {
           newUser = UserCache.getUser(user.id);
           newUser.coord = LatLng(geoPoint.latitude, geoPoint.longitude);
@@ -74,7 +81,7 @@ class AreaFetchingRepository {
           UserCache.putUser(newUser);
         }
         completion(newUser);
-        print('=> in area: ' + newUser.email);
+        print('=> in area: ${newUser.email} at $distance meters');
         // }
       });
     });
