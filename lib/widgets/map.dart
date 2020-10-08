@@ -6,25 +6,29 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:location_project/caches/location_cache.dart';
 import 'package:location_project/repositories/area_fetching_repository.dart';
+import 'package:location_project/widgets/user_card.dart';
 
 import '../stores/conf.dart';
 import '../stores/store.dart';
-import 'bottom_sheet.dart';
 import 'user_marker.dart';
 
 class Map extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _MapState();
+  State<StatefulWidget> createState() => MapState();
 }
 
-class _MapState extends State<Map> with WidgetsBindingObserver {
+class MapState extends State<Map> with WidgetsBindingObserver {
   Set<UserMarker> _markers;
   Set<Circle> _circles;
 
   Completer<GoogleMapController> _controller;
   AreaFetchingRepository _areaFetcher;
 
-  _MapState() {
+  final barrierColorBaseShade = 150;
+  Color barrierColor;
+  bool isModalDisplayed;
+
+  MapState() {
     _markers = {};
     _controller = Completer();
     _areaFetcher = AreaFetchingRepository();
@@ -39,7 +43,14 @@ class _MapState extends State<Map> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     _loadMapStyles().then((_) => _setMapStyle());
     _fetchUsersAroundMe();
+
+    isModalDisplayed = false;
+    _restBarrierColor();
     // _drawCircleArea();
+  }
+
+  void _restBarrierColor() {
+    barrierColor = Color.fromARGB(barrierColorBaseShade, 0, 0, 0);
   }
 
   Future _loadMapStyles() async {
@@ -88,11 +99,34 @@ class _MapState extends State<Map> with WidgetsBindingObserver {
             icon: user.icon,
             position: user.coord,
             onTap: () {
-              settingModalBottomSheet(context, user);
-              // showFloatingModalBottomSheet(user: user, context: context);
+              setState(() {
+                isModalDisplayed = true;
+                _restBarrierColor();
+                _showUserCard(context, user, this);
+              });
             }));
       });
     });
+  }
+
+  void _showUserCard(context, user, mapState) {
+    showGeneralDialog(
+        transitionBuilder: (context, a1, a2, widget) {
+          return Transform.scale(
+            scale: a1.value,
+            child: Opacity(
+              opacity: a1.value,
+              child: UserCard(user, mapState),
+            ),
+          );
+        },
+        transitionDuration: Duration(milliseconds: 200),
+        barrierColor:
+            Colors.white.withAlpha(0), // Colors.black.withOpacity(0.5)
+        barrierDismissible: true,
+        barrierLabel: '',
+        context: context,
+        pageBuilder: (context, animation1, animation2) {});
   }
 
   @override
@@ -114,14 +148,23 @@ class _MapState extends State<Map> with WidgetsBindingObserver {
         zoom: 18,
         target: Conf.testMode ? Store.parisPosition : LocationCache.location);
 
-    return GoogleMap(
-        mapType: MapType.normal,
-        myLocationEnabled: true,
-        markers: _markers,
-        circles: Conf.displayAreaCircle ? _circles : null,
-        initialCameraPosition: initialLocation,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        });
+    return Stack(children: [
+      GoogleMap(
+          mapType: MapType.normal,
+          myLocationEnabled: true,
+          markers: _markers,
+          circles: Conf.displayAreaCircle ? _circles : null,
+          initialCameraPosition: initialLocation,
+          onMapCreated: (GoogleMapController controller) {
+            _controller.complete(controller);
+          }),
+      isModalDisplayed
+          ? Container(
+              color: barrierColor,
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+            )
+          : Container()
+    ]);
   }
 }

@@ -4,9 +4,7 @@ class PositionedAppIcon extends StatefulWidget {
   final TabController _tabController;
   final int _initialIndex;
 
-  PositionedAppIcon(TabController tabController, int initialIndex)
-      : this._tabController = tabController,
-        this._initialIndex = initialIndex;
+  PositionedAppIcon(this._tabController, this._initialIndex);
 
   @override
   _PositionedAppIconState createState() =>

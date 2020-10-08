@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:location_project/widgets/like_dislike_button.dart';
 import '../models/user.dart';
 
-class BottomSheetContent extends StatelessWidget {
+class UserCardContent extends StatelessWidget {
   final User user;
 
-  const BottomSheetContent({Key key, @required this.user}) : super(key: key);
+  const UserCardContent({Key key, @required this.user}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
