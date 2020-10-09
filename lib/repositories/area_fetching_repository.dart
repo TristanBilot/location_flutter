@@ -2,7 +2,6 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/caches/location_cache.dart';
-import 'package:latlong/latlong.dart' as LatLong;
 import 'dart:async';
 import 'image_repository.dart';
 import '../models/user.dart';

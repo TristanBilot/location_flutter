@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:location_project/widgets/like_dislike_button.dart';
+import 'package:location_project/widgets/textSF.dart';
 import '../models/user.dart';
 
 class UserCardContent extends StatelessWidget {
@@ -16,7 +17,7 @@ class UserCardContent extends StatelessWidget {
       width: 400,
       padding: EdgeInsets.all(20),
       child: Material(
-          color: Color.fromARGB(255, 240, 240, 240),
+          color: Theme.of(context).canvasColor,
           child: SafeArea(
             top: false,
             child: Padding(
@@ -50,28 +51,18 @@ class UserCardContent extends StatelessWidget {
                   Expanded(
                     child: Padding(
                       padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                      child: RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: user.distance == 0
-                                  ? ''
-                                  : '${user.distance} meters',
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w300,
-                                  color: Color.fromARGB(255, 50, 50, 50)),
-                            ),
-                            // WidgetSpan(
-                            //   child: Icon(
-                            //     Icons.location_on,
-                            //     color: Color.fromARGB(255, 50, 50, 50),
-                            //     size: 16,
-                            //   ),
-                            // ),
-                          ],
-                        ),
+                      child: TextSF(
+                        user.distance == 0 ? '' : '${user.distance} meters',
+                        // style:
+                        //     TextStyle(color: Color.fromARGB(255, 50, 50, 50)),
                       ),
+                      // WidgetSpan(
+                      //   child: Icon(
+                      //     Icons.location_on,
+                      //     color: Color.fromARGB(255, 50, 50, 50),
+                      //     size: 16,
+                      //   ),
+                      // ),
                     ),
                   ),
                   Row(
