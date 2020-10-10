@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:location_project/use_cases/start_path/start_path_step1/start_path_step1.dart';
 import 'package:location_project/widgets/textSF.dart';
 
+enum Gender { Male, Female, Other }
+
 class GenderCircleIcon extends StatefulWidget {
+  final Gender gender;
   final String textIcon;
   final String testDescription;
   final GenderCircleIconState state;
   final GenderIconController controller;
 
-  GenderCircleIcon(
-      this.textIcon, this.testDescription, this.state, this.controller);
+  GenderCircleIcon(this.gender, this.textIcon, this.testDescription, this.state,
+      this.controller);
 
   @override
   GenderCircleIconState createState() => state;
@@ -34,6 +37,7 @@ class GenderCircleIconState extends State<GenderCircleIcon> {
           elevation: 1.0,
           onPressed: () {
             widget.controller.resetGenderCircleStates();
+            widget.controller.updateSelectedGender(widget.gender);
             setState(() {
               isSelected = true;
             });

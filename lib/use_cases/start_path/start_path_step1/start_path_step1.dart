@@ -6,6 +6,7 @@ import '../widgets/gender_circle_icon.dart';
 /// icons from an array of states.
 mixin GenderIconController {
   void resetGenderCircleStates();
+  void updateSelectedGender(Gender gender);
 }
 
 class StartPathStep1 extends StatefulWidget {
@@ -17,11 +18,22 @@ class StartPathStep1State extends State<StartPathStep1>
     with GenderIconController {
   double _sliderValue = 20;
   List<GenderCircleIcon> _circleIcons;
+  Gender _selectedGender;
 
+  // GenderIconController implementation
   void resetGenderCircleStates() {
     _circleIcons.forEach((icon) => icon.state.setState(() {
           icon.state.isSelected = false;
         }));
+  }
+
+  void updateSelectedGender(Gender gender) {
+    _selectedGender = gender;
+  }
+
+  // Private methods
+  bool _isPageValid() {
+    return _selectedGender != null;
   }
 
   @override
@@ -29,9 +41,12 @@ class StartPathStep1State extends State<StartPathStep1>
     super.initState();
 
     _circleIcons = [
-      GenderCircleIcon('💆‍♂️', 'Male', GenderCircleIconState(), this),
-      GenderCircleIcon('🙋‍♀️', 'Female', GenderCircleIconState(), this),
-      GenderCircleIcon('🤷', 'Other', GenderCircleIconState(), this)
+      GenderCircleIcon(
+          Gender.Male, '💆‍♂️', 'Male', GenderCircleIconState(), this),
+      GenderCircleIcon(
+          Gender.Female, '🙋‍♀️', 'Female', GenderCircleIconState(), this),
+      GenderCircleIcon(
+          Gender.Other, '🤷', 'Other', GenderCircleIconState(), this)
     ];
   }
 
