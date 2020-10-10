@@ -26,7 +26,6 @@ class _GenderCircleIconState extends State<GenderCircleIcon> {
         RawMaterialButton(
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
-          padding: EdgeInsets.all(12.0),
           shape: CircleBorder(),
           elevation: 1.0,
           onPressed: () => null,
