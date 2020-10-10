@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:location_project/use_cases/start_path/widgets/basic_button.dart';
 import 'package:location_project/widgets/textSF.dart';
 import '../widgets/gender_circle_icon.dart';
 
@@ -10,6 +11,8 @@ mixin GenderIconController {
 }
 
 class StartPathStep1 extends StatefulWidget {
+  static final allPadding = 20.0;
+
   @override
   StartPathStep1State createState() => StartPathStep1State();
 }
@@ -28,13 +31,12 @@ class StartPathStep1State extends State<StartPathStep1>
   }
 
   void updateSelectedGender(Gender gender) {
-    _selectedGender = gender;
+    setState(() {
+      _selectedGender = gender;
+    });
   }
 
-  // Private methods
-  bool _isPageValid() {
-    return _selectedGender != null;
-  }
+  bool get _isPageValid => _selectedGender != null;
 
   @override
   void initState() {
@@ -53,7 +55,7 @@ class StartPathStep1State extends State<StartPathStep1>
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(20),
+      padding: EdgeInsets.all(StartPathStep1.allPadding),
       child: Column(
         children: [
           Padding(
@@ -109,6 +111,11 @@ class StartPathStep1State extends State<StartPathStep1>
                 ),
               ),
             ),
+          ),
+          Spacer(),
+          BasicButton(_isPageValid),
+          Padding(
+            padding: EdgeInsets.only(bottom: 50),
           )
         ],
       ),

@@ -64,6 +64,5 @@ class GenderCircleIconState extends State<GenderCircleIcon> {
         TextSF(widget.testDescription),
       ],
     );
-    ;
   }
 }
