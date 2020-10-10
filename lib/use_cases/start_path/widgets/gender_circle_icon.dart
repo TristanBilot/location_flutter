@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:location_project/use_cases/start_path/start_path_step1/start_path_step1.dart';
 import 'package:location_project/widgets/textSF.dart';
 
 class GenderCircleIcon extends StatefulWidget {
   final String textIcon;
   final String testDescription;
+  final GenderCircleIconState state;
+  final GenderIconController controller;
 
-  GenderCircleIcon(this.textIcon, this.testDescription);
+  GenderCircleIcon(
+      this.textIcon, this.testDescription, this.state, this.controller);
 
   @override
-  _GenderCircleIconState createState() => _GenderCircleIconState();
+  GenderCircleIconState createState() => state;
 }
 
-class _GenderCircleIconState extends State<GenderCircleIcon> {
-  bool _isSelected;
+class GenderCircleIconState extends State<GenderCircleIcon> {
+  bool isSelected = false;
 
   @override
   void initState() {
@@ -28,12 +32,19 @@ class _GenderCircleIconState extends State<GenderCircleIcon> {
           highlightColor: Colors.transparent,
           shape: CircleBorder(),
           elevation: 1.0,
-          onPressed: () => null,
+          onPressed: () {
+            widget.controller.resetGenderCircleStates();
+            setState(() {
+              isSelected = true;
+            });
+          },
           child: Container(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
-                color: Colors.black12,
+                color: isSelected
+                    ? Theme.of(context).primaryColor
+                    : Colors.black12,
                 width: 2.0,
               ),
             ),

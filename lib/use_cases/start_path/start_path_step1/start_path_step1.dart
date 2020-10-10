@@ -2,17 +2,37 @@ import 'package:flutter/material.dart';
 import 'package:location_project/widgets/textSF.dart';
 import '../widgets/gender_circle_icon.dart';
 
-class StartPathStep1 extends StatefulWidget {
-  @override
-  _StartPathStep1State createState() => _StartPathStep1State();
+/// Controller which can't deactivate all the
+/// icons from an array of states.
+mixin GenderIconController {
+  void resetGenderCircleStates();
 }
 
-class _StartPathStep1State extends State<StartPathStep1> {
-  double _sliderValue = 18;
+class StartPathStep1 extends StatefulWidget {
+  @override
+  StartPathStep1State createState() => StartPathStep1State();
+}
+
+class StartPathStep1State extends State<StartPathStep1>
+    with GenderIconController {
+  double _sliderValue = 20;
+  List<GenderCircleIcon> _circleIcons;
+
+  void resetGenderCircleStates() {
+    _circleIcons.forEach((icon) => icon.state.setState(() {
+          icon.state.isSelected = false;
+        }));
+  }
 
   @override
   void initState() {
     super.initState();
+
+    _circleIcons = [
+      GenderCircleIcon('💆‍♂️', 'Male', GenderCircleIconState(), this),
+      GenderCircleIcon('🙋‍♀️', 'Female', GenderCircleIconState(), this),
+      GenderCircleIcon('🤷', 'Other', GenderCircleIconState(), this)
+    ];
   }
 
   @override
@@ -31,11 +51,11 @@ class _StartPathStep1State extends State<StartPathStep1> {
           Row(
             children: [
               Spacer(),
-              GenderCircleIcon('💆‍♂️', 'Male'),
+              _circleIcons[0],
               Spacer(),
-              GenderCircleIcon('🙋‍♀️', 'Female'),
+              _circleIcons[1],
               Spacer(),
-              GenderCircleIcon('🤷', 'Other'),
+              _circleIcons[2],
               Spacer(),
             ],
           ),
