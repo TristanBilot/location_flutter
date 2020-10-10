@@ -3,8 +3,9 @@ import 'package:location_project/widgets/textSF.dart';
 
 class BasicButton extends StatefulWidget {
   final bool enabled;
+  final Function onPressed;
 
-  BasicButton(this.enabled);
+  BasicButton(this.enabled, this.onPressed);
 
   @override
   _BasicButtonState createState() => _BasicButtonState();
@@ -18,7 +19,7 @@ class _BasicButtonState extends State<BasicButton> {
       highlightColor: Colors.transparent,
       shape: CircleBorder(),
       elevation: 1.0,
-      onPressed: null,
+      onPressed: widget.onPressed,
       child: Container(
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(

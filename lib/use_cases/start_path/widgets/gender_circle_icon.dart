@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:location_project/use_cases/start_path/start_path_step1/start_path_step1.dart';
+import 'package:location_project/use_cases/start_path/start_path_step2/start_path_step2.dart';
 import 'package:location_project/widgets/textSF.dart';
 
 enum Gender { Male, Female, Other }
@@ -11,9 +12,10 @@ class GenderCircleIcon extends StatefulWidget {
   final String testDescription;
   final GenderCircleIconState state;
   final GenderIconController controller;
+  final GenderMultiIconController multiController;
 
   GenderCircleIcon(this.gender, this.textIcon, this.testDescription, this.state,
-      this.controller);
+      this.controller, this.multiController);
 
   @override
   GenderCircleIconState createState() => state;
@@ -37,12 +39,19 @@ class GenderCircleIconState extends State<GenderCircleIcon> {
           shape: CircleBorder(),
           elevation: 1.0,
           onPressed: () {
-            widget.controller.resetGenderCircleStates();
-            widget.controller.updateSelectedGender(widget.gender);
+            if (widget.controller != null) {
+              widget.controller.resetGenderCircleStates();
+              widget.controller.updateSelectedGender(widget.gender);
+              setState(() {
+                isSelected = true;
+              });
+            } else if (widget.multiController != null) {
+              setState(() {
+                isSelected = !isSelected;
+              });
+              widget.multiController.iconDidSelected(widget.gender, isSelected);
+            }
             HapticFeedback.heavyImpact();
-            setState(() {
-              isSelected = true;
-            });
           },
           child: Container(
             decoration: BoxDecoration(

@@ -1,4 +1,4 @@
-enum Routes { login, map }
+enum Routes { login, map, startPathStep1, startPathStep2 }
 
 extension RawValue on Routes {
   /*

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:location_project/themes/app_theme.dart';
+import 'package:location_project/use_cases/start_path/start_path_step1/start_path_step1.dart';
+import 'package:location_project/use_cases/start_path/start_path_step2/start_path_step2.dart';
 import '../pages/login_page.dart';
 import '../pages/map_page.dart';
 import '../stores/routes.dart';
@@ -19,6 +21,8 @@ class _AppState extends State<App> {
       routes: <String, WidgetBuilder>{
         Routes.login.value: (context) => LoginPage(),
         Routes.map.value: (context) => MapPage(),
+        Routes.startPathStep1.value: (context) => StartPathStep1(),
+        Routes.startPathStep2.value: (context) => StartPathStep2(),
       },
       theme: AppTheme.defaultTheme,
       darkTheme: ThemeData.dark(),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:location_project/stores/routes.dart';
 import 'package:location_project/use_cases/start_path/widgets/basic_button.dart';
 import 'package:location_project/widgets/textSF.dart';
 import '../widgets/gender_circle_icon.dart';
@@ -44,11 +45,11 @@ class StartPathStep1State extends State<StartPathStep1>
 
     _circleIcons = [
       GenderCircleIcon(
-          Gender.Male, '💆‍♂️', 'Male', GenderCircleIconState(), this),
+          Gender.Male, '💆‍♂️', 'Male', GenderCircleIconState(), this, null),
+      GenderCircleIcon(Gender.Female, '🙋‍♀️', 'Female',
+          GenderCircleIconState(), this, null),
       GenderCircleIcon(
-          Gender.Female, '🙋‍♀️', 'Female', GenderCircleIconState(), this),
-      GenderCircleIcon(
-          Gender.Other, '🤷', 'Other', GenderCircleIconState(), this)
+          Gender.Other, '🤷', 'Other', GenderCircleIconState(), this, null)
     ];
   }
 
@@ -91,10 +92,10 @@ class StartPathStep1State extends State<StartPathStep1>
               isTitle: true,
             ),
           ),
-          Slider.adaptive(
+          Slider(
             value: _sliderValue,
             min: 0,
-            max: 80,
+            max: 70,
             label: _sliderValue.round().toString(),
             onChanged: (value) => setState(() {
               if (value < 18) return;
@@ -119,7 +120,10 @@ class StartPathStep1State extends State<StartPathStep1>
           ),
           Divider(),
           Spacer(),
-          BasicButton(_isPageValid),
+          BasicButton(
+              _isPageValid,
+              () =>
+                  Navigator.of(context).pushNamed(Routes.startPathStep2.value)),
           Padding(
             padding: EdgeInsets.only(bottom: 50),
           )
