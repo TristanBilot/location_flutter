@@ -77,7 +77,15 @@ class StartPathStep1State extends State<StartPathStep1>
             ],
           ),
           Padding(
-            padding: EdgeInsets.only(top: 80, bottom: 30),
+            padding: EdgeInsets.only(top: 40, bottom: 40),
+            child: Column(
+              children: [
+                Divider(),
+              ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(bottom: 30),
             child: TextSF(
               'What\'s your age ?',
               isTitle: true,
@@ -87,9 +95,6 @@ class StartPathStep1State extends State<StartPathStep1>
             value: _sliderValue,
             min: 0,
             max: 80,
-            // activeColor: _sliderValue >= 18
-            //     ? Theme.of(context).sliderTheme.inactiveTrackColor
-            //     : Colors.red[400],
             label: _sliderValue.round().toString(),
             onChanged: (value) => setState(() {
               if (value < 18) return;
@@ -112,6 +117,7 @@ class StartPathStep1State extends State<StartPathStep1>
               ),
             ),
           ),
+          Divider(),
           Spacer(),
           BasicButton(_isPageValid),
           Padding(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:location_project/use_cases/matchs/matchs.dart';
 import 'package:location_project/use_cases/start_path/start_path_step1/start_path_step1.dart';
 import 'package:location_project/widgets/positioned_app_icon.dart';
 import '../widgets/map.dart';
@@ -43,7 +44,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
           children: [
             StartPathStep1(),
             Map(),
-            Icon(Icons.directions_bike),
+            Matchs(),
           ],
         ),
       ),

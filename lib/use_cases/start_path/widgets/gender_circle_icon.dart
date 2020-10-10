@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:location_project/use_cases/start_path/start_path_step1/start_path_step1.dart';
 import 'package:location_project/widgets/textSF.dart';
 
@@ -38,6 +39,7 @@ class GenderCircleIconState extends State<GenderCircleIcon> {
           onPressed: () {
             widget.controller.resetGenderCircleStates();
             widget.controller.updateSelectedGender(widget.gender);
+            HapticFeedback.heavyImpact();
             setState(() {
               isSelected = true;
             });
