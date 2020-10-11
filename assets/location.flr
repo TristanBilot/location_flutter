@@ -1,0 +1,443 @@
+{
+	"version": 24,
+	"artboards": [
+		{
+			"name": "Artboard",
+			"translation": [
+				0,
+				0
+			],
+			"width": 400,
+			"height": 400,
+			"origin": [
+				0,
+				0
+			],
+			"clipContents": true,
+			"color": [
+				0,
+				0,
+				0,
+				1
+			],
+			"nodes": [
+				{
+					"name": "Ellipse",
+					"translation": [
+						202.5,
+						201.5
+					],
+					"rotation": 0,
+					"scale": [
+						1,
+						1
+					],
+					"opacity": 1,
+					"isCollapsed": false,
+					"clips": [],
+					"isVisible": true,
+					"blendMode": 3,
+					"drawOrder": 1,
+					"transformAffectsStroke": false,
+					"type": "shape"
+				},
+				{
+					"name": "Color",
+					"parent": 0,
+					"opacity": 1,
+					"color": [
+						0.20000000298023224,
+						0.21176470816135406,
+						0.24313725531101227,
+						1
+					],
+					"fillRule": 1,
+					"type": "colorFill"
+				},
+				{
+					"name": "Ellipse Path",
+					"parent": 0,
+					"translation": [
+						0,
+						0
+					],
+					"rotation": 0,
+					"scale": [
+						1,
+						1
+					],
+					"opacity": 1,
+					"isCollapsed": false,
+					"clips": [],
+					"width": 200,
+					"height": 200,
+					"type": "ellipse"
+				},
+				{
+					"name": "Ellipse",
+					"translation": [
+						202.5,
+						201.5
+					],
+					"rotation": 0,
+					"scale": [
+						1,
+						1
+					],
+					"opacity": 1,
+					"isCollapsed": false,
+					"clips": [],
+					"isVisible": false,
+					"blendMode": 3,
+					"drawOrder": 1,
+					"transformAffectsStroke": false,
+					"type": "shape"
+				},
+				{
+					"name": "Color",
+					"parent": 3,
+					"opacity": 0.6,
+					"color": [
+						0.20000000298023224,
+						0.21176470816135406,
+						0.24313725531101227,
+						1
+					],
+					"fillRule": 1,
+					"type": "colorFill"
+				},
+				{
+					"name": "Ellipse Path",
+					"parent": 3,
+					"translation": [
+						0,
+						0
+					],
+					"rotation": 0,
+					"scale": [
+						1,
+						1
+					],
+					"opacity": 1,
+					"isCollapsed": false,
+					"clips": [],
+					"width": 250,
+					"height": 250,
+					"type": "ellipse"
+				},
+				{
+					"name": "Ellipse",
+					"translation": [
+						202.5,
+						201.5
+					],
+					"rotation": 0,
+					"scale": [
+						1,
+						1
+					],
+					"opacity": 1,
+					"isCollapsed": false,
+					"clips": [],
+					"isVisible": true,
+					"blendMode": 3,
+					"drawOrder": 1,
+					"transformAffectsStroke": false,
+					"type": "shape"
+				},
+				{
+					"name": "Color",
+					"parent": 6,
+					"opacity": 0.4,
+					"color": [
+						0.20000000298023224,
+						0.21176470816135406,
+						0.24313725531101227,
+						1
+					],
+					"fillRule": 1,
+					"type": "colorFill"
+				},
+				{
+					"name": "Ellipse Path",
+					"parent": 6,
+					"translation": [
+						0,
+						0
+					],
+					"rotation": 0,
+					"scale": [
+						1,
+						1
+					],
+					"opacity": 1,
+					"isCollapsed": false,
+					"clips": [],
+					"width": 300,
+					"height": 300,
+					"type": "ellipse"
+				},
+				{
+					"name": "Ellipse",
+					"translation": [
+						202.5,
+						201.5
+					],
+					"rotation": 0,
+					"scale": [
+						1,
+						1
+					],
+					"opacity": 1,
+					"isCollapsed": false,
+					"clips": [],
+					"isVisible": true,
+					"blendMode": 3,
+					"drawOrder": 1,
+					"transformAffectsStroke": false,
+					"type": "shape"
+				},
+				{
+					"name": "Color",
+					"parent": 9,
+					"opacity": 0.2,
+					"color": [
+						0.30980393290519714,
+						0.3176470696926117,
+						0.33725491166114807,
+						1
+					],
+					"fillRule": 1,
+					"type": "colorFill"
+				},
+				{
+					"name": "Ellipse Path",
+					"parent": 9,
+					"translation": [
+						0,
+						0
+					],
+					"rotation": 0,
+					"scale": [
+						1,
+						1
+					],
+					"opacity": 1,
+					"isCollapsed": false,
+					"clips": [],
+					"width": 250,
+					"height": 250,
+					"type": "ellipse"
+				},
+				{
+					"name": "Group",
+					"translation": [
+						202.65310668945312,
+						234.2476806640625
+					],
+					"rotation": 0,
+					"scale": [
+						0.8895355463027954,
+						1
+					],
+					"opacity": 1,
+					"isCollapsed": false,
+					"clips": [],
+					"type": "node"
+				},
+				{
+					"name": "Rectangle",
+					"parent": 12,
+					"translation": [
+						150.7178192138672,
+						112.35247802734375
+					],
+					"rotation": 0,
+					"scale": [
+						1.1241819858551025,
+						1.0178658962249756
+					],
+					"opacity": 1,
+					"isCollapsed": false,
+					"clips": [],
+					"isVisible": true,
+					"blendMode": 3,
+					"drawOrder": 2,
+					"transformAffectsStroke": false,
+					"type": "shape"
+				},
+				{
+					"name": "Color",
+					"parent": 13,
+					"opacity": 1,
+					"color": [
+						1,
+						1,
+						1,
+						1
+					],
+					"fillRule": 1,
+					"type": "colorFill"
+				},
+				{
+					"name": "location_icon",
+					"parent": 13,
+					"translation": [
+						-135.0000457763672,
+						-143.4394989013672
+					],
+					"rotation": 0,
+					"scale": [
+						0.9943400025367737,
+						0.9972169399261475
+					],
+					"opacity": 1,
+					"isCollapsed": false,
+					"clips": [],
+					"isVisible": true,
+					"blendMode": 3,
+					"drawOrder": 3,
+					"bones": [],
+					"atlas": 0,
+					"numVertices": 4,
+					"vertices": [
+						-24,
+						-33,
+						0.015625,
+						0.0078125,
+						24,
+						-33,
+						0.765625,
+						0.0078125,
+						24,
+						33,
+						0.765625,
+						0.5234375,
+						-24,
+						33,
+						0.015625,
+						0.5234375
+					],
+					"isDynamic": false,
+					"numTriangles": 2,
+					"triangles": [
+						3,
+						0,
+						1,
+						1,
+						2,
+						3
+					],
+					"type": "image"
+				}
+			],
+			"animations": [
+				{
+					"name": "animation",
+					"fps": 60,
+					"duration": 1,
+					"isLooping": true,
+					"keyed": [
+						{
+							"component": 12,
+							"posY": [
+								[
+									{
+										"time": 0,
+										"interpolatorType": 2,
+										"cubicX1": 0,
+										"cubicY1": 0,
+										"cubicX2": 0.58,
+										"cubicY2": 1,
+										"value": 235.2476806640625
+									},
+									{
+										"time": 0.16666666666666666,
+										"interpolatorType": 2,
+										"cubicX1": 0,
+										"cubicY1": 0,
+										"cubicX2": 0.58,
+										"cubicY2": 1,
+										"value": 237.2476806640625
+									},
+									{
+										"time": 0.3333333333333333,
+										"interpolatorType": 2,
+										"cubicX1": 0,
+										"cubicY1": 0,
+										"cubicX2": 0.58,
+										"cubicY2": 1,
+										"value": 211.2476806640625
+									},
+									{
+										"time": 0.6666666666666666,
+										"interpolatorType": 2,
+										"cubicX1": 0,
+										"cubicY1": 0,
+										"cubicX2": 0.58,
+										"cubicY2": 1,
+										"value": 230.2476806640625
+									}
+								]
+							],
+							"scaleX": [
+								[
+									{
+										"time": 0,
+										"interpolatorType": 2,
+										"cubicX1": 0.010752688172043012,
+										"cubicY1": 0.009408602150537626,
+										"cubicX2": 0.45161290322580644,
+										"cubicY2": 0.9905913978494624,
+										"value": 0.8865355849266052
+									},
+									{
+										"time": 0.16666666666666666,
+										"interpolatorType": 2,
+										"cubicX1": 0.010752688172043012,
+										"cubicY1": 0.009408602150537626,
+										"cubicX2": 0.45161290322580644,
+										"cubicY2": 0.9905913978494624,
+										"value": 0.8865355849266052
+									}
+								]
+							],
+							"scaleY": [
+								[
+									{
+										"time": 0,
+										"interpolatorType": 2,
+										"cubicX1": 0.010752688172043012,
+										"cubicY1": 0.009408602150537626,
+										"cubicX2": 0.45161290322580644,
+										"cubicY2": 0.9905913978494624,
+										"value": 0.997000515460968
+									},
+									{
+										"time": 0.16666666666666666,
+										"interpolatorType": 2,
+										"cubicX1": 0.010752688172043012,
+										"cubicY1": 0.009408602150537626,
+										"cubicX2": 0.45161290322580644,
+										"cubicY2": 0.9905913978494624,
+										"value": 0.997000515460968
+									}
+								]
+							]
+						}
+					],
+					"animationStart": 0,
+					"animationEnd": 0.6666666666666666,
+					"type": "animation"
+				}
+			],
+			"type": "artboard"
+		}
+	],
+	"atlases": {
+		"isOOB": false,
+		"data": [
+			"data:image/png;base64,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"
+		]
+	}
+}

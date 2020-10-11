@@ -12,7 +12,7 @@ mixin GenderIconController {
 }
 
 class StartPathStep1 extends StatefulWidget {
-  static final allPadding = 20.0;
+  static final allPadding = 30.0;
 
   @override
   StartPathStep1State createState() => StartPathStep1State();
@@ -120,9 +120,9 @@ class StartPathStep1State extends State<StartPathStep1>
           ),
           Divider(),
           Spacer(),
-          BasicButton(
-              _isPageValid,
-              () =>
+          BasicButton('NEXT',
+              enabled: _isPageValid,
+              onPressed: () =>
                   Navigator.of(context).pushNamed(Routes.startPathStep2.value)),
           Padding(
             padding: EdgeInsets.only(bottom: 50),

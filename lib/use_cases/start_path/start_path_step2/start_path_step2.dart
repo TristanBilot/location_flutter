@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:location_project/stores/routes.dart';
 import 'package:location_project/use_cases/start_path/start_path_step1/start_path_step1.dart';
 import 'package:location_project/use_cases/start_path/widgets/basic_button.dart';
 import 'package:location_project/widgets/textSF.dart';
@@ -116,7 +117,10 @@ class StartPathStep2State extends State<StartPathStep2>
             ),
             Divider(),
             Spacer(),
-            BasicButton(_isPageValid, null),
+            BasicButton('NEXT',
+                enabled: _isPageValid,
+                onPressed: () => Navigator.of(context)
+                    .pushNamed(Routes.startPathStep3.value)),
             Padding(
               padding: EdgeInsets.only(bottom: 50),
             )
