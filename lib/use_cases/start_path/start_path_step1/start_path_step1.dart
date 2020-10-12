@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:location_project/stores/routes.dart';
+import 'package:location_project/stores/start_path_store.dart';
 import 'package:location_project/use_cases/start_path/widgets/basic_button.dart';
 import 'package:location_project/use_cases/start_path/widgets/breadcrumb.dart';
 import 'package:location_project/widgets/textSF.dart';
@@ -124,10 +125,11 @@ class StartPathStep1State extends State<StartPathStep1>
             ),
             Divider(),
             Spacer(),
-            BasicButton('NEXT',
-                enabled: _isPageValid,
-                onPressed: () => Navigator.of(context)
-                    .pushNamed(Routes.startPathStep2.value)),
+            BasicButton('NEXT', enabled: _isPageValid, onPressed: () {
+              StartPathStore.instance.setUserGender(_selectedGender);
+              StartPathStore.instance.setUserAge(_sliderValue.toInt());
+              Navigator.of(context).pushNamed(Routes.startPathStep2.value);
+            }),
             Padding(
               padding: EdgeInsets.only(bottom: 50),
             )
