@@ -79,7 +79,10 @@ class StartPathStep3State extends State<StartPathStep3> {
                             "Are you sure? ☹️",
                             "Without your location, you will not be allowed to use the app!",
                             [
-                              BasicAlertButton('LATER', null),
+                              BasicAlertButton(
+                                  'LATER',
+                                  () => Navigator.of(context)
+                                      .pushNamed(Routes.startPathStep4.value)),
                               BasicAlertButton('ENABLE', null),
                             ]),
                       )),
