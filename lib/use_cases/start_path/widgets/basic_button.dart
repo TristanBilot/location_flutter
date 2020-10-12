@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:location_project/widgets/textSF.dart';
 
 class BasicButton extends StatefulWidget {
+  static const Weight = FontWeight.w700;
+  static const FontSize = 21.0;
+
   final String text;
   final bool enabled;
   final Function onPressed;
@@ -32,8 +35,8 @@ class _BasicButtonState extends State<BasicButton> {
           child: TextSF(
             widget.text,
             align: TextAlign.center,
-            fontSize: 21,
-            fontWeight: FontWeight.w700,
+            fontSize: BasicButton.FontSize,
+            fontWeight: BasicButton.Weight,
             color: widget.enabled ? Colors.white : Colors.white54,
           ),
         ),

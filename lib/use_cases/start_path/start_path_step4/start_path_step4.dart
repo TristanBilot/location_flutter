@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:location_project/stores/routes.dart';
@@ -7,6 +5,7 @@ import 'package:location_project/use_cases/start_path/start_path_step1/start_pat
 import 'package:location_project/use_cases/start_path/start_path_step3/start_path_step3.dart';
 import 'package:location_project/use_cases/start_path/widgets/basic_button.dart';
 import 'package:location_project/use_cases/start_path/widgets/breadcrumb.dart';
+import 'package:location_project/use_cases/start_path/widgets/secondary_button.dart';
 import 'package:location_project/widgets/textSF.dart';
 
 class StartPathStep4 extends StatefulWidget {
@@ -61,6 +60,7 @@ class StartPathStep4State extends State<StartPathStep4> {
                   enabled: true,
                   onPressed: () => Navigator.of(context)
                       .pushNamed(Routes.startPathStep1.value)),
+              SecondaryButton('LATER', null),
               Spacer(),
             ],
           )),

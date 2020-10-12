@@ -1,11 +1,12 @@
-import 'dart:collection';
-
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:location_project/stores/routes.dart';
+import 'package:location_project/use_cases/start_path/basic_alert_button.dart';
+import 'package:location_project/use_cases/start_path/basic_alert.dart';
 import 'package:location_project/use_cases/start_path/start_path_step1/start_path_step1.dart';
 import 'package:location_project/use_cases/start_path/widgets/basic_button.dart';
 import 'package:location_project/use_cases/start_path/widgets/breadcrumb.dart';
+import 'package:location_project/use_cases/start_path/widgets/secondary_button.dart';
 import 'package:location_project/widgets/textSF.dart';
 
 class StartPathStep3 extends StatefulWidget {
@@ -67,10 +68,21 @@ class StartPathStep3State extends State<StartPathStep3> {
                 ]),
               ),
               Spacer(),
-              BasicButton('ENABLE LOCATION',
-                  enabled: true,
-                  onPressed: () => Navigator.of(context)
-                      .pushNamed(Routes.startPathStep4.value)),
+              BasicButton('ENABLE LOCATION', enabled: true, onPressed: () {
+                Navigator.of(context).pushNamed(Routes.startPathStep4.value);
+              }),
+              SecondaryButton(
+                  'LATER',
+                  () => showDialog(
+                        context: context,
+                        builder: (context) => BasicAlert(
+                            "Are you sure? ☹️",
+                            "Without your location, you will not be allowed to use the app!",
+                            [
+                              BasicAlertButton('LATER', null),
+                              BasicAlertButton('ENABLE', null),
+                            ]),
+                      )),
               Spacer(),
             ],
           )),
