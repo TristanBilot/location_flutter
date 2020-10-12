@@ -19,7 +19,7 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: Routes.login.value,
+      initialRoute: Routes.startPathStep1.value,
       routes: <String, WidgetBuilder>{
         Routes.login.value: (context) => LoginPage(),
         Routes.map.value: (context) => MapPage(),

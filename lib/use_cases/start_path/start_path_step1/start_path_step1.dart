@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:location_project/stores/routes.dart';
 import 'package:location_project/use_cases/start_path/widgets/basic_button.dart';
+import 'package:location_project/use_cases/start_path/widgets/breadcrumb.dart';
 import 'package:location_project/widgets/textSF.dart';
 import '../widgets/gender_circle_icon.dart';
 
@@ -13,6 +14,7 @@ mixin GenderIconController {
 
 class StartPathStep1 extends StatefulWidget {
   static final allPadding = 30.0;
+  static final nbOfSections = 4;
 
   @override
   StartPathStep1State createState() => StartPathStep1State();
@@ -55,79 +57,82 @@ class StartPathStep1State extends State<StartPathStep1>
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(StartPathStep1.allPadding),
-      child: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(top: 30, bottom: 30),
-            child: TextSF(
-              'Wait, who are you ?',
-              isTitle: true,
+    return Material(
+      child: Padding(
+        padding: EdgeInsets.all(StartPathStep1.allPadding),
+        child: Column(
+          children: [
+            Breadcrumb(1),
+            Padding(
+              padding: EdgeInsets.only(top: 30, bottom: 30),
+              child: TextSF(
+                'Wait, who are you ?',
+                isTitle: true,
+              ),
             ),
-          ),
-          Row(
-            children: [
-              Spacer(),
-              _circleIcons[0],
-              Spacer(),
-              _circleIcons[1],
-              Spacer(),
-              _circleIcons[2],
-              Spacer(),
-            ],
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 40, bottom: 40),
-            child: Column(
+            Row(
               children: [
-                Divider(),
+                Spacer(),
+                _circleIcons[0],
+                Spacer(),
+                _circleIcons[1],
+                Spacer(),
+                _circleIcons[2],
+                Spacer(),
               ],
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(bottom: 30),
-            child: TextSF(
-              'What\'s your age ?',
-              isTitle: true,
+            Padding(
+              padding: EdgeInsets.only(top: 40, bottom: 40),
+              child: Column(
+                children: [
+                  Divider(),
+                ],
+              ),
             ),
-          ),
-          Slider(
-            value: _sliderValue,
-            min: 0,
-            max: 70,
-            label: _sliderValue.round().toString(),
-            onChanged: (value) => setState(() {
-              if (value < 18) return;
-              _sliderValue = value;
-            }),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 30, bottom: 30),
-            child: Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  border: Border.all(color: Colors.black12, width: 3.0)),
-              child: Padding(
-                padding: EdgeInsets.all(5),
-                child: TextSF(
-                  _sliderValue.round().toString(),
-                  fontSize: 50,
-                  fontWeight: FontWeight.w700,
+            Padding(
+              padding: EdgeInsets.only(bottom: 30),
+              child: TextSF(
+                'What\'s your age ?',
+                isTitle: true,
+              ),
+            ),
+            Slider(
+              value: _sliderValue,
+              min: 0,
+              max: 70,
+              label: _sliderValue.round().toString(),
+              onChanged: (value) => setState(() {
+                if (value < 18) return;
+                _sliderValue = value;
+              }),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 30, bottom: 30),
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    border: Border.all(color: Colors.black12, width: 3.0)),
+                child: Padding(
+                  padding: EdgeInsets.all(5),
+                  child: TextSF(
+                    _sliderValue.round().toString(),
+                    fontSize: 50,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
             ),
-          ),
-          Divider(),
-          Spacer(),
-          BasicButton('NEXT',
-              enabled: _isPageValid,
-              onPressed: () =>
-                  Navigator.of(context).pushNamed(Routes.startPathStep2.value)),
-          Padding(
-            padding: EdgeInsets.only(bottom: 50),
-          )
-        ],
+            Divider(),
+            Spacer(),
+            BasicButton('NEXT',
+                enabled: _isPageValid,
+                onPressed: () => Navigator.of(context)
+                    .pushNamed(Routes.startPathStep2.value)),
+            Padding(
+              padding: EdgeInsets.only(bottom: 50),
+            )
+          ],
+        ),
       ),
     );
   }

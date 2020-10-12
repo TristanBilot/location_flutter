@@ -6,6 +6,7 @@ import 'package:location_project/stores/routes.dart';
 import 'package:location_project/use_cases/start_path/start_path_step1/start_path_step1.dart';
 import 'package:location_project/use_cases/start_path/start_path_step3/start_path_step3.dart';
 import 'package:location_project/use_cases/start_path/widgets/basic_button.dart';
+import 'package:location_project/use_cases/start_path/widgets/breadcrumb.dart';
 import 'package:location_project/widgets/textSF.dart';
 
 class StartPathStep4 extends StatefulWidget {
@@ -26,6 +27,7 @@ class StartPathStep4State extends State<StartPathStep4> {
           padding: EdgeInsets.all(StartPathStep1.allPadding),
           child: Column(
             children: [
+              Breadcrumb(4),
               Spacer(),
               Container(
                 width: MediaQuery.of(context).size.width,
@@ -58,7 +60,7 @@ class StartPathStep4State extends State<StartPathStep4> {
               BasicButton('ALLOW NOTIFICATIONS',
                   enabled: true,
                   onPressed: () => Navigator.of(context)
-                      .pushNamed(Routes.startPathStep3.value)),
+                      .pushNamed(Routes.startPathStep1.value)),
               Spacer(),
             ],
           )),

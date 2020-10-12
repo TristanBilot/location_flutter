@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:location_project/stores/routes.dart';
 import 'package:location_project/use_cases/start_path/start_path_step1/start_path_step1.dart';
 import 'package:location_project/use_cases/start_path/widgets/basic_button.dart';
+import 'package:location_project/use_cases/start_path/widgets/breadcrumb.dart';
 import 'package:location_project/widgets/textSF.dart';
 import '../widgets/gender_circle_icon.dart';
 
@@ -56,6 +57,7 @@ class StartPathStep2State extends State<StartPathStep2>
         padding: EdgeInsets.all(StartPathStep1.allPadding),
         child: Column(
           children: [
+            Breadcrumb(2),
             Padding(
               padding: EdgeInsets.only(top: 30, bottom: 30),
               child: TextSF(

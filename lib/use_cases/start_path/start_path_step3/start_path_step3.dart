@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:location_project/stores/routes.dart';
 import 'package:location_project/use_cases/start_path/start_path_step1/start_path_step1.dart';
 import 'package:location_project/use_cases/start_path/widgets/basic_button.dart';
+import 'package:location_project/use_cases/start_path/widgets/breadcrumb.dart';
 import 'package:location_project/widgets/textSF.dart';
 
 class StartPathStep3 extends StatefulWidget {
@@ -26,6 +27,7 @@ class StartPathStep3State extends State<StartPathStep3> {
           padding: EdgeInsets.all(StartPathStep1.allPadding),
           child: Column(
             children: [
+              Breadcrumb(3),
               Spacer(),
               Container(
                 width: StartPathStep3.flareAnimationSize,
