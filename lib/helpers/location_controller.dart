@@ -2,35 +2,40 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart' as locator;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location_project/caches/user_cache.dart';
 import '../caches/location_cache.dart';
 import '../repositories/user_repository.dart';
 
 class LocationController {
-  static bool _serviceEnabled;
-  static PermissionStatus _permissionGranted;
-  static Location _location;
-  static UserRepository _userRepository;
+  bool _serviceEnabled;
+  PermissionStatus _permissionGranted;
+  Location _location;
+  UserRepository _userRepository;
 
-  /*
-  ^ FUNCTION
-  * This method should be used at first and after that,
-  * only use the static methods.
-  */
-  static Future init() async {
+  static LocationController _instance;
+  static LocationController get instance {
+    return (_instance = _instance == null ? LocationController() : _instance);
+  }
+
+  LocationController() {
     _location = Location();
     _userRepository = UserRepository();
+  }
+
+  Future enableLocation() async {
     await _enableService();
     await _grant();
     _handleLocation();
   }
+
+  PermissionStatus get permissionStatus => _permissionGranted;
+  bool get isServiceEnabled => _serviceEnabled;
 
   /*
   ^ PRIVATE FUNCTION
   * When launched (at the start of the app), update every 0.5s
   * the position of the device in a cache.
   */
-  static void _handleLocation() {
+  void _handleLocation() {
     locator
         .getPositionStream(
             desiredAccuracy: locator.LocationAccuracy.best,
@@ -51,7 +56,7 @@ class LocationController {
   ^ FUNCTION
   * Returns the current location of the device.
   */
-  static Future<LocationData> getLocation() async {
+  Future<LocationData> getLocation() async {
     return _location.getLocation();
   }
 
@@ -59,13 +64,13 @@ class LocationController {
   ^ FUNCTION
   * Returns the current location of the device as a GeoFirePoint.
   */
-  static Future<GeoFirePoint> getLocationGeoFirePoint() async {
+  Future<GeoFirePoint> getLocationGeoFirePoint() async {
     final location = await getLocation();
     return Geoflutterfire()
         .point(latitude: location.latitude, longitude: location.longitude);
   }
 
-  static Future _enableService() async {
+  Future _enableService() async {
     _serviceEnabled = await _location.serviceEnabled();
     if (!_serviceEnabled) {
       _serviceEnabled = await _location.requestService();
@@ -75,7 +80,7 @@ class LocationController {
     }
   }
 
-  static Future _grant() async {
+  Future _grant() async {
     _permissionGranted = await _location.hasPermission();
     if (_permissionGranted == PermissionStatus.denied) {
       _permissionGranted = await _location.requestPermission();
@@ -85,9 +90,9 @@ class LocationController {
     }
   }
 
-  static void _onLocationChanged() async {
-    // _location.onLocationChanged.listen((LocationData currentLocation) {
-    //   // Use current location
-    // });
-  }
+  // void _onLocationChanged() async {
+  // _location.onLocationChanged.listen((LocationData currentLocation) {
+  //   // Use current location
+  // });
+  // }
 }

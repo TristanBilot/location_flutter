@@ -1,5 +1,6 @@
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
+import 'package:location_project/helpers/location_controller.dart';
 import 'package:location_project/stores/routes.dart';
 import 'package:location_project/use_cases/start_path/basic_alert_button.dart';
 import 'package:location_project/use_cases/start_path/basic_alert.dart';
@@ -19,6 +20,11 @@ class StartPathStep3State extends State<StartPathStep3> {
   @override
   void initState() {
     super.initState();
+  }
+
+  Future _requestLocation() async {
+    LocationController.instance.enableLocation().then(
+        (_) => Navigator.of(context).pushNamed(Routes.startPathStep4.value));
   }
 
   @override
@@ -68,9 +74,8 @@ class StartPathStep3State extends State<StartPathStep3> {
                 ]),
               ),
               Spacer(),
-              BasicButton('ENABLE LOCATION', enabled: true, onPressed: () {
-                Navigator.of(context).pushNamed(Routes.startPathStep4.value);
-              }),
+              BasicButton('ENABLE LOCATION',
+                  enabled: true, onPressed: () => _requestLocation()),
               SecondaryButton(
                   'LATER',
                   () => showDialog(
@@ -83,7 +88,8 @@ class StartPathStep3State extends State<StartPathStep3> {
                                   'LATER',
                                   () => Navigator.of(context)
                                       .pushNamed(Routes.startPathStep4.value)),
-                              BasicAlertButton('ENABLE', null),
+                              BasicAlertButton(
+                                  'ENABLE', () => _requestLocation()),
                             ]),
                       )),
               Spacer(),

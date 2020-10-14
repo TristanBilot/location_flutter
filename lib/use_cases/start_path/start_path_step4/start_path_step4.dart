@@ -1,5 +1,7 @@
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
+import 'package:location_project/helpers/location_controller.dart';
+import 'package:location_project/helpers/notification_controller.dart';
 import 'package:location_project/stores/routes.dart';
 import 'package:location_project/use_cases/start_path/basic_alert.dart';
 import 'package:location_project/use_cases/start_path/basic_alert_button.dart';
@@ -19,6 +21,15 @@ class StartPathStep4State extends State<StartPathStep4> {
   @override
   void initState() {
     super.initState();
+  }
+
+  Future _requestNotifications() async {
+    NotificationController.instance.enableNotifications().then((_) {
+      print(NotificationController.instance.permissionStatus);
+      print(LocationController.instance.permissionStatus);
+      Navigator.of(context).popUntil((route) => route.isFirst);
+      Navigator.of(context).pushReplacementNamed(Routes.map.value);
+    });
   }
 
   @override
@@ -59,9 +70,7 @@ class StartPathStep4State extends State<StartPathStep4> {
               ),
               Spacer(),
               BasicButton('ALLOW NOTIFICATIONS',
-                  enabled: true,
-                  onPressed: () => Navigator.of(context)
-                      .pushNamed(Routes.startPathStep1.value)),
+                  onPressed: () => _requestNotifications()),
               SecondaryButton('LATER', () {
                 Navigator.of(context).popUntil((route) => route.isFirst);
                 Navigator.of(context).pushReplacementNamed(Routes.map.value);
