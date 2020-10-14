@@ -16,7 +16,9 @@ class MapPage extends StatefulWidget {
 class _MapPageState extends State<MapPage>
     with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   final List<Tab> tabs = <Tab>[
-    Tab(icon: Icon(Icons.account_circle)),
+    Tab(
+      icon: Icon(Icons.account_circle),
+    ),
     Tab(child: Text('')),
     Tab(icon: Icon(Icons.textsms))
   ];
@@ -46,7 +48,7 @@ class _MapPageState extends State<MapPage>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       setState(() {});
-      print('heyyy');
+      print('come back to foreground');
     }
   }
 

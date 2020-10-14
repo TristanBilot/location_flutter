@@ -40,6 +40,10 @@ class AppTheme {
           headline6: base.textTheme.headline6.copyWith(color: TextColor),
           bodyText2: base.textTheme.bodyText2.copyWith(color: TextColor),
           bodyText1: base.textTheme.bodyText1.copyWith(color: TextColor)),
+
+      /* disable the Android splash effect */
+      highlightColor: Colors.transparent,
+      splashColor: Colors.transparent,
     );
   }
 }
