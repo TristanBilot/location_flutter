@@ -1,4 +1,4 @@
-package com.example.location
+package com.location.app.tristan
 
 import io.flutter.app.FlutterApplication
 import io.flutter.plugin.common.PluginRegistry

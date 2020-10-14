@@ -1,4 +1,4 @@
-package com.example.location
+package com.location.app.tristan
 
 import io.flutter.embedding.android.FlutterActivity
 

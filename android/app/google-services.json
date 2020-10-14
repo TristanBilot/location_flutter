@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:763599612774:android:942d7b43f7bafc949d36a7",
         "android_client_info": {
-          "package_name": "com.example.location"
+          "package_name": "com.location.app.tristan"
         }
       },
       "oauth_client": [
