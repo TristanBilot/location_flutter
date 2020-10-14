@@ -1,3 +1,4 @@
+import 'package:app_settings/app_settings.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart' as locator;
@@ -24,23 +25,34 @@ class LocationController {
   Future enableLocation() async {
     await _enableService();
     await _grant();
-    _handleLocation();
   }
 
   PermissionStatus get permissionStatus => _permissionGranted;
   bool get isServiceEnabled => _serviceEnabled;
 
+  Future<void> openLocationSettings() async {
+    return AppSettings.openLocationSettings();
+  }
+
+  Future<bool> isLocationEnabled() async {
+    final status = LocationController.instance.permissionStatus;
+    final isEnabled = await Location().serviceEnabled();
+
+    return (isEnabled != null && isEnabled) ||
+        (status != null && status == PermissionStatus.granted);
+  }
+
   /*
-  ^ PRIVATE FUNCTION
-  * When launched (at the start of the app), update every 0.5s
+  ^ FUNCTION
+  * When launched, update every 0.5s
   * the position of the device in a cache.
   */
-  void _handleLocation() {
+  void handleLocation() {
     locator
         .getPositionStream(
             desiredAccuracy: locator.LocationAccuracy.best,
             timeLimit: Duration(milliseconds: 500))
-        .listen((locator.Position position) async {
+        .listen((locator.Position position) {
       /* update the location in cache */
       LocationCache.putLocation(LatLng(position.latitude, position.longitude));
       /* get the location from cache and send it to Firestore */

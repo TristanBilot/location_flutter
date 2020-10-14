@@ -50,7 +50,10 @@ class AreaFetchingRepository {
   Future<void> _listenAreaStream(Stream<List<DocumentSnapshot>> stream,
       GeoFirePoint center, Function completion) async {
     stream.listen((List<DocumentSnapshot> users) async {
+      int userCount = 0;
+      List<User> usersList = List();
       users.forEach((user) async {
+        userCount++;
         final geoPoint = user.data()['position']['geopoint'];
         final geoFirePoint =
             GeoFirePoint(geoPoint.latitude, geoPoint.longitude);
@@ -79,7 +82,8 @@ class AreaFetchingRepository {
         if (UserCache.isInit) {
           UserCache.putUser(newUser);
         }
-        completion(newUser);
+        usersList.add(newUser);
+        if (userCount == users.length) completion(usersList);
         print('=> in area: ${newUser.email} at $distance meters');
         // }
       });

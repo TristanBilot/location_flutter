@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:location/location.dart';
+import 'package:location_project/helpers/location_controller.dart';
+import 'package:location_project/pages/location_disabled_page.dart';
 import 'package:location_project/use_cases/matchs/matchs.dart';
 import 'package:location_project/use_cases/start_path/start_path_step1/start_path_step1.dart';
 import 'package:location_project/widgets/positioned_app_icon.dart';
@@ -8,10 +11,10 @@ class MapPage extends StatefulWidget {
   MapPage({Key key}) : super(key: key);
 
   @override
-  _MapPageState createState() => _MapPageState();
+  MapPageState createState() => MapPageState();
 }
 
-class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
+class MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   final List<Tab> tabs = <Tab>[
     Tab(icon: Icon(Icons.account_circle)),
     Tab(child: Text('')),
@@ -19,6 +22,10 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   ];
   final _initialIndex = 1;
   TabController _tabController;
+
+  Future<bool> _displayMapIfLocationEnabled() async {
+    return await LocationController.instance.isLocationEnabled();
+  }
 
   @override
   void initState() {
@@ -43,7 +50,18 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
           controller: _tabController,
           children: [
             StartPathStep1(),
-            Map(),
+            FutureBuilder(
+              future: _displayMapIfLocationEnabled(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData)
+                  return snapshot.data == false
+                      ? LocationDisabledPage(this)
+                      : Map();
+                else {
+                  return Text('waiting...');
+                }
+              },
+            ),
             Matchs(),
           ],
         ),

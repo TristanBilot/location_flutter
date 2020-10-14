@@ -5,6 +5,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:location_project/caches/location_cache.dart';
+import 'package:location_project/helpers/location_controller.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/repositories/area_fetching_repository.dart';
 import 'package:location_project/stores/map_store.dart';
@@ -45,8 +46,10 @@ class MapState extends State<Map> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _handleLocationIfNeeded();
+
     _loadMapStyles().then((_) => _setMapStyle());
-    _fetchUsersAroundMe();
+    // _fetchUsersAroundMe();
 
     isModalDisplayed = false;
     _restBarrierColor();
@@ -95,23 +98,32 @@ class MapState extends State<Map> with WidgetsBindingObserver {
     if (mounted) setState(f);
   }
 
+  Future _handleLocationIfNeeded() async {
+    if (await LocationController.instance.isLocationEnabled())
+      LocationController.instance.handleLocation();
+  }
+
   Future _fetchUsersAroundMe() async {
-    _areaFetcher.fetch((user) {
+    // in the case when the user enable location from settings
+    // we need to handle location again
+    _areaFetcher.fetch((users) {
       setStateIfMounted(() {
         // may be faster but need 2 times checkinf for unliked
         // users in the code, here for first load and in the build()
         // if (!_store.isUserUnliked(user.email)) {
-        _markers.add(UserMarker(
-            user: user,
-            icon: user.icon,
-            position: user.coord,
-            onTap: () {
-              setState(() {
-                isModalDisplayed = true;
-                _restBarrierColor();
-                _showUserCard(context, user, this, _store);
-              });
-            }));
+        users.forEach((user) {
+          _markers.add(UserMarker(
+              user: user,
+              icon: user.icon,
+              position: user.coord,
+              onTap: () {
+                setState(() {
+                  isModalDisplayed = true;
+                  _restBarrierColor();
+                  _showUserCard(context, user, this, _store);
+                });
+              }));
+        });
         // }
       });
     });
@@ -157,38 +169,62 @@ class MapState extends State<Map> with WidgetsBindingObserver {
     super.dispose();
   }
 
+  Future<bool> _waitForBuildMap() async {
+    return Future.delayed(Duration(milliseconds: 500), () => true);
+  }
+
   @override
   Widget build(BuildContext context) {
-    CameraPosition initialLocation = CameraPosition(
-        zoom: 18,
-        target: Conf.testMode ? Store.parisPosition : LocationCache.location);
-
-    return Stack(children: [
-      GoogleMap(
-          mapType: MapType.normal,
-          myLocationEnabled: true,
-          markers: _markers
-            ..removeWhere((m) => _store.isUserUnliked(m.user.email)),
-          circles: Conf.displayAreaCircle ? _circles : null,
-          initialCameraPosition: initialLocation,
-          onMapCreated: (GoogleMapController controller) {
-            _controller.complete(controller);
-          }),
-      // barrier background dark container used when user card displayed
-      isModalDisplayed
-          ? Container(
-              color: barrierColor,
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              child: GestureDetector(onTap: () {
-                setState(() {
-                  isModalDisplayed = false;
-                  barrierColor = Colors.red;
-                });
-                Navigator.of(context, rootNavigator: true).pop(true);
+    return FutureBuilder(
+      future: _waitForBuildMap(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Column(children: [
+            Spacer(),
+            Container(
+              width: 50,
+              height: 50,
+              child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                      Theme.of(context).primaryColor)),
+            ),
+            Spacer(),
+          ]);
+        }
+        return Stack(children: [
+          GoogleMap(
+              mapType: MapType.normal,
+              myLocationEnabled: true,
+              markers: _markers
+                ..removeWhere((m) => _store.isUserUnliked(m.user.email)),
+              circles: Conf.displayAreaCircle ? _circles : null,
+              initialCameraPosition: CameraPosition(
+                zoom: 18,
+                target: Conf.testMode
+                    ? Store.parisPosition
+                    : LocationCache.location,
+              ),
+              onMapCreated: (GoogleMapController controller) {
+                _controller.complete(controller);
+                _fetchUsersAroundMe();
               }),
-            )
-          : Container()
-    ]);
+          // barrier background dark container used when user card displayed
+          isModalDisplayed
+              ? Container(
+                  color: barrierColor,
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  child: GestureDetector(onTap: () {
+                    setState(() {
+                      isModalDisplayed = false;
+                      barrierColor = Colors.red;
+                    });
+                    Navigator.of(context, rootNavigator: true).pop(true);
+                  }),
+                )
+              : Container()
+        ]);
+      },
+    );
   }
 }
