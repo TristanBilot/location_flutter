@@ -3,6 +3,7 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart' as locator;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:permission_handler/permission_handler.dart' as handler;
 import '../caches/location_cache.dart';
 import '../repositories/user_repository.dart';
 
@@ -36,7 +37,7 @@ class LocationController {
 
   Future<bool> isLocationEnabled() async {
     final status = LocationController.instance.permissionStatus;
-    final isEnabled = await Location().serviceEnabled();
+    final isEnabled = !await handler.Permission.locationWhenInUse.isDenied;
 
     return (isEnabled != null && isEnabled) ||
         (status != null && status == PermissionStatus.granted);

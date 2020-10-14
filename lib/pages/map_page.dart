@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:location/location.dart';
 import 'package:location_project/helpers/location_controller.dart';
 import 'package:location_project/pages/location_disabled_page.dart';
 import 'package:location_project/use_cases/matchs/matchs.dart';
@@ -11,10 +10,11 @@ class MapPage extends StatefulWidget {
   MapPage({Key key}) : super(key: key);
 
   @override
-  MapPageState createState() => MapPageState();
+  _MapPageState createState() => _MapPageState();
 }
 
-class MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
+class _MapPageState extends State<MapPage>
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   final List<Tab> tabs = <Tab>[
     Tab(icon: Icon(Icons.account_circle)),
     Tab(child: Text('')),
@@ -30,9 +30,24 @@ class MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
 
     _tabController = TabController(
         vsync: this, length: tabs.length, initialIndex: _initialIndex);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      setState(() {});
+      print('heyyy');
+    }
   }
 
   @override
@@ -55,7 +70,7 @@ class MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
               builder: (context, snapshot) {
                 if (snapshot.hasData)
                   return snapshot.data == false
-                      ? LocationDisabledPage(this)
+                      ? LocationDisabledPage()
                       : Map();
                 else {
                   return Text('waiting...');

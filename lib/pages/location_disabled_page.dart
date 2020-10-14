@@ -5,34 +5,16 @@ import 'package:location_project/use_cases/start_path/widgets/basic_button.dart'
 import 'package:location_project/widgets/textSF.dart';
 
 class LocationDisabledPage extends StatefulWidget {
-  final MapPageState mapPageState;
-
-  LocationDisabledPage(this.mapPageState, {Key key}) : super(key: key);
+  LocationDisabledPage({Key key}) : super(key: key);
 
   @override
   _LocationDisabledPageState createState() => _LocationDisabledPageState();
 }
 
-class _LocationDisabledPageState extends State<LocationDisabledPage>
-    with WidgetsBindingObserver {
+class _LocationDisabledPageState extends State<LocationDisabledPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      widget.mapPageState.setState(() {});
-      print('heyyy');
-    }
   }
 
   @override
