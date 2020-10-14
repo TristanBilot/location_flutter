@@ -64,8 +64,9 @@ class StartPathStep1State extends State<StartPathStep1>
         child: Column(
           children: [
             Breadcrumb(1),
+            Spacer(),
             Padding(
-              padding: EdgeInsets.only(top: 30, bottom: 30),
+              padding: EdgeInsets.only(top: 20, bottom: 30),
               child: TextSF(
                 'Wait, who are you ?',
                 isTitle: true,
@@ -83,13 +84,14 @@ class StartPathStep1State extends State<StartPathStep1>
               ],
             ),
             Padding(
-              padding: EdgeInsets.only(top: 40, bottom: 40),
+              padding: EdgeInsets.only(top: 20, bottom: 20),
               child: Column(
                 children: [
                   Divider(),
                 ],
               ),
             ),
+            Spacer(),
             Padding(
               padding: EdgeInsets.only(bottom: 30),
               child: TextSF(
@@ -97,33 +99,38 @@ class StartPathStep1State extends State<StartPathStep1>
                 isTitle: true,
               ),
             ),
-            Slider(
-              value: _sliderValue,
-              min: 0,
-              max: 70,
-              label: _sliderValue.round().toString(),
-              onChanged: (value) => setState(() {
-                if (value < 18) return;
-                _sliderValue = value;
-              }),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 30, bottom: 30),
-              child: Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.0),
-                    border: Border.all(color: Colors.black12, width: 3.0)),
-                child: Padding(
-                  padding: EdgeInsets.all(5),
-                  child: TextSF(
-                    _sliderValue.round().toString(),
-                    fontSize: 50,
-                    fontWeight: FontWeight.w700,
+            Row(
+              children: [
+                Spacer(),
+                Slider(
+                  value: _sliderValue,
+                  min: 0,
+                  max: 70,
+                  label: _sliderValue.round().toString(),
+                  onChanged: (value) => setState(() {
+                    if (value < 18) return;
+                    _sliderValue = value;
+                  }),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                      border: Border.all(color: Colors.black12, width: 3.0)),
+                  child: Padding(
+                    padding: EdgeInsets.all(5),
+                    child: TextSF(
+                      _sliderValue.round().toString(),
+                      fontSize: 44,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
-              ),
+                Spacer(),
+              ],
             ),
-            Divider(),
+            Padding(padding: EdgeInsets.only(top: 20), child: Divider()),
+            // Divider(),
+            Spacer(),
             Spacer(),
             BasicButton('NEXT', enabled: _isPageValid, onPressed: () {
               StartPathStore.instance.setUserGender(_selectedGender);
@@ -131,7 +138,7 @@ class StartPathStep1State extends State<StartPathStep1>
               Navigator.of(context).pushNamed(Routes.startPathStep2.value);
             }),
             Padding(
-              padding: EdgeInsets.only(bottom: 50),
+              padding: EdgeInsets.only(bottom: 20),
             )
           ],
         ),

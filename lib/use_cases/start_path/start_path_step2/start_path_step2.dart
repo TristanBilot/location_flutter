@@ -77,48 +77,51 @@ class StartPathStep2State extends State<StartPathStep2>
                 Spacer(),
               ],
             ),
+            // Padding(
+            Spacer(),
+            Divider(),
+            Spacer(),
             Padding(
-              padding: EdgeInsets.only(top: 40, bottom: 40),
-              child: Column(
-                children: [
-                  Divider(),
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(bottom: 30),
+              padding: EdgeInsets.only(bottom: 0),
               child: TextSF(
                 'Which range are you interesting in ?',
                 isTitle: true,
               ),
             ),
-            RangeSlider(
-              values: _sliderRangeValues,
-              min: 0,
-              max: 70,
-              onChanged: (values) => setState(() {
-                if (values.start < 18 || values.end < 18) return;
-                if (values.end - values.start < 5) return;
-                _sliderRangeValues = values;
-              }),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 30, bottom: 30),
-              child: Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.0),
-                    border: Border.all(color: Colors.black12, width: 3.0)),
-                child: Padding(
-                  padding: EdgeInsets.all(5),
-                  child: TextSF(
-                    '${_sliderRangeValues.start.round()}-${_sliderRangeValues.end.round()}',
-                    fontSize: 50,
-                    fontWeight: FontWeight.w700,
+            Row(
+              children: [
+                Spacer(),
+                RangeSlider(
+                  values: _sliderRangeValues,
+                  min: 0,
+                  max: 70,
+                  onChanged: (values) => setState(() {
+                    if (values.start < 18 || values.end < 18) return;
+                    if (values.end - values.start < 5) return;
+                    _sliderRangeValues = values;
+                  }),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 30, bottom: 30),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.0),
+                        border: Border.all(color: Colors.black12, width: 3.0)),
+                    child: Padding(
+                      padding: EdgeInsets.all(5),
+                      child: TextSF(
+                        '${_sliderRangeValues.start.round()}-${_sliderRangeValues.end.round()}',
+                        fontSize: 30,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                Spacer(),
+              ],
             ),
-            Divider(),
+
+            // Divider(),
             Spacer(),
             BasicButton('NEXT', enabled: _isPageValid, onPressed: () {
               StartPathStore.instance.setWantedAgeRange(List<int>.from([
@@ -129,7 +132,7 @@ class StartPathStep2State extends State<StartPathStep2>
               Navigator.of(context).pushNamed(Routes.startPathStep3.value);
             }),
             Padding(
-              padding: EdgeInsets.only(bottom: 50),
+              padding: EdgeInsets.only(bottom: 20),
             )
           ],
         ),
