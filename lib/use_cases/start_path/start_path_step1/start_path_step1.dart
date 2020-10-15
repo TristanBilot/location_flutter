@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:location_project/stores/routes.dart';
 import 'package:location_project/stores/start_path_store.dart';
+import 'package:location_project/use_cases/start_path/gender_circle_icon_factory.dart';
 import 'package:location_project/use_cases/start_path/widgets/basic_button.dart';
 import 'package:location_project/use_cases/start_path/widgets/breadcrumb.dart';
+import 'package:location_project/use_cases/start_path/widgets/equally_spaced_row.dart';
 import 'package:location_project/widgets/textSF.dart';
 import '../widgets/gender_circle_icon.dart';
 
@@ -29,9 +31,7 @@ class StartPathStep1State extends State<StartPathStep1>
 
   // GenderIconController implementation
   void resetGenderCircleStates() {
-    _circleIcons.forEach((icon) => icon.state.setState(() {
-          icon.state.isSelected = false;
-        }));
+    GenderCircleIconState.resetGenderCircleStates(_circleIcons);
   }
 
   void updateSelectedGender(Gender gender) {
@@ -46,14 +46,7 @@ class StartPathStep1State extends State<StartPathStep1>
   void initState() {
     super.initState();
 
-    _circleIcons = [
-      GenderCircleIcon(
-          Gender.Male, '💆‍♂️', 'Male', GenderCircleIconState(), this, null),
-      GenderCircleIcon(Gender.Female, '🙋‍♀️', 'Female',
-          GenderCircleIconState(), this, null),
-      GenderCircleIcon(
-          Gender.Other, '🤷', 'Other', GenderCircleIconState(), this, null)
-    ];
+    _circleIcons = GenderCircleIconFactory().makeGenderIcons(this, null);
   }
 
   @override
@@ -72,18 +65,7 @@ class StartPathStep1State extends State<StartPathStep1>
                 isTitle: true,
               ),
             ),
-
-            Row(
-              children: [
-                Spacer(),
-                _circleIcons[0],
-                Spacer(),
-                _circleIcons[1],
-                Spacer(),
-                _circleIcons[2],
-                Spacer(),
-              ],
-            ),
+            EquallySpacedRow(_circleIcons),
             Padding(
               padding: EdgeInsets.only(top: 20, bottom: 20),
               child: Column(
@@ -133,6 +115,11 @@ class StartPathStep1State extends State<StartPathStep1>
             // Divider(),
             Spacer(),
             Spacer(),
+            BasicButton(
+              'ROUTE TO MAP',
+              onPressed: () =>
+                  Navigator.of(context).pushReplacementNamed(Routes.map.value),
+            ),
             BasicButton('NEXT', enabled: _isPageValid, onPressed: () {
               StartPathStore.instance.setUserGender(_selectedGender);
               StartPathStore.instance.setUserAge(_sliderValue.toInt());

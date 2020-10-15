@@ -29,6 +29,12 @@ class GenderCircleIconState extends State<GenderCircleIcon> {
     super.initState();
   }
 
+  static void resetGenderCircleStates(List<GenderCircleIcon> _circleIcons) {
+    _circleIcons.forEach((icon) => icon.state.setState(() {
+          icon.state.isSelected = false;
+        }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(

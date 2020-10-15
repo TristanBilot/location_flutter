@@ -3,6 +3,7 @@ import 'package:location_project/helpers/location_controller.dart';
 import 'package:location_project/pages/location_disabled_page.dart';
 import 'package:location_project/use_cases/matchs/matchs.dart';
 import 'package:location_project/use_cases/start_path/start_path_step1/start_path_step1.dart';
+import 'package:location_project/use_cases/account/account_page.dart';
 import 'package:location_project/widgets/positioned_app_icon.dart';
 import '../widgets/map.dart';
 
@@ -16,9 +17,7 @@ class MapPage extends StatefulWidget {
 class _MapPageState extends State<MapPage>
     with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   final List<Tab> tabs = <Tab>[
-    Tab(
-      icon: Icon(Icons.account_circle),
-    ),
+    Tab(icon: Icon(Icons.account_circle)),
     Tab(child: Text('')),
     Tab(icon: Icon(Icons.textsms))
   ];
@@ -66,7 +65,7 @@ class _MapPageState extends State<MapPage>
           physics: NeverScrollableScrollPhysics(),
           controller: _tabController,
           children: [
-            StartPathStep1(),
+            AccountPage(),
             FutureBuilder(
               future: _displayMapIfLocationEnabled(),
               builder: (context, snapshot) {

@@ -23,7 +23,7 @@ class TextSF extends StatelessWidget {
     letterSpacing: LetterSpacing,
   );
 
-  final String data;
+  final String text;
   final TextAlign align;
   final TextStyle style;
   final double fontSize;
@@ -34,7 +34,7 @@ class TextSF extends StatelessWidget {
   final Color color;
 
   TextSF(
-    this.data, {
+    this.text, {
     this.align,
     this.fontSize = FontSize,
     this.fontWeight = Weight,
@@ -61,7 +61,7 @@ class TextSF extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      data,
+      text,
       textAlign: align,
       style: style,
     );
