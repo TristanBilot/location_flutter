@@ -138,12 +138,14 @@ class _AccountPageState extends State<AccountPage> with GenderIconController {
               AccountLogOutListTile(
                 'LOG OUT',
                 color: Theme.of(context).primaryColor,
-                onPressed: () => print(''),
+                onPressed: () => Navigator.of(context)
+                    .pushReplacementNamed(Routes.login.value),
               ),
               AccountLogOutListTile(
                 'DELETE MY ACCOUNT',
                 color: Colors.red[500],
-                onPressed: () => print('hey'),
+                onPressed: () => UserStore.instance
+                    .setWantedAgeRange(List<int>.from([10, 12])),
               ),
               Padding(
                 padding: EdgeInsets.only(bottom: AccountLogOutListTile.Padding),
