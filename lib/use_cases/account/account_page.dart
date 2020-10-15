@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/stores/routes.dart';
+import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/account/widgets/account_list_tile.dart';
 import 'package:location_project/use_cases/account/widgets/account_log_out_list_tile.dart';
 import 'package:location_project/use_cases/account/widgets/account_section_title.dart';
@@ -120,11 +121,13 @@ class _AccountPageState extends State<AccountPage> with GenderIconController {
               AccountSectionTitle('Parameters'),
               AccountListTile(
                 title: 'Show my profile',
-                trailing: Switch.adaptive(value: true, onChanged: (_) => null),
+                trailing:
+                    Switch.adaptive(value: true, onChanged: (newvalue) => null),
               ),
               AccountListTile(
                 title: 'Show my distance',
-                trailing: Switch.adaptive(value: true, onChanged: (_) => null),
+                trailing:
+                    Switch.adaptive(value: true, onChanged: (newvalue) => null),
               ),
               AccountListTile(
                 title: 'App language',
@@ -135,7 +138,7 @@ class _AccountPageState extends State<AccountPage> with GenderIconController {
               AccountLogOutListTile(
                 'LOG OUT',
                 color: Theme.of(context).primaryColor,
-                onPressed: () => print('hey'),
+                onPressed: () => print(''),
               ),
               AccountLogOutListTile(
                 'DELETE MY ACCOUNT',

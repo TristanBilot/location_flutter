@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:location_project/use_cases/account/widgets/account_list_tile.dart';
 import 'package:location_project/widgets/textSF.dart';
 
+enum Language { French, English }
+
 class AccountLanguagePage extends StatefulWidget {
   AccountLanguagePage({Key key}) : super(key: key);
 
