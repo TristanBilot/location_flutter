@@ -2,6 +2,7 @@ enum Routes {
   login,
   map,
   account,
+  languages,
   startPathStep1,
   startPathStep2,
   startPathStep3,

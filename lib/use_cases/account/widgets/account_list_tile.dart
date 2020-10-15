@@ -9,6 +9,8 @@ class AccountListTile extends StatefulWidget {
   final Widget leading;
   final Widget bottom;
   final bool withDivider;
+  final Function onTap;
+  final double extraTopPadding;
 
   AccountListTile(
       {Key key,
@@ -17,7 +19,9 @@ class AccountListTile extends StatefulWidget {
       this.leading,
       this.trailing,
       this.bottom,
-      this.withDivider = true})
+      this.withDivider = true,
+      this.onTap,
+      this.extraTopPadding = 0})
       : super(key: key);
 
   @override
@@ -28,21 +32,21 @@ class _AccountListTileState extends State<AccountListTile> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.white,
       elevation: 0,
       margin: EdgeInsets.all(0),
       child: Column(
         children: [
           ListTile(
             contentPadding: EdgeInsets.only(
-              left: AccountListTile.SidePadding,
-              right: AccountListTile.SidePadding,
-            ),
+                left: AccountListTile.SidePadding,
+                right: AccountListTile.SidePadding,
+                top: widget.extraTopPadding),
             title: TextSF(widget.title),
             subtitle:
                 widget.substitle != null ? TextSF(widget.substitle) : null,
             trailing: widget.trailing,
             leading: widget.leading,
+            onTap: widget.onTap,
           )
         ]
           /* all account parameters tiles */
