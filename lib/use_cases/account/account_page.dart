@@ -6,6 +6,7 @@ import 'package:location_project/use_cases/start_path/gender_circle_icon_factory
 import 'package:location_project/use_cases/start_path/start_path_step1/start_path_step1.dart';
 import 'package:location_project/use_cases/start_path/widgets/equally_spaced_row.dart';
 import 'package:location_project/use_cases/start_path/widgets/gender_circle_icon.dart';
+import 'package:location_project/widgets/cupertino_range_slider.dart';
 import 'package:location_project/widgets/textSF.dart';
 
 class AccountPage extends StatefulWidget {
@@ -99,6 +100,22 @@ class _AccountPageState extends State<AccountPage> with GenderIconController {
             AccountListTile(
               title: 'Gender',
               bottom: EquallySpacedRow(_circleIcons),
+            ),
+            AccountListTile(
+              title: 'Age range',
+              trailing: TextSF('18-25 years old'),
+              bottom: Container(
+                width: MediaQuery.of(context).size.width -
+                    2 * AccountListTile.SidePadding,
+                child: CupertinoRangeSlider(
+                  minValue: 20,
+                  maxValue: 30,
+                  min: 18,
+                  max: 70,
+                  onMinChanged: (value) => {},
+                  onMaxChanged: (value) => {},
+                ),
+              ),
             )
           ]),
       ),

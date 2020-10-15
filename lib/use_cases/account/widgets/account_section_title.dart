@@ -11,9 +11,10 @@ class AccountSectionTitle extends StatelessWidget {
     return Container(
       padding: EdgeInsets.fromLTRB(20, 10, 0, 10),
       child: TextSF(
-        title,
-        fontSize: 20,
+        title.toUpperCase(),
+        fontSize: 16,
         fontWeight: FontWeight.w600,
+        color: Colors.black38,
       ),
     );
   }

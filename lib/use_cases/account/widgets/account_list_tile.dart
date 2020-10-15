@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:location_project/widgets/textSF.dart';
 
 class AccountListTile extends StatefulWidget {
+  static const SidePadding = 20.0;
   final String title;
   final String substitle;
   final Widget trailing;
@@ -31,13 +32,18 @@ class _AccountListTileState extends State<AccountListTile> {
       child: Column(
         children: [
           ListTile(
+            contentPadding: EdgeInsets.only(
+              left: AccountListTile.SidePadding,
+              right: AccountListTile.SidePadding,
+            ),
             title: TextSF(widget.title),
             subtitle:
                 widget.substitle != null ? TextSF(widget.substitle) : null,
             trailing: widget.trailing,
             leading: widget.leading,
           )
-        ]..addAll(
+        ]
+          ..addAll(
             widget.bottom == null
                 ? []
                 : [
@@ -45,6 +51,9 @@ class _AccountListTileState extends State<AccountListTile> {
                       child: widget.bottom,
                     ),
                   ],
+          )
+          ..add(
+            Container(padding: EdgeInsets.only(top: 5), child: Divider()),
           ),
       ),
     );
