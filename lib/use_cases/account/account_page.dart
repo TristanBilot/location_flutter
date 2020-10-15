@@ -94,14 +94,11 @@ class _AccountPageState extends State<AccountPage> with GenderIconController {
         ]..addAll([
             AccountSectionTitle('I\'m looking for'),
             AccountListTile(
-              title: 'Show my profile',
-              trailing: Switch.adaptive(value: true, onChanged: (_) => null),
-            ),
-            AccountListTile(
               title: 'Gender',
               bottom: EquallySpacedRow(_circleIcons),
             ),
             AccountListTile(
+              withDivider: false,
               title: 'Age range',
               trailing: TextSF('18-25 years old'),
               bottom: Container(
@@ -116,7 +113,16 @@ class _AccountPageState extends State<AccountPage> with GenderIconController {
                   onMaxChanged: (value) => {},
                 ),
               ),
-            )
+            ),
+            AccountSectionTitle('Parameters'),
+            AccountListTile(
+              title: 'Show my profile',
+              trailing: Switch.adaptive(value: true, onChanged: (_) => null),
+            ),
+            AccountListTile(
+              title: 'Show my distance',
+              trailing: Switch.adaptive(value: true, onChanged: (_) => null),
+            ),
           ]),
       ),
     );

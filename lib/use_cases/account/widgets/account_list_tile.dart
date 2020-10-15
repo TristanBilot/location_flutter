@@ -8,6 +8,7 @@ class AccountListTile extends StatefulWidget {
   final Widget trailing;
   final Widget leading;
   final Widget bottom;
+  final bool withDivider;
 
   AccountListTile(
       {Key key,
@@ -15,7 +16,8 @@ class AccountListTile extends StatefulWidget {
       this.substitle,
       this.leading,
       this.trailing,
-      this.bottom})
+      this.bottom,
+      this.withDivider = true})
       : super(key: key);
 
   @override
@@ -43,17 +45,22 @@ class _AccountListTileState extends State<AccountListTile> {
             leading: widget.leading,
           )
         ]
+          /* all account parameters tiles */
           ..addAll(
             widget.bottom == null
                 ? []
                 : [
                     Container(
+                      padding: EdgeInsets.only(bottom: 10),
                       child: widget.bottom,
                     ),
                   ],
           )
+          /* divider or space to end the tile */
           ..add(
-            Container(padding: EdgeInsets.only(top: 5), child: Divider()),
+            widget.withDivider
+                ? Container(child: Divider())
+                : Container(padding: EdgeInsets.only(top: 10)),
           ),
       ),
     );
