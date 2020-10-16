@@ -46,7 +46,7 @@ class MapState extends State<Map> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _handleLocationIfNeeded();
+    LocationController.instance.handleLocationIfNeeded();
 
     _loadMapStyles().then((_) => _setMapStyle());
     // _fetchUsersAroundMe();
@@ -96,11 +96,6 @@ class MapState extends State<Map> with WidgetsBindingObserver {
   */
   void setStateIfMounted(Function f) {
     if (mounted) setState(f);
-  }
-
-  Future _handleLocationIfNeeded() async {
-    if (await LocationController.instance.isLocationEnabled())
-      LocationController.instance.handleLocation();
   }
 
   Future _fetchUsersAroundMe() async {

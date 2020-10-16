@@ -57,37 +57,24 @@ class AreaFetchingRepository {
       List<User> usersList = List();
       users.forEach((user) async {
         userCount++;
+        /* fresh position of each user */
         final geoPoint = user.data()[UserField.Position.value]['geopoint'];
-        final geoFirePoint =
-            GeoFirePoint(geoPoint.latitude, geoPoint.longitude);
-        final distance = (GeoFirePoint.distanceBetween(
-                    to: center.coords, from: geoFirePoint.coords) *
-                1000)
-            .toInt();
         // if (geoPoint.latitude != center.latitude &&
         //     geoPoint.longitude != center.longitude){
         User newUser;
         if (!UserCache.isInit || !UserCache.userExists(user.id)) {
-          final icon = await _imageRepo.fetchUserIcon(user.id);
-          final downloadURL = await _imageRepo.getPictureDownloadURL(user.id);
-          newUser = User(
-              user.id,
-              user.data()[UserField.FirstName.value],
-              user.data()[UserField.LastName.value],
-              LatLng(geoPoint.latitude, geoPoint.longitude),
-              icon,
-              downloadURL,
-              distance);
+          newUser = await User.from(user);
         } else {
-          newUser = UserCache.getUser(user.id);
+          /*when getting a user already in cache, we need to update
+          the old coordinates with the newest */
+          newUser = await User.fromCache(user);
           newUser.coord = LatLng(geoPoint.latitude, geoPoint.longitude);
         }
-        if (UserCache.isInit) {
-          UserCache.putUser(newUser);
-        }
+        if (UserCache.isInit) UserCache.putUser(newUser);
         usersList.add(newUser);
+        /* userCount used to know when the last user is reached */
         if (userCount == users.length) completion(usersList);
-        print('=> in area: ${newUser.email} at $distance meters');
+        print('=> in area: ${newUser.email} at ${newUser.distance} meters');
         // }
       });
     });

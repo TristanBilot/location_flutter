@@ -32,6 +32,7 @@ class _AccountPageState extends State<AccountPage>
 
   bool _isShowMyProfile;
   bool _isShowMyDistance;
+  List<double> _wantedAgeValues;
 
   @override
   void initState() {
@@ -42,6 +43,7 @@ class _AccountPageState extends State<AccountPage>
 
     _isShowMyProfile = false;
     _isShowMyDistance = false;
+    _wantedAgeValues = List.from([18.0, 25.0]);
   }
 
   @override
@@ -52,6 +54,14 @@ class _AccountPageState extends State<AccountPage>
       else
         _selectedGenders.remove(gender);
       UserStore.instance.setWantedGenders(_selectedGenders.toList());
+    });
+  }
+
+  void _handleWantedAgeModify(int index, double value) {
+    setState(() {
+      _wantedAgeValues[index] = value;
+      UserStore.instance
+          .setWantedAgeRange(_wantedAgeValues.map((e) => e.round()).toList());
     });
   }
 
@@ -111,17 +121,18 @@ class _AccountPageState extends State<AccountPage>
               AccountListTile(
                 withDivider: false,
                 title: 'Age range',
-                trailing: TextSF('18-25 years old'),
+                trailing: TextSF(
+                    '${_wantedAgeValues[0].round()}-${_wantedAgeValues[1].round()} years old'),
                 bottom: Container(
                   width: MediaQuery.of(context).size.width -
                       2 * AccountListTile.SidePadding,
                   child: CupertinoRangeSlider(
-                    minValue: 20,
-                    maxValue: 30,
+                    minValue: _wantedAgeValues[0],
+                    maxValue: _wantedAgeValues[1],
                     min: 18,
                     max: 70,
-                    onMinChanged: (value) => {},
-                    onMaxChanged: (value) => {},
+                    onMinChanged: (value) => _handleWantedAgeModify(0, value),
+                    onMaxChanged: (value) => _handleWantedAgeModify(1, value),
                   ),
                 ),
               ),
@@ -149,6 +160,7 @@ class _AccountPageState extends State<AccountPage>
                     }),
               ),
               AccountListTile(
+                withDivider: false,
                 title: 'App language',
                 trailing: Icon(Icons.chevron_right),
                 onTap: () =>
@@ -163,8 +175,7 @@ class _AccountPageState extends State<AccountPage>
               AccountLogOutListTile(
                 'DELETE MY ACCOUNT',
                 color: Colors.red[500],
-                onPressed: () => UserStore.instance
-                    .setWantedAgeRange(List<int>.from([10, 12])),
+                onPressed: () => print('hey'),
               ),
               Padding(
                 padding: EdgeInsets.only(bottom: AccountLogOutListTile.Padding),

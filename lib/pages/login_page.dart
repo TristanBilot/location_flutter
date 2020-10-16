@@ -45,8 +45,9 @@ class _LoginPageState extends State<LoginPage> {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                   ),
                 ),
-                onPressed: () =>
-                    Navigator.pushReplacementNamed(context, Routes.map.value)),
+                onPressed: () {
+                  Navigator.pushReplacementNamed(context, Routes.map.value);
+                }),
             Spacer(),
           ],
         ))));

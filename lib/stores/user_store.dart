@@ -9,10 +9,6 @@ import '../stores/extensions.dart';
 class UserStore extends ChangeNotifier {
   /* data get remotely from Firestore */
   User _user;
-  List<int> _wantedAgeRange;
-  List<Gender> _wantedGenders;
-  bool _showMyprofile;
-  bool _showMyDistance;
 
   /* data get from SharedPreferences */
   Language _language;
@@ -21,21 +17,41 @@ class UserStore extends ChangeNotifier {
   UserRepository _repo;
   UserLocalRepository _localRepo;
 
-  User get user => _user;
-
   UserStore() {
     _repo = UserRepository();
-    _localRepo = UserLocalRepository();
   }
 
-  /* REMOVE LATER*/
-  String idMock = 'bilot.tristan@hotmail.fr';
+  /// Due to asynchronous calls when instanciating, this
+  /// class need to load using await at the beginning
+  /// of the app (usualy in the main). Should be called one.
+  static Future<UserStore> get startingInstance async {
+    _instance = UserStore();
+    _instance._localRepo = await UserLocalRepository.startingInstance;
+    await _instance._initStore();
+    return _instance;
+  }
 
   static UserStore _instance;
-  static UserStore get instance {
-    return (_instance = _instance == null ? UserStore() : _instance);
+  static UserStore get instance => _instance;
+
+  /// Init asynchronously the store at the launch of the
+  /// app. Get the `id` from the local repo, then, get
+  /// the user's data using the real repo.
+  Future<void> _initStore() async {
+    if (!_localRepo.isUserLoggedIn()) return;
+    // throw Exception('_initStore(): No user logged in !');
+    final id = _localRepo.getLoggedUserID();
+    _user = await _repo.getUserFromID(id);
+    _language = _localRepo.getAppLanguage();
   }
 
+  bool isuserLoggedIn() {
+    return _localRepo.isUserLoggedIn();
+  }
+
+  /// These methods are used to update the data of the user
+  /// in local with this store class and in Firestore using
+  /// the repo or local repo for local infos.
   Future<void> setLanguage(Language val) async {
     _language = val;
     _localRepo.setLanguage(val);
@@ -43,37 +59,28 @@ class UserStore extends ChangeNotifier {
   }
 
   Future<void> setWantedAgeRange(List<int> val) async {
-    _wantedAgeRange = val;
-    await _repo.updateUserSettingValue(
-        idMock, UserFireStoreKey.WantedAgeRange, val);
+    _repo.getUserFromID(_user.email);
+    _user.settings.wantedAgeRange = val;
+    await _repo.updateUserValue(_user.email, UserField.WantedAgeRange, val);
     notifyListeners();
   }
 
   Future<void> setWantedGenders(List<Gender> val) async {
-    _wantedGenders = val;
+    _user.settings.wantedGenders = val;
     List<String> strings = val.map((e) => e.value).toList();
-    await _repo.updateUserSettingValue(
-        idMock, UserFireStoreKey.WantedGenders, strings);
+    await _repo.updateUserValue(_user.email, UserField.WantedGenders, strings);
     notifyListeners();
   }
 
   Future<void> setShowMyProfile(bool val) async {
-    _showMyprofile = val;
-    await _repo.updateUserSettingValue(
-        idMock, UserFireStoreKey.ShowMyProfile, val);
+    _user.settings.showMyprofile = val;
+    await _repo.updateUserValue(_user.email, UserField.ShowMyProfile, val);
     notifyListeners();
   }
 
   Future<void> setShowMyDistance(bool val) async {
-    _showMyDistance = val;
-    await _repo.updateUserSettingValue(
-        idMock, UserFireStoreKey.ShowMyDistance, val);
-    notifyListeners();
-  }
-
-  Future<void> setUser(User val) async {
-    _user = val;
-    await _repo.insertOrUpdateUser(val);
+    _user.settings.showMyDistance = val;
+    await _repo.updateUserValue(_user.email, UserField.ShowMyDistance, val);
     notifyListeners();
   }
 }

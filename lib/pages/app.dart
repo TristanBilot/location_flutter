@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/themes/app_theme.dart';
 import 'package:location_project/use_cases/account/account_language_page.dart';
 import 'package:location_project/use_cases/account/account_page.dart';
@@ -9,7 +10,6 @@ import 'package:location_project/use_cases/start_path/start_path_step4/start_pat
 import '../pages/login_page.dart';
 import '../pages/map_page.dart';
 import '../stores/routes.dart';
-import '../stores/extensions.dart';
 
 class App extends StatefulWidget {
   App({Key key}) : super(key: key);
@@ -22,7 +22,9 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: Routes.startPathStep1.value,
+      initialRoute: UserStore.instance.isuserLoggedIn()
+          ? Routes.map.value
+          : Routes.login.value,
       routes: <String, WidgetBuilder>{
         Routes.login.value: (context) => LoginPage(),
         Routes.map.value: (context) => MapPage(),

@@ -9,12 +9,15 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 class LocationCache {
   static LatLng _cachedLocation;
 
-  /* return the current location as LatLng */
+  /// return the current location as LatLng
   static LatLng get location => _cachedLocation;
 
-  /* reutrn the current location as GeoFirePoint */
+  /// return the current location as GeoFirePoint
   static GeoFirePoint get locationGeoPoint =>
       GeoFirePoint(_cachedLocation.latitude, _cachedLocation.longitude);
+
+  /// when the location is not enabled, we need a dummy location
+  static GeoFirePoint get dummyLocationGeoPoint => GeoFirePoint(0, 0);
 
   static void init(LatLng location) {
     putLocation(location);

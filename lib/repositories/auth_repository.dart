@@ -4,7 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:location_project/caches/location_cache.dart';
 import 'package:location_project/caches/user_cache.dart';
+import 'package:location_project/models/user_settings.dart';
+import 'package:location_project/repositories/user_local_repository.dart';
 import 'package:location_project/stores/store.dart';
+import 'package:location_project/stores/user_store.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 import 'image_repository.dart';
@@ -39,7 +43,7 @@ class AuthRepository {
         .logInWithReadPermissions(['email', 'public_profile']);
     switch (result.status) {
       case FacebookLoginStatus.loggedIn:
-        await _logToFirebaseAndUpdateData(context, result.accessToken.token);
+        await _loginWithFacebook(context, result.accessToken.token);
         break;
 
       case FacebookLoginStatus.cancelledByUser:
@@ -55,19 +59,20 @@ class AuthRepository {
 
   /*
   ^ FUNCTION
-  * Log out from Facebook API
+  * Log out from Facebook API and clear shared preferences
   */
   Future<void> logOut() async {
+    await _forgetLoggedUser();
     await _facebookLogin.logOut();
   }
 
   /*
   ^ PRIVATE FUNCTION
   * This function is called when the Facebook log in is a success.
-  * It try to connect to FirebaseAuth and fetch user's json data 
+  * It trie to connect to FirebaseAuth and fetch user's json data 
   * in order to insert or update the database
 */
-  Future _logToFirebaseAndUpdateData(BuildContext context, String token) async {
+  Future _loginWithFacebook(BuildContext context, String token) async {
     await FirebaseAuth.instance
         .signInWithCredential(FacebookAuthProvider.credential(token));
     /* get Facebook profile */
@@ -77,22 +82,38 @@ class AuthRepository {
     final icon = await _repo.fetchUserIcon(id);
 
     my.User fbUser = my.User(
-        data['email'],
-        data['first_name'],
-        data['last_name'],
-        LocationCache.location,
-        icon,
-        data['picture']['data']['url'],
-        0);
+      data['email'],
+      data['first_name'],
+      data['last_name'],
+      LocationCache.location,
+      icon,
+      data['picture']['data']['url'],
+      0,
+      UserSettings.DefaultUserSettings,
+    );
 
     final hasPicture = !data['picture']['data']['is_silhouette'];
     if (hasPicture) {
-      await _userRepo.insertOrUpdateUser(fbUser);
+      if (!await _userRepo.usersExists(id))
+        await _userRepo.insertUserForFirstConnection(fbUser);
       Navigator.of(context).pushReplacementNamed('/map');
     } else {/* redirect to picker */}
     /* init of the UserCache, no use should be done before that */
+
+    // FIXME: remove loggedUser and use user store instead
     UserCache.init(fbUser);
-    await logOut();
+    await _rememberLoggedUser(id);
+    // await logOut();
     print('[+] ' + fbUser.email + ' connected !');
+  }
+
+  /// See UserLocalRepository.rememberLoggedUser
+  Future<void> _rememberLoggedUser(String id) async {
+    return UserLocalRepository.instance.rememberLoggedUser(id);
+  }
+
+  /// See UserLocalRepository.forgetLoggedUser
+  Future<void> _forgetLoggedUser() async {
+    return UserLocalRepository.instance.forgetLoggedUser();
   }
 }

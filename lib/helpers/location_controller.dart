@@ -65,6 +65,11 @@ class LocationController {
     });
   }
 
+  Future handleLocationIfNeeded() async {
+    if (await LocationController.instance.isLocationEnabled())
+      instance.handleLocation();
+  }
+
   /*
   ^ FUNCTION
   * Returns the current location of the device.
