@@ -32,16 +32,16 @@ class UserRepository {
   ^ FUNCTION
   * Insert a new user in the firestore if it does not exists
   * Change the values if the user already exists.
-  * Insert the last_name, first_name and position with the key 'email'
+  * Insert the LastName, FirstName and position with the key 'email'
   * of the user, the picture is sent to the storage
   */
   Future<void> insertOrUpdateUser(User user) async {
     final GeoFirePoint geoPoint =
         Conf.testMode ? Store.parisGeoPosition : LocationCache.locationGeoPoint;
     await _firestore.collection(UserFireStoreRootKey).doc(user.email).set({
-      'last_name': user.lastName,
-      'first_name': user.firstName,
-      'position': geoPoint.data,
+      UserField.LastName.value: user.lastName,
+      UserField.FirstName.value: user.firstName,
+      UserField.Position.value: geoPoint.data,
     });
     File userPicture = await _imageRepo.urlToFile(user.pictureURL);
     return await _imageRepo.uploadFile(
@@ -50,7 +50,7 @@ class UserRepository {
 
   Future<void> updateUserLocation(User user, GeoFirePoint location) async {
     await _firestore.collection(UserFireStoreRootKey).doc(user.email).update({
-      'position': location.data,
+      UserField.Position.value: location.data,
     });
     // ++++ need catch error
   }
@@ -81,19 +81,19 @@ class UserRepository {
   //       _geo.point(latitude: 48.916010, longitude: 2.179672);
 
   //   // _firestore.collection(UserFireStoreRootKey).doc('carrieres@hotmail.fr').set({
-  //   //   'first_name': 'Tristan',
-  //   //   'last_name': 'Bilot',
-  //   //   'position': geoPoint.data
+  //   //   UserField.FirstName.value: 'Tristan',
+  //   //   UserField.LastName.value: 'Bilot',
+  //   //   UserField.Position.value: geoPoint.data
   //   // });
   //   _firestore.collection(UserFireStoreRootKey).doc('carrieres2@hotmail.fr').set({
-  //     'first_name': 'Kendall',
-  //     'last_name': 'Jenner',
-  //     'position': carrieres.data
+  //     UserField.FirstName.value: 'Kendall',
+  //     UserField.LastName.value: 'Jenner',
+  //     UserField.Position.value: carrieres.data
   //   });
   //   _firestore.collection(UserFireStoreRootKey).doc('carrieres3@hotmail.fr').set({
-  //     'first_name': 'Camille',
-  //     'last_name': 'Houly',
-  //     'position': carrieres_2.data
+  //     UserField.FirstName.value: 'Camille',
+  //     UserField.LastName.value: 'Houly',
+  //     UserField.Position.value: carrieres_2.data
   //   });
   // }
 
@@ -110,13 +110,13 @@ class UserRepository {
   //     'email': 'kendall@hotmail.fr',
   //     'firstName': 'Kendall',
   //     'lastName': 'Jenner',
-  //     'position': paris13.data
+  //     UserField.Position.value: paris13.data
   //   });
   //   _firestore.collection(UserFireStoreRootKey).doc('bilot.tristan@hotmail.fr').set({
   //     'email': 'camille@hotmail.fr',
   //     'firstName': 'Camille',
   //     'lastName': 'Houly',
-  //     'position': paris13_2.data
+  //     UserField.Position.value: paris13_2.data
   //   });
   // }
 }

@@ -8,6 +8,7 @@ import '../models/user.dart';
 import '../stores/store.dart';
 import '../caches/user_cache.dart';
 import '../stores/conf.dart';
+import '../stores/extensions.dart';
 
 class AreaFetchingRepository {
   Geoflutterfire _geo;
@@ -33,10 +34,12 @@ class AreaFetchingRepository {
 
     final GeoFirePoint center =
         Conf.testMode ? Store.parisGeoPosition : LocationCache.locationGeoPoint;
-    final field = 'position';
     Stream<List<DocumentSnapshot>> stream = _geo
         .collection(collectionRef: ref)
-        .within(center: center, radius: radius / 1000, field: field);
+        .within(
+            center: center,
+            radius: radius / 1000,
+            field: UserField.Position.value);
     return _listenAreaStream(stream, center, completion);
   }
 
@@ -54,7 +57,7 @@ class AreaFetchingRepository {
       List<User> usersList = List();
       users.forEach((user) async {
         userCount++;
-        final geoPoint = user.data()['position']['geopoint'];
+        final geoPoint = user.data()[UserField.Position.value]['geopoint'];
         final geoFirePoint =
             GeoFirePoint(geoPoint.latitude, geoPoint.longitude);
         final distance = (GeoFirePoint.distanceBetween(
@@ -69,8 +72,8 @@ class AreaFetchingRepository {
           final downloadURL = await _imageRepo.getPictureDownloadURL(user.id);
           newUser = User(
               user.id,
-              user.data()['first_name'],
-              user.data()['last_name'],
+              user.data()[UserField.FirstName.value],
+              user.data()[UserField.LastName.value],
               LatLng(geoPoint.latitude, geoPoint.longitude),
               icon,
               downloadURL,

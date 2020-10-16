@@ -1,5 +1,12 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+enum UserField {
+  Email,
+  FirstName,
+  LastName,
+  Position,
+}
+
 class User {
   String email;
   String firstName;
