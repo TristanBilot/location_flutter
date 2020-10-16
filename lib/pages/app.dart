@@ -9,6 +9,7 @@ import 'package:location_project/use_cases/start_path/start_path_step4/start_pat
 import '../pages/login_page.dart';
 import '../pages/map_page.dart';
 import '../stores/routes.dart';
+import '../stores/extensions.dart';
 
 class App extends StatefulWidget {
   App({Key key}) : super(key: key);

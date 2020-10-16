@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/stores/routes.dart';
@@ -7,6 +9,7 @@ import 'package:location_project/use_cases/account/widgets/account_log_out_list_
 import 'package:location_project/use_cases/account/widgets/account_section_title.dart';
 import 'package:location_project/use_cases/start_path/gender_circle_icon_factory.dart';
 import 'package:location_project/use_cases/start_path/start_path_step1/start_path_step1.dart';
+import 'package:location_project/use_cases/start_path/start_path_step2/start_path_step2.dart';
 import 'package:location_project/use_cases/start_path/widgets/equally_spaced_row.dart';
 import 'package:location_project/use_cases/start_path/widgets/gender_circle_icon.dart';
 import 'package:location_project/widgets/cupertino_range_slider.dart';
@@ -22,29 +25,27 @@ class AccountPage extends StatefulWidget {
   _AccountPageState createState() => _AccountPageState();
 }
 
-class _AccountPageState extends State<AccountPage> with GenderIconController {
+class _AccountPageState extends State<AccountPage>
+    with GenderMultiIconController {
   List<GenderCircleIcon> _circleIcons;
-  Gender _selectedGender;
-
-  UserRepository _userRepo;
+  HashSet<Gender> _selectedGenders;
 
   @override
   void initState() {
     super.initState();
 
-    _circleIcons = GenderCircleIconFactory().makeGenderIcons(this, null);
-    _userRepo = UserRepository();
+    _circleIcons = GenderCircleIconFactory().makeGenderIcons(null, this);
+    _selectedGenders = HashSet();
   }
 
-  // GenderIconController implementation
-  void resetGenderCircleStates() {
-    GenderCircleIconState.resetGenderCircleStates(_circleIcons);
-  }
-
-  void updateSelectedGender(Gender gender) {
+  @override
+  void iconDidSelected(Gender gender, bool isSelected) {
     setState(() {
-      _selectedGender = gender;
-      /* update user's prefered gender with user repo */
+      if (isSelected)
+        _selectedGenders.add(gender);
+      else
+        _selectedGenders.remove(gender);
+      UserStore.instance.setWantedGenders(_selectedGenders.toList());
     });
   }
 

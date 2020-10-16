@@ -6,6 +6,7 @@ import 'image_repository.dart';
 import '../models/user.dart';
 import '../stores/store.dart';
 import '../stores/conf.dart';
+import '../stores/extensions.dart';
 
 enum UserFireStoreKey {
   WantedGenders,
@@ -16,7 +17,6 @@ enum UserFireStoreKey {
 
 class UserRepository {
   static const UserFireStoreRootKey = 'locations';
-  static const UserFireStoreSettingsKey = 'settings';
 
   Geoflutterfire _geo;
   FirebaseFirestore _firestore;
@@ -61,26 +61,9 @@ class UserRepository {
   /// static keys in the repo and `value` a dynamic value;
   Future<void> updateUserSettingValue(
       String id, UserFireStoreKey key, dynamic value) async {
-    final String keyString = UserRepository.convertKeyToString(key);
     await _firestore.doc([UserFireStoreRootKey, id].join('/')).update({
-      UserFireStoreSettingsKey: {
-        keyString: value,
-      }
+      key.value: value,
     });
-  }
-
-  static String convertKeyToString(UserFireStoreKey key) {
-    switch (key) {
-      case UserFireStoreKey.WantedGenders:
-        return 'wanted_genders';
-      case UserFireStoreKey.WantedAgeRange:
-        return 'wanted_age_range';
-      case UserFireStoreKey.ShowMyProfile:
-        return 'show_my_profile';
-      case UserFireStoreKey.ShowMyDistance:
-        return 'show_my_distance';
-    }
-    return '';
   }
 
   // /*

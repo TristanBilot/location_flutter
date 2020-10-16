@@ -4,6 +4,7 @@ import 'package:location_project/repositories/user_local_repository.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/use_cases/account/account_language_page.dart';
 import 'package:location_project/use_cases/start_path/widgets/gender_circle_icon.dart';
+import '../stores/extensions.dart';
 
 class UserStore extends ChangeNotifier {
   /* data get remotely from Firestore */
@@ -48,10 +49,11 @@ class UserStore extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> setWantedGenders(val) async {
+  Future<void> setWantedGenders(List<Gender> val) async {
     _wantedGenders = val;
+    List<String> strings = val.map((e) => e.value).toList();
     await _repo.updateUserSettingValue(
-        idMock, UserFireStoreKey.WantedGenders, val);
+        idMock, UserFireStoreKey.WantedGenders, strings);
     notifyListeners();
   }
 
