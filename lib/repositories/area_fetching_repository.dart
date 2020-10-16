@@ -62,15 +62,15 @@ class AreaFetchingRepository {
         // if (geoPoint.latitude != center.latitude &&
         //     geoPoint.longitude != center.longitude){
         User newUser;
-        if (!UserCache.isInit || !UserCache.userExists(user.id)) {
+        if (!UserCache.instance.userExists(user.id)) {
           newUser = await User.from(user);
         } else {
           /*when getting a user already in cache, we need to update
           the old coordinates with the newest */
-          newUser = await User.fromCache(user);
+          newUser = User.fromCache(user.id);
           newUser.coord = LatLng(geoPoint.latitude, geoPoint.longitude);
         }
-        if (UserCache.isInit) UserCache.putUser(newUser);
+        UserCache.instance.putUser(newUser);
         usersList.add(newUser);
         /* userCount used to know when the last user is reached */
         if (userCount == users.length) completion(usersList);

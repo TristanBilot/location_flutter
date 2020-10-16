@@ -6,6 +6,10 @@ import 'package:location_project/use_cases/account/account_language_page.dart';
 import 'package:location_project/use_cases/start_path/widgets/gender_circle_icon.dart';
 import '../stores/extensions.dart';
 
+/// Manage all the data of the logged user.
+/// Mainly the update of local and distant data
+/// whenever there are modified. It should be
+/// synchronized locally with the Firestore.
 class UserStore extends ChangeNotifier {
   /* data get remotely from Firestore */
   User _user;
@@ -27,7 +31,7 @@ class UserStore extends ChangeNotifier {
   static Future<UserStore> get startingInstance async {
     _instance = UserStore();
     _instance._localRepo = await UserLocalRepository.startingInstance;
-    await _instance._initStore();
+    // await _instance.initStore();
     return _instance;
   }
 
@@ -37,7 +41,7 @@ class UserStore extends ChangeNotifier {
   /// Init asynchronously the store at the launch of the
   /// app. Get the `id` from the local repo, then, get
   /// the user's data using the real repo.
-  Future<void> _initStore() async {
+  Future<void> initStore() async {
     if (!_localRepo.isUserLoggedIn()) return;
     // throw Exception('_initStore(): No user logged in !');
     final id = _localRepo.getLoggedUserID();

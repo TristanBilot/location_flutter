@@ -73,6 +73,7 @@ class UserRepository {
     return User.from(snapshot);
   }
 
+  /// Return true if the user id exists in the Firestore.
   Future<bool> usersExists(String id) async {
     try {
       var collectionRef = _firestore.collection(UserFireStoreRootKey);

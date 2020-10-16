@@ -89,8 +89,8 @@ class User {
     );
   }
 
-  static Future<User> fromCache(DocumentSnapshot snapshot) async {
-    if (!UserCache.isInit || !UserCache.userExists(snapshot.id)) return null;
-    return UserCache.getUser(snapshot.id);
+  static User fromCache(String id) {
+    if (!UserCache.instance.userExists(id)) return null;
+    return UserCache.instance.getUser(id);
   }
 }

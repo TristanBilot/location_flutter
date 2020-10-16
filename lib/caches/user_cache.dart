@@ -2,38 +2,32 @@ import 'dart:collection';
 
 import '../models/user.dart';
 
+/// Cache used to store only the area users.
+/// Logged user is managed bu `UserStore`.
 class UserCache {
-  static HashMap<String, User> _cache;
-  static bool isInit = false;
+  HashMap<String, User> _cache;
 
-  static void init(User loggedUser) {
+  UserCache() {
     _cache = HashMap();
-    _putLoggedUser(loggedUser);
-    isInit = true;
+  }
+
+  static UserCache _instance;
+  static UserCache get instance {
+    return (_instance = _instance == null ? UserCache() : _instance);
   }
 
   /* 
   * functions used to cache the fetched users
   */
-  static void putUser(User user) {
+  void putUser(User user) {
     _cache[user.email] = user;
   }
 
-  static User getUser(String id) {
+  User getUser(String id) {
     return _cache[id];
   }
 
-  static bool userExists(String id) {
+  bool userExists(String id) {
     return _cache.containsKey(id);
   }
-
-  /*
-  * the logged user is the current user logged in 
-  * the app
-  */
-  static void _putLoggedUser(User user) {
-    _cache['loggedUser'] = user;
-  }
-
-  static User get getLoggedUser => _cache['loggedUser'];
 }

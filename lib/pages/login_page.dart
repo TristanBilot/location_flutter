@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
+import 'package:location_project/helpers/location_controller.dart';
+import 'package:location_project/repositories/login_controller.dart';
+import 'package:location_project/repositories/user_local_repository.dart';
+import 'package:location_project/repositories/user_repository.dart';
+import 'package:location_project/stores/user_store.dart';
 
 import '../repositories/auth_repository.dart';
 import '../stores/routes.dart';
@@ -12,15 +17,13 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  AuthRepository _authRepository;
-
-  _LoginPageState() {
-    _authRepository = AuthRepository();
-  }
+  LoginController _loginController;
 
   @override
   void initState() {
     super.initState();
+
+    _loginController = LoginController(context);
   }
 
   @override
@@ -33,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
           children: [
             Spacer(),
             FacebookSignInButton(
-              onPressed: () => _authRepository.logIn(context),
+              onPressed: () => _loginController.logIn(),
             ),
             SizedBox(height: 20),
             FlatButton(
