@@ -30,12 +30,18 @@ class _AccountPageState extends State<AccountPage>
   List<GenderCircleIcon> _circleIcons;
   HashSet<Gender> _selectedGenders;
 
+  bool _isShowMyProfile;
+  bool _isShowMyDistance;
+
   @override
   void initState() {
     super.initState();
 
     _circleIcons = GenderCircleIconFactory().makeGenderIcons(null, this);
     _selectedGenders = HashSet();
+
+    _isShowMyProfile = false;
+    _isShowMyDistance = false;
   }
 
   @override
@@ -122,13 +128,25 @@ class _AccountPageState extends State<AccountPage>
               AccountSectionTitle('Parameters'),
               AccountListTile(
                 title: 'Show my profile',
-                trailing:
-                    Switch.adaptive(value: true, onChanged: (newvalue) => null),
+                trailing: Switch.adaptive(
+                    value: _isShowMyProfile,
+                    onChanged: (newvalue) {
+                      setState(() {
+                        _isShowMyProfile = newvalue;
+                        UserStore.instance.setShowMyProfile(_isShowMyProfile);
+                      });
+                    }),
               ),
               AccountListTile(
                 title: 'Show my distance',
-                trailing:
-                    Switch.adaptive(value: true, onChanged: (newvalue) => null),
+                trailing: Switch.adaptive(
+                    value: _isShowMyDistance,
+                    onChanged: (newvalue) {
+                      setState(() {
+                        _isShowMyDistance = newvalue;
+                        UserStore.instance.setShowMyDistance(_isShowMyDistance);
+                      });
+                    }),
               ),
               AccountListTile(
                 title: 'App language',

@@ -1,6 +1,7 @@
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/caches/location_cache.dart';
+import 'package:location_project/helpers/location_controller.dart';
 import 'dart:io';
 import 'image_repository.dart';
 import '../models/user.dart';
@@ -66,57 +67,73 @@ class UserRepository {
     });
   }
 
-  // /*
-  // ^ PRIVATE FUNCTION
-  // * This method is only for testing purpose, to insert mock data to the firestore db
-  // */
-  // Future<void> putCarrieresDataset() async {
-  //   // final locationData = await LocationController.getLocation();
-  //   // GeoFirePoint geoPoint = _geo.point(
-  //   //     latitude: locationData.latitude, longitude: locationData.longitude);
+  /*
+  ^ PRIVATE FUNCTION
+  * This method is only for testing purpose, to insert mock data to the firestore db
+  */
+  Future<void> putCarrieresDataset() async {
+    final locationData = await LocationController().getLocation();
+    GeoFirePoint geoPoint = _geo.point(
+        latitude: locationData.latitude, longitude: locationData.longitude);
 
-  //   GeoFirePoint carrieres =
-  //       _geo.point(latitude: 48.91604, longitude: 2.179678);
-  //   GeoFirePoint carrieres_2 =
-  //       _geo.point(latitude: 48.916010, longitude: 2.179672);
+    GeoFirePoint carrieres =
+        _geo.point(latitude: 48.91604, longitude: 2.179678);
+    GeoFirePoint carrieres_2 =
+        _geo.point(latitude: 48.916010, longitude: 2.179672);
 
-  //   // _firestore.collection(UserFireStoreRootKey).doc('carrieres@hotmail.fr').set({
-  //   //   UserField.FirstName.value: 'Tristan',
-  //   //   UserField.LastName.value: 'Bilot',
-  //   //   UserField.Position.value: geoPoint.data
-  //   // });
-  //   _firestore.collection(UserFireStoreRootKey).doc('carrieres2@hotmail.fr').set({
-  //     UserField.FirstName.value: 'Kendall',
-  //     UserField.LastName.value: 'Jenner',
-  //     UserField.Position.value: carrieres.data
-  //   });
-  //   _firestore.collection(UserFireStoreRootKey).doc('carrieres3@hotmail.fr').set({
-  //     UserField.FirstName.value: 'Camille',
-  //     UserField.LastName.value: 'Houly',
-  //     UserField.Position.value: carrieres_2.data
-  //   });
-  // }
+    _firestore
+        .collection(UserFireStoreRootKey)
+        .doc('carrieres@hotmail.fr')
+        .set({
+      UserField.FirstName.value: 'Tristan',
+      UserField.LastName.value: 'Bilot',
+      UserField.Position.value: geoPoint.data
+    });
+    _firestore
+        .collection(UserFireStoreRootKey)
+        .doc('carrieres2@hotmail.fr')
+        .set({
+      UserField.FirstName.value: 'Kendall',
+      UserField.LastName.value: 'Jenner',
+      UserField.Position.value: carrieres.data
+    });
+    _firestore
+        .collection(UserFireStoreRootKey)
+        .doc('carrieres3@hotmail.fr')
+        .set({
+      UserField.FirstName.value: 'Camille',
+      UserField.LastName.value: 'Houly',
+      UserField.Position.value: carrieres_2.data
+    });
+  }
 
-  // Future<void> putParisDataSet() async {
-  //   // final locationData = await LocationController.getLocation();
-  //   // GeoFirePoint geoPoint = _geo.point(
-  //   //     latitude: locationData.latitude, longitude: locationData.longitude);
+  Future<void> putParisDataSet() async {
+    // final locationData = await LocationController.getLocation();
+    // GeoFirePoint geoPoint = _geo.point(
+    //     latitude: locationData.latitude, longitude: locationData.longitude);
 
-  //   GeoFirePoint paris13 = _geo.point(latitude: 48.825194, longitude: 2.347420);
-  //   GeoFirePoint paris13_2 =
-  //       _geo.point(latitude: 48.824710, longitude: 2.348482);
+    GeoFirePoint paris13 = _geo.point(latitude: 48.825194, longitude: 2.347420);
+    GeoFirePoint paris13_2 =
+        _geo.point(latitude: 48.824710, longitude: 2.348482);
+    GeoFirePoint paris13_3 = _geo.point(latitude: 48.8249, longitude: 2.3489);
 
-  //   _firestore.collection(UserFireStoreRootKey).doc('camille@hotmail.fr').set({
-  //     'email': 'kendall@hotmail.fr',
-  //     'firstName': 'Kendall',
-  //     'lastName': 'Jenner',
-  //     UserField.Position.value: paris13.data
-  //   });
-  //   _firestore.collection(UserFireStoreRootKey).doc('bilot.tristan@hotmail.fr').set({
-  //     'email': 'camille@hotmail.fr',
-  //     'firstName': 'Camille',
-  //     'lastName': 'Houly',
-  //     UserField.Position.value: paris13_2.data
-  //   });
-  // }
+    _firestore.collection(UserFireStoreRootKey).doc('camille@hotmail.fr').set({
+      UserField.FirstName.value: 'Camille',
+      UserField.LastName.value: 'Houly',
+      UserField.Position.value: paris13.data
+    });
+    _firestore
+        .collection(UserFireStoreRootKey)
+        .doc('tristan.location.test@gmail.com')
+        .set({
+      UserField.FirstName.value: 'Camille',
+      UserField.LastName.value: 'Houly',
+      UserField.Position.value: paris13_2.data
+    });
+    _firestore.collection(UserFireStoreRootKey).doc('kendall@hotmail.fr').set({
+      UserField.FirstName.value: 'Kendall',
+      UserField.LastName.value: 'Jenner',
+      UserField.Position.value: paris13_3.data
+    });
+  }
 }

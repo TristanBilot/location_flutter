@@ -36,13 +36,13 @@ class UserStore extends ChangeNotifier {
     return (_instance = _instance == null ? UserStore() : _instance);
   }
 
-  Future<void> setLanguage(val) async {
+  Future<void> setLanguage(Language val) async {
     _language = val;
     _localRepo.setLanguage(val);
     notifyListeners();
   }
 
-  Future<void> setWantedAgeRange(val) async {
+  Future<void> setWantedAgeRange(List<int> val) async {
     _wantedAgeRange = val;
     await _repo.updateUserSettingValue(
         idMock, UserFireStoreKey.WantedAgeRange, val);
@@ -57,21 +57,21 @@ class UserStore extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> setShowMyprofile(val) async {
+  Future<void> setShowMyProfile(bool val) async {
     _showMyprofile = val;
     await _repo.updateUserSettingValue(
         idMock, UserFireStoreKey.ShowMyProfile, val);
     notifyListeners();
   }
 
-  Future<void> setShowMyDistance(val) async {
+  Future<void> setShowMyDistance(bool val) async {
     _showMyDistance = val;
     await _repo.updateUserSettingValue(
         idMock, UserFireStoreKey.ShowMyDistance, val);
     notifyListeners();
   }
 
-  Future<void> setUser(val) async {
+  Future<void> setUser(User val) async {
     _user = val;
     await _repo.insertOrUpdateUser(val);
     notifyListeners();
