@@ -37,6 +37,7 @@ class _AppState extends State<App> {
       },
       theme: AppTheme.defaultTheme,
       darkTheme: ThemeData.dark(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
