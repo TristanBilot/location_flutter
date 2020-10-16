@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:location_project/repositories/auth_repository.dart';
 import 'package:location_project/stores/routes.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/account/widgets/account_list_tile.dart';
@@ -34,12 +35,15 @@ class _AccountPageState extends State<AccountPage>
   List<double> _wantedAgeValues;
   CachedNetworkImage _cachedUserImage;
 
+  AuthRepository _authRepo;
+
   @override
   void initState() {
     super.initState();
 
     _circleIcons = GenderCircleIconFactory().makeGenderIcons(null, this);
     _selectedGenders = HashSet();
+    _authRepo = AuthRepository();
     _loadUserData();
   }
 
@@ -181,12 +185,11 @@ class _AccountPageState extends State<AccountPage>
                 onTap: () =>
                     Navigator.of(context).pushNamed(Routes.languages.value),
               ),
-              AccountLogOutListTile(
-                'LOG OUT',
-                color: Theme.of(context).primaryColor,
-                onPressed: () => Navigator.of(context)
-                    .pushReplacementNamed(Routes.login.value),
-              ),
+              AccountLogOutListTile('LOG OUT',
+                  color: Theme.of(context).primaryColor, onPressed: () {
+                _authRepo.logOut().then((_) => Navigator.of(context)
+                    .pushReplacementNamed(Routes.login.value));
+              }),
               AccountLogOutListTile(
                 'DELETE MY ACCOUNT',
                 color: Colors.red[500],
