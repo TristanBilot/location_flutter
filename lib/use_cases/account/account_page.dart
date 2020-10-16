@@ -1,14 +1,13 @@
 import 'dart:collection';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/stores/routes.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/account/widgets/account_list_tile.dart';
 import 'package:location_project/use_cases/account/widgets/account_log_out_list_tile.dart';
 import 'package:location_project/use_cases/account/widgets/account_section_title.dart';
 import 'package:location_project/use_cases/start_path/gender_circle_icon_factory.dart';
-import 'package:location_project/use_cases/start_path/start_path_step1/start_path_step1.dart';
 import 'package:location_project/use_cases/start_path/start_path_step2/start_path_step2.dart';
 import 'package:location_project/use_cases/start_path/widgets/equally_spaced_row.dart';
 import 'package:location_project/use_cases/start_path/widgets/gender_circle_icon.dart';
@@ -33,6 +32,7 @@ class _AccountPageState extends State<AccountPage>
   bool _isShowMyProfile;
   bool _isShowMyDistance;
   List<double> _wantedAgeValues;
+  CachedNetworkImage _cachedUserImage;
 
   @override
   void initState() {
@@ -40,10 +40,7 @@ class _AccountPageState extends State<AccountPage>
 
     _circleIcons = GenderCircleIconFactory().makeGenderIcons(null, this);
     _selectedGenders = HashSet();
-
-    _isShowMyProfile = false;
-    _isShowMyDistance = false;
-    _wantedAgeValues = List.from([18.0, 25.0]);
+    _loadUserData();
   }
 
   @override
@@ -54,6 +51,27 @@ class _AccountPageState extends State<AccountPage>
       else
         _selectedGenders.remove(gender);
       UserStore.instance.setWantedGenders(_selectedGenders.toList());
+    });
+  }
+
+  _loadUserData() {
+    _isShowMyProfile = UserStore.instance.user.settings.showMyprofile;
+    _isShowMyDistance = UserStore.instance.user.settings.showMyDistance;
+    _wantedAgeValues = UserStore.instance.user.settings.wantedAgeRange
+        .map((e) => e.toDouble())
+        .toList();
+    _cachedUserImage = CachedNetworkImage(
+      imageUrl: UserStore.instance.user.pictureURL,
+    );
+    /* need to load after build() are the icons are not created yet */
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _circleIcons.forEach((icon) {
+        if (UserStore.instance.user.settings.wantedGenders
+            .contains(icon.gender)) {
+          icon.state.setState(() => icon.state.isSelected = true);
+          _selectedGenders.add(icon.gender);
+        }
+      });
     });
   }
 
@@ -89,14 +107,11 @@ class _AccountPageState extends State<AccountPage>
                         AccountPage.userImageSize / 2),
                 child: Center(
                   child: Container(
-                    width: AccountPage.userImageSize,
-                    height: AccountPage.userImageSize,
-                    child: CircleAvatar(
-                      //UserCache.getLoggedUser.pictureURL ??
-                      backgroundImage: NetworkImage(
-                          'https://via.placeholder.com/300/09f/fff.png'),
-                    ),
-                  ),
+                      width: AccountPage.userImageSize,
+                      height: AccountPage.userImageSize,
+                      child: ClipOval(
+                        child: _cachedUserImage,
+                      )),
                 ),
               ),
             ]),

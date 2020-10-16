@@ -49,6 +49,8 @@ class UserStore extends ChangeNotifier {
     return _localRepo.isUserLoggedIn();
   }
 
+  User get user => _user;
+
   /// These methods are used to update the data of the user
   /// in local with this store class and in Firestore using
   /// the repo or local repo for local infos.

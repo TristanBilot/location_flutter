@@ -2,7 +2,7 @@ import 'package:location_project/use_cases/start_path/widgets/gender_circle_icon
 import '../stores/extensions.dart';
 
 class GenderAdapter {
-  List<Gender> stringsToGenders(List<dynamic> strings) {
+  List<Gender> stringsToGenders(List<String> strings) {
     return strings.map((e) {
       switch (e) {
         case 'Male':

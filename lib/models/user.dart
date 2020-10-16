@@ -75,13 +75,8 @@ class User {
 
     final icon = await _imageRepo.fetchUserIcon(snapshot.id);
     final downloadURL = await _imageRepo.getPictureDownloadURL(snapshot.id);
-    final settings = UserSettings(
-      cast<List<int>>(data[UserField.WantedAgeRange.value]),
-      GenderAdapter().stringsToGenders(
-          cast<List<dynamic>>(data[UserField.WantedGenders.value])),
-      cast<bool>(data[UserField.ShowMyProfile.value]),
-      cast<bool>(data[UserField.ShowMyDistance.value]),
-    );
+    final settings = UserSettings.fromFirestoreObject(data);
+
     return User(
       snapshot.id,
       data[UserField.FirstName.value],
