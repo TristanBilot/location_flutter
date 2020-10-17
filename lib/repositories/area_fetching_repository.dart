@@ -57,25 +57,28 @@ class AreaFetchingRepository {
       List<User> usersList = List();
       users.forEach((user) async {
         userCount++;
-        /* fresh position of each user */
-        final geoPoint = user.data()[UserField.Position.value]['geopoint'];
-        // if (geoPoint.latitude != center.latitude &&
-        //     geoPoint.longitude != center.longitude){
+        final data = user.data();
+        final showProfile = data[UserField.ShowMyProfile.value] as bool;
         User newUser;
-        if (!UserCache.instance.userExists(user.id)) {
-          newUser = await User.from(user);
-        } else {
-          /*when getting a user already in cache, we need to update
+        if (showProfile) {
+          /* fresh position of each user */
+          final geoPoint = user.data()[UserField.Position.value]['geopoint'];
+          // if (geoPoint.latitude != center.latitude &&
+          //     geoPoint.longitude != center.longitude){
+          if (!UserCache.instance.userExists(user.id)) {
+            newUser = await User.from(user);
+          } else {
+            /*when getting a user already in cache, we need to update
           the old coordinates with the newest */
-          newUser = User.fromCache(user.id);
-          newUser.coord = LatLng(geoPoint.latitude, geoPoint.longitude);
+            newUser = User.fromCache(user.id);
+            newUser.coord = LatLng(geoPoint.latitude, geoPoint.longitude);
+          }
+          UserCache.instance.putUser(newUser);
+          usersList.add(newUser);
+          print('=> in area: ${newUser.email} at ${newUser.distance} meters');
         }
-        UserCache.instance.putUser(newUser);
-        usersList.add(newUser);
         /* userCount used to know when the last user is reached */
         if (userCount == users.length) completion(usersList);
-        print('=> in area: ${newUser.email} at ${newUser.distance} meters');
-        // }
       });
     });
   }

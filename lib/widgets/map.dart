@@ -103,6 +103,7 @@ class MapState extends State<Map> with WidgetsBindingObserver {
     // we need to handle location again
     _areaFetcher.fetch((users) {
       setStateIfMounted(() {
+        _markers.clear();
         // may be faster but need 2 times checkinf for unliked
         // users in the code, here for first load and in the build()
         // if (!_store.isUserUnliked(user.email)) {
