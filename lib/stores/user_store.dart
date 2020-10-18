@@ -89,4 +89,10 @@ class UserStore extends ChangeNotifier {
     await _repo.updateUserValue(_user.email, UserField.ShowMyDistance, val);
     notifyListeners();
   }
+
+  Future<void> setConnectedStatus(bool val) async {
+    _user.settings.connected = val;
+    await _repo.updateUserValue(_user.email, UserField.Connected, val);
+    notifyListeners();
+  }
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:location_project/helpers/location_controller.dart';
 import 'package:location_project/pages/location_disabled_page.dart';
 import 'package:location_project/use_cases/matchs/matchs.dart';
-import 'package:location_project/use_cases/start_path/start_path_step1/start_path_step1.dart';
 import 'package:location_project/use_cases/account/account_page.dart';
 import 'package:location_project/widgets/positioned_app_icon.dart';
 import '../widgets/map.dart';
@@ -43,6 +42,10 @@ class _MapPageState extends State<MapPage>
     super.dispose();
   }
 
+  /// Called when the app come from background.
+  /// Update the UI and the map if the user change the
+  /// location permissions in settings and come back to
+  /// the app.
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {

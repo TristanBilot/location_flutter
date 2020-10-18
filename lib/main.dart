@@ -15,6 +15,7 @@ Future setup() async {
   await LocationController.instance.handleLocationIfNeeded();
   await UserStore.startingInstance;
   await UserStore.instance.initStore();
+  UserStore.instance.setConnectedStatus(true);
 }
 
 class MyApp extends StatelessWidget {

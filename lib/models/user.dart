@@ -20,6 +20,7 @@ enum UserField {
   WantedAgeRange,
   ShowMyProfile,
   ShowMyDistance,
+  Connected,
 }
 
 class User {
@@ -50,10 +51,6 @@ class User {
     this.distance = distance;
     this.settings = settings;
   }
-
-  /// dynamic x = something();
-  /// String s = cast<String>(x);
-  static T cast<T>(x) => x is T ? x : null;
 
   /// Returns a User from a Firestore snapshot, the snaposhot
   /// is needed to get the id which is the email, then data()

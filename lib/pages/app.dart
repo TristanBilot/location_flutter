@@ -18,7 +18,31 @@ class App extends StatefulWidget {
   _AppState createState() => _AppState();
 }
 
-class _AppState extends State<App> {
+class _AppState extends State<App> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  /// Called when the user put the app in background
+  /// or come back to background.
+  /// Change the connected status to true or false.
+  /// Also put at true at the beginning of the app (main).
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed)
+      UserStore.instance.setConnectedStatus(true);
+    if (state == AppLifecycleState.paused)
+      UserStore.instance.setConnectedStatus(false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
