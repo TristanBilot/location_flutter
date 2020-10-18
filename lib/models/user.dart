@@ -60,8 +60,8 @@ class User {
     final Map<String, dynamic> data = snapshot.data();
     final _imageRepo = ImageRepository();
     final realPosition = (await LocationController().isLocationEnabled())
-        ? LocationCache.locationGeoPoint
-        : LocationCache.dummyLocationGeoPoint;
+        ? LocationCache().locationGeoPoint
+        : LocationCache().dummyLocationGeoPoint;
     final GeoFirePoint center =
         Conf.testMode ? Store.parisGeoPosition : realPosition;
     final geoPoint = data[UserField.Position.value]['geopoint'];
@@ -88,7 +88,7 @@ class User {
   }
 
   static User fromCache(String id) {
-    if (!UserCache.instance.userExists(id)) return null;
-    return UserCache.instance.getUser(id);
+    if (!UserCache().userExists(id)) return null;
+    return UserCache().getUser(id);
   }
 }

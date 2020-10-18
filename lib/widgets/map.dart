@@ -85,7 +85,7 @@ class MapState extends State<Map> with WidgetsBindingObserver {
         strokeColor: lightBorder,
         strokeWidth: 1,
         circleId: CircleId('area'),
-        center: LocationCache.location,
+        center: LocationCache().location,
         radius: AreaFetchingRepository.radius,
       )
     ]);
@@ -198,7 +198,7 @@ class MapState extends State<Map> with WidgetsBindingObserver {
                 zoom: 18,
                 target: Conf.testMode
                     ? Store.parisPosition
-                    : LocationCache.location,
+                    : LocationCache().location,
               ),
               onMapCreated: (GoogleMapController controller) {
                 _controller.complete(controller);

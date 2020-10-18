@@ -32,8 +32,9 @@ class AreaFetchingRepository {
   Future<void> fetch(Function completion) async {
     final ref = _firestore.collection('locations');
 
-    final GeoFirePoint center =
-        Conf.testMode ? Store.parisGeoPosition : LocationCache.locationGeoPoint;
+    final GeoFirePoint center = Conf.testMode
+        ? Store.parisGeoPosition
+        : LocationCache().locationGeoPoint;
     Stream<List<DocumentSnapshot>> stream = _geo
         .collection(collectionRef: ref)
         .within(
@@ -65,7 +66,7 @@ class AreaFetchingRepository {
           final geoPoint = user.data()[UserField.Position.value]['geopoint'];
           // if (geoPoint.latitude != center.latitude &&
           //     geoPoint.longitude != center.longitude){
-          if (!UserCache.instance.userExists(user.id)) {
+          if (!UserCache().userExists(user.id)) {
             newUser = await User.from(user);
           } else {
             /*when getting a user already in cache, we need to update
@@ -73,7 +74,7 @@ class AreaFetchingRepository {
             newUser = User.fromCache(user.id);
             newUser.coord = LatLng(geoPoint.latitude, geoPoint.longitude);
           }
-          UserCache.instance.putUser(newUser);
+          UserCache().putUser(newUser);
           usersList.add(newUser);
           print('=> in area: ${newUser.email} at ${newUser.distance} meters');
         }

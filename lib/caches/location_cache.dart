@@ -6,24 +6,27 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 * of the actual user 
 */
 
+/// This cache has for unique role to save
+/// the most recent location of the logged user.
 class LocationCache {
-  static LatLng _cachedLocation;
+  LatLng _cachedLocation;
+
+  LocationCache._internal();
+  static final LocationCache _instance = LocationCache._internal();
+
+  factory LocationCache() => _instance;
 
   /// return the current location as LatLng
-  static LatLng get location => _cachedLocation;
+  LatLng get location => _cachedLocation;
 
   /// return the current location as GeoFirePoint
-  static GeoFirePoint get locationGeoPoint =>
+  GeoFirePoint get locationGeoPoint =>
       GeoFirePoint(_cachedLocation.latitude, _cachedLocation.longitude);
 
   /// when the location is not enabled, we need a dummy location
-  static GeoFirePoint get dummyLocationGeoPoint => GeoFirePoint(0, 0);
+  GeoFirePoint get dummyLocationGeoPoint => GeoFirePoint(0, 0);
 
-  static void init(LatLng location) {
-    putLocation(location);
-  }
-
-  static void putLocation(LatLng location) {
+  void putLocation(LatLng location) {
     _cachedLocation = location;
   }
 }

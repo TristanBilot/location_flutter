@@ -32,8 +32,9 @@ class UserRepository {
   /// data for name, email and use the current location.
   /// It also sent the user's picture to the storage.
   Future<void> insertUserForFirstConnection(User user) async {
-    final GeoFirePoint geoPoint =
-        Conf.testMode ? Store.parisGeoPosition : LocationCache.locationGeoPoint;
+    final GeoFirePoint geoPoint = Conf.testMode
+        ? Store.parisGeoPosition
+        : LocationCache().locationGeoPoint;
     await _firestore
         .collection(UserFireStoreRootKey)
         .doc(user.id)

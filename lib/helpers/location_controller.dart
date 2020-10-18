@@ -11,17 +11,13 @@ import '../repositories/user_repository.dart';
 class LocationController {
   bool _serviceEnabled;
   PermissionStatus _permissionGranted;
-  Location _location;
-  UserRepository _userRepository;
+  Location _location = Location();
+  UserRepository _userRepository = UserRepository();
 
   LocationController._internal();
   static final LocationController _instance = LocationController._internal();
 
-  factory LocationController() {
-    _instance._userRepository = UserRepository();
-    _instance._location = Location();
-    return _instance;
-  }
+  factory LocationController() => _instance;
 
   Future enableLocation() async {
     await _enableService();
@@ -55,7 +51,8 @@ class LocationController {
             timeLimit: Duration(milliseconds: 500))
         .listen((locator.Position position) {
       /* update the location in cache */
-      LocationCache.putLocation(LatLng(position.latitude, position.longitude));
+      LocationCache()
+          .putLocation(LatLng(position.latitude, position.longitude));
       /* get the location from cache and send it to Firestore */
       // final loggedUser = UserCache.getLoggedUser;
       // if (loggedUser != null) {

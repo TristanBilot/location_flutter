@@ -85,7 +85,7 @@ class AuthRepository {
       data['email'],
       data['first_name'],
       data['last_name'],
-      LocationCache.location,
+      LocationCache().location,
       icon,
       data['picture']['data']['url'],
       0,
