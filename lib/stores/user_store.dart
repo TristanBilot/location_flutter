@@ -65,34 +65,33 @@ class UserStore extends ChangeNotifier {
   }
 
   Future<void> setWantedAgeRange(List<int> val) async {
-    _repo.getUserFromID(_user.email);
     _user.settings.wantedAgeRange = val;
-    await _repo.updateUserValue(_user.email, UserField.WantedAgeRange, val);
+    await _repo.updateUserValue(_user.id, UserField.WantedAgeRange, val);
     notifyListeners();
   }
 
   Future<void> setWantedGenders(List<Gender> val) async {
     _user.settings.wantedGenders = val;
     List<String> strings = val.map((e) => e.value).toList();
-    await _repo.updateUserValue(_user.email, UserField.WantedGenders, strings);
+    await _repo.updateUserValue(_user.id, UserField.WantedGenders, strings);
     notifyListeners();
   }
 
   Future<void> setShowMyProfile(bool val) async {
     _user.settings.showMyprofile = val;
-    await _repo.updateUserValue(_user.email, UserField.ShowMyProfile, val);
+    await _repo.updateUserValue(_user.id, UserField.ShowMyProfile, val);
     notifyListeners();
   }
 
   Future<void> setShowMyDistance(bool val) async {
     _user.settings.showMyDistance = val;
-    await _repo.updateUserValue(_user.email, UserField.ShowMyDistance, val);
+    await _repo.updateUserValue(_user.id, UserField.ShowMyDistance, val);
     notifyListeners();
   }
 
   Future<void> setConnectedStatus(bool val) async {
     _user.settings.connected = val;
-    await _repo.updateUserValue(_user.email, UserField.Connected, val);
+    await _repo.updateUserValue(_user.id, UserField.Connected, val);
     notifyListeners();
   }
 }

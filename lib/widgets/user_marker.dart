@@ -13,5 +13,5 @@ class UserMarker extends Marker {
     this.icon = BitmapDescriptor.defaultMarker,
     this.position = const LatLng(0.0, 0.0),
     this.onTap,
-  }) : super(markerId: MarkerId(user.email));
+  }) : super(markerId: MarkerId(user.id));
 }

@@ -106,7 +106,7 @@ class MapState extends State<Map> with WidgetsBindingObserver {
         _markers.clear();
         // may be faster but need 2 times checkinf for unliked
         // users in the code, here for first load and in the build()
-        // if (!_store.isUserUnliked(user.email)) {
+        // if (!_store.isUserUnliked(user.id)) {
         users.forEach((user) {
           _markers.add(UserMarker(
               user: user,
@@ -192,7 +192,7 @@ class MapState extends State<Map> with WidgetsBindingObserver {
               mapType: MapType.normal,
               myLocationEnabled: true,
               markers: _markers
-                ..removeWhere((m) => _store.isUserUnliked(m.user.email)),
+                ..removeWhere((m) => _store.isUserUnliked(m.user.id)),
               circles: Conf.displayAreaCircle ? _circles : null,
               initialCameraPosition: CameraPosition(
                 zoom: 18,

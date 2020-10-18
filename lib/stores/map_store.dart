@@ -21,7 +21,7 @@ class MapStore {
   bool isUserUnliked(String id) {
     if (_unlikedUsers.isEmpty) return false;
     return _unlikedUsers.firstWhere(
-          (user) => user.email == id,
+          (user) => user.id == id,
           orElse: () => null,
         ) !=
         null;

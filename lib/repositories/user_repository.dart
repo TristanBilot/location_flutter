@@ -36,7 +36,7 @@ class UserRepository {
         Conf.testMode ? Store.parisGeoPosition : LocationCache.locationGeoPoint;
     await _firestore
         .collection(UserFireStoreRootKey)
-        .doc(user.email)
+        .doc(user.id)
         .set(FirestoreUserEntry(
           user.firstName,
           user.lastName,
@@ -45,11 +45,11 @@ class UserRepository {
         ).toFirestoreObject());
     File userPicture = await _imageRepo.urlToFile(user.pictureURL);
     return await _imageRepo.uploadFile(
-        userPicture, user.email + Store.defaultProfilePictureExtension);
+        userPicture, user.id + Store.defaultProfilePictureExtension);
   }
 
   Future<void> updateUserLocation(User user, GeoFirePoint location) async {
-    await _firestore.collection(UserFireStoreRootKey).doc(user.email).update({
+    await _firestore.collection(UserFireStoreRootKey).doc(user.id).update({
       UserField.Position.value: location.data,
     });
     // ++++ need catch error

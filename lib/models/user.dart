@@ -3,7 +3,6 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location_project/caches/location_cache.dart';
 import 'package:location_project/caches/user_cache.dart';
-import 'package:location_project/helpers/gender_adapter.dart';
 import 'package:location_project/helpers/location_controller.dart';
 import 'package:location_project/models/user_settings.dart';
 import 'package:location_project/repositories/image_repository.dart';
@@ -24,6 +23,7 @@ enum UserField {
 }
 
 class User {
+  String id;
   String email;
   String firstName;
   String lastName;
@@ -42,6 +42,7 @@ class User {
       String pictureURL,
       int distance,
       UserSettings settings) {
+    this.id = email;
     this.lastName = lastName;
     this.firstName = firstName;
     this.email = email;

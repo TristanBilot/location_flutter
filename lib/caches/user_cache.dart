@@ -20,7 +20,7 @@ class UserCache {
   * functions used to cache the fetched users
   */
   void putUser(User user) {
-    _cache[user.email] = user;
+    _cache[user.id] = user;
   }
 
   User getUser(String id) {
