@@ -24,7 +24,7 @@ class _MapPageState extends State<MapPage>
   TabController _tabController;
 
   Future<bool> _displayMapIfLocationEnabled() async {
-    return await LocationController.instance.isLocationEnabled();
+    return await LocationController().isLocationEnabled();
   }
 
   @override

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:location_project/helpers/messaging_controller.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'helpers/location_controller.dart';
 import 'pages/app.dart';
@@ -12,10 +13,11 @@ void main() async {
 }
 
 Future setup() async {
-  await LocationController.instance.handleLocationIfNeeded();
+  await LocationController().handleLocationIfNeeded();
   await UserStore.startingInstance;
-  await UserStore.instance.initStore();
-  UserStore.instance.setConnectedStatus(true);
+  await UserStore().initStore();
+  UserStore().setConnectedStatus(true);
+  // MessagingController();
 }
 
 class MyApp extends StatelessWidget {

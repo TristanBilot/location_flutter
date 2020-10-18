@@ -21,22 +21,22 @@ class UserStore extends ChangeNotifier {
   UserRepository _repo;
   UserLocalRepository _localRepo;
 
-  UserStore() {
-    _repo = UserRepository();
-  }
-
   /// Due to asynchronous calls when instanciating, this
   /// class need to load using await at the beginning
   /// of the app (usualy in the main). Should be called one.
   static Future<UserStore> get startingInstance async {
-    _instance = UserStore();
     _instance._localRepo = await UserLocalRepository.startingInstance;
     // await _instance.initStore();
     return _instance;
   }
 
-  static UserStore _instance;
-  static UserStore get instance => _instance;
+  UserStore._internal();
+  static final UserStore _instance = UserStore._internal();
+
+  factory UserStore() {
+    _instance._repo = UserRepository();
+    return _instance;
+  }
 
   /// Init asynchronously the store at the launch of the
   /// app. Get the `id` from the local repo, then, get

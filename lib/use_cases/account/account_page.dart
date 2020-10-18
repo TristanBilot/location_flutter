@@ -55,24 +55,26 @@ class _AccountPageState extends State<AccountPage>
         _selectedGenders.add(gender);
       else
         _selectedGenders.remove(gender);
-      UserStore.instance.setWantedGenders(_selectedGenders.toList());
+      UserStore().setWantedGenders(_selectedGenders.toList());
     });
   }
 
   _loadUserData() {
-    _isShowMyProfile = UserStore.instance.user.settings.showMyprofile;
-    _isShowMyDistance = UserStore.instance.user.settings.showMyDistance;
-    _wantedAgeValues = UserStore.instance.user.settings.wantedAgeRange
+    _isShowMyProfile = UserStore().user.settings.showMyprofile;
+    _isShowMyDistance = UserStore().user.settings.showMyDistance;
+    _wantedAgeValues = UserStore()
+        .user
+        .settings
+        .wantedAgeRange
         .map((e) => e.toDouble())
         .toList();
     _cachedUserImage = CachedNetworkImage(
-      imageUrl: UserStore.instance.user.pictureURL,
+      imageUrl: UserStore().user.pictureURL,
     );
     /* need to load after build() are the icons are not created yet */
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _circleIcons.forEach((icon) {
-        if (UserStore.instance.user.settings.wantedGenders
-            .contains(icon.gender)) {
+        if (UserStore().user.settings.wantedGenders.contains(icon.gender)) {
           icon.state.setState(() => icon.state.isSelected = true);
           _selectedGenders.add(icon.gender);
         }
@@ -83,7 +85,7 @@ class _AccountPageState extends State<AccountPage>
   void _handleWantedAgeModify(int index, double value) {
     setState(() {
       _wantedAgeValues[index] = value;
-      UserStore.instance
+      UserStore()
           .setWantedAgeRange(_wantedAgeValues.map((e) => e.round()).toList());
     });
   }
@@ -112,7 +114,7 @@ class _AccountPageState extends State<AccountPage>
                         AccountPage.userImageSize / 2),
                 child: Center(
                   child: CachedCircleUserImage(
-                    UserStore.instance.user.pictureURL,
+                    UserStore().user.pictureURL,
                     size: AccountPage.userImageSize,
                   ),
                 ),
@@ -162,7 +164,7 @@ class _AccountPageState extends State<AccountPage>
                     onChanged: (newvalue) {
                       setState(() {
                         _isShowMyProfile = newvalue;
-                        UserStore.instance.setShowMyProfile(_isShowMyProfile);
+                        UserStore().setShowMyProfile(_isShowMyProfile);
                       });
                     }),
               ),
@@ -173,7 +175,7 @@ class _AccountPageState extends State<AccountPage>
                     onChanged: (newvalue) {
                       setState(() {
                         _isShowMyDistance = newvalue;
-                        UserStore.instance.setShowMyDistance(_isShowMyDistance);
+                        UserStore().setShowMyDistance(_isShowMyDistance);
                       });
                     }),
               ),

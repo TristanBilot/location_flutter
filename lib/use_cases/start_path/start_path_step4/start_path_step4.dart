@@ -26,7 +26,7 @@ class StartPathStep4State extends State<StartPathStep4> {
   Future _requestNotifications() async {
     NotificationController.instance.enableNotifications().then((_) {
       print(NotificationController.instance.permissionStatus);
-      print(LocationController.instance.permissionStatus);
+      print(LocationController().permissionStatus);
       Navigator.of(context).popUntil((route) => route.isFirst);
       Navigator.of(context).pushReplacementNamed(Routes.map.value);
     });

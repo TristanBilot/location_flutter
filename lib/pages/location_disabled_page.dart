@@ -44,8 +44,7 @@ class _LocationDisabledPageState extends State<LocationDisabledPage> {
             Spacer(),
             Spacer(),
             BasicButton('ENABLE LOCATION',
-                onPressed: () =>
-                    LocationController.instance.openLocationSettings()),
+                onPressed: () => LocationController().openLocationSettings()),
             Spacer(),
           ],
         ),

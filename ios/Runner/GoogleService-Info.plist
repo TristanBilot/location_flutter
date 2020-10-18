@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>763599612774-ni0rh1rgp5t26cvqi5kf43msmg67g8va.apps.googleusercontent.com</string>
+	<string>763599612774-cqslv4phk7rdqlq2eg8opdvb37ktg1t9.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.763599612774-ni0rh1rgp5t26cvqi5kf43msmg67g8va</string>
+	<string>com.googleusercontent.apps.763599612774-cqslv4phk7rdqlq2eg8opdvb37ktg1t9</string>
 	<key>API_KEY</key>
 	<string>AIzaSyAgCfIQ6SZRGSNoW73RxgvwWjr7iM-wWmQ</string>
 	<key>GCM_SENDER_ID</key>
@@ -29,7 +29,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:763599612774:ios:7ce19c703ff48de29d36a7</string>
+	<string>1:763599612774:ios:36706049d024d88b9d36a7</string>
 	<key>DATABASE_URL</key>
 	<string>https://location-abed9.firebaseio.com</string>
 </dict>

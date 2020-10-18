@@ -121,8 +121,8 @@ class StartPathStep1State extends State<StartPathStep1>
                   Navigator.of(context).pushReplacementNamed(Routes.map.value),
             ),
             BasicButton('NEXT', enabled: _isPageValid, onPressed: () {
-              StartPathStore.instance.setUserGender(_selectedGender);
-              StartPathStore.instance.setUserAge(_sliderValue.toInt());
+              StartPathStore().setUserGender(_selectedGender);
+              StartPathStore().setUserAge(_sliderValue.toInt());
               Navigator.of(context).pushNamed(Routes.startPathStep2.value);
             }),
             Padding(

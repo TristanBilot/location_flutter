@@ -3,18 +3,19 @@ import 'package:location_project/use_cases/account/account_language_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../stores/extensions.dart';
 
+/// Singleton class.
 class UserLocalRepository {
   static const LanguageKey = 'language';
   static const ConnectedIDKey = 'connectedId';
 
   SharedPreferences _prefs;
 
-  static UserLocalRepository _instance;
-  static UserLocalRepository get instance => _instance;
+  UserLocalRepository._internal();
+  static final UserLocalRepository _instance = UserLocalRepository._internal();
+
+  factory UserLocalRepository() => _instance;
 
   static Future<UserLocalRepository> get startingInstance async {
-    if (_instance != null) return _instance;
-    _instance = UserLocalRepository();
     await _instance.getSharedPreferencesInstance();
     return _instance;
   }

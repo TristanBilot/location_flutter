@@ -1,16 +1,16 @@
 import 'package:location_project/models/user.dart';
 
+/// Singleton class.
 class MapStore {
   List<User> _unlikedUsers;
   List<User> get unlikedUsers => _unlikedUsers;
 
-  static MapStore _instance;
-  static MapStore get instance {
-    return (_instance = _instance == null ? MapStore() : _instance);
-  }
+  MapStore._internal();
+  static final MapStore _instance = MapStore._internal();
 
-  MapStore() {
-    _unlikedUsers = List();
+  factory MapStore() {
+    _instance._unlikedUsers = List();
+    return _instance;
   }
 
   void addUnlikedUser(User user) {

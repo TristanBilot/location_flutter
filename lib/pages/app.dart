@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:location_project/helpers/messaging_example.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/themes/app_theme.dart';
 import 'package:location_project/use_cases/account/account_language_page.dart';
@@ -38,17 +39,17 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed)
-      UserStore.instance.setConnectedStatus(true);
+      UserStore().setConnectedStatus(true);
     if (state == AppLifecycleState.paused)
-      UserStore.instance.setConnectedStatus(false);
+      UserStore().setConnectedStatus(false);
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: UserStore.instance.isuserLoggedIn()
-          ? Routes.map.value
-          : Routes.login.value,
+      // initialRoute: Routes.test.value,
+      initialRoute:
+          UserStore().isuserLoggedIn() ? Routes.map.value : Routes.login.value,
       routes: <String, WidgetBuilder>{
         Routes.login.value: (context) => LoginPage(),
         Routes.map.value: (context) => MapPage(),
@@ -58,6 +59,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
         Routes.startPathStep2.value: (context) => StartPathStep2(),
         Routes.startPathStep3.value: (context) => StartPathStep3(),
         Routes.startPathStep4.value: (context) => StartPathStep4(),
+        Routes.test.value: (context) => PushMessagingExample(),
       },
       theme: AppTheme.defaultTheme,
       darkTheme: ThemeData.dark(),

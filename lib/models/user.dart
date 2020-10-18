@@ -58,7 +58,7 @@ class User {
   static Future<User> from(DocumentSnapshot snapshot) async {
     final Map<String, dynamic> data = snapshot.data();
     final _imageRepo = ImageRepository();
-    final realPosition = (await LocationController.instance.isLocationEnabled())
+    final realPosition = (await LocationController().isLocationEnabled())
         ? LocationCache.locationGeoPoint
         : LocationCache.dummyLocationGeoPoint;
     final GeoFirePoint center =

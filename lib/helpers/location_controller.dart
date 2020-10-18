@@ -7,20 +7,20 @@ import 'package:permission_handler/permission_handler.dart' as handler;
 import '../caches/location_cache.dart';
 import '../repositories/user_repository.dart';
 
+/// Singleton class.
 class LocationController {
   bool _serviceEnabled;
   PermissionStatus _permissionGranted;
   Location _location;
   UserRepository _userRepository;
 
-  static LocationController _instance;
-  static LocationController get instance {
-    return (_instance = _instance == null ? LocationController() : _instance);
-  }
+  LocationController._internal();
+  static final LocationController _instance = LocationController._internal();
 
-  LocationController() {
-    _location = Location();
-    _userRepository = UserRepository();
+  factory LocationController() {
+    _instance._userRepository = UserRepository();
+    _instance._location = Location();
+    return _instance;
   }
 
   Future enableLocation() async {
@@ -36,7 +36,7 @@ class LocationController {
   }
 
   Future<bool> isLocationEnabled() async {
-    final status = LocationController.instance.permissionStatus;
+    final status = LocationController().permissionStatus;
     final isEnabled = !await handler.Permission.locationWhenInUse.isDenied;
 
     return (isEnabled != null && isEnabled) ||
@@ -66,8 +66,7 @@ class LocationController {
   }
 
   Future handleLocationIfNeeded() async {
-    if (await LocationController.instance.isLocationEnabled())
-      instance.handleLocation();
+    if (await isLocationEnabled()) handleLocation();
   }
 
   /*

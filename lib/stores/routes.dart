@@ -7,6 +7,7 @@ enum Routes {
   startPathStep2,
   startPathStep3,
   startPathStep4,
+  test,
 }
 
 extension RawValue on Routes {

@@ -108,11 +108,11 @@ class StartPathStep2State extends State<StartPathStep2>
             // Divider(),
             Spacer(),
             BasicButton('NEXT', enabled: _isPageValid, onPressed: () {
-              StartPathStore.instance.setWantedAgeRange(List<int>.from([
+              StartPathStore().setWantedAgeRange(List<int>.from([
                 _sliderRangeValues.start.toInt(),
                 _sliderRangeValues.end.toInt()
               ]));
-              StartPathStore.instance.setWantedGender(_selectedGenders);
+              StartPathStore().setWantedGender(_selectedGenders);
               Navigator.of(context).pushNamed(Routes.startPathStep3.value);
             }),
             Padding(

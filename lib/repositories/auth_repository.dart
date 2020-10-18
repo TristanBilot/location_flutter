@@ -106,11 +106,11 @@ class AuthRepository {
 
   /// See UserLocalRepository.rememberLoggedUser
   Future<void> _rememberLoggedUser(String id) async {
-    return UserLocalRepository.instance.rememberLoggedUser(id);
+    return UserLocalRepository().rememberLoggedUser(id);
   }
 
   /// See UserLocalRepository.forgetLoggedUser
   Future<void> _forgetLoggedUser() async {
-    return UserLocalRepository.instance.forgetLoggedUser();
+    return UserLocalRepository().forgetLoggedUser();
   }
 }

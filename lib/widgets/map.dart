@@ -36,7 +36,7 @@ class MapState extends State<Map> with WidgetsBindingObserver {
     _markers = {};
     _controller = Completer();
     _areaFetcher = AreaFetchingRepository();
-    _store = MapStore.instance;
+    _store = MapStore();
   }
 
   String _darkMapStyle;
@@ -46,7 +46,7 @@ class MapState extends State<Map> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    LocationController.instance.handleLocationIfNeeded();
+    LocationController().handleLocationIfNeeded();
 
     _loadMapStyles().then((_) => _setMapStyle());
     // _fetchUsersAroundMe();

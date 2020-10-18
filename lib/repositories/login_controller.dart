@@ -26,9 +26,9 @@ class LoginController {
   Future<void> _successCompletion(String loggedID) async {
     final userAlreadyExists = await UserRepository().usersExists(loggedID);
     if (userAlreadyExists) {
-      await LocationController.instance.handleLocationIfNeeded();
-      await UserLocalRepository.instance.rememberLoggedUser(loggedID);
-      await UserStore.instance.initStore();
+      await LocationController().handleLocationIfNeeded();
+      await UserLocalRepository().rememberLoggedUser(loggedID);
+      await UserStore().initStore();
       Navigator.of(_context).pushReplacementNamed(Routes.map.value);
     } else
       Navigator.of(_context).pushReplacementNamed(Routes.startPathStep1.value);

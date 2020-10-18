@@ -21,7 +21,8 @@ class MatchsState extends State<Matchs> {
     return Padding(
       padding: EdgeInsets.all(10),
       child: Column(
-        children: MapStore.instance.unlikedUsers
+        children: MapStore()
+            .unlikedUsers
             .map((user) => Card(
                   child: Column(
                     children: [
