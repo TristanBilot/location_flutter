@@ -10,7 +10,7 @@ const fs = require('fs');
 const gm = require('gm').subClass({ imageMagick: true });
 
 /* prefix used to break infinite loop in the firestore trigger */
-const outputFilePrefix = 'img_';
+const outputFilePrefix = 'circle_';
 const size = 200;
 
 /**
@@ -58,7 +58,7 @@ exports.onFileUploaded = functions.storage.object().onFinalize(async (file) => {
         
           const firestoreFilePath = path.join(path.dirname(filePath), outputFilePrefix + fileNameWithPng);
           // Remove old photo.
-          await bucket.file(filePath).delete();
+          // await bucket.file(filePath).delete();
           // Uploading the output photo to firestore.
           await bucket.upload(outTmpPath, {
             destination: firestoreFilePath,
