@@ -38,6 +38,8 @@ class UserRepository {
         .set(FirestoreUserEntry(
           user.firstName,
           user.lastName,
+          user.gender,
+          user.age,
           geoPoint,
           UserSettings.DefaultUserSettings,
         ).toFirestoreObject());

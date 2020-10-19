@@ -1,38 +1,34 @@
 import 'dart:collection';
+import 'package:location_project/models/user.dart';
 import 'package:location_project/use_cases/start_path/widgets/gender_circle_icon.dart';
 
 /// Singleton class.
 class StartPathStore {
-  // Step 1
-  Gender _userGender;
-  int _userAge;
-
-  // Step 2
-  HashSet<Gender> _wantedGenders;
-  List<int> _wantedAgeRange; // [0]: min, [1]: max
+  User _userInBuilding;
+  User get user => _userInBuilding;
 
   StartPathStore._internal();
   static final StartPathStore _instance = StartPathStore._internal();
 
-  factory StartPathStore() {
-    _instance._wantedGenders = HashSet();
-    _instance._wantedAgeRange = List();
-    return _instance;
-  }
+  factory StartPathStore() => _instance;
 
   void setUserGender(Gender gender) {
-    _userGender = gender;
+    _userInBuilding.gender = gender;
   }
 
   void setUserAge(int age) {
-    _userAge = age;
+    _userInBuilding.age = age;
   }
 
   void setWantedGender(HashSet<Gender> genders) {
-    _wantedGenders = genders;
+    _userInBuilding.settings.wantedGenders = genders.toList();
   }
 
   void setWantedAgeRange(List range) {
-    _wantedAgeRange = range;
+    _userInBuilding.settings.wantedAgeRange = range;
+  }
+
+  void setUser(User user) {
+    _userInBuilding = user;
   }
 }

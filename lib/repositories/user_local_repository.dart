@@ -15,7 +15,10 @@ class UserLocalRepository {
 
   factory UserLocalRepository() => _instance;
 
-  static Future<UserLocalRepository> get startingInstance async {
+  /// Due to asynchronous calls when instanciating, this
+  /// class need to load using await at the beginning
+  /// of the app (usualy in the init). Should be called one.
+  static Future<UserLocalRepository> initAsynchronously() async {
     await _instance.getSharedPreferencesInstance();
     return _instance;
   }

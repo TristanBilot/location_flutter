@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
-import 'package:location_project/helpers/location_controller.dart';
 import 'package:location_project/repositories/login_controller.dart';
-import 'package:location_project/repositories/user_local_repository.dart';
-import 'package:location_project/repositories/user_repository.dart';
-import 'package:location_project/stores/user_store.dart';
 
-import '../repositories/auth_repository.dart';
 import '../stores/routes.dart';
 
 class LoginPage extends StatefulWidget {

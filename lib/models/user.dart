@@ -3,17 +3,21 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location_project/caches/location_cache.dart';
 import 'package:location_project/caches/user_cache.dart';
+import 'package:location_project/helpers/gender_adapter.dart';
 import 'package:location_project/helpers/location_controller.dart';
 import 'package:location_project/models/user_settings.dart';
 import 'package:location_project/repositories/image_repository.dart';
 import 'package:location_project/stores/conf.dart';
 import 'package:location_project/stores/store.dart';
+import 'package:location_project/use_cases/start_path/widgets/gender_circle_icon.dart';
 import '../stores/extensions.dart';
 
 enum UserField {
   FirstName,
   LastName,
   Position,
+  Age,
+  Gender,
 
   WantedGenders,
   WantedAgeRange,
@@ -31,6 +35,8 @@ class User {
   BitmapDescriptor icon;
   String pictureURL;
   int distance;
+  int age;
+  Gender gender;
   UserSettings settings;
 
   User(
@@ -41,6 +47,8 @@ class User {
       BitmapDescriptor icon,
       String pictureURL,
       int distance,
+      int age,
+      Gender gender,
       UserSettings settings) {
     this.id = email;
     this.lastName = lastName;
@@ -50,6 +58,8 @@ class User {
     this.icon = icon;
     this.pictureURL = pictureURL;
     this.distance = distance;
+    this.age = age;
+    this.gender = gender;
     this.settings = settings;
   }
 
@@ -75,16 +85,14 @@ class User {
     final downloadURL = await _imageRepo.getPictureDownloadURL(snapshot.id);
     final settings = UserSettings.fromFirestoreObject(data);
 
-    return User(
-      snapshot.id,
-      data[UserField.FirstName.value],
-      data[UserField.LastName.value],
-      LatLng(geoPoint.latitude, geoPoint.longitude),
-      icon,
-      downloadURL,
-      distance,
-      settings,
-    );
+    final firstName = data[UserField.FirstName.value];
+    final lastName = data[UserField.LastName.value];
+    final coord = LatLng(geoPoint.latitude, geoPoint.longitude);
+    final gender = GenderAdapter().stringToGender(data[UserField.Gender.value]);
+    final age = data[UserField.Age.value];
+
+    return User(snapshot.id, firstName, lastName, coord, icon, downloadURL,
+        distance, age, gender, settings);
   }
 
   /// Return the user corresponding to the id if it

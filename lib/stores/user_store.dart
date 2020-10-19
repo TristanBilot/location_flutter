@@ -18,35 +18,26 @@ class UserStore extends ChangeNotifier {
   Language _language;
 
   /* repositories to get and set data */
-  UserRepository _repo;
-  UserLocalRepository _localRepo;
-
-  /// Due to asynchronous calls when instanciating, this
-  /// class need to load using await at the beginning
-  /// of the app (usualy in the main). Should be called one.
-  static Future<UserStore> get startingInstance async {
-    _instance._localRepo = await UserLocalRepository.startingInstance;
-    // await _instance.initStore();
-    return _instance;
-  }
+  UserRepository _repo = UserRepository();
+  UserLocalRepository _localRepo = UserLocalRepository();
 
   UserStore._internal();
   static final UserStore _instance = UserStore._internal();
 
-  factory UserStore() {
-    _instance._repo = UserRepository();
-    return _instance;
-  }
+  factory UserStore() => _instance;
 
   /// Init asynchronously the store at the launch of the
   /// app. Get the `id` from the local repo, then, get
   /// the user's data using the real repo.
-  Future<void> initStore() async {
-    if (!_localRepo.isUserLoggedIn()) return;
-    // throw Exception('_initStore(): No user logged in !');
+  Future<void> initAsynchronously() async {
+    if (!_localRepo.isUserLoggedIn()) {
+      print('User not connected. Store not initialized.');
+      return;
+    }
     final id = _localRepo.getLoggedUserID();
     _user = await _repo.getUserFromID(id);
     _language = _localRepo.getAppLanguage();
+    setConnectedStatus(true);
   }
 
   bool isuserLoggedIn() {

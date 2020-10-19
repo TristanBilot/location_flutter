@@ -13,6 +13,7 @@ class LocationController {
   PermissionStatus _permissionGranted;
   Location _location = Location();
   UserRepository _userRepository = UserRepository();
+  bool isLocationAvailable = false;
 
   LocationController._internal();
   static final LocationController _instance = LocationController._internal();
@@ -44,15 +45,16 @@ class LocationController {
   * When launched, update every 0.5s
   * the position of the device in a cache.
   */
-  void handleLocation() {
+  void _handleLocation() {
     locator
         .getPositionStream(
             desiredAccuracy: locator.LocationAccuracy.best,
-            timeLimit: Duration(milliseconds: 500))
+            timeLimit: Duration(milliseconds: 200))
         .listen((locator.Position position) {
       /* update the location in cache */
       LocationCache()
           .putLocation(LatLng(position.latitude, position.longitude));
+      isLocationAvailable = true;
       /* get the location from cache and send it to Firestore */
       // final loggedUser = UserCache.getLoggedUser;
       // if (loggedUser != null) {
@@ -63,7 +65,7 @@ class LocationController {
   }
 
   Future handleLocationIfNeeded() async {
-    if (await isLocationEnabled()) handleLocation();
+    if (!isLocationAvailable && await isLocationEnabled()) _handleLocation();
   }
 
   /*

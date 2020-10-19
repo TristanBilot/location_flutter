@@ -23,8 +23,10 @@ class StartPathStep3State extends State<StartPathStep3> {
   }
 
   Future _requestLocation() async {
-    LocationController().enableLocation().then(
-        (_) => Navigator.of(context).pushNamed(Routes.startPathStep4.value));
+    LocationController().enableLocation().then((_) async {
+      LocationController().handleLocationIfNeeded();
+      Navigator.of(context).pushNamed(Routes.startPathStep4.value);
+    });
   }
 
   @override

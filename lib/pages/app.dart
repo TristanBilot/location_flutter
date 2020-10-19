@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:location_project/helpers/messaging_example.dart';
+import 'package:location_project/repositories/user_local_repository.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/themes/app_theme.dart';
 import 'package:location_project/use_cases/account/account_language_page.dart';
@@ -38,6 +39,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   /// Also put at true at the beginning of the app (main).
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (!UserLocalRepository().isUserLoggedIn()) return;
     if (state == AppLifecycleState.resumed)
       UserStore().setConnectedStatus(true);
     if (state == AppLifecycleState.paused)

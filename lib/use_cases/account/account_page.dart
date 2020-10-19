@@ -35,7 +35,8 @@ class _AccountPageState extends State<AccountPage>
   bool _isShowMyProfile;
   bool _isShowMyDistance;
   List<double> _wantedAgeValues;
-  CachedNetworkImage _cachedUserImage;
+  String _name;
+  int _age;
 
   AuthRepository _authRepo;
 
@@ -69,9 +70,8 @@ class _AccountPageState extends State<AccountPage>
         .wantedAgeRange
         .map((e) => e.toDouble())
         .toList();
-    _cachedUserImage = CachedNetworkImage(
-      imageUrl: UserStore().user.pictureURL,
-    );
+    _name = UserStore().user.firstName;
+    _age = UserStore().user.age;
     /* need to load after build() are the icons are not created yet */
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _circleIcons.forEach((icon) {
@@ -127,7 +127,7 @@ class _AccountPageState extends State<AccountPage>
                 child: Padding(
                   padding: const EdgeInsets.only(top: 10),
                   child: TextSF(
-                    'Tristan, 21',
+                    '$_name, $_age',
                     fontSize: 20,
                   ),
                 ),

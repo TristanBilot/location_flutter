@@ -1,8 +1,12 @@
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
+import 'package:location_project/account_creation_controller.dart';
 import 'package:location_project/helpers/location_controller.dart';
 import 'package:location_project/helpers/notification_controller.dart';
+import 'package:location_project/init_controller.dart';
+import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/stores/routes.dart';
+import 'package:location_project/stores/start_path_store.dart';
 import 'package:location_project/use_cases/start_path/basic_alert.dart';
 import 'package:location_project/use_cases/start_path/basic_alert_button.dart';
 import 'package:location_project/use_cases/start_path/start_path_step1/start_path_step1.dart';
@@ -18,15 +22,25 @@ class StartPathStep4 extends StatefulWidget {
 }
 
 class StartPathStep4State extends State<StartPathStep4> {
+  AcountCreationController _acountCreationController;
+
   @override
   void initState() {
     super.initState();
+    _acountCreationController = AcountCreationController();
+  }
+
+  Future _createUser() async {
+    final user = StartPathStore().user;
+    _acountCreationController.createUser(user);
+    await InitController().initAfterStartPath(user.id);
   }
 
   Future _requestNotifications() async {
-    NotificationController.instance.enableNotifications().then((_) {
+    NotificationController.instance.enableNotifications().then((_) async {
       print(NotificationController.instance.permissionStatus);
       print(LocationController().permissionStatus);
+      await _createUser();
       Navigator.of(context).popUntil((route) => route.isFirst);
       Navigator.of(context).pushReplacementNamed(Routes.map.value);
     });

@@ -3,11 +3,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/models/firestore_user_entry.dart';
 import 'package:location_project/models/user_settings.dart';
 import 'package:location_project/repositories/user_repository.dart';
+import 'package:location_project/use_cases/start_path/widgets/gender_circle_icon.dart';
 import 'image_repository.dart';
 import '../stores/store.dart';
 
 class UserMockRepository {
   static const MockAssetPath = 'mock_images/';
+
+  static const int AgeMock = 21;
+  static const Gender GenderMock = Gender.Female;
 
   Geoflutterfire _geo = Geoflutterfire();
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -51,6 +55,8 @@ class UserMockRepository {
         .set(FirestoreUserEntry(
           firstName,
           lastName,
+          GenderMock,
+          AgeMock,
           geoPoint,
           UserSettings.DefaultUserSettings,
         ).toFirestoreObject());
