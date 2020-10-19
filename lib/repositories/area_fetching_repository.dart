@@ -23,12 +23,9 @@ class AreaFetchingRepository {
     _imageRepo = ImageRepository();
   }
 
-  /*
-  ^ FUNCTION
-  * Get the current location and fetch all the users
-  * in the defined radius thanks to Geoflutterfire.
-  * It returns the stream of User snapshots.
-  */
+  /// Get the current location and fetch all the users
+  /// in the defined radius thanks to Geoflutterfire.
+  /// It returns the stream of User snapshots.
   Future<void> fetch(Function completion) async {
     final ref = _firestore.collection('locations');
 
@@ -44,13 +41,10 @@ class AreaFetchingRepository {
     return _listenAreaStream(stream, center, completion);
   }
 
-  /* 
-  ^ PRIVATE FUNCTION
-  * Listens to the stream of users around the current location.
-  * For each user around, the picture is fetched and a User object 
-  * is created. The completion is used to setState() in the view
-  * to update the list of markers to display to the map.
-  */
+  /// Listens to the stream of users around the current location.
+  /// For each user around, the picture is fetched and a User object
+  /// is created. The completion is used to setState() in the view
+  /// to update the list of markers to display to the map.
   Future<void> _listenAreaStream(Stream<List<DocumentSnapshot>> stream,
       GeoFirePoint center, Function completion) async {
     stream.listen((List<DocumentSnapshot> users) async {

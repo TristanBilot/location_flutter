@@ -87,6 +87,8 @@ class User {
     );
   }
 
+  /// Return the user corresponding to the id if it
+  /// exists in the cache, or null.
   static User fromCache(String id) {
     if (!UserCache().userExists(id)) return null;
     return UserCache().getUser(id);

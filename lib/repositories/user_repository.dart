@@ -1,7 +1,6 @@
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/caches/location_cache.dart';
-import 'package:location_project/helpers/location_controller.dart';
 import 'package:location_project/models/firestore_user_entry.dart';
 import 'package:location_project/models/user_settings.dart';
 import 'dart:io';
@@ -22,8 +21,6 @@ class UserRepository {
     _geo = Geoflutterfire();
     _firestore = FirebaseFirestore.instance;
     _imageRepo = ImageRepository();
-    // putCarrieresDataset();
-    // putParisDataSet();
   }
 
   /// This method should only be used for the first log in
@@ -83,88 +80,5 @@ class UserRepository {
     } catch (e) {
       throw e;
     }
-  }
-
-  /*
-  ^ PRIVATE FUNCTION
-  * This method is only for testing purpose, to insert mock data to the firestore db
-  */
-  Future<void> putCarrieresDataset() async {
-    final locationData = await LocationController().getLocation();
-    GeoFirePoint geoPoint = _geo.point(
-        latitude: locationData.latitude, longitude: locationData.longitude);
-
-    GeoFirePoint carrieres = _geo.point(latitude: 48.9162, longitude: 2.179672);
-    GeoFirePoint carrieres_2 =
-        _geo.point(latitude: 48.9163, longitude: 2.179678);
-
-    _firestore
-        .collection(UserFireStoreRootKey)
-        .doc('carrieres@hotmail.fr')
-        .set(FirestoreUserEntry(
-          'Tristan',
-          'Bilot',
-          geoPoint,
-          UserSettings.DefaultUserSettings,
-        ).toFirestoreObject());
-    _firestore
-        .collection(UserFireStoreRootKey)
-        .doc('carrieres2@hotmail.fr')
-        .set(FirestoreUserEntry(
-          'Kendall',
-          'Jenner',
-          carrieres,
-          UserSettings.DefaultUserSettings,
-        ).toFirestoreObject());
-    _firestore
-        .collection(UserFireStoreRootKey)
-        .doc('carrieres3@hotmail.fr')
-        .set(FirestoreUserEntry(
-          'Camille',
-          'Mouly',
-          carrieres_2,
-          UserSettings.DefaultUserSettings,
-        ).toFirestoreObject());
-  }
-
-  Future<void> putParisDataSet() async {
-    // final locationData = await LocationController.getLocation();
-    // GeoFirePoint geoPoint = _geo.point(
-    //     latitude: locationData.latitude, longitude: locationData.longitude);
-
-    GeoFirePoint paris13 = _geo.point(latitude: 48.825194, longitude: 2.34742);
-    GeoFirePoint paris13_2 =
-        _geo.point(latitude: 48.82471, longitude: 2.348482);
-    GeoFirePoint paris13_3 = _geo.point(latitude: 48.8247, longitude: 2.3484);
-
-    _firestore
-        .collection(UserFireStoreRootKey)
-        .doc('camille@hotmail.fr')
-        .set(FirestoreUserEntry(
-          'Camille',
-          'Mouly',
-          paris13,
-          UserSettings.DefaultUserSettings,
-        ).toFirestoreObject());
-
-    _firestore
-        .collection(UserFireStoreRootKey)
-        .doc('tristan.location.test@gmail.com')
-        .set(FirestoreUserEntry(
-          'Camille',
-          'Mouly',
-          paris13_2,
-          UserSettings.DefaultUserSettings,
-        ).toFirestoreObject());
-
-    _firestore
-        .collection(UserFireStoreRootKey)
-        .doc('kendall@hotmail.fr')
-        .set(FirestoreUserEntry(
-          'Camille',
-          'Mouly',
-          paris13_3,
-          UserSettings.DefaultUserSettings,
-        ).toFirestoreObject());
   }
 }

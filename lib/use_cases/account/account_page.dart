@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:location_project/repositories/auth_repository.dart';
+import 'package:location_project/repositories/user_mock_repository.dart';
 import 'package:location_project/stores/routes.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/account/widgets/account_list_tile.dart';
@@ -194,7 +195,10 @@ class _AccountPageState extends State<AccountPage>
               AccountLogOutListTile(
                 'DELETE MY ACCOUNT',
                 color: Colors.red[500],
-                onPressed: () => print('hey'),
+                onPressed: () {
+                  UserMockRepository().putParisDataset();
+                  UserMockRepository().putCarrieresDataset();
+                },
               ),
               Padding(
                 padding: EdgeInsets.only(bottom: AccountLogOutListTile.Padding),

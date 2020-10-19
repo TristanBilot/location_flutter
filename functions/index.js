@@ -3,7 +3,6 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp()
-const spawn = require('child-process-promise').spawn;
 const path = require('path');
 const os = require('os');
 const fs = require('fs');
@@ -11,7 +10,7 @@ const gm = require('gm').subClass({ imageMagick: true });
 
 /* prefix used to break infinite loop in the firestore trigger */
 const outputFilePrefix = 'circle_';
-const size = 200;
+const size = 150;
 
 /**
  * When an image is uploaded in the Storage bucket, we want to 
@@ -47,11 +46,11 @@ exports.onFileUploaded = functions.storage.object().onFinalize(async (file) => {
   console.log('Image downloaded locally to', inTmpPath);
 
   gm(inTmpPath) // could use crop()
-  .resize(size, size)
+  .resize(size, size, "!") // force the image to resize
   .write(outTmpPath, async function() {
     console.log('writing');
     gm(size, size, 'none')
-        .fill(outTmpPath)
+        .fill(outTmpPath) // scale
         .drawCircle(size / 2, size / 2, size / 2, 0)
         .write(outTmpPath, async function() {
           console.log('Circles photo created at', outTmpPath);
