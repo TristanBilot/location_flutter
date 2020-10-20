@@ -3,6 +3,7 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart' as locator;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location_project/repositories/user_local_repository.dart';
 import 'package:permission_handler/permission_handler.dart' as handler;
 import '../caches/location_cache.dart';
 import '../repositories/user_repository.dart';
@@ -13,7 +14,6 @@ class LocationController {
   PermissionStatus _permissionGranted;
   Location _location = Location();
   UserRepository _userRepository = UserRepository();
-  bool isLocationAvailable = false;
 
   LocationController._internal();
   static final LocationController _instance = LocationController._internal();
@@ -23,6 +23,7 @@ class LocationController {
   Future enableLocation() async {
     await _enableService();
     await _grant();
+    UserLocalRepository().setLocationAsked(true);
   }
 
   PermissionStatus get permissionStatus => _permissionGranted;
@@ -33,16 +34,16 @@ class LocationController {
   }
 
   Future<bool> isLocationEnabled() async {
-    final status = LocationController().permissionStatus;
     final isEnabled = !await handler.Permission.locationWhenInUse.isDenied;
 
     return (isEnabled != null && isEnabled) ||
-        (status != null && status == PermissionStatus.granted);
+        (permissionStatus != null &&
+            permissionStatus == PermissionStatus.granted);
   }
 
   /*
   ^ FUNCTION
-  * When launched, update every 0.5s
+  * When launched, update every 0.2s
   * the position of the device in a cache.
   */
   void _handleLocation() {
@@ -54,7 +55,6 @@ class LocationController {
       /* update the location in cache */
       LocationCache()
           .putLocation(LatLng(position.latitude, position.longitude));
-      isLocationAvailable = true;
       /* get the location from cache and send it to Firestore */
       // final loggedUser = UserCache.getLoggedUser;
       // if (loggedUser != null) {
@@ -65,7 +65,8 @@ class LocationController {
   }
 
   Future handleLocationIfNeeded() async {
-    if (!isLocationAvailable && await isLocationEnabled()) _handleLocation();
+    if (!LocationCache().isLocationAvailable && await isLocationEnabled())
+      _handleLocation();
   }
 
   /*

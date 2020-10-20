@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:location_project/helpers/location_controller.dart';
+import 'package:location_project/caches/location_cache.dart';
+import 'package:location_project/controllers/location_controller.dart';
 import 'package:location_project/pages/location_disabled_page.dart';
 import 'package:location_project/use_cases/matchs/matchs.dart';
 import 'package:location_project/use_cases/account/account_page.dart';
@@ -24,7 +25,8 @@ class _MapPageState extends State<MapPage>
   TabController _tabController;
 
   Future<bool> _displayMapIfLocationEnabled() async {
-    return await LocationController().isLocationEnabled();
+    return LocationCache().isLocationAvailable &&
+        await LocationController().isLocationEnabled();
   }
 
   @override
@@ -49,8 +51,10 @@ class _MapPageState extends State<MapPage>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      setState(() {});
-      print('come back to foreground');
+      LocationController().handleLocationIfNeeded().then((value) {
+        setState(() {});
+        print('come back to foreground');
+      });
     }
   }
 
@@ -72,12 +76,14 @@ class _MapPageState extends State<MapPage>
             FutureBuilder(
               future: _displayMapIfLocationEnabled(),
               builder: (context, snapshot) {
-                if (snapshot.hasData)
-                  return snapshot.data == false
-                      ? LocationDisabledPage()
-                      : Map();
-                else {
-                  return Text('waiting...');
+                if (snapshot.hasData) {
+                  bool shouldDisplayMap = snapshot.data;
+                  return shouldDisplayMap ? Map() : LocationDisabledPage();
+                } else {
+                  return CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                        Theme.of(context).primaryColor),
+                  );
                 }
               },
             ),

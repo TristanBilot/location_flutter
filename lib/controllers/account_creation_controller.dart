@@ -7,6 +7,7 @@ class AcountCreationController {
   AcountCreationController() {
     _userRepo = UserRepository();
   }
+
   Future createUser(User user) async {
     await _userRepo.insertUserForFirstConnection(user);
     print('${user.id} successfuly created.');

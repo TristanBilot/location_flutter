@@ -1,14 +1,11 @@
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
-import 'package:location_project/account_creation_controller.dart';
-import 'package:location_project/helpers/location_controller.dart';
-import 'package:location_project/helpers/notification_controller.dart';
-import 'package:location_project/init_controller.dart';
-import 'package:location_project/repositories/user_repository.dart';
+import 'package:location_project/controllers/account_creation_controller.dart';
+import 'package:location_project/controllers/init_controller.dart';
+import 'package:location_project/controllers/location_controller.dart';
+import 'package:location_project/controllers/notification_controller.dart';
 import 'package:location_project/stores/routes.dart';
 import 'package:location_project/stores/start_path_store.dart';
-import 'package:location_project/use_cases/start_path/basic_alert.dart';
-import 'package:location_project/use_cases/start_path/basic_alert_button.dart';
 import 'package:location_project/use_cases/start_path/start_path_step1/start_path_step1.dart';
 import 'package:location_project/use_cases/start_path/start_path_step3/start_path_step3.dart';
 import 'package:location_project/use_cases/start_path/widgets/basic_button.dart';
@@ -32,7 +29,8 @@ class StartPathStep4State extends State<StartPathStep4> {
 
   Future _createUser() async {
     final user = StartPathStore().user;
-    _acountCreationController.createUser(user);
+    if (!StartPathStore().ignoreUserCreation)
+      _acountCreationController.createUser(user);
     await InitController().initAfterStartPath(user.id);
   }
 

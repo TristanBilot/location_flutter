@@ -7,6 +7,8 @@ class StartPathStore {
   User _userInBuilding;
   User get user => _userInBuilding;
 
+  bool ignoreUserCreation = false;
+
   StartPathStore._internal();
   static final StartPathStore _instance = StartPathStore._internal();
 

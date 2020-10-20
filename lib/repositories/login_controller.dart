@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:location_project/helpers/location_controller.dart';
-import 'package:location_project/init_controller.dart';
+import 'package:location_project/controllers/init_controller.dart';
+import 'package:location_project/controllers/location_controller.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/repositories/auth_repository.dart';
+import 'package:location_project/repositories/user_local_repository.dart';
 import 'package:location_project/stores/routes.dart';
 import 'package:location_project/stores/start_path_store.dart';
 
@@ -23,14 +24,20 @@ class LoginController {
     );
   }
 
-  /// Called when the Facebook login is a success.
+  /// Called when the Facebook login is a success and already exists.
   Future<void> _successUserExistsCompletion(String loggedID) async {
     final isLocationEnabled = await LocationController().isLocationEnabled();
     if (isLocationEnabled) {
       await InitController().initAfterLogin(loggedID);
       Navigator.of(_context).pushReplacementNamed(Routes.map.value);
     } else {
-      Navigator.of(_context).pushReplacementNamed(Routes.startPathStep3.value);
+      if (UserLocalRepository().isLocationAlreadyAsked())
+        Navigator.of(_context).pushReplacementNamed(Routes.map.value);
+      else {
+        StartPathStore().ignoreUserCreation = true;
+        Navigator.of(_context)
+            .pushReplacementNamed(Routes.startPathStep3.value);
+      }
     }
   }
 

@@ -1,6 +1,6 @@
+import 'package:location_project/controllers/location_controller.dart';
 import 'package:location_project/repositories/user_local_repository.dart';
 import 'package:location_project/stores/user_store.dart';
-import 'helpers/location_controller.dart';
 
 class InitController {
   Future initFromMain() async {
@@ -9,7 +9,8 @@ class InitController {
     // return;
     if (UserLocalRepository().isUserLoggedIn()) {
       await LocationController().handleLocationIfNeeded();
-      await UserStore().initAsynchronously();
+      if (await LocationController().isLocationEnabled())
+        await UserStore().initAsynchronously();
     }
   }
 

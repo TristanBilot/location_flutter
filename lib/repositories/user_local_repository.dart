@@ -7,6 +7,7 @@ import '../stores/extensions.dart';
 class UserLocalRepository {
   static const LanguageKey = 'language';
   static const ConnectedIDKey = 'connectedId';
+  static const LocationAskedKey = 'locationAsked';
 
   SharedPreferences _prefs;
 
@@ -67,5 +68,14 @@ class UserLocalRepository {
   Language getAppLanguage() {
     if (!_prefs.containsKey(LanguageKey)) return null;
     return LanguageAdapter().stringToLanguage(_prefs.getString(LanguageKey));
+  }
+
+  Future<void> setLocationAsked(bool asked) async {
+    await _prefs.setBool(LocationAskedKey, asked);
+  }
+
+  bool isLocationAlreadyAsked() {
+    if (!keyExists(LocationAskedKey)) return false;
+    return _prefs.getBool(LocationAskedKey);
   }
 }

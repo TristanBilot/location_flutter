@@ -4,7 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location_project/caches/location_cache.dart';
 import 'package:location_project/caches/user_cache.dart';
 import 'package:location_project/helpers/gender_adapter.dart';
-import 'package:location_project/helpers/location_controller.dart';
+import 'package:location_project/controllers/location_controller.dart';
 import 'package:location_project/models/user_settings.dart';
 import 'package:location_project/repositories/image_repository.dart';
 import 'package:location_project/stores/conf.dart';
@@ -69,7 +69,8 @@ class User {
   static Future<User> from(DocumentSnapshot snapshot) async {
     final Map<String, dynamic> data = snapshot.data();
     final _imageRepo = ImageRepository();
-    final realPosition = (await LocationController().isLocationEnabled())
+    final realPosition = (await LocationController().isLocationEnabled() &&
+            LocationCache().isLocationAvailable)
         ? LocationCache().locationGeoPoint
         : LocationCache().dummyLocationGeoPoint;
     final GeoFirePoint center =

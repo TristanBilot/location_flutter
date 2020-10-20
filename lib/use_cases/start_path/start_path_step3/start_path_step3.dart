@@ -1,6 +1,6 @@
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
-import 'package:location_project/helpers/location_controller.dart';
+import 'package:location_project/controllers/location_controller.dart';
 import 'package:location_project/stores/routes.dart';
 import 'package:location_project/use_cases/start_path/basic_alert_button.dart';
 import 'package:location_project/use_cases/start_path/basic_alert.dart';

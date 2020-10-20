@@ -29,4 +29,7 @@ class LocationCache {
   void putLocation(LatLng location) {
     _cachedLocation = location;
   }
+
+  /// True if a location is store in the cache.
+  bool get isLocationAvailable => _cachedLocation != null;
 }

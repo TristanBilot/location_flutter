@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:location_project/init_controller.dart';
+import 'package:location_project/controllers/init_controller.dart';
 import 'pages/app.dart';
 
 void main() async {

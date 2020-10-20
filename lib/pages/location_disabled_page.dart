@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:location_project/helpers/location_controller.dart';
+import 'package:location_project/controllers/location_controller.dart';
 import 'package:location_project/pages/map_page.dart';
 import 'package:location_project/use_cases/start_path/widgets/basic_button.dart';
 import 'package:location_project/widgets/textSF.dart';
