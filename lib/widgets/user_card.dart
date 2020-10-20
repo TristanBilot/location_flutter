@@ -34,6 +34,10 @@ class _UserCardState extends State<UserCard> {
     // _messagingController...
   }
 
+  Future<void> sendHelloNotif() async {
+    return Future.delayed(Duration(seconds: 2));
+  }
+
   @override
   Widget build(BuildContext context) {
     // To dismiss keyboard.
@@ -52,6 +56,7 @@ class _UserCardState extends State<UserCard> {
             child: UserCardContent(
               user: widget.user,
               onTextSubmitted: sendMessage,
+              onSayHiTap: sendHelloNotif,
             ),
             // ),
           ),

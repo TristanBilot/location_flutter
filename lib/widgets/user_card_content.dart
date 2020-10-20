@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:location_project/widgets/cached_circle_user_image.dart';
+import 'package:location_project/widgets/say_hello_button.dart';
 import 'package:location_project/widgets/scrollable_textview.dart';
 import 'package:location_project/widgets/textSF.dart';
 import '../models/user.dart';
@@ -8,10 +10,12 @@ import '../models/user.dart';
 class UserCardContent extends StatefulWidget {
   final User user;
   final Function(String value) onTextSubmitted;
+  final Function onSayHiTap;
 
   UserCardContent({
     @required this.user,
     @required this.onTextSubmitted,
+    @required this.onSayHiTap,
   });
 
   @override
@@ -32,6 +36,8 @@ class _UserCardContentState extends State<UserCardContent> {
     _textController.dispose();
     super.dispose();
   }
+
+  void onSayHelloPressed() {}
 
   String getNameAgeLabel() {
     final name = widget.user.firstName, age = widget.user.age;
@@ -58,26 +64,9 @@ class _UserCardContentState extends State<UserCardContent> {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Center(
-                    child: CachedNetworkImage(
-                      imageUrl: widget.user.pictureURL,
-                      imageBuilder: (context, imageProvider) => Container(
-                        width: 130,
-                        height: 130,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              width: 1,
-                              color: Colors.grey,
-                              style: BorderStyle.solid),
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                              image: imageProvider, fit: BoxFit.fill),
-                        ),
-                      ),
-                      placeholder: (context, url) => CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.grey),
-                        strokeWidth: 3.0,
-                      ),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
+                    child: CachedCircleUserImage(
+                      widget.user.pictureURL,
+                      size: 130,
                     ),
                   ),
                   // Expanded(
@@ -96,15 +85,20 @@ class _UserCardContentState extends State<UserCardContent> {
                           : '${widget.user.distance} meters',
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 30.0),
-                    child: ScrollableTextView(
-                      withTrailingButton: true,
-                      controller: _textController,
-                      trailingButtonOnPressed: () => {},
-                      onTextSubmitted: widget.onTextSubmitted,
-                    ),
-                  )
+                  Spacer(),
+                  Divider(),
+                  Spacer(),
+                  ScrollableTextView(
+                    withTrailingButton: true,
+                    controller: _textController,
+                    trailingButtonOnPressed: () => {},
+                    onTextSubmitted: widget.onTextSubmitted,
+                  ),
+                  Spacer(),
+                  SayHelloButton(
+                    onPressed: widget.onSayHiTap,
+                    userName: widget.user.firstName,
+                  ),
                 ],
               ),
             ),

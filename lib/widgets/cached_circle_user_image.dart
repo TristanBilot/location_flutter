@@ -38,7 +38,9 @@ class CachedCircleUserImage extends StatelessWidget {
         ),
       ),
       placeholder: (context, url) => CircularProgressIndicator(
-        valueColor: AlwaysStoppedAnimation<Color>(Colors.grey),
+        valueColor: AlwaysStoppedAnimation<Color>(
+          Theme.of(context).primaryColor,
+        ), // or Colors.grey
         strokeWidth: 3.0,
       ),
       errorWidget: (context, url, error) => Icon(Icons.error),

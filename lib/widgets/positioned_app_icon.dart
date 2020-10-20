@@ -30,14 +30,19 @@ class _PositionedAppIconState extends State<PositionedAppIcon> {
         left: (MediaQuery.of(context).size.width / 2) - (_iconSize / 2) - 20,
         top: MediaQuery.of(context).padding.top + (_iconSize / 2),
         child: FlatButton(
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          onPressed: () => _tabController.animateTo(_initialIndex),
-          child: Image.asset(
-            'assets/tinder.png',
-            height: _iconSize,
-            width: _iconSize,
-          ),
-        ));
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            onPressed: () => _tabController.animateTo(_initialIndex),
+            child: Icon(
+              Icons.location_on,
+              size: _iconSize,
+              color: Colors.white,
+            )
+            //  Image.asset(
+            //   'assets/tinder.png',
+            //   height: _iconSize,
+            //   width: _iconSize,
+            // ),
+            ));
   }
 }
