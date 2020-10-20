@@ -35,7 +35,8 @@ class _UserCardState extends State<UserCard> {
   }
 
   Future<void> sendHelloNotif() async {
-    return Future.delayed(Duration(seconds: 2));
+    await MessagingController().sendAndRetrieveMessage();
+    // return Future.delayed(Duration(seconds: 2));
   }
 
   @override
