@@ -28,10 +28,6 @@ class MapState extends State<Map> with WidgetsBindingObserver {
   Completer<GoogleMapController> _controller;
   AreaFetchingRepository _areaFetcher;
 
-  final barrierColorBaseShade = 150;
-  Color barrierColor;
-  bool isModalDisplayed;
-
   MapState() {
     _markers = {};
     _controller = Completer();
@@ -49,15 +45,6 @@ class MapState extends State<Map> with WidgetsBindingObserver {
     LocationController().handleLocationIfNeeded();
 
     _loadMapStyles().then((_) => _setMapStyle());
-    // _fetchUsersAroundMe();
-
-    isModalDisplayed = false;
-    _restBarrierColor();
-    // _drawCircleArea();
-  }
-
-  void _restBarrierColor() {
-    barrierColor = Color.fromARGB(barrierColorBaseShade, 0, 0, 0);
   }
 
   Future _loadMapStyles() async {
@@ -114,8 +101,6 @@ class MapState extends State<Map> with WidgetsBindingObserver {
               position: user.coord,
               onTap: () {
                 setState(() {
-                  isModalDisplayed = true;
-                  _restBarrierColor();
                   _showUserCard(context, user, this, _store);
                 });
               }));
@@ -133,13 +118,12 @@ class MapState extends State<Map> with WidgetsBindingObserver {
             scale: a1.value,
             child: Opacity(
               opacity: a1.value,
-              child: UserCard(store, state, user),
+              child: UserCard(user),
             ),
           );
         },
-        transitionDuration: Duration(milliseconds: 200),
-        barrierColor:
-            Colors.white.withAlpha(0), // Colors.black.withOpacity(0.5)
+        transitionDuration: Duration(milliseconds: 150),
+        barrierColor: Colors.black.withOpacity(0.5),
         barrierDismissible: true,
         barrierLabel: '',
         context: context,
@@ -204,21 +188,6 @@ class MapState extends State<Map> with WidgetsBindingObserver {
                 _controller.complete(controller);
                 _fetchUsersAroundMe();
               }),
-          // barrier background dark container used when user card displayed
-          isModalDisplayed
-              ? Container(
-                  color: barrierColor,
-                  height: MediaQuery.of(context).size.height,
-                  width: MediaQuery.of(context).size.width,
-                  child: GestureDetector(onTap: () {
-                    setState(() {
-                      isModalDisplayed = false;
-                      barrierColor = Colors.red;
-                    });
-                    Navigator.of(context, rootNavigator: true).pop(true);
-                  }),
-                )
-              : Container()
         ]);
       },
     );

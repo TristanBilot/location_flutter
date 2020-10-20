@@ -1,14 +1,45 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:location_project/widgets/like_dislike_button.dart';
+import 'package:location_project/widgets/scrollable_textview.dart';
 import 'package:location_project/widgets/textSF.dart';
 import '../models/user.dart';
 
-class UserCardContent extends StatelessWidget {
+class UserCardContent extends StatefulWidget {
   final User user;
+  final Function(String value) onTextSubmitted;
 
-  const UserCardContent({Key key, @required this.user}) : super(key: key);
+  UserCardContent({
+    @required this.user,
+    @required this.onTextSubmitted,
+  });
+
+  @override
+  _UserCardContentState createState() => _UserCardContentState();
+}
+
+class _UserCardContentState extends State<UserCardContent> {
+  TextEditingController _textController;
+
+  @override
+  void initState() {
+    super.initState();
+    _textController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
+  }
+
+  String getNameAgeLabel() {
+    final name = widget.user.firstName, age = widget.user.age;
+    if (name == null && age == null) return null;
+    if (name != null && age == null) return name;
+    if (name == null && age != null) return age.toString();
+    return '$name, ${age.toString()}';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +49,7 @@ class UserCardContent extends StatelessWidget {
       padding: EdgeInsets.all(20),
       child: Material(
           color: Theme.of(context).canvasColor,
+          borderRadius: BorderRadius.circular(10),
           child: SafeArea(
             top: false,
             child: Padding(
@@ -27,10 +59,10 @@ class UserCardContent extends StatelessWidget {
                 children: <Widget>[
                   Center(
                     child: CachedNetworkImage(
-                      imageUrl: user.pictureURL,
+                      imageUrl: widget.user.pictureURL,
                       imageBuilder: (context, imageProvider) => Container(
-                        width: 110,
-                        height: 110,
+                        width: 130,
+                        height: 130,
                         decoration: BoxDecoration(
                           border: Border.all(
                               width: 1,
@@ -48,34 +80,31 @@ class UserCardContent extends StatelessWidget {
                       errorWidget: (context, url, error) => Icon(Icons.error),
                     ),
                   ),
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                      child: TextSF(
-                        user.distance == 0 ? '' : '${user.distance} meters',
-                        // style:
-                        //     TextStyle(color: Color.fromARGB(255, 50, 50, 50)),
-                      ),
-                      // WidgetSpan(
-                      //   child: Icon(
-                      //     Icons.location_on,
-                      //     color: Color.fromARGB(255, 50, 50, 50),
-                      //     size: 16,
-                      //   ),
-                      // ),
+                  // Expanded(
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                    child: TextSF(
+                      getNameAgeLabel(),
+                      fontSize: TextSF.FontSize + 4,
                     ),
                   ),
-                  Row(
-                    children: [
-                      Spacer(),
-                      LikeDislikeButton(
-                          Icons.close, Colors.orange, Colors.pink),
-                      Spacer(),
-                      LikeDislikeButton(
-                          Icons.favorite_border, Colors.pink, Colors.indigo),
-                      Spacer(),
-                    ],
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(0, 6, 0, 0),
+                    child: TextSF(
+                      widget.user.distance == 0
+                          ? ''
+                          : '${widget.user.distance} meters',
+                    ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 30.0),
+                    child: ScrollableTextView(
+                      withTrailingButton: true,
+                      controller: _textController,
+                      trailingButtonOnPressed: () => {},
+                      onTextSubmitted: widget.onTextSubmitted,
+                    ),
+                  )
                 ],
               ),
             ),
