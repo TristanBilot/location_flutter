@@ -50,7 +50,7 @@ class UserMockRepository {
     GeoFirePoint geoPoint,
   ) async {
     _firestore
-        .collection(UserRepository.UserFireStoreRootKey)
+        .collection(UserRepository.RootKey)
         .doc(id)
         .set(FirestoreUserEntry(
           firstName,

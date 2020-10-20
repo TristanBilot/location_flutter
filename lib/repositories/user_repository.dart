@@ -11,7 +11,7 @@ import '../stores/conf.dart';
 import '../stores/extensions.dart';
 
 class UserRepository {
-  static const UserFireStoreRootKey = 'locations';
+  static const RootKey = 'locations';
 
   Geoflutterfire _geo;
   FirebaseFirestore _firestore;
@@ -32,10 +32,7 @@ class UserRepository {
     final GeoFirePoint geoPoint = Conf.testMode
         ? Store.parisGeoPosition
         : LocationCache().locationGeoPoint;
-    await _firestore
-        .collection(UserFireStoreRootKey)
-        .doc(user.id)
-        .set(FirestoreUserEntry(
+    await _firestore.collection(RootKey).doc(user.id).set(FirestoreUserEntry(
           user.firstName,
           user.lastName,
           user.gender,
@@ -49,7 +46,7 @@ class UserRepository {
   }
 
   Future<void> updateUserLocation(User user, GeoFirePoint location) async {
-    await _firestore.collection(UserFireStoreRootKey).doc(user.id).update({
+    await _firestore.collection(RootKey).doc(user.id).update({
       UserField.Position.value: location.data,
     });
     // ++++ need catch error
@@ -59,7 +56,7 @@ class UserRepository {
   /// where `id` is the id of the user, `key`, one of the
   /// static keys in the repo and `value` a dynamic value;
   Future<void> updateUserValue(String id, UserField key, dynamic value) async {
-    await _firestore.doc([UserFireStoreRootKey, id].join('/')).update({
+    await _firestore.doc([RootKey, id].join('/')).update({
       key.value: value,
     });
   }
@@ -68,7 +65,7 @@ class UserRepository {
   /// This method does not lookup to the cache if the
   /// id is already used.
   Future<User> getUserFromID(String id) async {
-    var document = _firestore.collection(UserFireStoreRootKey).doc(id);
+    var document = _firestore.collection(RootKey).doc(id);
     var snapshot = await document.get();
     return User.from(snapshot);
   }
@@ -76,7 +73,7 @@ class UserRepository {
   /// Return true if the user id exists in the Firestore.
   Future<bool> usersExists(String id) async {
     try {
-      var collectionRef = _firestore.collection(UserFireStoreRootKey);
+      var collectionRef = _firestore.collection(RootKey);
       var doc = await collectionRef.doc(id).get();
       return doc.exists;
     } catch (e) {

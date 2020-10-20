@@ -1,5 +1,6 @@
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:location_project/helpers/gender_adapter.dart';
+import 'package:location_project/models/firestore_entry.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/models/user_settings.dart';
 import 'package:location_project/use_cases/start_path/widgets/gender_circle_icon.dart';
@@ -7,7 +8,7 @@ import '../stores/extensions.dart';
 
 /// Represents the User data stored in Firestore.
 /// Used to add new users.
-class FirestoreUserEntry {
+class FirestoreUserEntry implements FirestoreEntry {
   String firstName;
   String lastName;
   String gender;

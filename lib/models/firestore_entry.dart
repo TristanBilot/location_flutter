@@ -1,0 +1,3 @@
+class FirestoreEntry {
+  dynamic toFirestoreObject() {}
+}

@@ -4,6 +4,7 @@ import 'package:location_project/controllers/location_controller.dart';
 import 'package:location_project/pages/location_disabled_page.dart';
 import 'package:location_project/use_cases/matchs/matchs.dart';
 import 'package:location_project/use_cases/account/account_page.dart';
+import 'package:location_project/use_cases/messaging/chats_page.dart';
 import 'package:location_project/widgets/positioned_app_icon.dart';
 import '../widgets/map.dart';
 
@@ -87,7 +88,8 @@ class _MapPageState extends State<MapPage>
                 }
               },
             ),
-            Matchs(),
+            // Matchs(),
+            ChatsPage(),
           ],
         ),
       ),
