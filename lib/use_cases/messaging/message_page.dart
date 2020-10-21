@@ -35,9 +35,11 @@ class _MessagePageState extends State<MessagePage> {
         builder: (context, snapshot) {
           return snapshot.hasData
               ? ListView.builder(
+                  reverse: true,
                   itemCount: snapshot.data.documents.length,
                   itemBuilder: (context, index) {
                     return MessageTile(
+                      isLastMessage: index == 0,
                       message: snapshot.data.documents[index]
                           .data()[MessageField.Message.value],
                       sendByMe: UserStore().user.id ==
@@ -86,14 +88,24 @@ class _MessagePageState extends State<MessagePage> {
 class MessageTile extends StatelessWidget {
   final String message;
   final bool sendByMe;
+  final bool isLastMessage;
+  final double lastMessagesPadding;
 
-  MessageTile({@required this.message, @required this.sendByMe});
+  MessageTile({
+    @required this.message,
+    @required this.sendByMe,
+    this.isLastMessage = false,
+    this.lastMessagesPadding = 50,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(
-          top: 8, bottom: 8, left: sendByMe ? 0 : 24, right: sendByMe ? 24 : 0),
+          top: 8,
+          bottom: isLastMessage ? lastMessagesPadding : 8,
+          left: sendByMe ? 0 : 24,
+          right: sendByMe ? 24 : 0),
       alignment: sendByMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
         margin:

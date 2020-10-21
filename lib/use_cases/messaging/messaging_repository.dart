@@ -28,12 +28,14 @@ class MessagingReposiory {
   }
 
   /// Return a stream of messages ordered by time from a chat ID.
+  /// `descending` set to true because the list is reversed in
+  /// the ListView builder UI.
   Future<Stream<QuerySnapshot>> getMessages(String chatID) async {
     return _firestore
         .collection(RootKey)
         .doc(chatID)
         .collection(ChatKey)
-        .orderBy(MessageField.Time.value)
+        .orderBy(MessageField.Time.value, descending: true)
         .snapshots();
   }
 
