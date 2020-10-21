@@ -27,4 +27,12 @@ class FirestoreMessageEntry implements FirestoreEntry {
       MessageField.Time.value: time,
     };
   }
+
+  static FirestoreMessageEntry fromFirestoreObject(dynamic data) {
+    return FirestoreMessageEntry(
+      data[MessageField.Message.value],
+      data[MessageField.SendBy.value],
+      data[MessageField.Time.value],
+    );
+  }
 }
