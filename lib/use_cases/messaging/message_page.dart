@@ -108,6 +108,7 @@ class _MessagePageState extends State<MessagePage> {
                   color: Theme.of(context).scaffoldBackgroundColor,
                   child: MessagingTextField(
                     onPressed: _sendMessage,
+                    onChanged: (text) => setState(() => {}),
                     controller: _messageEditingController,
                   ),
                 ),

@@ -23,18 +23,23 @@ class MessageTileMethods {
     if (diffWithPrevMsgTime == ValueForFirstMessage ||
         diffInHours > IntervalToDisplayTime) {
       DateTime time = DateTime.fromMicrosecondsSinceEpoch(message.time);
-      int hours = time.hour;
-      int min = time.minute;
-      String dayStr;
       int diffBetweenMsgAndNow =
           DateTime.now().subtract(Duration(microseconds: message.time)).day - 1;
+
+      String day = time.day.toString().padLeft(2, '0');
+      String month = time.month.toString().padLeft(2, '0');
+      String dayStr;
+
       if (diffBetweenMsgAndNow == 0)
         dayStr = 'Today ';
       else if (diffBetweenMsgAndNow == 1)
         dayStr = 'Yesterday ';
       else
-        dayStr = '${time.day}/${time.month} - '; // inverse order in English
-      String hourMinStr = '$hours:$min';
+        dayStr = '$day/$month - '; // inverse order in English
+
+      String hour = time.hour.toString().padLeft(2, '0');
+      String min = time.minute.toString().padLeft(2, '0');
+      String hourMinStr = '$hour:$min';
 
       final fontSize = 12.0;
       TextSpan displayedTime = TextSpan(
