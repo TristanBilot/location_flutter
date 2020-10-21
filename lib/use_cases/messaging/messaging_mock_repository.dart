@@ -44,7 +44,7 @@ class MessagingMockRepository {
     final entry = FirestoreMessageEntry(
       message,
       Random().nextBool() == true ? id1 : id2,
-      DateTime.now().microsecondsSinceEpoch,
+      FirestoreMessageEntry.Time,
     );
     MessagingReposiory().newMessage(chatID, entry);
     print('message successfully inserted to Firestore.');

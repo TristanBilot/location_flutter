@@ -30,6 +30,18 @@ class _MessagePageState extends State<MessagePage> {
     super.initState();
   }
 
+  Future<void> _sendMessage() {
+    if (_messageEditingController.text.isNotEmpty) {
+      final message = _messageEditingController.text;
+      final sendBy = UserStore().user.id;
+      final time = FirestoreMessageEntry.Time;
+
+      final entry = FirestoreMessageEntry(message, sendBy, time);
+      MessagingReposiory().newMessage(widget.chatID, entry);
+      setState(() => _messageEditingController.text = "");
+    }
+  }
+
   Widget get _messagesList => StreamBuilder(
         stream: _messages,
         builder: (context, snapshot) {
@@ -39,7 +51,6 @@ class _MessagePageState extends State<MessagePage> {
                   itemCount: snapshot.data.documents.length,
                   itemBuilder: (context, index) {
                     return MessageTile(
-                      isLastMessage: index == 0,
                       message: snapshot.data.documents[index]
                           .data()[MessageField.Message.value],
                       sendByMe: UserStore().user.id ==
@@ -61,18 +72,19 @@ class _MessagePageState extends State<MessagePage> {
           if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
         },
         child: Container(
-          child: Stack(
+          child: Column(
             children: [
-              _messagesList,
+              Expanded(
+                child: _messagesList,
+              ),
               Container(
-                alignment: Alignment.bottomCenter,
                 width: MediaQuery.of(context).size.width,
                 child: Container(
-                  // padding: EdgeInsets.only(bottom: 30),
-                  // height: 80,
+                  height: 80,
                   padding: EdgeInsets.fromLTRB(10, 15, 10, 30),
                   color: Theme.of(context).scaffoldBackgroundColor,
                   child: MessagingTextField(
+                    onPressed: _sendMessage,
                     controller: _messageEditingController,
                   ),
                 ),
@@ -88,24 +100,17 @@ class _MessagePageState extends State<MessagePage> {
 class MessageTile extends StatelessWidget {
   final String message;
   final bool sendByMe;
-  final bool isLastMessage;
-  final double lastMessagesPadding;
 
   MessageTile({
     @required this.message,
     @required this.sendByMe,
-    this.isLastMessage = false,
-    this.lastMessagesPadding = 50,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(
-          top: 8,
-          bottom: isLastMessage ? lastMessagesPadding : 8,
-          left: sendByMe ? 0 : 24,
-          right: sendByMe ? 24 : 0),
+          top: 8, bottom: 8, left: sendByMe ? 0 : 24, right: sendByMe ? 24 : 0),
       alignment: sendByMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
         margin:

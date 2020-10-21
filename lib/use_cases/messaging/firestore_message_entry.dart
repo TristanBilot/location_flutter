@@ -12,6 +12,8 @@ class FirestoreMessageEntry implements FirestoreEntry {
   final String sendBy;
   final int time;
 
+  static get Time => DateTime.now().microsecondsSinceEpoch;
+
   FirestoreMessageEntry(
     this.message,
     this.sendBy,

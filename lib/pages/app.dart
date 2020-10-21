@@ -64,7 +64,13 @@ class _AppState extends State<App> with WidgetsBindingObserver {
         Routes.test.value: (context) => PushMessagingExample(),
       },
       theme: AppTheme.defaultTheme,
-      darkTheme: ThemeData.dark(),
+      darkTheme: ThemeData.dark().copyWith(
+          textTheme: ThemeData.dark().textTheme.copyWith(
+                bodyText2: ThemeData.dark()
+                    .textTheme
+                    .headline6
+                    .copyWith(color: Colors.white),
+              )),
       debugShowCheckedModeBanner: false,
     );
   }

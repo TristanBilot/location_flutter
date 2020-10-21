@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:location_project/widgets/scrollable_textview.dart';
 
 class MessagingTextField extends StatefulWidget {
   final TextEditingController controller;
+  final Function onPressed;
 
   MessagingTextField({
     @required this.controller,
+    @required this.onPressed,
   });
 
   @override
@@ -20,8 +21,11 @@ class _MessagingTextFieldState extends State<MessagingTextField> {
       children: [
         Expanded(
           child: CupertinoTextField(
+            style:
+                TextStyle(color: Theme.of(context).textTheme.headline6.color),
+            // clearButtonMode: OverlayVisibilityMode.editing,
+            cursorColor: Colors.white,
             controller: widget.controller,
-            // onSubmitted: onTextSubmitted,
             keyboardType: TextInputType.multiline,
             maxLines: null,
             padding: EdgeInsets.fromLTRB(12, 5, 12, 5),
@@ -33,9 +37,12 @@ class _MessagingTextFieldState extends State<MessagingTextField> {
             placeholder: 'Message',
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(left: 15),
-          child: Icon(Icons.send, size: 20),
+        FlatButton(
+          onPressed: widget.onPressed,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 15),
+            child: Icon(Icons.send, size: 20),
+          ),
         ),
       ],
     );
