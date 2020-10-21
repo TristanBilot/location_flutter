@@ -88,11 +88,13 @@ class _UserCardContentState extends State<UserCardContent> {
                   Spacer(),
                   Divider(),
                   Spacer(),
-                  ScrollableTextView(
-                    withTrailingButton: true,
-                    controller: _textController,
-                    trailingButtonOnPressed: () => {},
-                    onTextSubmitted: widget.onTextSubmitted,
+                  Center(
+                    child: ScrollableTextView(
+                      withTrailingButton: true,
+                      controller: _textController,
+                      trailingButtonOnPressed: () => {},
+                      onTextSubmitted: widget.onTextSubmitted,
+                    ),
                   ),
                   Spacer(),
                   SayHelloButton(

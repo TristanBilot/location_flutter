@@ -200,7 +200,8 @@ class _AccountPageState extends State<AccountPage>
                 onPressed: () {
                   // UserMockRepository().putParisDataset();
                   // UserMockRepository().putCarrieresDataset();
-                  MessagingMockRepository().insertChatMock();
+                  // MessagingMockRepository().insertChatMock();
+                  // MessagingMockRepository().insertMessageMock();
                 },
               ),
               Padding(

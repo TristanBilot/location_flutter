@@ -8,6 +8,8 @@ class ScrollableTextView extends StatelessWidget {
   final String trailingButtontext;
   final Function trailingButtonOnPressed;
   final TextEditingController controller;
+  final double width;
+  final Widget customTrailingButton;
 
   ScrollableTextView({
     this.placeholder = 'Send a nice message !',
@@ -16,6 +18,8 @@ class ScrollableTextView extends StatelessWidget {
     this.trailingButtontext = 'Send',
     this.trailingButtonOnPressed,
     this.controller,
+    this.width,
+    this.customTrailingButton,
   }) {
     if (withTrailingButton && trailingButtonOnPressed == null)
       print(
@@ -35,37 +39,35 @@ class ScrollableTextView extends StatelessWidget {
 
     return Stack(
       children: [
-        Center(
-          child: Container(
-            width: width,
-            decoration: BoxDecoration(
-              color: Theme.of(context).backgroundColor,
-              borderRadius: BorderRadius.circular(10),
+        Container(
+          width: this.width ?? width,
+          decoration: BoxDecoration(
+            color: Theme.of(context).backgroundColor,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          padding: EdgeInsets.fromLTRB(
+              leftPadding, topPadding, rightPadding, bottomPadding),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: 55.0,
             ),
-            padding: EdgeInsets.fromLTRB(
-                leftPadding, topPadding, rightPadding, bottomPadding),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                maxHeight: 55.0,
-              ),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                reverse: true,
-                child: TextField(
-                  controller: controller,
-                  onSubmitted: onTextSubmitted,
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null, //grow automatically
-                  decoration: InputDecoration.collapsed(
-                    hintText: placeholder,
-                  ),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              reverse: true,
+              child: TextField(
+                controller: controller,
+                onSubmitted: onTextSubmitted,
+                keyboardType: TextInputType.multiline,
+                maxLines: null, //grow automatically
+                decoration: InputDecoration.collapsed(
+                  hintText: placeholder,
                 ),
               ),
             ),
           ),
         ),
       ]..addAll(!withTrailingButton
-          ? []
+          ? ([customTrailingButton] ?? [])
           : [
               Padding(
                 padding: EdgeInsets.only(left: width - rightPadding - 10),

@@ -1,13 +1,11 @@
-import 'dart:collection';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/use_cases/messaging/firestore_chat_entry.dart';
+import 'package:location_project/use_cases/messaging/firestore_message_entry.dart';
 import '../../stores/extensions.dart';
 
 class MessagingReposiory {
   static const RootKey = 'messages';
   static const ChatKey = 'chats';
-  static const TimeKey = 'time';
 
   FirebaseFirestore _firestore;
 
@@ -35,21 +33,21 @@ class MessagingReposiory {
         .collection(RootKey)
         .doc(chatID)
         .collection(ChatKey)
-        .orderBy(TimeKey)
+        .orderBy(MessageField.Time.value)
         .snapshots();
   }
 
   /// Insert a new message in the chat `chatID`.
-  Future<void> newMessage(String chatID, chatMessageData) async {
+  Future<void> newMessage(String chatID, FirestoreMessageEntry msg) async {
     _firestore
         .collection(RootKey)
         .doc(chatID)
         .collection(ChatKey)
-        .add(chatMessageData)
+        .add(msg.toFirestoreObject())
         .catchError((e) => print(e.toString()));
   }
 
-  /// Returns a stream of chats linked to the user `userID`.
+  /// Returns a stream of chats linked to the user logged `userID`.
   Future<Stream<QuerySnapshot>> getChats(String userID) async {
     return _firestore
         .collection(RootKey)
