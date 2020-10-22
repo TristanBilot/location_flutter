@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/stores/user_store.dart';
+import 'package:location_project/use_cases/messaging/cahed_circle_user_image_with_active_status.dart';
 import 'package:location_project/use_cases/messaging/firestore_chat_entry.dart';
 import 'package:location_project/use_cases/messaging/message_page.dart';
-import 'package:location_project/widgets/cached_circle_user_image.dart';
 
 class ChatTile extends StatelessWidget {
   final FirestoreChatEntry chat;
@@ -40,11 +40,11 @@ class ChatTile extends StatelessWidget {
                         title: Text(
                           snapshot.data.firstName,
                         ),
-                        subtitle: Text('At ${snapshot.data.distance}m'),
+                        subtitle: Text('${snapshot.data.distance}m'),
                         trailing: Icon(Icons.chevron_right),
-                        leading: CachedCircleUserImage(
-                          snapshot.data.pictureURL,
-                          size: 55,
+                        leading: CachedCircleUserImageWithActiveStatus(
+                          pictureURL: snapshot.data.pictureURL,
+                          isActive: snapshot.data.settings.connected,
                         ),
                       ),
                     ],
