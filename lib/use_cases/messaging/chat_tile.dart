@@ -31,6 +31,7 @@ class ChatTile extends StatelessWidget {
                   MaterialPageRoute(
                       builder: (context) => MessagePage(
                             chatID: chat.chatID,
+                            user: snapshot.data,
                           )),
                 ),
                 child: Card(

@@ -198,8 +198,8 @@ class _AccountPageState extends State<AccountPage>
                 'DELETE MY ACCOUNT',
                 color: Colors.red[500],
                 onPressed: () {
-                  // UserMockRepository().putParisDataset();
-                  // UserMockRepository().putCarrieresDataset();
+                  UserMockRepository().putParisDataset();
+                  UserMockRepository().putCarrieresDataset();
                   // MessagingMockRepository().insertChatMock();
                   // MessagingMockRepository().insertMessageMock();
                 },

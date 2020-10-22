@@ -4,10 +4,12 @@ import 'package:location_project/widgets/cached_circle_user_image.dart';
 class CachedCircleUserImageWithActiveStatus extends StatefulWidget {
   final String pictureURL;
   final bool isActive;
+  final double size;
 
   CachedCircleUserImageWithActiveStatus({
     this.pictureURL,
     this.isActive,
+    this.size = 55,
   });
 
   @override
@@ -24,18 +26,20 @@ class _CachedCircleUserImageWithActiveStatusState
       children: [
         CachedCircleUserImage(
           widget.pictureURL,
-          size: 55,
+          size: widget.size,
         ),
-        Container(
-          padding: EdgeInsets.only(top: 40),
-          height: 15,
-          width: 15,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.green,
-            border: Border.all(color: Colors.white, width: 2),
-          ),
-        )
+        widget.isActive
+            ? Container(
+                padding: EdgeInsets.only(top: 40),
+                height: 15,
+                width: 15,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.green,
+                  border: Border.all(color: Colors.white, width: 2),
+                ),
+              )
+            : SizedBox(),
       ],
     );
   }

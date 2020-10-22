@@ -16,6 +16,7 @@ class FirestoreUserEntry implements FirestoreEntry {
   dynamic geoPointData;
   bool showMyDistance;
   bool showMyProfile;
+  bool connected;
   List<int> wantedAgeRange;
   List<String> wantedGenders;
 
@@ -34,6 +35,7 @@ class FirestoreUserEntry implements FirestoreEntry {
     this.geoPointData = geoPoint.data;
     this.showMyDistance = settings.showMyDistance;
     this.showMyProfile = settings.showMyprofile;
+    this.connected = settings.connected;
     this.wantedAgeRange = settings.wantedAgeRange;
     this.wantedGenders =
         GenderAdapter().gendersToStrings(settings.wantedGenders);
@@ -46,6 +48,7 @@ class FirestoreUserEntry implements FirestoreEntry {
       UserField.Gender.value: gender,
       UserField.Age.value: age,
       UserField.Position.value: geoPointData,
+      UserField.Connected.value: connected,
       UserField.ShowMyDistance.value: showMyDistance,
       UserField.ShowMyProfile.value: showMyProfile,
       UserField.WantedAgeRange.value: wantedAgeRange,
