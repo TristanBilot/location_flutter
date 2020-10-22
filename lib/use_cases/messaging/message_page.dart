@@ -37,7 +37,7 @@ class _MessagePageState extends State<MessagePage> {
     super.initState();
   }
 
-  Future<void> _sendMessage() {
+  void _sendMessage() {
     if (_messageEditingController.text.isNotEmpty) {
       final message = _messageEditingController.text;
       final sendBy = UserStore().user.id;
@@ -45,6 +45,11 @@ class _MessagePageState extends State<MessagePage> {
 
       final entry = FirestoreMessageEntry(message, sendBy, time);
       MessagingReposiory().newMessage(widget.chatID, entry);
+      MessagingReposiory().updateChatLastActivity(
+        widget.chatID,
+        lastActivityTime: time,
+        lastActivitySeen: false,
+      );
       setState(() => _messageEditingController.text = '');
     }
   }

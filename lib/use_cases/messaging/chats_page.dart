@@ -36,10 +36,19 @@ class _ChatsPageState extends State<ChatsPage> {
     });
   }
 
+  List<dynamic> _sortSnapshotsByMostRecent(List<dynamic> snapshots) {
+    final mostRecent = ChatField.LastActivityTime.value;
+    return snapshots
+      ..sort((a, b) => (b.data()[mostRecent] as int)
+          .compareTo((a.data()[mostRecent] as int)));
+  }
+
   FirestoreChatEntry _objectToEntry(dynamic data) {
     return FirestoreChatEntry(
       List<String>.from(data[ChatField.UserIDs.value]),
       data[ChatField.ChatID.value] as String,
+      data[ChatField.LastActivityTime.value] as int,
+      data[ChatField.LastActivitySeen.value] as bool,
     );
   }
 
@@ -56,23 +65,23 @@ class _ChatsPageState extends State<ChatsPage> {
       child: StreamBuilder(
         stream: _chatsStream,
         builder: (context, snapshot) {
-          return snapshot.hasData
-              ? SmartRefresher(
-                  enablePullDown: true,
-                  controller: _refreshController,
-                  onRefresh: _onRefresh,
-                  onLoading: _onLoading,
-                  header: WaterDropMaterialHeader(), //WaterDropHeader
-                  child: ListView.builder(
-                      itemCount: snapshot.data.documents.length,
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        return ChatTile(
-                            chat: _objectToEntry(
-                                snapshot.data.documents[index].data()));
-                      }),
-                )
-              : Container();
+          if (snapshot.hasData) {
+            final chats = _sortSnapshotsByMostRecent(snapshot.data.documents);
+            return SmartRefresher(
+              enablePullDown: true,
+              controller: _refreshController,
+              onRefresh: _onRefresh,
+              onLoading: _onLoading,
+              header: WaterDropMaterialHeader(), //WaterDropHeader
+              child: ListView.builder(
+                  itemCount: chats.length,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    return ChatTile(chat: _objectToEntry(chats[index].data()));
+                  }),
+            );
+          }
+          return Container();
         },
       ),
     );

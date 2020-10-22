@@ -27,6 +27,23 @@ class MessagingReposiory {
         .catchError((e) => print(e));
   }
 
+  /// Update the values of `lastActivityTime` and `lastActivitySeen`
+  /// in the chat, so that we can fetch the last chat and know
+  /// if a message had been opened.
+  Future<void> updateChatLastActivity(
+    String chatID, {
+    int lastActivityTime,
+    bool lastActivitySeen,
+  }) async {
+    final toUpdate = FirestoreChatEntry.getCorrespondingUpdateObject(
+        lastActivityTime, lastActivitySeen);
+    _firestore
+        .collection(RootKey)
+        .doc(chatID)
+        .update(toUpdate)
+        .catchError((e) => print(e));
+  }
+
   /// Return a stream of messages ordered by time from a chat ID.
   /// `descending` set to true because the list is reversed in
   /// the ListView builder UI.
@@ -50,6 +67,8 @@ class MessagingReposiory {
   }
 
   /// Returns a stream of chats linked to the user logged `userID`.
+  /// The chats are sorted by last time in the stream builder because
+  /// where() + orderBy() are not working together currently.
   Future<Stream<QuerySnapshot>> getChats(String userID) async {
     return _firestore
         .collection(RootKey)

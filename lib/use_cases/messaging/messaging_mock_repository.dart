@@ -29,6 +29,8 @@ class MessagingMockRepository {
     final entry = FirestoreChatEntry(
       [id1, id2],
       chatID,
+      FirestoreMessageEntry.Time,
+      false,
     );
     MessagingReposiory().newChat(chatID, entry);
     print('$chatID successfully inserted to Firestore.');
