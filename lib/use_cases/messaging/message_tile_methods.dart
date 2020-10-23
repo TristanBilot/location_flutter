@@ -16,7 +16,7 @@ class MessageTileMethods {
     this.diffWithPrevMsgTime,
   );
 
-  Widget getTimeText(BuildContext context) {
+  Widget getTimeText(BuildContext context, bool sentByMe) {
     DateTime diff = DateTime.fromMicrosecondsSinceEpoch(diffWithPrevMsgTime);
     int diffInHours = diff.hour;
 
@@ -63,10 +63,12 @@ class MessageTileMethods {
       );
       // get the width of the text widget.
       double textLen = renderParagraph.getMinIntrinsicWidth(14).ceilToDouble();
-
+      final centeringPadding =
+          MediaQuery.of(context).size.width / 2 - textLen / 2 - 20;
       return Container(
-        padding: EdgeInsets.fromLTRB(0, 20,
-            MediaQuery.of(context).size.width / 2 - textLen / 2 - 20, 20),
+        padding: sentByMe
+            ? EdgeInsets.fromLTRB(0, 20, centeringPadding, 20)
+            : EdgeInsets.fromLTRB(centeringPadding, 20, 0, 20),
         child: RichText(text: displayedTime),
       );
     }

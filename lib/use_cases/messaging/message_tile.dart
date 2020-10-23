@@ -24,9 +24,10 @@ class MessageTile extends StatelessWidget {
           top: 4, bottom: 4, left: sentByMe ? 0 : 24, right: sentByMe ? 24 : 0),
       alignment: sentByMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment:
+            sentByMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
-          methods.getTimeText(context),
+          methods.getTimeText(context, sentByMe),
           Container(
             margin: sentByMe
                 ? EdgeInsets.only(left: 30)
