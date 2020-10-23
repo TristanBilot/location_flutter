@@ -11,7 +11,7 @@ const SecondaryColorDark = const Color(0xFF8e0038);
 const Background = const Color(0xFFfffdf7);
 const TextColor = const Color(0xFF000000);
 
-class AppTheme {
+class LightTheme {
   static final ThemeData defaultTheme = _buildTheme();
 
   static ThemeData _buildTheme() {

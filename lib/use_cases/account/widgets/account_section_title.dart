@@ -14,7 +14,6 @@ class AccountSectionTitle extends StatelessWidget {
         title.toUpperCase(),
         fontSize: 13,
         fontWeight: FontWeight.w300,
-        color: Colors.black87,
       ),
     );
   }

@@ -52,14 +52,12 @@ class _UserCardState extends State<UserCard> {
           padding:
               EdgeInsets.only(bottom: MediaQuery.of(context).size.height / 5),
           child: Container(
-            height: MediaQuery.of(context).size.height * 0.6,
-            // child: Card(
+            height: 400,
             child: UserCardContent(
               user: widget.user,
               onTextSubmitted: sendMessage,
               onSayHiTap: sendHelloNotif,
             ),
-            // ),
           ),
         ),
       ),

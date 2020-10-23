@@ -70,7 +70,7 @@ class ScrollableTextView extends StatelessWidget {
           ? ([customTrailingButton] ?? [])
           : [
               Padding(
-                padding: EdgeInsets.only(left: width - rightPadding - 10),
+                padding: EdgeInsets.only(left: width - rightPadding - 22),
                 child: FlatButton(
                   child: TextSF('Send'),
                   onPressed: trailingButtonOnPressed,

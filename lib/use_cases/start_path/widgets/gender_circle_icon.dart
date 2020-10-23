@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:location_project/themes/app_theme.dart';
 import 'package:location_project/use_cases/start_path/start_path_step1/start_path_step1.dart';
 import 'package:location_project/use_cases/start_path/start_path_step2/start_path_step2.dart';
 import 'package:location_project/widgets/textSF.dart';
@@ -63,9 +64,7 @@ class GenderCircleIconState extends State<GenderCircleIcon> {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
-                color: isSelected
-                    ? Theme.of(context).primaryColor
-                    : Colors.black12,
+                color: isSelected ? PrimaryColor : Colors.black12,
                 width: 2.0,
               ),
             ),

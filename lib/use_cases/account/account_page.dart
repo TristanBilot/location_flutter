@@ -1,16 +1,13 @@
 import 'dart:collection';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:location_project/repositories/auth_repository.dart';
-import 'package:location_project/repositories/user_mock_repository.dart';
 import 'package:location_project/stores/routes.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/account/widgets/account_list_tile.dart';
 import 'package:location_project/use_cases/account/widgets/account_log_out_list_tile.dart';
 import 'package:location_project/use_cases/account/widgets/account_section_title.dart';
 import 'package:location_project/use_cases/messaging/messaging_mock_repository.dart';
-import 'package:location_project/use_cases/messaging/messaging_repository.dart';
 import 'package:location_project/use_cases/start_path/gender_circle_icon_factory.dart';
 import 'package:location_project/use_cases/start_path/start_path_step2/start_path_step2.dart';
 import 'package:location_project/use_cases/start_path/widgets/equally_spaced_row.dart';
@@ -20,7 +17,7 @@ import 'package:location_project/widgets/cupertino_range_slider.dart';
 import 'package:location_project/widgets/textSF.dart';
 
 class AccountPage extends StatefulWidget {
-  static const curveContainerHeight = 150.0;
+  static const curveContainerHeight = 120.0;
   static const userImageSize = 130.0;
 
   AccountPage({Key key}) : super(key: key);
@@ -189,8 +186,7 @@ class _AccountPageState extends State<AccountPage>
                 onTap: () =>
                     Navigator.of(context).pushNamed(Routes.languages.value),
               ),
-              AccountLogOutListTile('LOG OUT',
-                  color: Theme.of(context).primaryColor, onPressed: () {
+              AccountLogOutListTile('LOG OUT', onPressed: () {
                 _authRepo.logOut().then((_) => Navigator.of(context)
                     .pushReplacementNamed(Routes.login.value));
               }),

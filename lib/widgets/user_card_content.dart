@@ -86,8 +86,6 @@ class _UserCardContentState extends State<UserCardContent> {
                     ),
                   ),
                   Spacer(),
-                  Divider(),
-                  Spacer(),
                   Center(
                     child: ScrollableTextView(
                       withTrailingButton: true,
@@ -101,6 +99,8 @@ class _UserCardContentState extends State<UserCardContent> {
                     onPressed: widget.onSayHiTap,
                     userName: widget.user.firstName,
                   ),
+
+                  Spacer(),
                 ],
               ),
             ),
