@@ -41,5 +41,6 @@ class FirestoreChatEntry implements FirestoreEntry {
       return {ChatField.LastActivityTime.value: lastActivityTime};
     else if (lastActivitySeen != null)
       return {ChatField.LastActivitySeen.value: lastActivitySeen};
+    return null;
   }
 }

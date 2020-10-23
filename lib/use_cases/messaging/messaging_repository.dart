@@ -37,6 +37,10 @@ class MessagingReposiory {
   }) async {
     final toUpdate = FirestoreChatEntry.getCorrespondingUpdateObject(
         lastActivityTime, lastActivitySeen);
+    if (toUpdate == null) {
+      print('+++ `updateChatLastActivity()` need parameters.');
+      return;
+    }
     _firestore
         .collection(RootKey)
         .doc(chatID)
