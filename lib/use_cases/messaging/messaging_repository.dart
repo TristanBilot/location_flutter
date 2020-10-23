@@ -56,6 +56,19 @@ class MessagingReposiory {
         .snapshots();
   }
 
+  /// Return the last message sent in a chat.
+  Future<QuerySnapshot> getLastMessage(String chatID) async {
+    return _firestore
+        .collection(RootKey)
+        .doc(chatID)
+        .collection(ChatKey)
+        .orderBy(MessageField.Time.value, descending: true)
+        .limit(1)
+        .snapshots()
+        .first
+        .catchError((e) => print('hello'));
+  }
+
   /// Insert a new message in the chat `chatID`.
   Future<void> newMessage(String chatID, FirestoreMessageEntry msg) async {
     _firestore

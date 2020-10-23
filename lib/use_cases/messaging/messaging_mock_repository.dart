@@ -12,6 +12,7 @@ class MessagingMockRepository {
   Future<void> insertChatMock() async {
     _insertChatMock(id1, id2);
     _insertChatMock(id1, id3);
+    _insertChatMock(id1, id2);
   }
 
   Future<void> insertMessageMock() async {
