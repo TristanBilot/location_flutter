@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:location_project/use_cases/messaging/message_send_button.dart';
+import 'package:location_project/widgets/basic_cupertino_text_field.dart';
 
 class MessagingTextField extends StatefulWidget {
   final TextEditingController controller;
@@ -23,21 +24,9 @@ class _MessagingTextFieldState extends State<MessagingTextField> {
     return Row(
       children: [
         Expanded(
-          child: CupertinoTextField(
-            padding: EdgeInsets.fromLTRB(12, 5, 12, 5),
+          child: BasicCupertinoTextField(
             controller: widget.controller,
             onChanged: widget.onChanged,
-            style:
-                TextStyle(color: Theme.of(context).textTheme.headline6.color),
-            // clearButtonMode: OverlayVisibilityMode.editing,
-            keyboardType: TextInputType.multiline,
-            maxLines: null,
-            decoration: BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              border: Border.all(color: Colors.grey[500], width: 0.7),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            placeholder: 'Message',
           ),
         ),
         Padding(

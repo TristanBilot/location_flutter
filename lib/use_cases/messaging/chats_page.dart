@@ -5,6 +5,7 @@ import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/messaging/chat_tile.dart';
 import 'package:location_project/use_cases/messaging/firestore_chat_entry.dart';
 import 'package:location_project/use_cases/messaging/messaging_repository.dart';
+import 'package:location_project/widgets/basic_cupertino_text_field.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../stores/extensions.dart';
 
@@ -72,29 +73,29 @@ class _ChatsPageState extends State<ChatsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return GestureDetector(
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+        if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
+      },
       child: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: CupertinoTextField(
-              padding: EdgeInsets.fromLTRB(12, 5, 12, 5),
+            child: BasicCupertinoTextField(
               controller: _messageEditingController,
               onChanged: (text) => setState(() => {}),
-              style:
-                  TextStyle(color: Theme.of(context).textTheme.headline6.color),
-              // clearButtonMode: OverlayVisibilityMode.editing,
-              keyboardType: TextInputType.multiline,
               maxLines: 1,
-              decoration: BoxDecoration(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                border: Border.all(color: Colors.grey[500], width: 0.7),
-                borderRadius: BorderRadius.circular(10),
-              ),
               placeholder: 'Search someone',
+              clearButtonMode: OverlayVisibilityMode.editing,
+              autoCorrect: false,
+              enableSuggestions: false,
+              leadingWidget: Padding(
+                padding: const EdgeInsets.only(left: 7),
+                child: Icon(Icons.search),
+              ),
             ),
           ),
-          // Text('hello'),
           Flexible(
             child: StreamBuilder(
               stream: _chatsStream,
