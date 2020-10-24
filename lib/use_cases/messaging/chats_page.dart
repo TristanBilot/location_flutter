@@ -62,27 +62,52 @@ class _ChatsPageState extends State<ChatsPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: StreamBuilder(
-        stream: _chatsStream,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final chats = _sortSnapshotsByMostRecent(snapshot.data.documents);
-            return SmartRefresher(
-              enablePullDown: true,
-              controller: _refreshController,
-              onRefresh: _onRefresh,
-              onLoading: _onLoading,
-              header: WaterDropMaterialHeader(), //WaterDropHeader
-              child: ListView.builder(
-                  itemCount: chats.length,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return ChatTile(chat: _objectToEntry(chats[index].data()));
-                  }),
-            );
-          }
-          return Container();
-        },
+      child: Row(
+        children: [
+          ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: 55.0,
+            ),
+          child: 
+          SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            reverse: true,
+            child: TextField(
+              keyboardType: TextInputType.multiline,
+              maxLines: null, //grow automatically
+              decoration: InputDecoration.collapsed(
+                hintText: 'placeholder',
+              ),
+            ),
+          ),
+          StreamBuilder(
+            stream: _chatsStream,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                // List a;
+                // a.where((element) => false);
+                // snapshot.data.where((a) => a.)
+                final chats =
+                    _sortSnapshotsByMostRecent(snapshot.data.documents);
+                return SmartRefresher(
+                  enablePullDown: true,
+                  controller: _refreshController,
+                  onRefresh: _onRefresh,
+                  onLoading: _onLoading,
+                  header: WaterDropMaterialHeader(), //WaterDropHeader
+                  child: ListView.builder(
+                      itemCount: chats.length,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return ChatTile(
+                            chat: _objectToEntry(chats[index].data()));
+                      }),
+                );
+              }
+              return Container();
+            },
+          ),),
+        ],
       ),
     );
   }
