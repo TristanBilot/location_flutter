@@ -9,10 +9,14 @@ class MessagingMockRepository {
   final id2 = 'damien.duprat@hotmail.fr';
   final id3 = 'alexandre.roume@hotmail.fr';
 
+  final id1Name = 'Tristan';
+  final id2Name = 'Damien';
+  final id3Name = 'Alexandre';
+
   Future<void> insertChatMock() async {
-    _insertChatMock(id1, id2);
-    _insertChatMock(id1, id3);
-    _insertChatMock(id1, id2);
+    _insertChatMock(id1, id2, id1Name, id2Name);
+    _insertChatMock(id1, id3, id1Name, id3Name);
+    _insertChatMock(id1, id2, id1Name, id2Name);
   }
 
   Future<void> insertMessageMock() async {
@@ -25,10 +29,13 @@ class MessagingMockRepository {
   Future<void> _insertChatMock(
     String id1,
     String id2,
+    String id1Name,
+    String id2Name,
   ) async {
     final chatID = MessagingReposiory.getChatID(id1, id2);
     final entry = FirestoreChatEntry(
       [id1, id2],
+      [id1Name, id2Name],
       chatID,
       FirestoreMessageEntry.Time,
       false,

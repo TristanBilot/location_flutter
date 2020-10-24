@@ -43,15 +43,6 @@ class _ChatsPageState extends State<ChatsPage> {
           .compareTo((a.data()[mostRecent] as int)));
   }
 
-  FirestoreChatEntry _objectToEntry(dynamic data) {
-    return FirestoreChatEntry(
-      List<String>.from(data[ChatField.UserIDs.value]),
-      data[ChatField.ChatID.value] as String,
-      data[ChatField.LastActivityTime.value] as int,
-      data[ChatField.LastActivitySeen.value] as bool,
-    );
-  }
-
   void _onRefresh() async {
     if (mounted) setState(() => {});
     _refreshController.refreshCompleted();
@@ -68,15 +59,15 @@ class _ChatsPageState extends State<ChatsPage> {
             constraints: BoxConstraints(
               maxHeight: 55.0,
             ),
-          child: 
-          SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            reverse: true,
-            child: TextField(
-              keyboardType: TextInputType.multiline,
-              maxLines: null, //grow automatically
-              decoration: InputDecoration.collapsed(
-                hintText: 'placeholder',
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              reverse: true,
+              child: TextField(
+                keyboardType: TextInputType.multiline,
+                maxLines: null, //grow automatically
+                decoration: InputDecoration.collapsed(
+                  hintText: 'placeholder',
+                ),
               ),
             ),
           ),
@@ -100,13 +91,14 @@ class _ChatsPageState extends State<ChatsPage> {
                       shrinkWrap: true,
                       itemBuilder: (context, index) {
                         return ChatTile(
-                            chat: _objectToEntry(chats[index].data()));
+                            chat: FirestoreChatEntry.fromFirestoreObject(
+                                chats[index].data()));
                       }),
                 );
               }
               return Container();
             },
-          ),),
+          ),
         ],
       ),
     );
