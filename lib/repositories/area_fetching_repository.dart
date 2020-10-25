@@ -2,6 +2,8 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/caches/location_cache.dart';
+import 'package:location_project/helpers/gender_adapter.dart';
+import 'package:location_project/stores/user_store.dart';
 import 'dart:async';
 import 'image_repository.dart';
 import '../models/user.dart';
@@ -53,9 +55,9 @@ class AreaFetchingRepository {
       users.forEach((user) async {
         userCount++;
         final data = user.data();
-        final showProfile = data[UserField.ShowMyProfile.value] as bool;
         User newUser;
-        if (showProfile) {
+
+        if (_displayConditions(data, user.id)) {
           /* fresh position of each user */
           final geoPoint = user.data()[UserField.Position.value]['geopoint'];
           // if (geoPoint.latitude != center.latitude &&
@@ -76,5 +78,16 @@ class AreaFetchingRepository {
         if (userCount == users.length) completion(usersList);
       });
     });
+  }
+
+  /// Return true if a user should be shown on the map.
+  /// All the conditions should be centralized in this method.
+  bool _displayConditions(dynamic data, String id) {
+    final gender =
+        GenderAdapter().stringToGender(data[UserField.Gender.value] as String);
+    bool showProfile = data[UserField.ShowMyProfile.value] as bool;
+    bool genderMatch = UserStore().user.settings.wantedGenders.contains(gender);
+    bool differentFromLoggedUser = UserStore().user.id != id;
+    return showProfile && genderMatch && differentFromLoggedUser;
   }
 }
