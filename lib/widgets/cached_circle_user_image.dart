@@ -8,6 +8,7 @@ class CachedCircleUserImage extends StatelessWidget {
   final Color borderColor;
   final BoxShape shape;
   final bool withBorder;
+  final BoxFit fit;
 
   CachedCircleUserImage(
     this.imageUrl, {
@@ -16,12 +17,14 @@ class CachedCircleUserImage extends StatelessWidget {
     this.borderColor = Colors.grey,
     this.shape = BoxShape.circle,
     this.withBorder = true,
+    this.fit,
   });
 
   @override
   Widget build(BuildContext context) {
     return CachedNetworkImage(
       imageUrl: imageUrl,
+      fit: fit,
       imageBuilder: (context, imageProvider) => Container(
         width: size,
         height: size,

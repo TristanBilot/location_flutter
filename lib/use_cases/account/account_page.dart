@@ -17,7 +17,7 @@ import 'package:location_project/widgets/cupertino_range_slider.dart';
 import 'package:location_project/widgets/textSF.dart';
 
 class AccountPage extends StatefulWidget {
-  static const curveContainerHeight = 120.0;
+  static const curveContainerHeight = 100.0;
   static const userImageSize = 130.0;
 
   AccountPage({Key key}) : super(key: key);
@@ -90,120 +90,150 @@ class _AccountPageState extends State<AccountPage>
     });
   }
 
+  Color _getCurveContainerBackground() {
+    bool isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    return isDark
+        ? Color.fromRGBO(40, 40, 40, 1)
+        : Color.fromRGBO(240, 240, 240, 1);
+  }
+
+  Color _getHeaderBackground() {
+    bool isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    return isDark ? Color.fromRGBO(66, 66, 66, 1) : Colors.white;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Material(
-        child: ListView(
-          shrinkWrap: true,
-          children: [
-            Stack(children: [
-              Container(
-                height: AccountPage.curveContainerHeight,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).backgroundColor,
-                  borderRadius: BorderRadius.vertical(
-                    bottom: Radius.elliptical(
-                        MediaQuery.of(context).size.width, 160.0),
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            SliverAppBar(
+              // pinned: true,
+              expandedHeight: 200,
+              // title: Text('Title'),
+              backgroundColor: _getHeaderBackground(),
+              stretch: true,
+              flexibleSpace: FlexibleSpaceBar(
+                background: Stack(children: [
+                  Container(
+                    height: AccountPage.curveContainerHeight,
+                    decoration: BoxDecoration(
+                      color: _getCurveContainerBackground(),
+                      borderRadius: BorderRadius.vertical(
+                        bottom: Radius.elliptical(
+                            MediaQuery.of(context).size.width, 160.0),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                    top: AccountPage.curveContainerHeight -
-                        AccountPage.userImageSize / 2),
-                child: Center(
-                  child: CachedCircleUserImage(
-                    UserStore().user.pictureURL,
-                    size: AccountPage.userImageSize,
+                  Center(
+                    child: CachedCircleUserImage(
+                      UserStore().user.pictureURL,
+                      size: AccountPage.userImageSize + 20,
+                    ),
                   ),
-                ),
-              ),
-            ]),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: TextSF(
-                    '$_name, $_age',
-                    fontSize: 20,
-                  ),
-                ),
+                ]),
               ),
             ),
-          ]..addAll([
-              AccountSectionTitle('I\'m looking for'),
-              AccountListTile(
-                title: 'Gender',
-                bottom: EquallySpacedRow(_circleIcons),
-              ),
-              AccountListTile(
-                withDivider: false,
-                title: 'Age range',
-                trailing: TextSF(
-                    '${_wantedAgeValues[0].round()}-${_wantedAgeValues[1].round()} years old'),
-                bottom: Container(
-                  width: MediaQuery.of(context).size.width -
-                      2 * AccountListTile.SidePadding,
-                  child: CupertinoRangeSlider(
-                    minValue: _wantedAgeValues[0],
-                    maxValue: _wantedAgeValues[1],
-                    min: 18,
-                    max: 70,
-                    onMinChanged: (value) => _handleWantedAgeModify(0, value),
-                    onMaxChanged: (value) => _handleWantedAgeModify(1, value),
+            SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    color: _getHeaderBackground(),
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: TextSF(
+                          '$_name, $_age',
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                ]..addAll(
+                    [
+                      AccountSectionTitle('I\'m looking for'),
+                      AccountListTile(
+                        title: 'Gender',
+                        bottom: EquallySpacedRow(_circleIcons),
+                      ),
+                      AccountListTile(
+                        withDivider: false,
+                        title: 'Age range',
+                        trailing: TextSF(
+                            '${_wantedAgeValues[0].round()}-${_wantedAgeValues[1].round()} years old'),
+                        bottom: Container(
+                          width: MediaQuery.of(context).size.width -
+                              2 * AccountListTile.SidePadding,
+                          child: CupertinoRangeSlider(
+                            minValue: _wantedAgeValues[0],
+                            maxValue: _wantedAgeValues[1],
+                            min: 18,
+                            max: 70,
+                            onMinChanged: (value) =>
+                                _handleWantedAgeModify(0, value),
+                            onMaxChanged: (value) =>
+                                _handleWantedAgeModify(1, value),
+                          ),
+                        ),
+                      ),
+                      AccountSectionTitle('Parameters'),
+                      AccountListTile(
+                        title: 'Show my profile',
+                        trailing: Switch.adaptive(
+                            value: _isShowMyProfile,
+                            onChanged: (newvalue) {
+                              setState(() {
+                                _isShowMyProfile = newvalue;
+                                UserStore().setShowMyProfile(_isShowMyProfile);
+                              });
+                            }),
+                      ),
+                      AccountListTile(
+                        title: 'Show my distance',
+                        trailing: Switch.adaptive(
+                            value: _isShowMyDistance,
+                            onChanged: (newvalue) {
+                              setState(() {
+                                _isShowMyDistance = newvalue;
+                                UserStore()
+                                    .setShowMyDistance(_isShowMyDistance);
+                              });
+                            }),
+                      ),
+                      AccountListTile(
+                        withDivider: false,
+                        title: 'App language',
+                        trailing: Icon(Icons.chevron_right),
+                        onTap: () => Navigator.of(context)
+                            .pushNamed(Routes.languages.value),
+                      ),
+                      AccountLogOutListTile('LOG OUT', onPressed: () {
+                        _authRepo.logOut().then((_) => Navigator.of(context)
+                            .pushReplacementNamed(Routes.login.value));
+                      }),
+                      AccountLogOutListTile(
+                        'DELETE MY ACCOUNT',
+                        color: Colors.red[500],
+                        onPressed: () {
+                          // UserMockRepository().putParisDataset();
+                          // UserMockRepository().putCarrieresDataset();
+                          MessagingMockRepository().insertChatMock().then(
+                              (value) => MessagingMockRepository()
+                                  .insertMessageMock());
+                        },
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            bottom: AccountLogOutListTile.Padding),
+                      ),
+                    ],
+                  ),
               ),
-              AccountSectionTitle('Parameters'),
-              AccountListTile(
-                title: 'Show my profile',
-                trailing: Switch.adaptive(
-                    value: _isShowMyProfile,
-                    onChanged: (newvalue) {
-                      setState(() {
-                        _isShowMyProfile = newvalue;
-                        UserStore().setShowMyProfile(_isShowMyProfile);
-                      });
-                    }),
-              ),
-              AccountListTile(
-                title: 'Show my distance',
-                trailing: Switch.adaptive(
-                    value: _isShowMyDistance,
-                    onChanged: (newvalue) {
-                      setState(() {
-                        _isShowMyDistance = newvalue;
-                        UserStore().setShowMyDistance(_isShowMyDistance);
-                      });
-                    }),
-              ),
-              AccountListTile(
-                withDivider: false,
-                title: 'App language',
-                trailing: Icon(Icons.chevron_right),
-                onTap: () =>
-                    Navigator.of(context).pushNamed(Routes.languages.value),
-              ),
-              AccountLogOutListTile('LOG OUT', onPressed: () {
-                _authRepo.logOut().then((_) => Navigator.of(context)
-                    .pushReplacementNamed(Routes.login.value));
-              }),
-              AccountLogOutListTile(
-                'DELETE MY ACCOUNT',
-                color: Colors.red[500],
-                onPressed: () {
-                  // UserMockRepository().putParisDataset();
-                  // UserMockRepository().putCarrieresDataset();
-                  MessagingMockRepository().insertChatMock().then(
-                      (value) => MessagingMockRepository().insertMessageMock());
-                },
-              ),
-              Padding(
-                padding: EdgeInsets.only(bottom: AccountLogOutListTile.Padding),
-              )
-            ]),
+            ),
+          ],
         ),
       ),
     );

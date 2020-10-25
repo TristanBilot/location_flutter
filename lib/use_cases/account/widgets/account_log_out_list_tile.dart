@@ -13,6 +13,7 @@ class AccountLogOutListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: MediaQuery.of(context).size.width,
       padding: EdgeInsets.only(
         top: AccountLogOutListTile.Padding,
         // bottom: AccountLogOutListTile.Padding,
@@ -31,6 +32,7 @@ class AccountLogOutListTile extends StatelessWidget {
               color: color,
               fontSize: TextSF.FontSize + 2,
               align: TextAlign.center,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ),

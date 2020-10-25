@@ -9,11 +9,12 @@ class AccountSectionTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(20, 25, 0, 10),
+      alignment: Alignment.bottomLeft,
+      padding: EdgeInsets.fromLTRB(20, 30, 0, 10),
       child: TextSF(
         title.toUpperCase(),
-        fontSize: 13,
-        fontWeight: FontWeight.w300,
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
       ),
     );
   }
