@@ -1,63 +1,115 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:location_project/controllers/messaging_controller.dart';
-import 'package:location_project/stores/map_store.dart';
-import 'package:location_project/use_cases/swipe/swipe_controller.dart';
-import 'user_card_content.dart';
+import 'package:location_project/helpers/string_formatter.dart';
+import 'package:location_project/widgets/textSF.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import '../models/user.dart';
-import 'package:flutter_tindercard/flutter_tindercard.dart';
-import 'package:flutter/services.dart';
-import 'map.dart';
 
-class UserCard extends StatefulWidget {
+class UserCard {
+  final BuildContext context;
   final User user;
 
-  UserCard(this.user);
+  UserCard(
+    this.context,
+    this.user,
+  );
 
-  static _UserCardState of(BuildContext context) =>
-      context.findAncestorStateOfType<_UserCardState>();
-
-  @override
-  _UserCardState createState() => _UserCardState();
+  /// Show modally the user card, close it smoothly with
+  /// Navigator.pop(context).
+  void show() {
+    showMaterialModalBottomSheet(
+      context: context,
+      builder: (context, scrollController) => Column(
+        children: [
+          UserCardContent(user),
+          Expanded(
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: 80,
+              color: Colors.transparent,
+              child: GestureDetector(
+                onTap: () => Navigator.pop(context),
+              ),
+            ),
+          )
+        ],
+      ),
+      backgroundColor: Colors.transparent,
+      bounce: true,
+      expand: true,
+    );
+  }
 }
 
-class _UserCardState extends State<UserCard> {
-  MessagingController _messagingController;
+class UserCardContent extends StatefulWidget {
+  final User user;
 
+  UserCardContent(this.user);
+
+  @override
+  _UserCardContentState createState() => _UserCardContentState();
+}
+
+class _UserCardContentState extends State<UserCardContent> {
   @override
   void initState() {
     super.initState();
-    _messagingController = MessagingController();
-  }
-
-  void sendMessage(String message) {
-    // _messagingController...
-  }
-
-  Future<void> sendHelloNotif() async {
-    await MessagingController().sendAndRetrieveMessage();
-    // return Future.delayed(Duration(seconds: 2));
   }
 
   @override
   Widget build(BuildContext context) {
-    // To dismiss keyboard.
-    return GestureDetector(
-      onTap: () {
-        FocusScopeNode currentFocus = FocusScope.of(context);
-        if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
-      },
-      child: Center(
-        child: Padding(
-          padding:
-              EdgeInsets.only(bottom: MediaQuery.of(context).size.height / 5),
-          child: Container(
-            height: 400,
-            child: UserCardContent(
-              user: widget.user,
-              onTextSubmitted: sendMessage,
-              onSayHiTap: sendHelloNotif,
-            ),
+    return Container(
+      height: 600,
+      child: Material(
+        color: Theme.of(context).canvasColor,
+        borderRadius: BorderRadius.circular(10),
+        child: SafeArea(
+          top: false,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Stack(
+                children: [
+                  CachedNetworkImage(
+                    imageUrl: widget.user.pictureURL,
+                    width: MediaQuery.of(context).size.width,
+                  ),
+                  Positioned(
+                    right: 20,
+                    top: 40,
+                    child: GestureDetector(
+                      child: Container(
+                        child: Icon(Icons.close, size: 24),
+                        padding: EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Theme.of(context).scaffoldBackgroundColor),
+                      ),
+                      onTap: () => Navigator.pop(context),
+                    ),
+                  )
+                ],
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                child: TextSF(
+                  StringFormatter()
+                      .getNameAgeLabel(widget.user.firstName, widget.user.age),
+                  fontSize: TextSF.FontSize + 6,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(0, 6, 0, 0),
+                child: TextSF(
+                  widget.user.distance == 0
+                      ? ''
+                      : '${widget.user.distance} meters',
+                ),
+              ),
+              Spacer(),
+            ],
           ),
         ),
       ),

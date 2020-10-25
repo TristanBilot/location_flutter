@@ -10,6 +10,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/use_cases/messaging/messaging_text_field.dart';
 import 'package:location_project/widgets/cached_circle_user_image.dart';
 import 'package:location_project/widgets/textSF.dart';
+import 'package:location_project/widgets/user_card.dart';
+import 'package:location_project/widgets/user_map_card.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class MessagePage extends StatefulWidget {
   final String chatID;
@@ -115,10 +118,10 @@ class _MessagePageState extends State<MessagePage> {
           ),
           elevation: 6,
           title: CachedCircleUserImageWithActiveStatus(
-            pictureURL: widget.user.pictureURL,
-            isActive: widget.user.settings.connected,
-            size: 55,
-          ),
+              pictureURL: widget.user.pictureURL,
+              isActive: widget.user.settings.connected,
+              size: 55,
+              onTapped: () => UserCard(context, widget.user).show()),
         ),
       ),
       body: GestureDetector(

@@ -9,7 +9,7 @@ import 'package:location_project/controllers/location_controller.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/repositories/area_fetching_repository.dart';
 import 'package:location_project/stores/map_store.dart';
-import 'package:location_project/widgets/user_card.dart';
+import 'package:location_project/widgets/user_map_card.dart';
 
 import '../stores/conf.dart';
 import '../stores/store.dart';
@@ -101,7 +101,7 @@ class MapState extends State<Map> with WidgetsBindingObserver {
               position: user.coord,
               onTap: () {
                 setState(() {
-                  _showUserCard(context, user, this, _store);
+                  _showUserCard(context, user);
                 });
               }));
         });
@@ -110,15 +110,14 @@ class MapState extends State<Map> with WidgetsBindingObserver {
     });
   }
 
-  void _showUserCard(
-      BuildContext context, User user, MapState state, MapStore store) {
+  void _showUserCard(BuildContext context, User user) {
     showGeneralDialog(
         transitionBuilder: (context, a1, a2, widget) {
           return Transform.scale(
             scale: a1.value,
             child: Opacity(
               opacity: a1.value,
-              child: UserCard(user),
+              child: UserMapCard(user),
             ),
           );
         },

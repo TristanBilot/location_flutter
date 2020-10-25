@@ -8,6 +8,7 @@ import 'package:location_project/use_cases/messaging/firestore_chat_entry.dart';
 import 'package:location_project/use_cases/messaging/firestore_message_entry.dart';
 import 'package:location_project/use_cases/messaging/message_page.dart';
 import 'package:location_project/use_cases/messaging/messaging_repository.dart';
+import 'package:location_project/widgets/user_card.dart';
 
 class ChatTile extends StatelessWidget {
   final FirestoreChatEntry chat;
@@ -107,9 +108,10 @@ class ChatTile extends StatelessWidget {
                                 TextSpan(
                                   text: '${user.firstName}',
                                   style: TextStyle(
+                                      fontSize: 15,
                                       fontWeight: isMsgUnread
                                           ? unreadWeight
-                                          : readWeight),
+                                          : FontWeight.w500),
                                 ),
                                 TextSpan(
                                   text: '  -  ${user.distance}m',
@@ -144,6 +146,7 @@ class ChatTile extends StatelessWidget {
                     leading: CachedCircleUserImageWithActiveStatus(
                       pictureURL: user.pictureURL,
                       isActive: user.settings.connected,
+                      onTapped: () => UserCard(context, user).show(),
                     ),
                   ),
                 ],

@@ -1,28 +1,28 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:location_project/helpers/string_formatter.dart';
 import 'package:location_project/widgets/cached_circle_user_image.dart';
 import 'package:location_project/widgets/say_hello_button.dart';
 import 'package:location_project/widgets/scrollable_textview.dart';
 import 'package:location_project/widgets/textSF.dart';
 import '../models/user.dart';
 
-class UserCardContent extends StatefulWidget {
+class UserMapCardContent extends StatefulWidget {
   final User user;
   final Function(String value) onTextSubmitted;
   final Function onSayHiTap;
 
-  UserCardContent({
+  UserMapCardContent({
     @required this.user,
     @required this.onTextSubmitted,
     @required this.onSayHiTap,
   });
 
   @override
-  _UserCardContentState createState() => _UserCardContentState();
+  _UserMapCardContentState createState() => _UserMapCardContentState();
 }
 
-class _UserCardContentState extends State<UserCardContent> {
+class _UserMapCardContentState extends State<UserMapCardContent> {
   TextEditingController _textController;
 
   @override
@@ -38,14 +38,6 @@ class _UserCardContentState extends State<UserCardContent> {
   }
 
   void onSayHelloPressed() {}
-
-  String getNameAgeLabel() {
-    final name = widget.user.firstName, age = widget.user.age;
-    if (name == null && age == null) return null;
-    if (name != null && age == null) return name;
-    if (name == null && age != null) return age.toString();
-    return '$name, ${age.toString()}';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +65,8 @@ class _UserCardContentState extends State<UserCardContent> {
                   Padding(
                     padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
                     child: TextSF(
-                      getNameAgeLabel(),
+                      StringFormatter().getNameAgeLabel(
+                          widget.user.firstName, widget.user.age),
                       fontSize: TextSF.FontSize + 4,
                     ),
                   ),
