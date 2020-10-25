@@ -52,6 +52,7 @@ dependencies:
   shared_preferences: ^0.5.12+2
   rounded_loading_button: ^1.0.15
   pull_to_refresh: ^1.6.2
+  flutter_slidable: ^0.5.7
   
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

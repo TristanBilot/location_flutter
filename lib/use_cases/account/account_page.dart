@@ -147,7 +147,7 @@ class _AccountPageState extends State<AccountPage>
                         padding: const EdgeInsets.only(top: 10),
                         child: TextSF(
                           '$_name, $_age',
-                          fontSize: 20,
+                          fontSize: 22,
                         ),
                       ),
                     ),

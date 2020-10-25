@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/stores/user_store.dart';
@@ -93,60 +94,79 @@ class ChatTile extends StatelessWidget {
             child: Card(
               child: Column(
                 children: [
-                  ListTile(
-                    title: Row(
-                      children: [
-                        Expanded(
-                          child: RichText(
-                            text: TextSpan(
-                              style: TextStyle(
-                                  color: Theme.of(context)
-                                      .textTheme
-                                      .headline6
-                                      .color),
-                              children: [
-                                TextSpan(
-                                  text: '${user.firstName}',
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: isMsgUnread
-                                          ? unreadWeight
-                                          : FontWeight.w500),
-                                ),
-                                TextSpan(
-                                  text: '  -  ${user.distance}m',
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: readWeight,
+                  Slidable(
+                    actionPane: SlidableDrawerActionPane(),
+                    actionExtentRatio: 0.25,
+                    secondaryActions: [
+                      IconSlideAction(
+                        caption: 'Share profile',
+                        color: Colors.indigo,
+                        icon: Icons.share,
+                        onTap: () => {},
+                      ),
+                      IconSlideAction(
+                        caption: 'Unmatch',
+                        color: Colors.red[500],
+                        icon: Icons.close,
+                        onTap: () => {},
+                      ),
+                    ],
+                    child: ListTile(
+                      title: Row(
+                        children: [
+                          Expanded(
+                            child: RichText(
+                              text: TextSpan(
+                                style: TextStyle(
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .headline6
+                                        .color),
+                                children: [
+                                  TextSpan(
+                                    text: '${user.firstName}',
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: isMsgUnread
+                                            ? unreadWeight
+                                            : FontWeight.w500),
                                   ),
-                                ),
-                              ],
+                                  TextSpan(
+                                    text: '  -  ${user.distance}m',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: readWeight,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        isMsgUnread
-                            ? Container(
-                                height: 10,
-                                width: 10,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: PrimaryColor,
-                                  // border: Border.all(color: Colors.white, width: 2),
-                                ),
-                              )
-                            : SizedBox(),
-                      ],
-                    ),
-                    subtitle: Text(
-                      isChatEngaged ? msg.message : 'New match!',
-                      style: TextStyle(
-                          fontWeight: isMsgUnread ? unreadWeight : readWeight),
-                    ),
-                    trailing: Icon(Icons.chevron_right),
-                    leading: CachedCircleUserImageWithActiveStatus(
-                      pictureURL: user.pictureURL,
-                      isActive: user.settings.connected,
-                      onTapped: () => UserCard(context, user).show(),
+                          isMsgUnread
+                              ? Container(
+                                  height: 10,
+                                  width: 10,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: PrimaryColor,
+                                    // border: Border.all(color: Colors.white, width: 2),
+                                  ),
+                                )
+                              : SizedBox(),
+                        ],
+                      ),
+                      subtitle: Text(
+                        isChatEngaged ? msg.message : 'New match!',
+                        style: TextStyle(
+                            fontWeight:
+                                isMsgUnread ? unreadWeight : readWeight),
+                      ),
+                      trailing: Icon(Icons.chevron_right),
+                      leading: CachedCircleUserImageWithActiveStatus(
+                        pictureURL: user.pictureURL,
+                        isActive: user.settings.connected,
+                        onTapped: () => UserCard(context, user).show(),
+                      ),
                     ),
                   ),
                 ],
