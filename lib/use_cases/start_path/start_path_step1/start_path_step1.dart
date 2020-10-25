@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:location_project/stores/routes.dart';
 import 'package:location_project/stores/start_path_store.dart';
@@ -105,6 +107,8 @@ class StartPathStep1State extends State<StartPathStep1>
                       _sliderValue.round().toString(),
                       fontSize: 44,
                       fontWeight: FontWeight.w700,
+                      style: TextSF.TextSFStyle.copyWith(
+                          fontFeatures: [FontFeature.tabularFigures()]),
                     ),
                   ),
                 ),

@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:location_project/stores/routes.dart';
@@ -97,6 +98,8 @@ class StartPathStep2State extends State<StartPathStep2>
                         '${_sliderRangeValues.start.round()}-${_sliderRangeValues.end.round()}',
                         fontSize: 30,
                         fontWeight: FontWeight.w700,
+                        style: TextSF.TextSFStyle.copyWith(
+                            fontFeatures: [FontFeature.tabularFigures()]),
                       ),
                     ),
                   ),
