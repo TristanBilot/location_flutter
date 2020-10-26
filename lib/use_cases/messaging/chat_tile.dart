@@ -97,7 +97,8 @@ class ChatTile extends StatelessWidget {
           // check if it is null = no message sent
           final isChatEngaged = msg != null;
           final isMsgUnread = _shouldMarkMsgAsUnread(isChatEngaged, msg.sendBy);
-          if (!Database().keyExists(user.id)) Database().putUser(user);
+          print('=> in chats: ${user.email}');
+          // Database().manageCache(user);
           return GestureDetector(
             onTap: () => _onTileTapped(context, user, isChatEngaged, msg),
             child: Card(
