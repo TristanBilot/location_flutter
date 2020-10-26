@@ -56,10 +56,10 @@ class ChatTile extends StatelessWidget {
   /// Returns wether the last message is marked as unread or not.
   /// When the last msg is sent by the logged user, it should
   /// not be marked as unread.
-  bool _shouldMarkMsgAsUnread(bool isChatEngaged, String sentBy) {
-    final loggedUserID = UserStore().user.id;
-    if (loggedUserID == sentBy) return false;
+  bool _shouldMarkMsgAsUnread(bool isChatEngaged, FirestoreMessageEntry msg) {
     if (!isChatEngaged) return false; // change later to support new match
+    final loggedUserID = UserStore().user.id;
+    if (loggedUserID == msg.sendBy) return false;
     return chat.lastActivitySeen == false;
   }
 
@@ -77,7 +77,7 @@ class ChatTile extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (context) => MessagePage(
-          chatID: chat.chatID,
+          chat: chat,
           user: user,
         ),
       ),
@@ -98,7 +98,7 @@ class ChatTile extends StatelessWidget {
           // always verify `isChatEngaged` before using msg to
           // check if it is null = no message sent
           final isChatEngaged = msg != null;
-          final isMsgUnread = _shouldMarkMsgAsUnread(isChatEngaged, msg.sendBy);
+          final isMsgUnread = _shouldMarkMsgAsUnread(isChatEngaged, msg);
           print('=> in chats: ${user.email}');
           // Database().manageCache(user);
           if (Database().keyExists(user.id)) Database().putUser(user);

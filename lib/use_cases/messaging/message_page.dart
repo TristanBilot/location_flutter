@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/messaging/cahed_circle_user_image_with_active_status.dart';
+import 'package:location_project/use_cases/messaging/firestore_chat_entry.dart';
 import 'package:location_project/use_cases/messaging/firestore_message_entry.dart';
 import 'package:location_project/use_cases/messaging/message_tile.dart';
 import 'package:location_project/use_cases/messaging/message_tile_methods.dart';
@@ -11,15 +12,13 @@ import 'package:location_project/use_cases/messaging/messaging_text_field.dart';
 import 'package:location_project/widgets/cached_circle_user_image.dart';
 import 'package:location_project/widgets/textSF.dart';
 import 'package:location_project/widgets/user_card.dart';
-import 'package:location_project/widgets/user_map_card.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class MessagePage extends StatefulWidget {
-  final String chatID;
+  final FirestoreChatEntry chat;
   final User user;
 
   MessagePage({
-    @required this.chatID,
+    @required this.chat,
     @required this.user,
   });
 
@@ -30,14 +29,19 @@ class MessagePage extends StatefulWidget {
 class _MessagePageState extends State<MessagePage> {
   Stream<QuerySnapshot> _messages;
   TextEditingController _messageEditingController;
+  bool _isMessagesEmpty;
 
   @override
   void initState() {
-    MessagingReposiory()
-        .getMessages(widget.chatID)
-        .then((messages) => setState(() => _messages = messages));
+    _fetchMessages();
     _messageEditingController = TextEditingController();
     super.initState();
+  }
+
+  void _fetchMessages() {
+    MessagingReposiory()
+        .getMessages(widget.chat.chatID)
+        .then((messages) => setState(() => _messages = messages));
   }
 
   void _sendMessage() {
@@ -47,9 +51,9 @@ class _MessagePageState extends State<MessagePage> {
       final time = FirestoreMessageEntry.Time;
 
       final entry = FirestoreMessageEntry(message, sendBy, time);
-      MessagingReposiory().newMessage(widget.chatID, entry);
+      MessagingReposiory().newMessage(widget.chat.chatID, entry);
       MessagingReposiory().updateChatLastActivity(
-        widget.chatID,
+        widget.chat.chatID,
         lastActivityTime: time,
         lastActivitySeen: false,
       );
@@ -79,25 +83,45 @@ class _MessagePageState extends State<MessagePage> {
   }
 
   /// Return the list of messages.
-  Widget get _messagesList => StreamBuilder(
+  Widget get _messagesOrPlaceholderWidget => StreamBuilder(
         stream: _messages,
         builder: (context, snapshot) {
-          return snapshot.hasData
-              ? ListView.builder(
-                  reverse: true,
-                  itemCount: snapshot.data.documents.length,
-                  itemBuilder: (context, index) {
-                    final msg = FirestoreMessageEntry.fromFirestoreObject(
-                        snapshot.data.documents[index].data());
-                    final diff = _getDifferenceTimeBetweenMsgAndPrevious(
-                        snapshot.data, index, msg);
-                    return MessageTile(
-                      message: msg,
-                      diffWithPrevMsgTime: diff,
-                    );
-                  })
-              : Container();
+          if (snapshot.hasData) {
+            if (snapshot.data.documents.length == 0)
+              return _requesterPlaceholder;
+
+            return ListView.builder(
+                reverse: true,
+                itemCount: snapshot.data.documents.length,
+                itemBuilder: (context, index) {
+                  final msg = FirestoreMessageEntry.fromFirestoreObject(
+                      snapshot.data.documents[index].data());
+                  final diff = _getDifferenceTimeBetweenMsgAndPrevious(
+                      snapshot.data, index, msg);
+                  return MessageTile(
+                    message: msg,
+                    diffWithPrevMsgTime: diff,
+                  );
+                });
+          }
+          return Container();
         },
+      );
+
+  /// Placeholder displayed when the user has requested the chat
+  /// and the chat has been accepted by the other participant.
+  /// It is only displayed when there is 0 messages yet.
+  Widget get _requesterPlaceholder => Column(
+        children: [
+          Spacer(),
+          CachedCircleUserImage(
+            widget.user.pictureURL,
+            size: 160,
+          ),
+          Padding(padding: EdgeInsets.only(top: 30)),
+          TextSF('Engage a discussion with ${widget.user.firstName}!'),
+          Spacer(),
+        ],
       );
 
   @override
@@ -133,7 +157,7 @@ class _MessagePageState extends State<MessagePage> {
           child: Column(
             children: [
               Expanded(
-                child: _messagesList,
+                child: _messagesOrPlaceholderWidget,
               ),
               Container(
                 width: MediaQuery.of(context).size.width,

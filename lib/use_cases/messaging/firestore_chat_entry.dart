@@ -7,6 +7,10 @@ enum ChatField {
   ChatID,
   LastActivityTime,
   LastActivitySeen,
+
+  IsChatEngaged,
+  RequesterID,
+  RequestedID,
 }
 
 class FirestoreChatEntry implements FirestoreEntry {
@@ -15,6 +19,9 @@ class FirestoreChatEntry implements FirestoreEntry {
   final String chatID;
   final int lastActivityTime;
   final bool lastActivitySeen;
+  final bool isChatEngaged;
+  final String requesterID;
+  final String requestedID;
 
   FirestoreChatEntry(
     this.userIDs,
@@ -22,6 +29,9 @@ class FirestoreChatEntry implements FirestoreEntry {
     this.chatID,
     this.lastActivityTime,
     this.lastActivitySeen,
+    this.isChatEngaged,
+    this.requesterID,
+    this.requestedID,
   );
 
   dynamic toFirestoreObject() {
@@ -31,6 +41,9 @@ class FirestoreChatEntry implements FirestoreEntry {
       ChatField.ChatID.value: chatID,
       ChatField.LastActivityTime.value: lastActivityTime,
       ChatField.LastActivitySeen.value: lastActivitySeen,
+      ChatField.IsChatEngaged.value: isChatEngaged,
+      ChatField.RequesterID.value: requesterID,
+      ChatField.RequestedID.value: requestedID,
     };
   }
 
@@ -41,6 +54,9 @@ class FirestoreChatEntry implements FirestoreEntry {
       data[ChatField.ChatID.value] as String,
       data[ChatField.LastActivityTime.value] as int,
       data[ChatField.LastActivitySeen.value] as bool,
+      data[ChatField.IsChatEngaged.value] as bool,
+      data[ChatField.RequesterID.value] as String,
+      data[ChatField.RequestedID.value] as String,
     );
   }
 

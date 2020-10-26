@@ -14,9 +14,9 @@ class MessagingMockRepository {
   final id3Name = 'Alexandre';
 
   Future<void> insertChatMock() async {
-    _insertChatMock(id1, id2, id1Name, id2Name);
-    _insertChatMock(id1, id3, id1Name, id3Name);
-    _insertChatMock(id1, id2, id1Name, id2Name);
+    _insertChatMock(id1, id2, id1Name, id2Name, true);
+    _insertChatMock(id1, id3, id1Name, id3Name, true);
+    _insertChatMock(id1, id2, id1Name, id2Name, true);
   }
 
   Future<void> insertMessageMock() async {
@@ -31,14 +31,19 @@ class MessagingMockRepository {
     String id2,
     String id1Name,
     String id2Name,
+    bool engaged,
   ) async {
     final chatID = MessagingReposiory.getChatID(id1, id2);
+    final rd = Random().nextBool();
     final entry = FirestoreChatEntry(
       [id1, id2],
       [id1Name, id2Name],
       chatID,
       FirestoreMessageEntry.Time,
       false,
+      engaged,
+      rd == true ? id1 : id2,
+      rd == true ? id2 : id1,
     );
     MessagingReposiory().newChat(chatID, entry);
     print('$chatID successfully inserted to Firestore.');
