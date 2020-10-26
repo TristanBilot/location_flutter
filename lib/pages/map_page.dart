@@ -19,7 +19,7 @@ class _MapPageState extends State<MapPage>
     with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   final List<Tab> tabs = <Tab>[
     Tab(icon: Icon(Icons.account_circle)),
-    Tab(child: Text('')),
+    Tab(icon: Icon(Icons.location_on)),
     Tab(icon: Icon(Icons.textsms))
   ];
   final _initialIndex = 1;
@@ -63,10 +63,13 @@ class _MapPageState extends State<MapPage>
   Widget build(BuildContext context) {
     return Stack(children: [
       Scaffold(
-        appBar: AppBar(
-          bottom: TabBar(
-            tabs: tabs,
-            controller: _tabController,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(70.0),
+          child: AppBar(
+            bottom: TabBar(
+              tabs: tabs,
+              controller: _tabController,
+            ),
           ),
         ),
         body: TabBarView(
@@ -93,7 +96,7 @@ class _MapPageState extends State<MapPage>
           ],
         ),
       ),
-      PositionedAppIcon(_tabController, _initialIndex)
+      // PositionedAppIcon(_tabController, _initialIndex)
     ]);
   }
 }
