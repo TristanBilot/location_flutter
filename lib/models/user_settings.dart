@@ -1,19 +1,28 @@
-import 'package:location_project/helpers/gender_adapter.dart';
+import 'package:hive/hive.dart';
+import 'package:location_project/helpers/gender_value_adapter.dart';
 import 'package:location_project/models/user.dart';
-import 'package:location_project/use_cases/start_path/widgets/gender_circle_icon.dart';
+import 'package:location_project/models/gender.dart';
 import '../stores/extensions.dart';
 
+part 'user_settings.g.dart';
+
+@HiveType(typeId: 1)
 class UserSettings {
   static const bool DefaultShowMyProfile = true;
   static const bool DefaultShowMyDistance = true;
   static const bool DefaultConnected = true;
   static const List<int> DefaultWantedAgeRange = [18, 25];
   static final List<Gender> DefaultWantedGenders = [Gender.Other];
-
+  UserSettings.defaultConstructor();
+  @HiveField(0)
   List<int> wantedAgeRange;
+  @HiveField(1)
   List<Gender> wantedGenders;
+  @HiveField(2)
   bool showMyprofile;
+  @HiveField(3)
   bool showMyDistance;
+  @HiveField(4)
   bool connected;
 
   UserSettings(
@@ -34,7 +43,7 @@ class UserSettings {
 
   static UserSettings fromFirestoreObject(dynamic data) {
     final wantedAgeRange = List<int>.from(data[UserField.WantedAgeRange.value]);
-    final wantedGenders = GenderAdapter().stringsToGenders(
+    final wantedGenders = GenderValueAdapter().stringsToGenders(
       List<String>.from(data[UserField.WantedGenders.value]),
     );
     final showMyProfile = data[UserField.ShowMyProfile.value] as bool;

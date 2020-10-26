@@ -1,16 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:hive/hive.dart';
 import 'package:location_project/caches/location_cache.dart';
 import 'package:location_project/caches/user_cache.dart';
-import 'package:location_project/helpers/gender_adapter.dart';
+import 'package:location_project/helpers/gender_value_adapter.dart';
 import 'package:location_project/controllers/location_controller.dart';
 import 'package:location_project/models/user_settings.dart';
 import 'package:location_project/repositories/image_repository.dart';
 import 'package:location_project/stores/conf.dart';
 import 'package:location_project/stores/store.dart';
-import 'package:location_project/use_cases/start_path/widgets/gender_circle_icon.dart';
+import 'package:location_project/models/gender.dart';
 import '../stores/extensions.dart';
+
+part 'user.g.dart';
 
 enum UserField {
   FirstName,
@@ -26,41 +29,45 @@ enum UserField {
   Connected,
 }
 
-class User {
+@HiveType(typeId: 0)
+class User extends HiveObject {
+  @HiveField(0)
   String id;
+  @HiveField(1)
   String email;
+  @HiveField(2)
   String firstName;
+  @HiveField(3)
   String lastName;
-  LatLng coord;
+  @HiveField(4)
+  List<double> coord; // [0]: latitude [1]: longitude
   BitmapDescriptor icon;
+  @HiveField(5)
   String pictureURL;
+  @HiveField(6)
   int distance;
+  @HiveField(7)
   int age;
+  @HiveField(8)
   Gender gender;
+  @HiveField(9)
   UserSettings settings;
 
+  User._();
+
   User(
-      String email,
-      String firstName,
-      String lastName,
-      LatLng coord,
-      BitmapDescriptor icon,
-      String pictureURL,
-      int distance,
-      int age,
-      Gender gender,
-      UserSettings settings) {
+    this.email,
+    this.firstName,
+    this.lastName,
+    this.coord,
+    this.icon,
+    this.pictureURL,
+    this.distance,
+    this.age,
+    this.gender,
+    this.settings,
+  ) {
     this.id = email;
-    this.lastName = lastName;
-    this.firstName = firstName;
-    this.email = email;
-    this.coord = coord;
-    this.icon = icon;
-    this.pictureURL = pictureURL;
-    this.distance = distance;
-    this.age = age;
-    this.gender = gender;
-    this.settings = settings;
   }
 
   /// Returns a User from a Firestore snapshot, the snaposhot
@@ -88,8 +95,9 @@ class User {
 
     final firstName = data[UserField.FirstName.value];
     final lastName = data[UserField.LastName.value];
-    final coord = LatLng(geoPoint.latitude, geoPoint.longitude);
-    final gender = GenderAdapter().stringToGender(data[UserField.Gender.value]);
+    final coord = List<double>.from([geoPoint.latitude, geoPoint.longitude]);
+    final gender =
+        GenderValueAdapter().stringToGender(data[UserField.Gender.value]);
     final age = data[UserField.Age.value];
 
     return User(snapshot.id, firstName, lastName, coord, icon, downloadURL,

@@ -3,7 +3,7 @@ import 'package:location_project/models/user.dart';
 import 'package:location_project/repositories/user_local_repository.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/use_cases/account/account_language_page.dart';
-import 'package:location_project/use_cases/start_path/widgets/gender_circle_icon.dart';
+import 'package:location_project/models/gender.dart';
 import '../stores/extensions.dart';
 
 /// Manage all the data of the logged user.

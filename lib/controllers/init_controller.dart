@@ -1,5 +1,6 @@
 import 'package:location_project/controllers/location_controller.dart';
 import 'package:location_project/repositories/user_local_repository.dart';
+import 'package:location_project/stores/database.dart';
 import 'package:location_project/stores/user_store.dart';
 
 class InitController {
@@ -12,6 +13,7 @@ class InitController {
       if (await LocationController().isLocationEnabled())
         await UserStore().initAsynchronously();
     }
+    await Database.initHiveDatabase();
   }
 
   Future initAfterLogin(String loggedID) async {

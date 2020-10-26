@@ -1,7 +1,7 @@
-import 'package:location_project/use_cases/start_path/widgets/gender_circle_icon.dart';
+import 'package:location_project/models/gender.dart';
 import '../stores/extensions.dart';
 
-class GenderAdapter {
+class GenderValueAdapter {
   Gender stringToGender(String string) {
     switch (string) {
       case 'Male':

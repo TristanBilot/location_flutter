@@ -2,7 +2,6 @@ import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
-import 'package:location_project/caches/location_cache.dart';
 import 'package:location_project/models/user_settings.dart';
 import 'package:location_project/repositories/user_local_repository.dart';
 import 'package:location_project/stores/store.dart';
@@ -99,8 +98,10 @@ class AuthRepository {
       data['email'],
       data['first_name'],
       data['last_name'],
-      LatLng(0,
-          0), // FIXME UPDATE LOCATION FOR THE LOGGED USER LocationCache().location
+      List<double>.from([
+        0,
+        0
+      ]), // FIXME UPDATE LOCATION FOR THE LOGGED USER LocationCache().location
       icon,
       data['picture']['data']['url'],
       0,

@@ -1,6 +1,6 @@
 import 'dart:collection';
 import 'package:location_project/models/user.dart';
-import 'package:location_project/use_cases/start_path/widgets/gender_circle_icon.dart';
+import 'package:location_project/models/gender.dart';
 
 /// Singleton class.
 class StartPathStore {

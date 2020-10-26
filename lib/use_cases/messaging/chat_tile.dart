@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/repositories/user_repository.dart';
+import 'package:location_project/stores/database.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/themes/light_theme.dart';
 import 'package:location_project/use_cases/messaging/cahed_circle_user_image_with_active_status.dart';
@@ -24,8 +25,15 @@ class ChatTile extends StatelessWidget {
   /// Returns the user and the last msg printed in the tile.
   Future<List<dynamic>> _fetchUserAndLastMsg() async {
     final loggedUserID = UserStore().user.id;
-    final remainingID = chat.userIDs..remove(loggedUserID);
-    final user = UserRepository().getUserFromID(remainingID.first);
+    final remainingID = (chat.userIDs..remove(loggedUserID)).first;
+    Future<User> user;
+    if (Database().keyExists(remainingID)) {
+      user = Database().getFutureUser(remainingID);
+      print('in cache');
+    } else {
+      user = UserRepository().getUserFromID(remainingID);
+      print('not in cache');
+    }
     final lastMsg = MessagingReposiory().getLastMessage(chat.chatID);
     return Future.wait([user, lastMsg]);
   }
@@ -89,6 +97,7 @@ class ChatTile extends StatelessWidget {
           // check if it is null = no message sent
           final isChatEngaged = msg != null;
           final isMsgUnread = _shouldMarkMsgAsUnread(isChatEngaged, msg.sendBy);
+          if (!Database().keyExists(user.id)) Database().putUser(user);
           return GestureDetector(
             onTap: () => _onTileTapped(context, user, isChatEngaged, msg),
             child: Card(

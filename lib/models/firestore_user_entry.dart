@@ -1,9 +1,9 @@
 import 'package:geoflutterfire/geoflutterfire.dart';
-import 'package:location_project/helpers/gender_adapter.dart';
+import 'package:location_project/helpers/gender_value_adapter.dart';
 import 'package:location_project/models/firestore_entry.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/models/user_settings.dart';
-import 'package:location_project/use_cases/start_path/widgets/gender_circle_icon.dart';
+import 'package:location_project/models/gender.dart';
 import '../stores/extensions.dart';
 
 /// Represents the User data stored in Firestore.
@@ -38,7 +38,7 @@ class FirestoreUserEntry implements FirestoreEntry {
     this.connected = settings.connected;
     this.wantedAgeRange = settings.wantedAgeRange;
     this.wantedGenders =
-        GenderAdapter().gendersToStrings(settings.wantedGenders);
+        GenderValueAdapter().gendersToStrings(settings.wantedGenders);
   }
 
   dynamic toFirestoreObject() {

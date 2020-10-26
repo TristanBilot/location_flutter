@@ -15,6 +15,7 @@ import 'package:location_project/use_cases/start_path/widgets/gender_circle_icon
 import 'package:location_project/widgets/cached_circle_user_image.dart';
 import 'package:location_project/widgets/cupertino_range_slider.dart';
 import 'package:location_project/widgets/textSF.dart';
+import 'package:location_project/models/gender.dart';
 
 class AccountPage extends StatefulWidget {
   static const curveContainerHeight = 100.0;

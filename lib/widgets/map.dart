@@ -98,7 +98,7 @@ class MapState extends State<Map> with WidgetsBindingObserver {
           _markers.add(UserMarker(
               user: user,
               icon: user.icon,
-              position: user.coord,
+              position: LatLng(user.coord[0], user.coord[1]),
               onTap: () {
                 setState(() {
                   _showUserCard(context, user);

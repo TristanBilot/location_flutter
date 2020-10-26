@@ -11,6 +11,7 @@ import 'package:location_project/use_cases/start_path/widgets/breadcrumb.dart';
 import 'package:location_project/use_cases/start_path/widgets/equally_spaced_row.dart';
 import 'package:location_project/widgets/textSF.dart';
 import '../widgets/gender_circle_icon.dart';
+import 'package:location_project/models/gender.dart';
 
 mixin GenderMultiIconController {
   void iconDidSelected(Gender gender, bool isSelected);
