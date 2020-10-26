@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/stores/user_store.dart';
@@ -87,8 +89,13 @@ class _MessagePageState extends State<MessagePage> {
         stream: _messages,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
+            if (!widget.chat.isChatEngaged) {
+              final userID = UserStore().user.id;
+              if (userID == widget.chat.requesterID)
+                return _requestWaitingPlaceholder;
+            }
             if (snapshot.data.documents.length == 0)
-              return _requesterPlaceholder;
+              return _noMessagesPlaceholder;
 
             return ListView.builder(
                 reverse: true,
@@ -111,15 +118,45 @@ class _MessagePageState extends State<MessagePage> {
   /// Placeholder displayed when the user has requested the chat
   /// and the chat has been accepted by the other participant.
   /// It is only displayed when there is 0 messages yet.
-  Widget get _requesterPlaceholder => Column(
+  Widget get _noMessagesPlaceholder => Column(
         children: [
           Spacer(),
           CachedCircleUserImage(
             widget.user.pictureURL,
-            size: 160,
+            size: 150,
           ),
-          Padding(padding: EdgeInsets.only(top: 30)),
+          Padding(padding: EdgeInsets.all(30)),
           TextSF('Engage a discussion with ${widget.user.firstName}!'),
+          Spacer(),
+        ],
+      );
+
+  /// Placeholder displayed when the requester user has sent
+  /// a request to the other participant and the requests
+  /// is in a pending state.
+  Widget get _requestWaitingPlaceholder => Column(
+        children: [
+          Spacer(),
+          Container(
+            width: 150,
+            height: 150,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage("assets/pending.png"),
+                  colorFilter:
+                      ColorFilter.mode(Colors.white54, BlendMode.modulate),
+                  fit: BoxFit.cover),
+              // color: Colors.teal[900],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.all(30),
+            child: TextSF(
+              'A request had been sent to ${widget.user.firstName}!',
+              fontSize: 18,
+              align: TextAlign.center,
+            ),
+          ),
           Spacer(),
         ],
       );
