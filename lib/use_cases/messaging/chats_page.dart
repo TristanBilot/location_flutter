@@ -21,11 +21,19 @@ class _ChatsPageState extends State<ChatsPage> {
   RefreshController _refreshController;
   TextEditingController _messageEditingController;
 
+  // Only true when the refresh controller is used when
+  // swipe is handle in order to refresh all the chats cache.
+  bool _shouldRefreshCache;
+
   @override
   void initState() {
     _messageEditingController = TextEditingController();
     _refreshController = RefreshController(initialRefresh: false);
+    _shouldRefreshCache = false;
     _fetchChatsStream();
+    // After each build(), resest the refresh cache to false
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => _shouldRefreshCache = false);
 
     super.initState();
   }
@@ -65,6 +73,7 @@ class _ChatsPageState extends State<ChatsPage> {
   }
 
   void _onRefresh() async {
+    _shouldRefreshCache = true;
     if (mounted) setState(() => {});
     _refreshController.refreshCompleted();
   }
@@ -117,7 +126,8 @@ class _ChatsPageState extends State<ChatsPage> {
                         itemBuilder: (context, index) {
                           return ChatTile(
                               chat: FirestoreChatEntry.fromFirestoreObject(
-                                  chats[index].data()));
+                                  chats[index].data()),
+                              shouldRefreshCache: _shouldRefreshCache);
                         }),
                   );
                 }

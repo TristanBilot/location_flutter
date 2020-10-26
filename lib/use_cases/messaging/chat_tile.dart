@@ -14,9 +14,11 @@ import 'package:location_project/widgets/user_card.dart';
 
 class ChatTile extends StatelessWidget {
   final FirestoreChatEntry chat;
+  final shouldRefreshCache;
 
   const ChatTile({
     @required this.chat,
+    @required this.shouldRefreshCache,
   });
 
   static const FontWeight unreadWeight = FontWeight.w700;
@@ -27,13 +29,13 @@ class ChatTile extends StatelessWidget {
     final loggedUserID = UserStore().user.id;
     final remainingID = (chat.userIDs..remove(loggedUserID)).first;
     Future<User> user;
-    if (Database().keyExists(remainingID)) {
-      user = Database().getFutureUser(remainingID);
-      print('in cache');
-    } else {
+    // The cached user should be stored in the streambuilder because
+    // here we are working with futures.
+    if (shouldRefreshCache || !Database().keyExists(remainingID))
       user = UserRepository().getUserFromID(remainingID);
-      print('not in cache');
-    }
+    else
+      user = Database().getFutureUser(remainingID);
+
     final lastMsg = MessagingReposiory().getLastMessage(chat.chatID);
     return Future.wait([user, lastMsg]);
   }
@@ -99,6 +101,7 @@ class ChatTile extends StatelessWidget {
           final isMsgUnread = _shouldMarkMsgAsUnread(isChatEngaged, msg.sendBy);
           print('=> in chats: ${user.email}');
           // Database().manageCache(user);
+          if (Database().keyExists(user.id)) Database().putUser(user);
           return GestureDetector(
             onTap: () => _onTileTapped(context, user, isChatEngaged, msg),
             child: Card(
