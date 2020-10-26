@@ -11,7 +11,7 @@ import 'package:location_project/use_cases/start_path/start_path_step2/start_pat
 import 'package:location_project/use_cases/start_path/start_path_step3/start_path_step3.dart';
 import 'package:location_project/use_cases/start_path/start_path_step4/start_path_step4.dart';
 import '../pages/login_page.dart';
-import '../pages/map_page.dart';
+import 'home_page.dart';
 import '../stores/routes.dart';
 
 class App extends StatefulWidget {
@@ -55,7 +55,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
           UserStore().isuserLoggedIn() ? Routes.map.value : Routes.login.value,
       routes: <String, WidgetBuilder>{
         Routes.login.value: (context) => LoginPage(),
-        Routes.map.value: (context) => MapPage(),
+        Routes.map.value: (context) => HomePage(),
         Routes.account.value: (context) => AccountPage(),
         Routes.languages.value: (context) => AccountLanguagePage(),
         Routes.startPathStep1.value: (context) => StartPathStep1(),
