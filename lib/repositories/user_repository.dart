@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/caches/location_cache.dart';
 import 'package:location_project/models/firestore_user_entry.dart';
 import 'package:location_project/models/user_settings.dart';
+import 'package:location_project/stores/database.dart';
 import 'dart:io';
 import 'image_repository.dart';
 import '../models/user.dart';
@@ -65,9 +66,37 @@ class UserRepository {
   /// This method does not lookup to the cache if the
   /// id is already used.
   Future<User> getUserFromID(String id) async {
-    var document = _firestore.collection(RootKey).doc(id);
-    var snapshot = await document.get();
-    return User.from(snapshot);
+    Stopwatch stopwatch = new Stopwatch()..start();
+    final document = _firestore.collection(RootKey).doc(id);
+    final snapshot = await document.get();
+    final user = await User.from(snapshot);
+    print(
+        'getUserFromID($id) fetched in ${stopwatch.elapsed.inMilliseconds}ms');
+    return user;
+  }
+
+  /// Get a user from cache and repository, used when the chats page
+  /// is reload when a message has arrived or active status changed.
+  /// The heavy objects like images are fetched from cache and values
+  /// which need refresh are fetch from firestore.
+  /// `useCache` is a boolean which tell is yes or no, the cache should
+  /// be used. By default, it is set to true.
+  Future<User> getUserCachedFromID(
+    String id, {
+    bool useCache,
+  }) async {
+    if (!Database().keyExists(id)) {
+      print('--- User not found in cache, fetching from Firestore');
+      return getUserFromID(id);
+    }
+    Stopwatch stopwatch = new Stopwatch()..start();
+    final document = _firestore.collection(RootKey).doc(id);
+    final snapshot = await document.get();
+    final user =
+        await User.from(snapshot, withoutImageFetching: useCache ?? true);
+    print(
+        'getUserCachedFromID($id) fetched in ${stopwatch.elapsed.inMilliseconds}ms');
+    return user;
   }
 
   /// Return true if the user id exists in the Firestore.

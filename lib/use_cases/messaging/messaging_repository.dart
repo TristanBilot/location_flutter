@@ -86,7 +86,7 @@ class MessagingReposiory {
         .limit(1)
         .snapshots()
         .first
-        .catchError((e) => print('hello'));
+        .catchError((e) => print('++++ error in getLastMessage()'));
   }
 
   /// Insert a new message in the chat `chatID`.

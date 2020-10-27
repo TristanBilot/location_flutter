@@ -6,6 +6,7 @@ import 'package:location_project/stores/user_store.dart';
 class InitController {
   Future initFromMain() async {
     await UserLocalRepository.initAsynchronously();
+    await Database.initHiveDatabase();
     // UserLocalRepository().forgetLoggedUser();
     // return;
     if (UserLocalRepository().isUserLoggedIn()) {
@@ -13,7 +14,6 @@ class InitController {
       if (await LocationController().isLocationEnabled())
         await UserStore().initAsynchronously();
     }
-    await Database.initHiveDatabase();
   }
 
   Future initAfterLogin(String loggedID) async {

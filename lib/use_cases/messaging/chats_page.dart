@@ -31,9 +31,6 @@ class _ChatsPageState extends State<ChatsPage> {
     _refreshController = RefreshController(initialRefresh: false);
     _shouldRefreshCache = false;
     _fetchChatsStream();
-    // After each build(), resest the refresh cache to false
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => _shouldRefreshCache = false);
 
     super.initState();
   }
@@ -76,9 +73,9 @@ class _ChatsPageState extends State<ChatsPage> {
     _shouldRefreshCache = true;
     if (mounted) setState(() => {});
     _refreshController.refreshCompleted();
+    // need to be improved later, set to false after stream building, not build().
+    Future.delayed(Duration(seconds: 1), () => _shouldRefreshCache = false);
   }
-
-  void _onLoading() async => _refreshController.loadComplete();
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +115,6 @@ class _ChatsPageState extends State<ChatsPage> {
                     enablePullDown: true,
                     controller: _refreshController,
                     onRefresh: _onRefresh,
-                    onLoading: _onLoading,
                     header: WaterDropMaterialHeader(), //WaterDropHeader
                     child: ListView.builder(
                         itemCount: chats.length,

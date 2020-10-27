@@ -9,6 +9,7 @@ import 'package:location_project/controllers/location_controller.dart';
 import 'package:location_project/models/user_settings.dart';
 import 'package:location_project/repositories/image_repository.dart';
 import 'package:location_project/stores/conf.dart';
+import 'package:location_project/stores/database.dart';
 import 'package:location_project/stores/store.dart';
 import 'package:location_project/models/gender.dart';
 import '../stores/extensions.dart';
@@ -73,7 +74,19 @@ class User extends HiveObject {
   /// Returns a User from a Firestore snapshot, the snaposhot
   /// is needed to get the id which is the email, then data()
   /// gives all the user's data.
-  static Future<User> from(DocumentSnapshot snapshot) async {
+  /// Parameters `withoutImageFetching` should be set to true only if
+  /// a user will be fetched from a cached user that already
+  /// has an image and thus we'll not fetch the image from firestore which take
+  /// around one second per user.
+  static Future<User> from(
+    DocumentSnapshot snapshot, {
+    bool withoutImageFetching = false,
+  }) async {
+    if (withoutImageFetching == true && !Database().keyExists(snapshot.id)) {
+      print(
+          '+++++ error: from() if withoutImageFetching is true, ${snapshot.id} should be find in the database cache.');
+      return null;
+    }
     final Map<String, dynamic> data = snapshot.data();
     final _imageRepo = ImageRepository();
     final realPosition = (await LocationController().isLocationEnabled() &&
@@ -89,10 +102,7 @@ class User extends HiveObject {
             1000)
         .toInt();
 
-    final icon = await _imageRepo.fetchUserIcon(snapshot.id);
-    final downloadURL = await _imageRepo.getPictureDownloadURL(snapshot.id);
     final settings = UserSettings.fromFirestoreObject(data);
-
     final firstName = data[UserField.FirstName.value];
     final lastName = data[UserField.LastName.value];
     final coord = List<double>.from([geoPoint.latitude, geoPoint.longitude]);
@@ -100,8 +110,23 @@ class User extends HiveObject {
         GenderValueAdapter().stringToGender(data[UserField.Gender.value]);
     final age = data[UserField.Age.value];
 
-    return User(snapshot.id, firstName, lastName, coord, icon, downloadURL,
+    // Use cache for images if withoutImageFetching is true.
+    // This part take lot of time to fetch.
+    BitmapDescriptor icon;
+    dynamic pictureURL;
+    if (withoutImageFetching == true) {
+      User cachedUser = Database().getUser(snapshot.id);
+      icon = cachedUser.icon;
+      pictureURL = cachedUser.pictureURL;
+    } else {
+      icon = await _imageRepo.fetchUserIcon(snapshot.id);
+      pictureURL = await _imageRepo.getPictureDownloadURL(snapshot.id);
+    }
+    User user = User(snapshot.id, firstName, lastName, coord, icon, pictureURL,
         distance, age, gender, settings);
+    // Store the user fetched from firestore to the Database cache.
+    if (!withoutImageFetching) Database().putUser(user);
+    return user;
   }
 
   /// Return the user corresponding to the id if it

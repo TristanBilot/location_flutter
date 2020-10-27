@@ -12,7 +12,7 @@ import 'package:location_project/use_cases/messaging/message_page.dart';
 import 'package:location_project/use_cases/messaging/messaging_repository.dart';
 import 'package:location_project/widgets/user_card.dart';
 
-class ChatTile extends StatelessWidget {
+class ChatTile extends StatefulWidget {
   final FirestoreChatEntry chat;
   final shouldRefreshCache;
 
@@ -21,22 +21,23 @@ class ChatTile extends StatelessWidget {
     @required this.shouldRefreshCache,
   });
 
+  @override
+  _ChatTileState createState() => _ChatTileState();
+}
+
+class _ChatTileState extends State<ChatTile> {
   static const FontWeight unreadWeight = FontWeight.w700;
   static const FontWeight readWeight = FontWeight.w300;
 
   /// Returns the user and the last msg printed in the tile.
   Future<List<dynamic>> _fetchUserAndLastMsg() async {
     final loggedUserID = UserStore().user.id;
-    final remainingID = (chat.userIDs..remove(loggedUserID)).first;
-    Future<User> user;
-    // The cached user should be stored in the streambuilder because
-    // here we are working with futures.
-    if (shouldRefreshCache || !Database().keyExists(remainingID))
-      user = UserRepository().getUserFromID(remainingID);
-    else
-      user = Database().getFutureUser(remainingID);
-
-    final lastMsg = MessagingReposiory().getLastMessage(chat.chatID);
+    final remainingID = (widget.chat.userIDs..remove(loggedUserID)).first;
+    bool useCache =
+        !widget.shouldRefreshCache && Database().keyExists(remainingID);
+    final user =
+        UserRepository().getUserCachedFromID(remainingID, useCache: useCache);
+    final lastMsg = MessagingReposiory().getLastMessage(widget.chat.chatID);
     return Future.wait([user, lastMsg]);
   }
 
@@ -60,7 +61,7 @@ class ChatTile extends StatelessWidget {
     if (!isChatEngaged) return false; // change later to support new match
     final loggedUserID = UserStore().user.id;
     if (loggedUserID == msg.sendBy) return false;
-    return chat.lastActivitySeen == false;
+    return widget.chat.lastActivitySeen == false;
   }
 
   /// When the tile is tapped, update the last activity in Firestore
@@ -72,12 +73,12 @@ class ChatTile extends StatelessWidget {
     final loggedUserID = UserStore().user.id;
     if (isChatEngaged && lastMsg.sendBy != loggedUserID)
       MessagingReposiory()
-          .updateChatLastActivity(chat.chatID, lastActivitySeen: true);
+          .updateChatLastActivity(widget.chat.chatID, lastActivitySeen: true);
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => MessagePage(
-          chat: chat,
+          chat: widget.chat,
           user: user,
         ),
       ),
@@ -119,8 +120,7 @@ class ChatTile extends StatelessWidget {
           bool isChatEngaged = msg != null;
           bool isMsgUnread = _shouldMarkMsgAsUnread(isChatEngaged, msg);
           print('=> in chats: ${user.email}');
-          // Database().manageCache(user);
-          if (!Database().keyExists(user.id)) Database().putUser(user);
+          // if (!Database().keyExists(user.id)) Database().putUser(user);
           return GestureDetector(
             onTap: () => _onTileTapped(context, user, isChatEngaged, msg),
             child: Card(
