@@ -237,6 +237,7 @@ class _MessagePageState extends State<MessagePage> {
           title: CachedCircleUserImageWithActiveStatus(
               pictureURL: widget.user.pictureURL,
               isActive: widget.user.settings.connected,
+              borderColor: Colors.white,
               size: 55,
               onTapped: () => UserCard(context, widget.user).show()),
         ),

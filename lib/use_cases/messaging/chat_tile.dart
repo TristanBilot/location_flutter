@@ -84,6 +84,25 @@ class ChatTile extends StatelessWidget {
     );
   }
 
+  Widget _getLastMsgText(
+      FirestoreMessageEntry lastMsg, bool isChatEngaged, bool isMsgUnread) {
+    final style =
+        TextStyle(fontWeight: isMsgUnread ? unreadWeight : readWeight);
+    if (!isChatEngaged) return Text('New discussion!', style: style);
+
+    bool sentByMe = UserStore().user.id == lastMsg.sendBy;
+    return Row(children: [
+      sentByMe
+          ? Icon(
+              Icons.reply,
+              color: Color.fromRGBO(170, 170, 170, 1),
+              size: 18,
+            )
+          : Text(''),
+      Text(' ${lastMsg.message}', style: style),
+    ]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -97,8 +116,8 @@ class ChatTile extends StatelessWidget {
               : _deserialized[1] as FirestoreMessageEntry;
           // always verify `isChatEngaged` before using msg to
           // check if it is null = no message sent
-          final isChatEngaged = msg != null;
-          final isMsgUnread = _shouldMarkMsgAsUnread(isChatEngaged, msg);
+          bool isChatEngaged = msg != null;
+          bool isMsgUnread = _shouldMarkMsgAsUnread(isChatEngaged, msg);
           print('=> in chats: ${user.email}');
           // Database().manageCache(user);
           if (!Database().keyExists(user.id)) Database().putUser(user);
@@ -168,12 +187,8 @@ class ChatTile extends StatelessWidget {
                               : SizedBox(),
                         ],
                       ),
-                      subtitle: Text(
-                        isChatEngaged ? msg.message : 'New discussion!',
-                        style: TextStyle(
-                            fontWeight:
-                                isMsgUnread ? unreadWeight : readWeight),
-                      ),
+                      subtitle:
+                          _getLastMsgText(msg, isChatEngaged, isMsgUnread),
                       trailing: Icon(Icons.chevron_right),
                       leading: CachedCircleUserImageWithActiveStatus(
                         pictureURL: user.pictureURL,

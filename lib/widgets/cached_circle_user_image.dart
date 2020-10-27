@@ -14,7 +14,7 @@ class CachedCircleUserImage extends StatelessWidget {
     this.imageUrl, {
     this.size = 80,
     this.borderWidth = 1.0,
-    this.borderColor = Colors.grey,
+    this.borderColor,
     this.shape = BoxShape.circle,
     this.withBorder = true,
     this.fit,
@@ -32,7 +32,7 @@ class CachedCircleUserImage extends StatelessWidget {
           border: withBorder
               ? Border.all(
                   width: borderWidth,
-                  color: borderColor,
+                  color: borderColor ?? Colors.grey,
                   style: BorderStyle.solid,
                 )
               : null,

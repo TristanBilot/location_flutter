@@ -6,12 +6,14 @@ class CachedCircleUserImageWithActiveStatus extends StatefulWidget {
   final bool isActive;
   final double size;
   final Function onTapped;
+  final Color borderColor;
 
   CachedCircleUserImageWithActiveStatus({
     this.pictureURL,
     this.isActive,
     this.size = 55,
     this.onTapped,
+    this.borderColor,
   });
 
   @override
@@ -31,6 +33,7 @@ class _CachedCircleUserImageWithActiveStatusState
           CachedCircleUserImage(
             widget.pictureURL,
             size: widget.size,
+            borderColor: widget.borderColor,
           ),
           widget.isActive
               ? Container(
