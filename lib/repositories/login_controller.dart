@@ -24,6 +24,11 @@ class LoginController {
     );
   }
 
+  /// Actually used for mock login without Facebook.
+  Future<void> logInFromEmail(String email) async {
+    _successUserExistsCompletion(email);
+  }
+
   /// Called when the Facebook login is a success and already exists.
   Future<void> _successUserExistsCompletion(String loggedID) async {
     final isLocationEnabled = await LocationController().isLocationEnabled();

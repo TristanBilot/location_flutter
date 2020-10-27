@@ -1,10 +1,10 @@
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:location_project/models/user_settings.dart';
 import 'package:location_project/repositories/user_local_repository.dart';
 import 'package:location_project/stores/store.dart';
+import 'package:location_project/stores/user_store.dart';
 import 'dart:convert';
 
 import 'image_repository.dart';
@@ -60,6 +60,7 @@ class AuthRepository {
 
   /// Log out from Facebook API and clear shared preferences
   Future<void> logOut() async {
+    UserStore().setConnectedStatus(false);
     await UserLocalRepository().forgetLoggedUser();
     await _facebookLogin.logOut();
   }

@@ -33,20 +33,17 @@ class MessagingMockRepository {
     String id2Name,
     bool engaged,
   ) async {
-    final chatID = MessagingReposiory.getChatID(id1, id2);
     final rd = Random().nextBool();
-    final entry = FirestoreChatEntry(
-      [id1, id2],
-      [id1Name, id2Name],
-      chatID,
-      FirestoreMessageEntry.Time,
-      false,
-      engaged,
+    final entry = FirestoreChatEntry.newChatEntry(
       rd == true ? id1 : id2,
       rd == true ? id2 : id1,
+      rd == true ? id1Name : id2Name,
+      rd == true ? id2Name : id1Name,
+      isChatEngaged: engaged,
+      lastActivitySeen: false,
     );
-    MessagingReposiory().newChat(chatID, entry);
-    print('$chatID successfully inserted to Firestore.');
+    MessagingReposiory().newChat(entry.chatID, entry);
+    print('${entry.chatID} successfully inserted to Firestore.');
   }
 
   /// Insert a mock message in the Firestore.

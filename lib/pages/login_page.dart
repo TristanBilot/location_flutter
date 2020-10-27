@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:location_project/repositories/login_controller.dart';
+import 'package:location_project/use_cases/start_path/widgets/basic_button.dart';
 
 import '../stores/routes.dart';
 
@@ -24,30 +25,31 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Log in')),
-        body: Center(
-            child: Container(
-                child: Column(
-          children: [
-            Spacer(),
-            FacebookSignInButton(
-              onPressed: () => _loginController.logIn(),
-            ),
-            SizedBox(height: 20),
-            FlatButton(
-                child: Container(
-                  color: Colors.green,
-                  padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                  child: Text(
-                    'Route to map',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, Routes.map.value);
-                }),
-            Spacer(),
-          ],
-        ))));
+      appBar: AppBar(title: Text('Log in')),
+      body: Center(
+        child: Container(
+          child: Column(
+            children: [
+              Spacer(),
+              FacebookSignInButton(onPressed: () => _loginController.logIn()),
+              SizedBox(height: 20),
+              // BasicButton('Route to map', onPressed: () {
+              //   Navigator.pushReplacementNamed(context, Routes.map.value);
+              // }),
+              BasicButton('Log as Tristan',
+                  onPressed: () => _loginController
+                      .logInFromEmail('bilot.tristan@hotmail.fr')),
+              BasicButton('Log as Damien',
+                  onPressed: () => _loginController
+                      .logInFromEmail('damien.duprat@hotmail.fr')),
+              BasicButton('Log as Alexandre',
+                  onPressed: () => _loginController
+                      .logInFromEmail('alexandre.roume@hotmail.fr')),
+              Spacer(),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

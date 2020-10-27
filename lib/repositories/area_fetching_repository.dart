@@ -84,10 +84,16 @@ class AreaFetchingRepository {
   /// Return true if a user should be shown on the map.
   /// All the conditions should be centralized in this method.
   bool _displayConditions(dynamic data, String id) {
-    final gender = GenderValueAdapter()
+    final areaUserGender = GenderValueAdapter()
         .stringToGender(data[UserField.Gender.value] as String);
+    final areaUserGenders = GenderValueAdapter().stringsToGenders(
+        List<String>.from(data[UserField.WantedGenders.value]));
+    final userGender = UserStore().user.gender;
+    final userGenders = UserStore().user.settings.wantedGenders;
+
+    bool genderMatch = userGenders.contains(areaUserGender) &&
+        areaUserGenders.contains(userGender);
     bool showProfile = data[UserField.ShowMyProfile.value] as bool;
-    bool genderMatch = UserStore().user.settings.wantedGenders.contains(gender);
     bool differentFromLoggedUser = UserStore().user.id != id;
     return showProfile && genderMatch && differentFromLoggedUser;
   }

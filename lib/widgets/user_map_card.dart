@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:location_project/controllers/messaging_controller.dart';
+import 'package:location_project/stores/user_store.dart';
+import 'package:location_project/use_cases/messaging/firestore_chat_entry.dart';
+import 'package:location_project/use_cases/messaging/messaging_repository.dart';
 import 'package:location_project/widgets/user_map_card_content.dart';
 import '../models/user.dart';
 
@@ -29,9 +32,21 @@ class _UserCardState extends State<UserMapCard> {
     // _messagingController...
   }
 
-  Future<void> sendHelloNotif() async {
+  /// Action when a user requests to talk with another person.
+  /// A chat is pending state is created and a notification is sent
+  /// to the requested.
+  Future<void> _sendHelloNotif() async {
+    User requester = UserStore().user;
+    User requested = widget.user;
+    final entry = FirestoreChatEntry.newChatEntry(
+      requester.id,
+      requested.id,
+      requester.firstName,
+      requested.firstName,
+      lastActivitySeen: true,
+    );
+    MessagingReposiory().newChat(entry.chatID, entry);
     await MessagingController().sendAndRetrieveMessage();
-    // return Future.delayed(Duration(seconds: 2));
   }
 
   @override
@@ -51,7 +66,7 @@ class _UserCardState extends State<UserMapCard> {
             child: UserMapCardContent(
               user: widget.user,
               onTextSubmitted: sendMessage,
-              onSayHiTap: sendHelloNotif,
+              onSayHiTap: _sendHelloNotif,
             ),
           ),
         ),

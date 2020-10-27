@@ -1,5 +1,8 @@
 import 'package:location_project/models/firestore_entry.dart';
+import 'package:location_project/use_cases/messaging/firestore_message_entry.dart';
+import 'package:location_project/use_cases/messaging/messaging_repository.dart';
 import '../../stores/extensions.dart';
+import 'package:flutter/foundation.dart';
 
 enum ChatField {
   UserIDs,
@@ -58,6 +61,31 @@ class FirestoreChatEntry implements FirestoreEntry {
       data[ChatField.RequesterID.value] as String,
       data[ChatField.RequestedID.value] as String,
     );
+  }
+
+  /// Prefer this method to build a chat entry instead of contstructor.
+  /// `requesterID` is the requester and `requestedID` the
+  /// requested user.
+  static FirestoreChatEntry newChatEntry(
+    String requesterID,
+    String requestedID,
+    String requesterName,
+    String requestedName, {
+    bool lastActivitySeen = false,
+    bool isChatEngaged = false,
+  }) {
+    final chatID = MessagingReposiory.getChatID(requesterID, requestedID);
+    final entry = FirestoreChatEntry(
+      [requesterID, requestedID],
+      [requesterName, requestedName],
+      chatID,
+      FirestoreMessageEntry.Time,
+      false,
+      isChatEngaged,
+      requesterID,
+      requestedID,
+    );
+    return entry;
   }
 
   static dynamic getCorrespondingUpdateObject(

@@ -136,6 +136,7 @@ class _MessagePageState extends State<MessagePage> {
           TextSF(
             'Engage a discussion with ${widget.user.firstName}!',
             fontSize: PlaceholderFontSize,
+            align: TextAlign.center,
           ),
           Spacer(),
         ],
@@ -211,11 +212,16 @@ class _MessagePageState extends State<MessagePage> {
 
   /// When a requested user accepts a request, update the chat to
   /// engaged = true to tell that the conversation is engaged between
-  /// the two participants.
+  /// the two participants. Also update the last activity time to be
+  /// at the top of messages and set seen to true for the moment.
   Future<void> _onRequestAccepted() async {
-    MessagingReposiory()
-        .updateChatEngaged(widget.chat.chatID, true)
-        .then((value) => setState(() => widget.chat.isChatEngaged = true));
+    await MessagingReposiory().updateChatEngaged(widget.chat.chatID, true);
+    await MessagingReposiory().updateChatLastActivity(
+      widget.chat.chatID,
+      lastActivityTime: FirestoreMessageEntry.Time,
+      lastActivitySeen: true,
+    );
+    setState(() => widget.chat.isChatEngaged = true);
   }
 
   bool get _conditionToDisplayTextField => widget.chat.isChatEngaged;
