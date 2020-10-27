@@ -108,4 +108,9 @@ class MessagingReposiory {
         .where(ChatField.UserIDs.value, arrayContains: userID)
         .snapshots();
   }
+
+  /// Returns the firestore chat designed by the `chatID`.
+  Future<DocumentSnapshot> getChat(String chatID) async {
+    return _firestore.collection(RootKey).doc(chatID).snapshots().first;
+  }
 }

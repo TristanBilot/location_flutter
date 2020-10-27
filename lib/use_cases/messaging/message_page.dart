@@ -7,6 +7,7 @@ import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/messaging/cahed_circle_user_image_with_active_status.dart';
 import 'package:location_project/use_cases/messaging/firestore_chat_entry.dart';
 import 'package:location_project/use_cases/messaging/firestore_message_entry.dart';
+import 'package:location_project/use_cases/messaging/message_sender.dart';
 import 'package:location_project/use_cases/messaging/message_tile.dart';
 import 'package:location_project/use_cases/messaging/message_tile_methods.dart';
 import 'package:location_project/use_cases/messaging/messaging_repository.dart';
@@ -52,20 +53,10 @@ class _MessagePageState extends State<MessagePage> {
   }
 
   void _sendMessage() {
-    if (_messageEditingController.text.isNotEmpty) {
-      final message = _messageEditingController.text;
-      final sendBy = UserStore().user.id;
-      final time = FirestoreMessageEntry.Time;
-
-      final entry = FirestoreMessageEntry(message, sendBy, time);
-      MessagingReposiory().newMessage(widget.chat.chatID, entry);
-      MessagingReposiory().updateChatLastActivity(
-        widget.chat.chatID,
-        lastActivityTime: time,
-        lastActivitySeen: false,
-      );
-      setState(() => _messageEditingController.text = '');
-    }
+    if (_messageEditingController.text.isEmpty) return;
+    final message = _messageEditingController.text;
+    MessageSender().send(message, widget.chat.chatID);
+    setState(() => _messageEditingController.text = '');
   }
 
   int _getDifferenceTimeBetweenMsgAndPrevious(

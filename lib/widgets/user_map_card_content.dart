@@ -9,13 +9,15 @@ import '../models/user.dart';
 
 class UserMapCardContent extends StatefulWidget {
   final User user;
-  final Function(String value) onTextSubmitted;
+  final Function onSendTap;
   final Function onSayHiTap;
+  final TextEditingController messageEditingController;
 
   UserMapCardContent({
     @required this.user,
-    @required this.onTextSubmitted,
+    @required this.onSendTap,
     @required this.onSayHiTap,
+    @required this.messageEditingController,
   });
 
   @override
@@ -23,21 +25,10 @@ class UserMapCardContent extends StatefulWidget {
 }
 
 class _UserMapCardContentState extends State<UserMapCardContent> {
-  TextEditingController _textController;
-
   @override
   void initState() {
     super.initState();
-    _textController = TextEditingController();
   }
-
-  @override
-  void dispose() {
-    _textController.dispose();
-    super.dispose();
-  }
-
-  void onSayHelloPressed() {}
 
   @override
   Widget build(BuildContext context) {
@@ -81,10 +72,9 @@ class _UserMapCardContentState extends State<UserMapCardContent> {
                   Spacer(),
                   Center(
                     child: ScrollableTextView(
-                      withTrailingButton: true,
-                      controller: _textController,
-                      trailingButtonOnPressed: () => {},
-                      onTextSubmitted: widget.onTextSubmitted,
+                      controller: widget.messageEditingController,
+                      withSendButton: true,
+                      onSendPressed: widget.onSendTap,
                     ),
                   ),
                   Spacer(),

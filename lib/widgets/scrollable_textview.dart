@@ -3,30 +3,28 @@ import 'package:location_project/widgets/textSF.dart';
 
 class ScrollableTextView extends StatelessWidget {
   final String placeholder;
-  final Function(String value) onTextSubmitted;
-  final bool withTrailingButton;
-  final String trailingButtontext;
-  final Function trailingButtonOnPressed;
   final TextEditingController controller;
   final double width;
-  final Widget customTrailingButton;
+
+  final bool withSendButton;
+  final String sendButtontext;
+  final Function onSendPressed;
+  final Widget customSendButton;
 
   ScrollableTextView({
     this.placeholder = 'Send a nice message !',
-    this.onTextSubmitted,
-    this.withTrailingButton = false,
-    this.trailingButtontext = 'Send',
-    this.trailingButtonOnPressed,
-    this.controller,
+    @required this.controller,
     this.width,
-    this.customTrailingButton,
+    this.withSendButton = false,
+    this.sendButtontext = 'Send',
+    @required this.onSendPressed,
+    this.customSendButton,
   }) {
-    if (withTrailingButton && trailingButtonOnPressed == null)
+    if (withSendButton && onSendPressed == null)
+      print("+++ Error: onSendPressed need a onSendPressed callback.");
+    if (sendButtontext.length > 4)
       print(
-          "+++ Error: trailingButtonOnPressed need a trailingButtonOnPressed callback.");
-    if (trailingButtontext.length > 4)
-      print(
-          "+++ Warning: the trailingButtontext length is greater than 4 and will be too big, need to adapat.");
+          "+++ Warning: the sendButtontext length is greater than 4 and will be too big, need to adapat.");
   }
 
   @override
@@ -56,7 +54,6 @@ class ScrollableTextView extends StatelessWidget {
               reverse: true,
               child: TextField(
                 controller: controller,
-                onSubmitted: onTextSubmitted,
                 keyboardType: TextInputType.multiline,
                 maxLines: null, //grow automatically
                 decoration: InputDecoration.collapsed(
@@ -66,14 +63,16 @@ class ScrollableTextView extends StatelessWidget {
             ),
           ),
         ),
-      ]..addAll(!withTrailingButton
-          ? ([customTrailingButton] ?? [])
+      ]..addAll(!withSendButton
+          ? ([customSendButton] ?? [])
           : [
               Padding(
                 padding: EdgeInsets.only(left: width - rightPadding - 22),
                 child: FlatButton(
                   child: TextSF('Send'),
-                  onPressed: trailingButtonOnPressed,
+                  onPressed: onSendPressed,
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
                 ),
               )
             ]),

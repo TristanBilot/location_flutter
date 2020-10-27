@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:location_project/models/firestore_entry.dart';
 import 'package:location_project/use_cases/messaging/firestore_message_entry.dart';
 import 'package:location_project/use_cases/messaging/messaging_repository.dart';
@@ -70,17 +71,17 @@ class FirestoreChatEntry implements FirestoreEntry {
     String requesterID,
     String requestedID,
     String requesterName,
-    String requestedName, {
-    bool lastActivitySeen = false,
-    bool isChatEngaged = false,
-  }) {
+    String requestedName,
+    bool lastActivitySeen,
+    bool isChatEngaged,
+  ) {
     final chatID = MessagingReposiory.getChatID(requesterID, requestedID);
     final entry = FirestoreChatEntry(
       [requesterID, requestedID],
       [requesterName, requestedName],
       chatID,
       FirestoreMessageEntry.Time,
-      false,
+      lastActivitySeen,
       isChatEngaged,
       requesterID,
       requestedID,

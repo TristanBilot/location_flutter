@@ -39,8 +39,8 @@ class MessagingMockRepository {
       rd == true ? id2 : id1,
       rd == true ? id1Name : id2Name,
       rd == true ? id2Name : id1Name,
-      isChatEngaged: engaged,
-      lastActivitySeen: false,
+      engaged,
+      false,
     );
     MessagingReposiory().newChat(entry.chatID, entry);
     print('${entry.chatID} successfully inserted to Firestore.');
