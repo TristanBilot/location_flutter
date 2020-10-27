@@ -8,8 +8,14 @@ class BasicButton extends StatefulWidget {
   final String text;
   final bool enabled;
   final Function onPressed;
+  final double width;
 
-  BasicButton(this.text, {this.enabled = true, this.onPressed});
+  BasicButton(
+    this.text, {
+    this.enabled = true,
+    this.onPressed,
+    this.width,
+  });
 
   @override
   _BasicButtonState createState() => _BasicButtonState();
@@ -24,7 +30,7 @@ class _BasicButtonState extends State<BasicButton> {
       shape: CircleBorder(),
       onPressed: widget.onPressed,
       child: Container(
-        width: MediaQuery.of(context).size.width,
+        width: widget.width,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(10)),
             color: widget.enabled

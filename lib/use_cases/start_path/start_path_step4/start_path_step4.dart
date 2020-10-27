@@ -81,8 +81,11 @@ class StartPathStep4State extends State<StartPathStep4> {
                 ]),
               ),
               Spacer(),
-              BasicButton('ALLOW NOTIFICATIONS',
-                  onPressed: () => _requestNotifications()),
+              BasicButton(
+                'ALLOW NOTIFICATIONS',
+                onPressed: () => _requestNotifications(),
+                width: MediaQuery.of(context).size.width,
+              ),
               SecondaryButton('LATER', () {
                 Navigator.of(context).popUntil((route) => route.isFirst);
                 Navigator.of(context).pushReplacementNamed(Routes.map.value);

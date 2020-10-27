@@ -14,6 +14,8 @@ class MessagingReposiory {
   }
   // messages => id1_id2 => chats => msgID
 
+  /// By default, the chatID is the concatenation of
+  /// the two participants IDs unioned with an _.
   static String getChatID(String id1, String id2) {
     return [id1, id2].join('_');
   }
@@ -25,6 +27,20 @@ class MessagingReposiory {
         .doc(chatID) // email1_email2
         .set(chat.toFirestoreObject())
         .catchError((e) => print(e));
+  }
+
+  /// Remove a chat between two participants. Used when a requested
+  /// user deny a request.
+  Future<void> deleteChat(String chatID) async {
+    _firestore.collection(RootKey).doc(chatID).delete();
+  }
+
+  /// Update tghe boolean value if `IsChatEngaged` in the chat.
+  /// This is used when a requested user accept a request.
+  Future<void> updateChatEngaged(String chatID, bool isEngaged) async {
+    _firestore.collection(RootKey).doc(chatID).update({
+      ChatField.IsChatEngaged.value: isEngaged,
+    }).catchError((e) => print(e));
   }
 
   /// Update the values of `lastActivityTime` and `lastActivitySeen`

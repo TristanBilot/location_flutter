@@ -77,7 +77,9 @@ class StartPathStep3State extends State<StartPathStep3> {
               ),
               Spacer(),
               BasicButton('ENABLE LOCATION',
-                  enabled: true, onPressed: () => _requestLocation()),
+                  enabled: true,
+                  width: MediaQuery.of(context).size.width,
+                  onPressed: () => _requestLocation()),
               SecondaryButton(
                   'LATER',
                   () => showDialog(

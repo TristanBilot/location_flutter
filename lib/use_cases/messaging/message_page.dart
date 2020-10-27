@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:location_project/models/user.dart';
+import 'package:location_project/stores/database.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/messaging/cahed_circle_user_image_with_active_status.dart';
 import 'package:location_project/use_cases/messaging/firestore_chat_entry.dart';
@@ -11,6 +12,7 @@ import 'package:location_project/use_cases/messaging/message_tile_methods.dart';
 import 'package:location_project/use_cases/messaging/messaging_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/use_cases/messaging/messaging_text_field.dart';
+import 'package:location_project/use_cases/start_path/widgets/basic_button.dart';
 import 'package:location_project/widgets/cached_circle_user_image.dart';
 import 'package:location_project/widgets/textSF.dart';
 import 'package:location_project/widgets/user_card.dart';
@@ -32,6 +34,9 @@ class _MessagePageState extends State<MessagePage> {
   Stream<QuerySnapshot> _messages;
   TextEditingController _messageEditingController;
   bool _isMessagesEmpty;
+
+  static const PlaceholderImageSize = 150.0;
+  static const PlaceholderFontSize = 17.0;
 
   @override
   void initState() {
@@ -89,10 +94,12 @@ class _MessagePageState extends State<MessagePage> {
         stream: _messages,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
+            final userID = UserStore().user.id;
             if (!widget.chat.isChatEngaged) {
-              final userID = UserStore().user.id;
               if (userID == widget.chat.requesterID)
                 return _requestWaitingPlaceholder;
+              if (userID == widget.chat.requestedID)
+                return _requestInvitationPlaceholder;
             }
             if (snapshot.data.documents.length == 0)
               return _noMessagesPlaceholder;
@@ -123,10 +130,13 @@ class _MessagePageState extends State<MessagePage> {
           Spacer(),
           CachedCircleUserImage(
             widget.user.pictureURL,
-            size: 150,
+            size: PlaceholderImageSize,
           ),
           Padding(padding: EdgeInsets.all(30)),
-          TextSF('Engage a discussion with ${widget.user.firstName}!'),
+          TextSF(
+            'Engage a discussion with ${widget.user.firstName}!',
+            fontSize: PlaceholderFontSize,
+          ),
           Spacer(),
         ],
       );
@@ -138,8 +148,8 @@ class _MessagePageState extends State<MessagePage> {
         children: [
           Spacer(),
           Container(
-            width: 150,
-            height: 150,
+            width: PlaceholderImageSize,
+            height: PlaceholderImageSize,
             decoration: BoxDecoration(
               image: DecorationImage(
                   image: AssetImage("assets/pending.png"),
@@ -153,13 +163,62 @@ class _MessagePageState extends State<MessagePage> {
             padding: EdgeInsets.all(30),
             child: TextSF(
               'A request had been sent to ${widget.user.firstName}!',
-              fontSize: 18,
+              fontSize: PlaceholderFontSize,
               align: TextAlign.center,
             ),
           ),
           Spacer(),
         ],
       );
+
+  /// Placeholder displayed when the requested user receives
+  /// a request and should choose to accept or not.
+  Widget get _requestInvitationPlaceholder => Column(
+        children: [
+          Spacer(),
+          CachedCircleUserImage(
+            widget.user.pictureURL,
+            size: PlaceholderImageSize,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 20, bottom: 40),
+            child: TextSF(
+              '${widget.user.firstName} wants to talk with you.',
+              fontSize: PlaceholderFontSize,
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              BasicButton('DENY', onPressed: _onRequestDenied),
+              SizedBox(width: 20),
+              BasicButton('ACCEPT', onPressed: _onRequestAccepted),
+            ],
+          ),
+          Spacer(),
+        ],
+      );
+
+  /// When a requested user denies a request, delete the chat
+  /// in the firestore and in the database cache. Then, redireft to
+  /// chats page.
+  void _onRequestDenied() {
+    MessagingReposiory().deleteChat(widget.chat.chatID);
+    Database()
+        .deleteUser(widget.chat.requesterID)
+        .then((value) => Navigator.of(context).pop());
+  }
+
+  /// When a requested user accepts a request, update the chat to
+  /// engaged = true to tell that the conversation is engaged between
+  /// the two participants.
+  Future<void> _onRequestAccepted() async {
+    MessagingReposiory()
+        .updateChatEngaged(widget.chat.chatID, true)
+        .then((value) => setState(() => widget.chat.isChatEngaged = true));
+  }
+
+  bool get _conditionToDisplayTextField => widget.chat.isChatEngaged;
 
   @override
   Widget build(BuildContext context) {
@@ -196,19 +255,21 @@ class _MessagePageState extends State<MessagePage> {
               Expanded(
                 child: _messagesOrPlaceholderWidget,
               ),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                child: Container(
-                  height: 80,
-                  padding: EdgeInsets.fromLTRB(10, 15, 10, 30),
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  child: MessagingTextField(
-                    onPressed: _sendMessage,
-                    onChanged: (text) => setState(() => {}),
-                    controller: _messageEditingController,
-                  ),
-                ),
-              ),
+              _conditionToDisplayTextField
+                  ? Container(
+                      width: MediaQuery.of(context).size.width,
+                      child: Container(
+                        height: 80,
+                        padding: EdgeInsets.fromLTRB(10, 15, 10, 30),
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        child: MessagingTextField(
+                          onPressed: _sendMessage,
+                          onChanged: (text) => setState(() => {}),
+                          controller: _messageEditingController,
+                        ),
+                      ),
+                    )
+                  : SizedBox(),
             ],
           ),
         ),

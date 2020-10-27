@@ -42,6 +42,11 @@ class Database {
     return _box.get(id);
   }
 
+  /// Delete a user from the database.
+  Future<void> deleteUser(String id) async {
+    _box.delete(id);
+  }
+
   /// Return a User as a Future for the FutureBuilder.
   Future<User> getFutureUser(String id) async {
     asyncStuff() async => {};

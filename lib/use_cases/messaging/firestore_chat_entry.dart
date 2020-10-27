@@ -14,14 +14,14 @@ enum ChatField {
 }
 
 class FirestoreChatEntry implements FirestoreEntry {
-  final List<String> userIDs;
-  final List<String> userNames;
-  final String chatID;
-  final int lastActivityTime;
-  final bool lastActivitySeen;
-  final bool isChatEngaged;
-  final String requesterID;
-  final String requestedID;
+  List<String> userIDs;
+  List<String> userNames;
+  String chatID;
+  int lastActivityTime;
+  bool lastActivitySeen;
+  bool isChatEngaged;
+  String requesterID;
+  String requestedID;
 
   FirestoreChatEntry(
     this.userIDs,

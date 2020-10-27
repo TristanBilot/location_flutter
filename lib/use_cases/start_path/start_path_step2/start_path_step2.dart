@@ -111,14 +111,19 @@ class StartPathStep2State extends State<StartPathStep2>
 
             // Divider(),
             Spacer(),
-            BasicButton('NEXT', enabled: _isPageValid, onPressed: () {
-              StartPathStore().setWantedAgeRange(List<int>.from([
-                _sliderRangeValues.start.toInt(),
-                _sliderRangeValues.end.toInt()
-              ]));
-              StartPathStore().setWantedGender(_selectedGenders);
-              Navigator.of(context).pushNamed(Routes.startPathStep3.value);
-            }),
+            BasicButton(
+              'NEXT',
+              enabled: _isPageValid,
+              width: MediaQuery.of(context).size.width,
+              onPressed: () {
+                StartPathStore().setWantedAgeRange(List<int>.from([
+                  _sliderRangeValues.start.toInt(),
+                  _sliderRangeValues.end.toInt()
+                ]));
+                StartPathStore().setWantedGender(_selectedGenders);
+                Navigator.of(context).pushNamed(Routes.startPathStep3.value);
+              },
+            ),
             Padding(
               padding: EdgeInsets.only(bottom: 20),
             )

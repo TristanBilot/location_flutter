@@ -101,7 +101,7 @@ class ChatTile extends StatelessWidget {
           final isMsgUnread = _shouldMarkMsgAsUnread(isChatEngaged, msg);
           print('=> in chats: ${user.email}');
           // Database().manageCache(user);
-          if (Database().keyExists(user.id)) Database().putUser(user);
+          if (!Database().keyExists(user.id)) Database().putUser(user);
           return GestureDetector(
             onTap: () => _onTileTapped(context, user, isChatEngaged, msg),
             child: Card(
@@ -169,7 +169,7 @@ class ChatTile extends StatelessWidget {
                         ],
                       ),
                       subtitle: Text(
-                        isChatEngaged ? msg.message : 'New match!',
+                        isChatEngaged ? msg.message : 'New discussion!',
                         style: TextStyle(
                             fontWeight:
                                 isMsgUnread ? unreadWeight : readWeight),

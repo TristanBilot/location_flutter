@@ -122,14 +122,20 @@ class StartPathStep1State extends State<StartPathStep1>
             Spacer(),
             BasicButton(
               'ROUTE TO MAP',
+              width: MediaQuery.of(context).size.width,
               onPressed: () =>
                   Navigator.of(context).pushReplacementNamed(Routes.map.value),
             ),
-            BasicButton('NEXT', enabled: _isPageValid, onPressed: () {
-              StartPathStore().setUserGender(_selectedGender);
-              StartPathStore().setUserAge(_sliderValue.toInt());
-              Navigator.of(context).pushNamed(Routes.startPathStep2.value);
-            }),
+            BasicButton(
+              'NEXT',
+              enabled: _isPageValid,
+              width: MediaQuery.of(context).size.width,
+              onPressed: () {
+                StartPathStore().setUserGender(_selectedGender);
+                StartPathStore().setUserAge(_sliderValue.toInt());
+                Navigator.of(context).pushNamed(Routes.startPathStep2.value);
+              },
+            ),
             Padding(
               padding: EdgeInsets.only(bottom: 20),
             )
