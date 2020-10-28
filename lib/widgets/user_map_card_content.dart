@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:location_project/helpers/string_formatter.dart';
+import 'package:location_project/use_cases/start_path/widgets/basic_button.dart';
 import 'package:location_project/widgets/cached_circle_user_image.dart';
 import 'package:location_project/widgets/say_hello_button.dart';
 import 'package:location_project/widgets/scrollable_textview.dart';
 import 'package:location_project/widgets/textSF.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 import '../models/user.dart';
 
 class UserMapCardContent extends StatefulWidget {
@@ -25,6 +27,7 @@ class UserMapCardContent extends StatefulWidget {
 }
 
 class _UserMapCardContentState extends State<UserMapCardContent> {
+  static const InternalPadding = 10.0;
   @override
   void initState() {
     super.initState();
@@ -42,48 +45,75 @@ class _UserMapCardContentState extends State<UserMapCardContent> {
           child: SafeArea(
             top: false,
             child: Padding(
-              padding: EdgeInsets.all(20.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Center(
-                    child: CachedCircleUserImage(
-                      widget.user.pictureURL,
-                      size: 130,
+              padding: EdgeInsets.fromLTRB(
+                  InternalPadding, InternalPadding, InternalPadding, 0),
+              child: Stack(
+                children: [
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: CachedCircleUserImage(
+                          widget.user.pictureURL,
+                          size: 130,
+                        ),
+                      ),
+                      // Expanded(
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                        child: TextSF(
+                          StringFormatter().getNameAgeLabel(
+                              widget.user.firstName, widget.user.age),
+                          fontSize: TextSF.FontSize + 4,
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(0, 6, 0, 0),
+                        child: TextSF(
+                          widget.user.distance == 0
+                              ? ''
+                              : '${widget.user.distance} meters',
+                        ),
+                      ),
+                      Spacer(),
+                      Center(
+                        child: ScrollableTextView(
+                          controller: widget.messageEditingController,
+                          withSendButton: true,
+                          onSendPressed: widget.onSendTap,
+                        ),
+                      ),
+                      Spacer(),
+                      SayHelloButton(
+                        onPressed: widget.onSayHiTap,
+                        userName: widget.user.firstName,
+                      ),
+                      // Spacer(),
+                    ],
+                  ),
+                  Positioned(
+                    left: InternalPadding,
+                    top: InternalPadding,
+                    child: RoundedLoadingButton(
+                      child: TextSF(
+                        'Block',
+                        color: Colors.white,
+                        fontSize: TextSF.FontSize - 2,
+                      ),
+                      // controller: _btnController,
+                      height: 30,
+                      width: 60,
+                      // onPressed: onSayHelloPressed,
+                      // color: PrimaryColor,
                     ),
                   ),
-                  // Expanded(
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                    child: TextSF(
-                      StringFormatter().getNameAgeLabel(
-                          widget.user.firstName, widget.user.age),
-                      fontSize: TextSF.FontSize + 4,
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(0, 6, 0, 0),
-                    child: TextSF(
-                      widget.user.distance == 0
-                          ? ''
-                          : '${widget.user.distance} meters',
-                    ),
-                  ),
-                  Spacer(),
-                  Center(
-                    child: ScrollableTextView(
-                      controller: widget.messageEditingController,
-                      withSendButton: true,
-                      onSendPressed: widget.onSendTap,
-                    ),
-                  ),
-                  Spacer(),
-                  SayHelloButton(
-                    onPressed: widget.onSayHiTap,
-                    userName: widget.user.firstName,
-                  ),
-
-                  Spacer(),
+                  Positioned(
+                      right: InternalPadding,
+                      top: InternalPadding,
+                      child: Icon(
+                        Icons.close,
+                      ))
                 ],
               ),
             ),

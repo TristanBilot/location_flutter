@@ -35,47 +35,49 @@ class ScrollableTextView extends StatelessWidget {
     double topPadding = 15;
     double bottomPadding = 15;
 
-    return Stack(
-      children: [
-        Container(
-          width: this.width ?? width,
-          decoration: BoxDecoration(
-            color: Theme.of(context).backgroundColor,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          padding: EdgeInsets.fromLTRB(
-              leftPadding, topPadding, rightPadding, bottomPadding),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxHeight: 55.0,
+    return Container(
+      width: this.width ?? width,
+      child: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).backgroundColor,
+              borderRadius: BorderRadius.circular(10),
             ),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              reverse: true,
-              child: TextField(
-                controller: controller,
-                keyboardType: TextInputType.multiline,
-                maxLines: null, //grow automatically
-                decoration: InputDecoration.collapsed(
-                  hintText: placeholder,
+            padding: EdgeInsets.fromLTRB(
+                leftPadding, topPadding, rightPadding, bottomPadding),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: 55.0,
+              ),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                reverse: true,
+                child: TextField(
+                  controller: controller,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null, //grow automatically
+                  decoration: InputDecoration.collapsed(
+                    hintText: placeholder,
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ]..addAll(!withSendButton
-          ? ([customSendButton] ?? [])
-          : [
-              Padding(
-                padding: EdgeInsets.only(left: width - rightPadding - 22),
-                child: FlatButton(
-                  child: TextSF('Send'),
-                  onPressed: onSendPressed,
-                  highlightColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                ),
-              )
-            ]),
+        ]..addAll(!withSendButton
+            ? ([customSendButton] ?? [])
+            : [
+                Padding(
+                  padding: EdgeInsets.only(left: width - rightPadding - 22),
+                  child: FlatButton(
+                    child: TextSF('Send'),
+                    onPressed: onSendPressed,
+                    highlightColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                  ),
+                )
+              ]),
+      ),
     );
   }
 }
