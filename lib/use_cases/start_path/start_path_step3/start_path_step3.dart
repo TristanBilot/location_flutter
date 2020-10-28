@@ -41,7 +41,7 @@ class StartPathStep3State extends State<StartPathStep3> {
               Container(
                 width: StartPathStep3.flareAnimationSize,
                 height: StartPathStep3.flareAnimationSize,
-                child: FlareActor("assets/earth.flr",
+                child: FlareActor("assets/animations/earth.flr",
                     alignment: Alignment.center,
                     fit: BoxFit.contain,
                     animation: "animation"),

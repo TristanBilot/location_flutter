@@ -56,7 +56,7 @@ class StartPathStep4State extends State<StartPathStep4> {
               Container(
                 width: MediaQuery.of(context).size.width,
                 height: StartPathStep3.flareAnimationSize,
-                child: FlareActor("assets/notif.flr",
+                child: FlareActor("assets/animations/notif.flr",
                     alignment: Alignment.center,
                     fit: BoxFit.contain,
                     animation: "animation"),
