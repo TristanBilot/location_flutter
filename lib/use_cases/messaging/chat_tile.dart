@@ -10,6 +10,8 @@ import 'package:location_project/use_cases/messaging/firestore_chat_entry.dart';
 import 'package:location_project/use_cases/messaging/firestore_message_entry.dart';
 import 'package:location_project/use_cases/messaging/message_page.dart';
 import 'package:location_project/use_cases/messaging/messaging_repository.dart';
+import 'package:location_project/use_cases/start_path/basic_alert.dart';
+import 'package:location_project/use_cases/start_path/basic_alert_button.dart';
 import 'package:location_project/widgets/user_card.dart';
 
 class ChatTile extends StatefulWidget {
@@ -85,6 +87,7 @@ class _ChatTileState extends State<ChatTile> {
     );
   }
 
+  /// Format the text with sent icon with the last message sent.
   Widget _getLastMsgText(
       FirestoreMessageEntry lastMsg, bool isChatEngaged, bool isMsgUnread) {
     final style =
@@ -103,6 +106,42 @@ class _ChatTileState extends State<ChatTile> {
       Text(' ${lastMsg.message}', style: style),
     ]);
   }
+
+  void _onUnmatchPress(String userName, context) {
+    Color cancelButtonColor() {
+      bool isDark =
+          MediaQuery.of(context).platformBrightness == Brightness.dark;
+      return isDark
+          ? Color.fromRGBO(60, 60, 60, 1)
+          : Color.fromRGBO(140, 140, 140, 1);
+    }
+
+    void onCancelPress() => Navigator.of(context).pop();
+
+    void onUnmatchPress() {
+      MessagingReposiory().deleteMessages(widget.chat.chatID);
+      MessagingReposiory().deleteChat(widget.chat.chatID);
+      Database()
+          .deleteUser(widget.chat.requesterID)
+          .then((value) => Navigator.of(context).pop());
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) => BasicAlert(
+        'Are you sure to unmatch $userName?',
+        titleFontSize: 18,
+        titleAlignment: TextAlign.center,
+        contentPadding: EdgeInsets.only(bottom: 10),
+        actions: [
+          BasicAlertButton('CANCEL', onCancelPress, color: cancelButtonColor()),
+          BasicAlertButton('UNMATCH', onUnmatchPress, color: Colors.red[500]),
+        ],
+      ),
+    );
+  }
+
+  void _onSharePress() {}
 
   @override
   Widget build(BuildContext context) {
@@ -134,13 +173,13 @@ class _ChatTileState extends State<ChatTile> {
                         caption: 'Share profile',
                         color: Colors.indigo,
                         icon: Icons.share,
-                        onTap: () => {},
+                        onTap: _onSharePress,
                       ),
                       IconSlideAction(
                         caption: 'Unmatch',
                         color: Colors.red[500],
                         icon: Icons.close,
-                        onTap: () => {},
+                        onTap: () => _onUnmatchPress(user.firstName, context),
                       ),
                     ],
                     child: ListTile(

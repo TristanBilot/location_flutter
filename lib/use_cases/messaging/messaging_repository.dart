@@ -89,6 +89,19 @@ class MessagingReposiory {
         .catchError((e) => print('++++ error in getLastMessage()'));
   }
 
+  /// By default, Firestore does not delete subcollections of collections.
+  /// So we need to delete them manually with a for loop.
+  Future<void> deleteMessages(String chatID) async {
+    _firestore
+        .collection(RootKey)
+        .doc(chatID)
+        .collection(ChatKey)
+        .get()
+        .then((snapshot) {
+      for (DocumentSnapshot doc in snapshot.docs) doc.reference.delete();
+    });
+  }
+
   /// Insert a new message in the chat `chatID`.
   Future<void> newMessage(String chatID, FirestoreMessageEntry msg) async {
     _firestore

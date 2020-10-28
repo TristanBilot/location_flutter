@@ -84,10 +84,10 @@ class StartPathStep3State extends State<StartPathStep3> {
                   'LATER',
                   () => showDialog(
                         context: context,
-                        builder: (context) => BasicAlert(
-                            "Are you sure? ☹️",
-                            "Without your location, you will not be allowed to use the app!",
-                            [
+                        builder: (context) => BasicAlert("Are you sure? ☹️",
+                            content:
+                                "Without your location, you will not be allowed to use the app!",
+                            actions: [
                               BasicAlertButton(
                                   'LATER',
                                   () => Navigator.of(context)

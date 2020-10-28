@@ -4,8 +4,9 @@ import 'package:location_project/widgets/textSF.dart';
 class BasicAlertButton extends StatelessWidget {
   final String text;
   final Function onPressed;
+  final Color color;
 
-  BasicAlertButton(this.text, this.onPressed);
+  BasicAlertButton(this.text, this.onPressed, {this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +14,7 @@ class BasicAlertButton extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Theme.of(context).primaryColor,
+          color: color ?? Theme.of(context).primaryColor,
         ),
         padding: EdgeInsets.fromLTRB(12, 10, 12, 10),
         child: TextSF(
