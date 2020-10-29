@@ -116,79 +116,85 @@ class _MessagePageState extends State<MessagePage> {
   /// Placeholder displayed when the user has requested the chat
   /// and the chat has been accepted by the other participant.
   /// It is only displayed when there is 0 messages yet.
-  Widget get _noMessagesPlaceholder => Column(
-        children: [
-          Spacer(),
-          CachedCircleUserImage(
-            widget.user.pictureURL,
-            size: PlaceholderImageSize,
-          ),
-          Padding(padding: EdgeInsets.all(30)),
-          TextSF(
-            'Engage a discussion with ${widget.user.firstName}!',
-            fontSize: PlaceholderFontSize,
-            align: TextAlign.center,
-          ),
-          Spacer(),
-        ],
+  Widget get _noMessagesPlaceholder => Center(
+        child: Column(
+          children: [
+            Spacer(),
+            CachedCircleUserImage(
+              widget.user.pictureURL,
+              size: PlaceholderImageSize,
+            ),
+            Padding(padding: EdgeInsets.all(30)),
+            TextSF(
+              'Engage a discussion with ${widget.user.firstName}!',
+              fontSize: PlaceholderFontSize,
+              align: TextAlign.center,
+            ),
+            Spacer(),
+          ],
+        ),
       );
 
   /// Placeholder displayed when the requester user has sent
   /// a request to the other participant and the requests
   /// is in a pending state.
-  Widget get _requestWaitingPlaceholder => Column(
-        children: [
-          Spacer(),
-          Container(
-            width: PlaceholderImageSize,
-            height: PlaceholderImageSize,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage("assets/pending.png"),
-                  colorFilter:
-                      ColorFilter.mode(Colors.white54, BlendMode.modulate),
-                  fit: BoxFit.cover),
-              // color: Colors.teal[900],
+  Widget get _requestWaitingPlaceholder => Center(
+        child: Column(
+          children: [
+            Spacer(),
+            Container(
+              width: PlaceholderImageSize,
+              height: PlaceholderImageSize,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage("assets/pending.png"),
+                    colorFilter:
+                        ColorFilter.mode(Colors.white54, BlendMode.modulate),
+                    fit: BoxFit.cover),
+                // color: Colors.teal[900],
+              ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(30),
-            child: TextSF(
-              'A request had been sent to ${widget.user.firstName}!',
-              fontSize: PlaceholderFontSize,
-              align: TextAlign.center,
+            Padding(
+              padding: EdgeInsets.all(30),
+              child: TextSF(
+                'A request had been sent to ${widget.user.firstName}!',
+                fontSize: PlaceholderFontSize,
+                align: TextAlign.center,
+              ),
             ),
-          ),
-          Spacer(),
-        ],
+            Spacer(),
+          ],
+        ),
       );
 
   /// Placeholder displayed when the requested user receives
   /// a request and should choose to accept or not.
-  Widget get _requestInvitationPlaceholder => Column(
-        children: [
-          Spacer(),
-          CachedCircleUserImage(
-            widget.user.pictureURL,
-            size: PlaceholderImageSize,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 20, bottom: 40),
-            child: TextSF(
-              '${widget.user.firstName} wants to talk with you.',
-              fontSize: PlaceholderFontSize,
+  Widget get _requestInvitationPlaceholder => Center(
+        child: Column(
+          children: [
+            Spacer(),
+            CachedCircleUserImage(
+              widget.user.pictureURL,
+              size: PlaceholderImageSize,
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              BasicButton('DENY', onPressed: _onRequestDenied),
-              SizedBox(width: 20),
-              BasicButton('ACCEPT', onPressed: _onRequestAccepted),
-            ],
-          ),
-          Spacer(),
-        ],
+            Padding(
+              padding: const EdgeInsets.only(top: 20, bottom: 40),
+              child: TextSF(
+                '${widget.user.firstName} wants to talk with you.',
+                fontSize: PlaceholderFontSize,
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                BasicButton('DENY', onPressed: _onRequestDenied),
+                SizedBox(width: 20),
+                BasicButton('ACCEPT', onPressed: _onRequestAccepted),
+              ],
+            ),
+            Spacer(),
+          ],
+        ),
       );
 
   /// When a requested user denies a request, delete the chat

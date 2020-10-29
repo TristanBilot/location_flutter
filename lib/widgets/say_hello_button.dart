@@ -1,11 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:location_project/themes/light_theme.dart';
 import 'package:location_project/widgets/textSF.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 class SayHelloButton extends StatefulWidget {
+  static const Height = 37.0;
+
   final String text;
   final String userName;
   final Future<void> Function() onPressed;
@@ -34,6 +37,7 @@ class _SayHelloButtonState extends State<SayHelloButton> {
     await widget.onPressed();
     setStateIfMounted(() {
       _btnController.success();
+      HapticFeedback.mediumImpact();
       Timer(Duration(milliseconds: 1500),
           () => setStateIfMounted(() => _helloAlreadySent = true));
     });
@@ -48,31 +52,35 @@ class _SayHelloButtonState extends State<SayHelloButton> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      AnimatedOpacity(
-        opacity: _helloAlreadySent ? 1 : 0,
-        duration: Duration(milliseconds: widget.animationTime),
-        child: TextSF(
-          getHelloAlreadySentText,
-          align: TextAlign.center,
-        ),
-      ),
-      AnimatedOpacity(
-        opacity: _helloAlreadySent ? 0 : 1,
-        duration: Duration(milliseconds: widget.animationTime),
-        child: RoundedLoadingButton(
-          child: TextSF(
-            widget.text,
-            color: Colors.white,
-            fontSize: TextSF.FontSize + 2,
+    return Stack(
+      children: [
+        AnimatedOpacity(
+          opacity: _helloAlreadySent ? 1 : 0,
+          duration: Duration(milliseconds: widget.animationTime),
+          child: Center(
+            child: TextSF(
+              getHelloAlreadySentText,
+              align: TextAlign.center,
+            ),
           ),
-          controller: _btnController,
-          height: 37,
-          width: 110,
-          onPressed: onSayHelloPressed,
-          color: PrimaryColor,
         ),
-      ),
-    ]);
+        AnimatedOpacity(
+          opacity: _helloAlreadySent ? 0 : 1,
+          duration: Duration(milliseconds: widget.animationTime),
+          child: RoundedLoadingButton(
+            child: TextSF(
+              widget.text,
+              color: Colors.white,
+              fontSize: TextSF.FontSize + 2,
+            ),
+            controller: _btnController,
+            height: SayHelloButton.Height,
+            width: 110,
+            onPressed: onSayHelloPressed,
+            color: PrimaryColor,
+          ),
+        ),
+      ],
+    );
   }
 }

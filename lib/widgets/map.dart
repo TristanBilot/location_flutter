@@ -100,7 +100,6 @@ class MapState extends State<Map> with WidgetsBindingObserver {
         _markers.clear();
         // may be faster but need 2 times checkinf for unliked
         // users in the code, here for first load and in the build()
-        // if (!_store.isUserUnliked(user.id)) {
         users.forEach((user) {
           _markers.add(UserMarker(
               user: user,
@@ -108,7 +107,6 @@ class MapState extends State<Map> with WidgetsBindingObserver {
               position: LatLng(user.coord[0], user.coord[1]),
               onTap: () => _showUserCard(context, user)));
         });
-        // }
       });
     });
   }

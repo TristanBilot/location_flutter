@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:location_project/widgets/textSF.dart';
 
 class ScrollableTextView extends StatelessWidget {
+  static const Height = 55.0;
+
   final String placeholder;
   final TextEditingController controller;
   final double width;
@@ -48,7 +50,7 @@ class ScrollableTextView extends StatelessWidget {
                 leftPadding, topPadding, rightPadding, bottomPadding),
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                maxHeight: 55.0,
+                maxHeight: ScrollableTextView.Height,
               ),
               child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,

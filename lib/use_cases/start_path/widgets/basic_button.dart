@@ -9,12 +9,14 @@ class BasicButton extends StatefulWidget {
   final bool enabled;
   final Function onPressed;
   final double width;
+  final double fontsSize;
 
   BasicButton(
     this.text, {
     this.enabled = true,
     this.onPressed,
     this.width,
+    this.fontsSize = FontSize,
   });
 
   @override
@@ -41,7 +43,7 @@ class _BasicButtonState extends State<BasicButton> {
           child: TextSF(
             widget.text,
             align: TextAlign.center,
-            fontSize: BasicButton.FontSize,
+            fontSize: widget.fontsSize,
             fontWeight: BasicButton.Weight,
             color: widget.enabled ? Colors.white : Colors.white54,
           ),

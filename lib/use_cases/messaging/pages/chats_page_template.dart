@@ -6,17 +6,20 @@ import 'package:location_project/use_cases/messaging/chat_tile.dart';
 import 'package:location_project/use_cases/messaging/firestore_chat_entry.dart';
 import 'package:location_project/use_cases/messaging/messaging_repository.dart';
 import 'package:location_project/widgets/basic_cupertino_text_field.dart';
+import 'package:location_project/widgets/textSF.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import '../../stores/extensions.dart';
+import '../../../stores/extensions.dart';
 
-class ChatsPage extends StatefulWidget {
-  ChatsPage();
+class ChatsPageTemplate extends StatefulWidget {
+  final Function(List<dynamic>) filter;
+
+  ChatsPageTemplate(this.filter);
 
   @override
-  _ChatsPageState createState() => _ChatsPageState();
+  _ChatsPageTemplateState createState() => _ChatsPageTemplateState();
 }
 
-class _ChatsPageState extends State<ChatsPage> {
+class _ChatsPageTemplateState extends State<ChatsPageTemplate> {
   Stream<QuerySnapshot> _chatsStream;
   RefreshController _refreshController;
   TextEditingController _messageEditingController;
@@ -77,6 +80,13 @@ class _ChatsPageState extends State<ChatsPage> {
     Future.delayed(Duration(seconds: 1), () => _shouldRefreshCache = false);
   }
 
+  Widget get _noChatsPlaceholder => Center(
+          child: TextSF(
+        'No discussions yet.',
+        fontSize: 18,
+        color: Colors.grey,
+      ));
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -109,22 +119,25 @@ class _ChatsPageState extends State<ChatsPage> {
                 if (snapshot.hasData) {
                   final sortedChats =
                       _sortSnapshotsByMostRecent(snapshot.data.documents);
-                  final chats = _filterStreamByName(
+                  final filteredChats = _filterStreamByName(
                       sortedChats, _messageEditingController.text);
+                  final chats = widget.filter(filteredChats);
                   return SmartRefresher(
                     enablePullDown: true,
                     controller: _refreshController,
                     onRefresh: _onRefresh,
                     header: WaterDropMaterialHeader(), //WaterDropHeader
-                    child: ListView.builder(
-                        itemCount: chats.length,
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          return ChatTile(
-                              chat: FirestoreChatEntry.fromFirestoreObject(
-                                  chats[index].data()),
-                              shouldRefreshCache: _shouldRefreshCache);
-                        }),
+                    child: chats.length != 0
+                        ? ListView.builder(
+                            itemCount: chats.length,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              return ChatTile(
+                                  chat: FirestoreChatEntry.fromFirestoreObject(
+                                      chats[index].data()),
+                                  shouldRefreshCache: _shouldRefreshCache);
+                            })
+                        : _noChatsPlaceholder,
                   );
                 }
                 return Container();

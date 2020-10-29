@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:location_project/use_cases/messaging/chats_page.dart';
+import 'package:location_project/use_cases/messaging/pages/chats_page_factory.dart';
+import 'package:location_project/use_cases/messaging/pages/chats_page_template.dart';
 import 'package:location_project/widgets/textSF.dart';
 
 class MessagingTabsPage extends StatefulWidget {
@@ -45,8 +46,8 @@ class _MessagingTabsPageState extends State<MessagingTabsPage>
               labelColor: Theme.of(context).textTheme.headline6.color,
               indicatorColor: Theme.of(context).primaryColor,
               tabs: [
-                TextSF('DISCUSSION'),
-                TextSF('REQUEST'),
+                TextSF('DISCUSSIONS'),
+                TextSF('REQUESTS'),
                 TextSF('VIEWS'),
               ],
             ),
@@ -55,8 +56,8 @@ class _MessagingTabsPageState extends State<MessagingTabsPage>
         ),
         body: TabBarView(
           children: [
-            ChatsPage(),
-            Icon(Icons.directions_transit),
+            ChatsPageFactory().makeChatsPage(),
+            ChatsPageFactory().makeRequestsPage(),
             Icon(Icons.directions_bike),
           ],
         ),

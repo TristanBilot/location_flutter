@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:location_project/controllers/messaging_controller.dart';
-import 'package:location_project/repositories/user_repository.dart';
-import 'package:location_project/stores/database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/messaging/firestore_chat_entry.dart';
 import 'package:location_project/use_cases/messaging/message_page.dart';
@@ -11,6 +11,7 @@ import 'package:location_project/use_cases/messaging/messaging_repository.dart';
 import 'package:location_project/widgets/user_map_card_content.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import '../models/user.dart';
+import '../stores/extensions.dart';
 
 class UserMapCard extends StatefulWidget {
   final User user;
@@ -100,10 +101,24 @@ class _UserCardState extends State<UserMapCard> {
     User blockedUser = widget.user;
     UserStore().addBlockedUser(blockedUser.id).then((_) async {
       _blockButtonController.success();
+      HapticFeedback.mediumImpact();
       await widget.fetchAreaFunction();
       await Future.delayed(Duration(milliseconds: 200));
       Navigator.of(context).pop();
     });
+  }
+
+  Future<List<DocumentSnapshot>> _fetchChatInfo(String otherUserID) async {
+    Stopwatch stopwatch = new Stopwatch()..start();
+    String id = UserStore().user.id;
+    String chatID1 = MessagingReposiory.getChatID(id, otherUserID);
+    String chatID2 = MessagingReposiory.getChatID(otherUserID, id);
+    final chat1 = MessagingReposiory().getChat(chatID1);
+    final chat2 = MessagingReposiory().getChat(chatID2);
+    await Future.wait([chat1, chat2]);
+    print(
+        '_fetchChatInfo($id) fetched in ${stopwatch.elapsed.inMilliseconds}ms');
+    return Future.wait([chat1, chat2]);
   }
 
   @override
@@ -120,13 +135,27 @@ class _UserCardState extends State<UserMapCard> {
               EdgeInsets.only(bottom: MediaQuery.of(context).size.height / 5),
           child: Container(
             height: 400,
-            child: UserMapCardContent(
-              user: widget.user,
-              onSendTap: _sendMessage,
-              onSayHiTap: _sendHelloNotif,
-              onBlockTap: () => _blockUser(context),
-              messageEditingController: _messageEditingController,
-              blockButtonController: _blockButtonController,
+            child: FutureBuilder(
+              future: _fetchChatInfo(widget.user.id),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  final chatIfExists =
+                      snapshot.data[0].data() ?? snapshot.data[1].data();
+                  final chatEntryIfExists = chatIfExists == null
+                      ? null
+                      : FirestoreChatEntry.fromFirestoreObject(chatIfExists);
+                  return UserMapCardContent(
+                    user: widget.user,
+                    onSendTap: _sendMessage,
+                    onSayHiTap: _sendHelloNotif,
+                    onBlockTap: () => _blockUser(context),
+                    messageEditingController: _messageEditingController,
+                    blockButtonController: _blockButtonController,
+                    chatEntryIfExists: chatEntryIfExists,
+                  );
+                }
+                return Container();
+              },
             ),
           ),
         ),
