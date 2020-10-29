@@ -5,6 +5,7 @@ import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/messaging/chat_tile.dart';
 import 'package:location_project/use_cases/messaging/firestore_chat_entry.dart';
 import 'package:location_project/use_cases/messaging/messaging_repository.dart';
+import 'package:location_project/use_cases/messaging/pages/chats_page_type.dart';
 import 'package:location_project/widgets/basic_cupertino_text_field.dart';
 import 'package:location_project/widgets/textSF.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -12,8 +13,9 @@ import '../../../stores/extensions.dart';
 
 class ChatsPageTemplate extends StatefulWidget {
   final Function(List<dynamic>) filter;
+  final ChatsPageType chatsType;
 
-  ChatsPageTemplate(this.filter);
+  ChatsPageTemplate(this.filter, this.chatsType);
 
   @override
   _ChatsPageTemplateState createState() => _ChatsPageTemplateState();
@@ -133,9 +135,11 @@ class _ChatsPageTemplateState extends State<ChatsPageTemplate> {
                             shrinkWrap: true,
                             itemBuilder: (context, index) {
                               return ChatTile(
-                                  chat: FirestoreChatEntry.fromFirestoreObject(
-                                      chats[index].data()),
-                                  shouldRefreshCache: _shouldRefreshCache);
+                                chat: FirestoreChatEntry.fromFirestoreObject(
+                                    chats[index].data()),
+                                shouldRefreshCache: _shouldRefreshCache,
+                                chatsType: widget.chatsType,
+                              );
                             })
                         : _noChatsPlaceholder,
                   );

@@ -56,9 +56,9 @@ class _MessagingTabsPageState extends State<MessagingTabsPage>
         ),
         body: TabBarView(
           children: [
-            ChatsPageFactory().makeChatsPage(),
+            ChatsPageFactory().makeDiscussionsPage(),
             ChatsPageFactory().makeRequestsPage(),
-            Icon(Icons.directions_bike),
+            ChatsPageFactory().makeViewsPage(),
           ],
         ),
       ),

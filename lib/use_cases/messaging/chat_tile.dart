@@ -6,21 +6,23 @@ import 'package:location_project/stores/database.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/themes/light_theme.dart';
 import 'package:location_project/use_cases/messaging/cahed_circle_user_image_with_active_status.dart';
+import 'package:location_project/use_cases/messaging/chat_tile_slide_actions_delegate.dart';
 import 'package:location_project/use_cases/messaging/firestore_chat_entry.dart';
 import 'package:location_project/use_cases/messaging/firestore_message_entry.dart';
 import 'package:location_project/use_cases/messaging/message_page.dart';
 import 'package:location_project/use_cases/messaging/messaging_repository.dart';
-import 'package:location_project/use_cases/start_path/basic_alert.dart';
-import 'package:location_project/use_cases/start_path/basic_alert_button.dart';
+import 'package:location_project/use_cases/messaging/pages/chats_page_type.dart';
 import 'package:location_project/widgets/user_card.dart';
 
 class ChatTile extends StatefulWidget {
   final FirestoreChatEntry chat;
-  final shouldRefreshCache;
+  final bool shouldRefreshCache;
+  final ChatsPageType chatsType;
 
   const ChatTile({
     @required this.chat,
     @required this.shouldRefreshCache,
+    @required this.chatsType,
   });
 
   @override
@@ -107,41 +109,19 @@ class _ChatTileState extends State<ChatTile> {
     ]);
   }
 
-  void _onUnmatchPress(String userName, context) {
-    Color cancelButtonColor() {
-      bool isDark =
-          MediaQuery.of(context).platformBrightness == Brightness.dark;
-      return isDark
-          ? Color.fromRGBO(60, 60, 60, 1)
-          : Color.fromRGBO(140, 140, 140, 1);
+  List<Widget> _getSlideActions(User user, context) {
+    switch (widget.chatsType) {
+      case ChatsPageType.Discussions:
+        return ChatTileSlideActionsDelegate()
+            .discussionActions(widget, user, context);
+      case ChatsPageType.Requests:
+        return ChatTileSlideActionsDelegate()
+            .requestsActions(widget, user, context);
+      case ChatsPageType.Views:
+        return ChatTileSlideActionsDelegate()
+            .viewsActions(widget, user, context);
     }
-
-    void onCancelPress() => Navigator.of(context).pop();
-
-    void onUnmatchPress() {
-      MessagingReposiory().deleteMessages(widget.chat.chatID);
-      MessagingReposiory().deleteChat(widget.chat.chatID);
-      Database()
-          .deleteUser(widget.chat.requesterID)
-          .then((value) => Navigator.of(context).pop());
-    }
-
-    showDialog(
-      context: context,
-      builder: (context) => BasicAlert(
-        'Are you sure to unmatch $userName?',
-        titleFontSize: 18,
-        titleAlignment: TextAlign.center,
-        contentPadding: EdgeInsets.only(bottom: 10),
-        actions: [
-          BasicAlertButton('CANCEL', onCancelPress, color: cancelButtonColor()),
-          BasicAlertButton('UNMATCH', onUnmatchPress, color: Colors.red[500]),
-        ],
-      ),
-    );
   }
-
-  void _onSharePress() {}
 
   @override
   Widget build(BuildContext context) {
@@ -168,20 +148,7 @@ class _ChatTileState extends State<ChatTile> {
                   Slidable(
                     actionPane: SlidableDrawerActionPane(),
                     actionExtentRatio: 0.25,
-                    secondaryActions: [
-                      IconSlideAction(
-                        caption: 'Share profile',
-                        color: Colors.indigo,
-                        icon: Icons.share,
-                        onTap: _onSharePress,
-                      ),
-                      IconSlideAction(
-                        caption: 'Unmatch',
-                        color: Colors.red[500],
-                        icon: Icons.close,
-                        onTap: () => _onUnmatchPress(user.firstName, context),
-                      ),
-                    ],
+                    secondaryActions: _getSlideActions(user, context),
                     child: ListTile(
                       title: Row(
                         children: [
