@@ -134,11 +134,20 @@ class _ChatsPageTemplateState extends State<ChatsPageTemplate> {
                             itemCount: chats.length,
                             shrinkWrap: true,
                             itemBuilder: (context, index) {
+                              bool isFirstIndex = index == 0;
+                              bool isLimitBetweenRequestedAndRequests = index ==
+                                  chats.indexWhere((chat) =>
+                                      (chat.data()[ChatField.RequesterID.value]
+                                          as String) ==
+                                      UserStore().user.id);
                               return ChatTile(
                                 chat: FirestoreChatEntry.fromFirestoreObject(
                                     chats[index].data()),
                                 shouldRefreshCache: _shouldRefreshCache,
                                 chatsType: widget.chatsType,
+                                isFirstIndex: isFirstIndex,
+                                isLimitBetweenRequestedAndRequests:
+                                    isLimitBetweenRequestedAndRequests,
                               );
                             })
                         : _noChatsPlaceholder,

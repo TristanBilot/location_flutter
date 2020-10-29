@@ -12,6 +12,7 @@ import 'package:location_project/use_cases/messaging/firestore_message_entry.dar
 import 'package:location_project/use_cases/messaging/message_page.dart';
 import 'package:location_project/use_cases/messaging/messaging_repository.dart';
 import 'package:location_project/use_cases/messaging/pages/chats_page_type.dart';
+import 'package:location_project/widgets/textSF.dart';
 import 'package:location_project/widgets/user_card.dart';
 
 class ChatTile extends StatefulWidget {
@@ -19,10 +20,19 @@ class ChatTile extends StatefulWidget {
   final bool shouldRefreshCache;
   final ChatsPageType chatsType;
 
+  /// Should display a section title for incoming requests on the first tile
+  final bool isFirstIndex;
+
+  /// Should displau a section title for requests sent when the first
+  /// requester tile is reached.
+  final bool isLimitBetweenRequestedAndRequests;
+
   const ChatTile({
     @required this.chat,
     @required this.shouldRefreshCache,
     @required this.chatsType,
+    @required this.isFirstIndex,
+    @required this.isLimitBetweenRequestedAndRequests,
   });
 
   @override
@@ -123,6 +133,34 @@ class _ChatTileState extends State<ChatTile> {
     }
   }
 
+  Widget _getSectionTitleIfNeeded(context) {
+    if (!widget.isFirstIndex && !widget.isLimitBetweenRequestedAndRequests)
+      return SizedBox();
+    String text = '';
+    if (widget.isLimitBetweenRequestedAndRequests)
+      text = 'Requests';
+    else if (widget.isFirstIndex) text = 'Invitations';
+    bool isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    Color backgroundColor = isDark
+        ? Theme.of(context).primaryColor
+        : Color.fromRGBO(240, 240, 240, 1);
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 10),
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: backgroundColor,
+        ),
+        child: TextSF(
+          text,
+          fontSize: 13,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -142,69 +180,75 @@ class _ChatTileState extends State<ChatTile> {
           // if (!Database().keyExists(user.id)) Database().putUser(user);
           return GestureDetector(
             onTap: () => _onTileTapped(context, user, isChatEngaged, msg),
-            child: Card(
-              child: Column(
-                children: [
-                  Slidable(
-                    actionPane: SlidableDrawerActionPane(),
-                    actionExtentRatio: 0.25,
-                    secondaryActions: _getSlideActions(user, context),
-                    child: ListTile(
-                      title: Row(
-                        children: [
-                          Expanded(
-                            child: RichText(
-                              text: TextSpan(
-                                style: TextStyle(
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .headline6
-                                        .color),
-                                children: [
-                                  TextSpan(
-                                    text: '${user.firstName}',
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _getSectionTitleIfNeeded(context),
+                Card(
+                  child: Column(
+                    children: [
+                      Slidable(
+                        actionPane: SlidableDrawerActionPane(),
+                        actionExtentRatio: 0.25,
+                        secondaryActions: _getSlideActions(user, context),
+                        child: ListTile(
+                          title: Row(
+                            children: [
+                              Expanded(
+                                child: RichText(
+                                  text: TextSpan(
                                     style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: isMsgUnread
-                                            ? unreadWeight
-                                            : FontWeight.w500),
+                                        color: Theme.of(context)
+                                            .textTheme
+                                            .headline6
+                                            .color),
+                                    children: [
+                                      TextSpan(
+                                        text: '${user.firstName}',
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: isMsgUnread
+                                                ? unreadWeight
+                                                : FontWeight.w500),
+                                      ),
+                                      TextSpan(
+                                        text: '  -  ${user.distance}m',
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: readWeight,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  TextSpan(
-                                    text: '  -  ${user.distance}m',
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: readWeight,
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
-                            ),
+                              isMsgUnread
+                                  ? Container(
+                                      height: 10,
+                                      width: 10,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: PrimaryColor,
+                                        // border: Border.all(color: Colors.white, width: 2),
+                                      ),
+                                    )
+                                  : SizedBox(),
+                            ],
                           ),
-                          isMsgUnread
-                              ? Container(
-                                  height: 10,
-                                  width: 10,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: PrimaryColor,
-                                    // border: Border.all(color: Colors.white, width: 2),
-                                  ),
-                                )
-                              : SizedBox(),
-                        ],
+                          subtitle:
+                              _getLastMsgText(msg, isChatEngaged, isMsgUnread),
+                          trailing: Icon(Icons.chevron_right),
+                          leading: CachedCircleUserImageWithActiveStatus(
+                            pictureURL: user.pictureURL,
+                            isActive: user.settings.connected,
+                            onTapped: () => UserCard(context, user).show(),
+                          ),
+                        ),
                       ),
-                      subtitle:
-                          _getLastMsgText(msg, isChatEngaged, isMsgUnread),
-                      trailing: Icon(Icons.chevron_right),
-                      leading: CachedCircleUserImageWithActiveStatus(
-                        pictureURL: user.pictureURL,
-                        isActive: user.settings.connected,
-                        onTapped: () => UserCard(context, user).show(),
-                      ),
-                    ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           );
         }
