@@ -4,6 +4,7 @@ import 'package:location_project/caches/location_cache.dart';
 import 'package:location_project/models/firestore_user_entry.dart';
 import 'package:location_project/models/user_settings.dart';
 import 'package:location_project/stores/database.dart';
+import 'package:location_project/stores/user_store.dart';
 import 'dart:io';
 import 'image_repository.dart';
 import '../models/user.dart';
@@ -40,6 +41,8 @@ class UserRepository {
           user.age,
           geoPoint,
           UserSettings.DefaultUserSettings,
+          user.blockedUserIDs,
+          user.userIDsWhoBlockedMe,
         ).toFirestoreObject());
     File userPicture = await _imageRepo.urlToFile(user.pictureURL);
     return await _imageRepo.uploadFile(
@@ -59,6 +62,37 @@ class UserRepository {
   Future<void> updateUserValue(String id, UserField key, dynamic value) async {
     await _firestore.doc([RootKey, id].join('/')).update({
       key.value: value,
+    });
+  }
+
+  /// Append a value in a collection of a user field.
+  Future<void> addValueToCollection(
+      String id, UserField field, dynamic value) async {
+    await _firestore
+        .collection(RootKey)
+        .doc(id)
+        .collection(field.value)
+        .add({value: true});
+  }
+
+  /// Handle when the `UserIDsWhoBlockedMe` entry is modified,
+  /// so when a block user ID is added to this entry, the map
+  /// will be refreshed so that the block user not see the user who
+  /// blocked him.
+  /// The user store is updated before refreshing the area to
+  /// not diplay this user.
+  Future<void> listenToBlockedUsersEvents(
+      String id, Function fetchAreaFromMap) async {
+    _firestore
+        .collection(RootKey)
+        .doc(id)
+        .collection(UserField.UserIDsWhoBlockedMe.value)
+        .snapshots()
+        .listen((event) {
+      if (event.docs.isEmpty) return;
+      final userIDToBlock = event.docs.first.data().keys.first;
+      UserStore().addLocalUserWhoBlockMe(userIDToBlock);
+      fetchAreaFromMap();
     });
   }
 

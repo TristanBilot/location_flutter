@@ -59,6 +59,8 @@ class UserMockRepository {
           AgeMock,
           geoPoint,
           UserSettings.DefaultUserSettings,
+          List<String>(),
+          List<String>(),
         ).toFirestoreObject());
     final ext = Store.defaultProfilePictureExtension;
     final assetImage = await ImageRepository()

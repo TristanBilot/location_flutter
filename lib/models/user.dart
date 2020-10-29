@@ -28,6 +28,8 @@ enum UserField {
   ShowMyProfile,
   ShowMyDistance,
   Connected,
+  BlockedUserIDs,
+  UserIDsWhoBlockedMe,
 }
 
 @HiveType(typeId: 0)
@@ -53,6 +55,8 @@ class User extends HiveObject {
   Gender gender;
   @HiveField(9)
   UserSettings settings;
+  List<String> blockedUserIDs;
+  List<String> userIDsWhoBlockedMe;
 
   User._();
 
@@ -67,6 +71,8 @@ class User extends HiveObject {
     this.age,
     this.gender,
     this.settings,
+    this.blockedUserIDs,
+    this.userIDsWhoBlockedMe,
   ) {
     this.id = email;
   }
@@ -109,6 +115,15 @@ class User extends HiveObject {
     final gender =
         GenderValueAdapter().stringToGender(data[UserField.Gender.value]);
     final age = data[UserField.Age.value];
+    // By default, this entry does not exists in Firestore, so replace by
+    // empty array if not exists.
+    final blockedUserIDs = data[UserField.BlockedUserIDs.value] != null
+        ? List<String>.from(data[UserField.BlockedUserIDs.value])
+        : List<String>();
+    final userIDsWhoBlockedMe =
+        data[UserField.UserIDsWhoBlockedMe.value] != null
+            ? List<String>.from(data[UserField.UserIDsWhoBlockedMe.value])
+            : List<String>();
 
     // Use cache for images if withoutImageFetching is true.
     // This part take lot of time to fetch.
@@ -123,7 +138,7 @@ class User extends HiveObject {
       pictureURL = await _imageRepo.getPictureDownloadURL(snapshot.id);
     }
     User user = User(snapshot.id, firstName, lastName, coord, icon, pictureURL,
-        distance, age, gender, settings);
+        distance, age, gender, settings, blockedUserIDs, userIDsWhoBlockedMe);
     // Store the user fetched from firestore to the Database cache.
     if (!withoutImageFetching) Database().putUser(user);
     return user;

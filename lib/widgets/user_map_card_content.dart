@@ -13,13 +13,17 @@ class UserMapCardContent extends StatefulWidget {
   final User user;
   final Function onSendTap;
   final Function onSayHiTap;
+  final Function onBlockTap;
   final TextEditingController messageEditingController;
+  final RoundedLoadingButtonController blockButtonController;
 
   UserMapCardContent({
     @required this.user,
     @required this.onSendTap,
     @required this.onSayHiTap,
+    @required this.onBlockTap,
     @required this.messageEditingController,
+    @required this.blockButtonController,
   });
 
   @override
@@ -96,23 +100,26 @@ class _UserMapCardContentState extends State<UserMapCardContent> {
                     left: InternalPadding,
                     top: InternalPadding,
                     child: RoundedLoadingButton(
+                      controller: widget.blockButtonController,
+                      onPressed: widget.onBlockTap,
                       child: TextSF(
                         'Block',
-                        color: Colors.white,
-                        fontSize: TextSF.FontSize - 2,
+                        fontSize: 12,
                       ),
-                      // controller: _btnController,
                       height: 30,
                       width: 60,
-                      // onPressed: onSayHelloPressed,
-                      // color: PrimaryColor,
+                      color: Theme.of(context).backgroundColor,
+                      valueColor: Theme.of(context).textTheme.headline6.color,
                     ),
                   ),
                   Positioned(
                       right: InternalPadding,
                       top: InternalPadding,
-                      child: Icon(
-                        Icons.close,
+                      child: GestureDetector(
+                        onTap: () => Navigator.of(context).pop(),
+                        child: Icon(
+                          Icons.close,
+                        ),
                       ))
                 ],
               ),

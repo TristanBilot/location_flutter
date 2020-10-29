@@ -85,4 +85,20 @@ class UserStore extends ChangeNotifier {
     await _repo.updateUserValue(_user.id, UserField.Connected, val);
     notifyListeners();
   }
+
+  Future<void> addBlockedUser(String blockId) async {
+    _user.blockedUserIDs.add(blockId);
+    await _repo.addValueToCollection(
+        _user.id, UserField.BlockedUserIDs, blockId);
+    await _repo.addValueToCollection(
+        blockId, UserField.UserIDsWhoBlockedMe, _user.id);
+    notifyListeners();
+  }
+
+  /// Update locally the people to block on the map when
+  /// an event "a user block me" is received in the UserRepository.
+  /// Mandatory to update the data before refresh the map.
+  void addLocalUserWhoBlockMe(String userIDWhoBlockedMe) {
+    UserStore().user.userIDsWhoBlockedMe.add(userIDWhoBlockedMe);
+  }
 }

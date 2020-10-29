@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:location_project/models/user_settings.dart';
 import 'package:location_project/repositories/user_local_repository.dart';
+import 'package:location_project/stores/database.dart';
 import 'package:location_project/stores/store.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'dart:convert';
@@ -109,6 +110,8 @@ class AuthRepository {
       null,
       null,
       UserSettings.DefaultUserSettings,
+      List<String>(),
+      List<String>(),
     );
 
     final hasPicture = !data['picture']['data']['is_silhouette'];

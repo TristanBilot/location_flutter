@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:location_project/controllers/messaging_controller.dart';
+import 'package:location_project/repositories/user_repository.dart';
+import 'package:location_project/stores/database.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/messaging/firestore_chat_entry.dart';
 import 'package:location_project/use_cases/messaging/message_page.dart';
 import 'package:location_project/use_cases/messaging/message_sender.dart';
 import 'package:location_project/use_cases/messaging/messaging_repository.dart';
 import 'package:location_project/widgets/user_map_card_content.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 import '../models/user.dart';
 
 class UserMapCard extends StatefulWidget {
   final User user;
+  final Future<void> Function() fetchAreaFunction;
 
-  UserMapCard(this.user);
+  UserMapCard(
+    this.user,
+    this.fetchAreaFunction,
+  );
 
   static _UserCardState of(BuildContext context) =>
       context.findAncestorStateOfType<_UserCardState>();
@@ -24,11 +31,13 @@ class UserMapCard extends StatefulWidget {
 class _UserCardState extends State<UserMapCard> {
   TextEditingController _messageEditingController;
   MessagingController _messagingController;
+  RoundedLoadingButtonController _blockButtonController;
 
   @override
   void initState() {
     _messageEditingController = TextEditingController();
     _messagingController = MessagingController();
+    _blockButtonController = RoundedLoadingButtonController();
     super.initState();
   }
 
@@ -86,6 +95,17 @@ class _UserCardState extends State<UserMapCard> {
     // await MessagingController().sendAndRetrieveMessage();
   }
 
+  /// Action when the user blocks another user on the map.
+  Future<void> _blockUser(context) async {
+    User blockedUser = widget.user;
+    UserStore().addBlockedUser(blockedUser.id).then((_) async {
+      _blockButtonController.success();
+      await widget.fetchAreaFunction();
+      await Future.delayed(Duration(milliseconds: 200));
+      Navigator.of(context).pop();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // To dismiss keyboard.
@@ -104,7 +124,9 @@ class _UserCardState extends State<UserMapCard> {
               user: widget.user,
               onSendTap: _sendMessage,
               onSayHiTap: _sendHelloNotif,
+              onBlockTap: () => _blockUser(context),
               messageEditingController: _messageEditingController,
+              blockButtonController: _blockButtonController,
             ),
           ),
         ),

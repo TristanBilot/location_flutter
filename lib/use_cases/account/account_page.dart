@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:location_project/repositories/auth_repository.dart';
+import 'package:location_project/repositories/user_mock_repository.dart';
 import 'package:location_project/stores/routes.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/account/widgets/account_list_tile.dart';
@@ -219,11 +220,11 @@ class _AccountPageState extends State<AccountPage>
                         'DELETE MY ACCOUNT',
                         color: Colors.red[500],
                         onPressed: () {
-                          // UserMockRepository().putParisDataset();
-                          // UserMockRepository().putCarrieresDataset();
-                          MessagingMockRepository().insertChatMock().then(
-                              (value) => MessagingMockRepository()
-                                  .insertMessageMock());
+                          UserMockRepository().putParisDataset();
+                          UserMockRepository().putCarrieresDataset();
+                          // MessagingMockRepository().insertChatMock().then(
+                          //     (value) => MessagingMockRepository()
+                          //         .insertMessageMock());
                         },
                       ),
                       Padding(

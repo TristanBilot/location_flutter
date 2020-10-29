@@ -8,7 +8,8 @@ import 'package:location_project/caches/location_cache.dart';
 import 'package:location_project/controllers/location_controller.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/repositories/area_fetching_repository.dart';
-import 'package:location_project/stores/map_store.dart';
+import 'package:location_project/repositories/user_repository.dart';
+import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/widgets/user_map_card.dart';
 
 import '../stores/conf.dart';
@@ -23,7 +24,6 @@ class Map extends StatefulWidget {
 class MapState extends State<Map> with WidgetsBindingObserver {
   Set<UserMarker> _markers;
   Set<Circle> _circles;
-  MapStore _store;
 
   Completer<GoogleMapController> _controller;
   AreaFetchingRepository _areaFetcher;
@@ -32,7 +32,6 @@ class MapState extends State<Map> with WidgetsBindingObserver {
     _markers = {};
     _controller = Completer();
     _areaFetcher = AreaFetchingRepository();
-    _store = MapStore();
   }
 
   String _darkMapStyle;
@@ -43,8 +42,16 @@ class MapState extends State<Map> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     LocationController().handleLocationIfNeeded();
+    _handleBlockEvents();
 
     _loadMapStyles().then((_) => _setMapStyle());
+  }
+
+  /// Used to handle when a user block the logged user and
+  /// then refresh the page to not see the user on the map
+  void _handleBlockEvents() {
+    UserRepository()
+        .listenToBlockedUsersEvents(UserStore().user.id, _fetchUsersAroundMe);
   }
 
   Future _loadMapStyles() async {
@@ -99,11 +106,7 @@ class MapState extends State<Map> with WidgetsBindingObserver {
               user: user,
               icon: user.icon,
               position: LatLng(user.coord[0], user.coord[1]),
-              onTap: () {
-                setState(() {
-                  _showUserCard(context, user);
-                });
-              }));
+              onTap: () => _showUserCard(context, user)));
         });
         // }
       });
@@ -117,7 +120,7 @@ class MapState extends State<Map> with WidgetsBindingObserver {
             scale: a1.value,
             child: Opacity(
               opacity: a1.value,
-              child: UserMapCard(user),
+              child: UserMapCard(user, _fetchUsersAroundMe),
             ),
           );
         },
@@ -174,8 +177,7 @@ class MapState extends State<Map> with WidgetsBindingObserver {
           GoogleMap(
               mapType: MapType.normal,
               myLocationEnabled: true,
-              markers: _markers
-                ..removeWhere((m) => _store.isUserUnliked(m.user.id)),
+              markers: _markers,
               circles: Conf.displayAreaCircle ? _circles : null,
               initialCameraPosition: CameraPosition(
                 zoom: 18,

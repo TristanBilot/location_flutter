@@ -1,11 +1,9 @@
 import 'package:geoflutterfire/geoflutterfire.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/caches/location_cache.dart';
 import 'package:location_project/helpers/gender_value_adapter.dart';
-import 'package:location_project/repositories/user_repository.dart';
+import 'package:location_project/stores/database.dart';
 import 'package:location_project/stores/user_store.dart';
-import 'package:location_project/use_cases/messaging/messaging_repository.dart';
 import 'dart:async';
 import 'image_repository.dart';
 import '../models/user.dart';
@@ -97,6 +95,12 @@ class AreaFetchingRepository {
         areaUserGenders.contains(userGender);
     bool showProfile = data[UserField.ShowMyProfile.value] as bool;
     bool differentFromLoggedUser = UserStore().user.id != id;
-    return showProfile && genderMatch && differentFromLoggedUser;
+    bool notBlocked = !UserStore().user.blockedUserIDs.contains(id);
+    bool userNotBlockedMe = !UserStore().user.userIDsWhoBlockedMe.contains(id);
+    return showProfile &&
+        genderMatch &&
+        differentFromLoggedUser &&
+        notBlocked &&
+        userNotBlockedMe;
   }
 }

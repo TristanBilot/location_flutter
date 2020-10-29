@@ -19,6 +19,8 @@ class FirestoreUserEntry implements FirestoreEntry {
   bool connected;
   List<int> wantedAgeRange;
   List<String> wantedGenders;
+  List<String> blockedUserIDs;
+  List<String> userIDsWhoBlockedMe;
 
   FirestoreUserEntry(
     String firstName,
@@ -27,6 +29,8 @@ class FirestoreUserEntry implements FirestoreEntry {
     int age,
     GeoFirePoint geoPoint,
     UserSettings settings,
+    List<String> blockedUserIDs,
+    List<String> userIDsWhoBlockedMe,
   ) {
     this.firstName = firstName;
     this.lastName = lastName;
@@ -39,6 +43,8 @@ class FirestoreUserEntry implements FirestoreEntry {
     this.wantedAgeRange = settings.wantedAgeRange;
     this.wantedGenders =
         GenderValueAdapter().gendersToStrings(settings.wantedGenders);
+    this.blockedUserIDs = blockedUserIDs;
+    this.userIDsWhoBlockedMe = userIDsWhoBlockedMe;
   }
 
   dynamic toFirestoreObject() {

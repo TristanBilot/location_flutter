@@ -54,6 +54,11 @@ class Database {
     return _box.get(id);
   }
 
+  Future<void> clear() async {
+    _box.clear();
+    _box.deleteFromDisk();
+  }
+
   // Future<void> manageCache(User user) async {
   //   if (Database().keyExists(user.id)) {
   //     final cachedUser = Database().getUser(user.id);
