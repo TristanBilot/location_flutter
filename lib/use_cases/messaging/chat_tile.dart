@@ -134,7 +134,8 @@ class _ChatTileState extends State<ChatTile> {
   }
 
   Widget _getSectionTitleIfNeeded(context) {
-    if (!widget.isFirstIndex && !widget.isLimitBetweenRequestedAndRequests)
+    if (widget.chatsType != ChatsPageType.Requests ||
+        (!widget.isFirstIndex && !widget.isLimitBetweenRequestedAndRequests))
       return SizedBox();
     String text = '';
     if (widget.isLimitBetweenRequestedAndRequests)
