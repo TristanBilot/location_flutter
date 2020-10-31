@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/rendering.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/messaging/chat_tile.dart';
 import 'package:location_project/use_cases/messaging/firestore_chat_entry.dart';
@@ -40,12 +41,16 @@ class _ChatsPageTemplateState extends State<ChatsPageTemplate> {
     super.initState();
   }
 
+  setStateIfMounted(Function f) {
+    if (mounted) setState(f);
+  }
+
   /// Fetch the stream of chats and setState() to consume the
   /// stream builder.
   Future<void> _fetchChatsStream() async {
     final userID = UserStore().user.id;
     final snapshots = await MessagingReposiory().getChats(userID);
-    setState(() {
+    setStateIfMounted(() {
       _chatsStream = snapshots;
       print("we got the data + ${_chatsStream.toString()} for $userID");
     });
@@ -76,7 +81,7 @@ class _ChatsPageTemplateState extends State<ChatsPageTemplate> {
 
   void _onRefresh() async {
     _shouldRefreshCache = true;
-    if (mounted) setState(() => {});
+    setStateIfMounted(() {});
     _refreshController.refreshCompleted();
     // need to be improved later, set to false after stream building, not build().
     Future.delayed(Duration(seconds: 1), () => _shouldRefreshCache = false);
