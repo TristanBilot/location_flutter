@@ -3,6 +3,7 @@ enum Routes {
   map,
   account,
   languages,
+  blockedUsers,
   startPathStep1,
   startPathStep2,
   startPathStep3,

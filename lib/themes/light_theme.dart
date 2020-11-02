@@ -38,6 +38,8 @@ class LightTheme {
       // ),
       textTheme: base.textTheme.copyWith(
           headline6: base.textTheme.headline6.copyWith(color: TextColor),
+          headline5:
+              base.textTheme.headline6.copyWith(color: Color(0xFFFFFFFF)),
           bodyText2: base.textTheme.bodyText2.copyWith(color: TextColor),
           bodyText1: base.textTheme.bodyText1.copyWith(color: TextColor)),
 

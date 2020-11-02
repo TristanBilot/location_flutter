@@ -50,8 +50,8 @@ class MapState extends State<Map> with WidgetsBindingObserver {
   /// Used to handle when a user block the logged user and
   /// then refresh the page to not see the user on the map
   void _handleBlockEvents() {
-    UserRepository()
-        .listenToBlockedUsersEvents(UserStore().user.id, _fetchUsersAroundMe);
+    UserRepository().listenToUsersWhoBlockMeEvents(
+        UserStore().user.id, _fetchUsersAroundMe);
   }
 
   Future _loadMapStyles() async {

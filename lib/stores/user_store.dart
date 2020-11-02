@@ -86,12 +86,21 @@ class UserStore extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addBlockedUser(String blockId) async {
-    _user.blockedUserIDs.add(blockId);
-    await _repo.addValueToCollection(
-        _user.id, UserField.BlockedUserIDs, blockId);
-    await _repo.addValueToCollection(
-        blockId, UserField.UserIDsWhoBlockedMe, _user.id);
+  Future<void> addBlockedUser(String blockedID) async {
+    _user.blockedUserIDs.add(blockedID);
+    await _repo.putBlockUserField(
+        _user.id, UserField.BlockedUserIDs, blockedID);
+    await _repo.putBlockUserField(
+        blockedID, UserField.UserIDsWhoBlockedMe, _user.id);
+    notifyListeners();
+  }
+
+  Future<void> deleteBlockedUser(String blockedID) async {
+    _user.blockedUserIDs.remove(blockedID);
+    await UserRepository().deleteCollectionSnapshot(
+        _user.id, UserField.BlockedUserIDs, blockedID);
+    await UserRepository().deleteCollectionSnapshot(
+        blockedID, UserField.UserIDsWhoBlockedMe, _user.id);
     notifyListeners();
   }
 

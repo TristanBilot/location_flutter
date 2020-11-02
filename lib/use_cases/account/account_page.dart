@@ -212,6 +212,13 @@ class _AccountPageState extends State<AccountPage>
                         onTap: () => Navigator.of(context)
                             .pushNamed(Routes.languages.value),
                       ),
+                      AccountListTile(
+                        withDivider: false,
+                        title: 'Blocked users',
+                        trailing: Icon(Icons.chevron_right),
+                        onTap: () => Navigator.of(context)
+                            .pushNamed(Routes.blockedUsers.value),
+                      ),
                       AccountLogOutListTile('LOG OUT', onPressed: () {
                         _authRepo.logOut().then((_) => Navigator.of(context)
                             .pushReplacementNamed(Routes.login.value));

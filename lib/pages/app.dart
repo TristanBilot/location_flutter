@@ -4,6 +4,7 @@ import 'package:location_project/repositories/user_local_repository.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/themes/dark_theme.dart';
 import 'package:location_project/themes/light_theme.dart';
+import 'package:location_project/use_cases/account/account_blocked_users_page.dart';
 import 'package:location_project/use_cases/account/account_language_page.dart';
 import 'package:location_project/use_cases/account/account_page.dart';
 import 'package:location_project/use_cases/start_path/start_path_step1/start_path_step1.dart';
@@ -58,6 +59,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
         Routes.map.value: (context) => HomePage(),
         Routes.account.value: (context) => AccountPage(),
         Routes.languages.value: (context) => AccountLanguagePage(),
+        Routes.blockedUsers.value: (context) => AccountBlockedUsersPage(),
         Routes.startPathStep1.value: (context) => StartPathStep1(),
         Routes.startPathStep2.value: (context) => StartPathStep2(),
         Routes.startPathStep3.value: (context) => StartPathStep3(),

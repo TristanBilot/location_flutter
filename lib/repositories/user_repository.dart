@@ -81,7 +81,7 @@ class UserRepository {
   /// blocked him.
   /// The user store is updated before refreshing the area to
   /// not diplay this user.
-  Future<void> listenToBlockedUsersEvents(
+  Future<void> listenToUsersWhoBlockMeEvents(
       String id, Function fetchAreaFromMap) async {
     _firestore
         .collection(RootKey)
@@ -96,11 +96,36 @@ class UserRepository {
     });
   }
 
+  Future<void> putBlockUserField(
+      String id, UserField field, String blockingID) async {
+    await _firestore
+        .collection(RootKey)
+        .doc(id)
+        .collection(field.value)
+        .doc(blockingID)
+        .set({});
+  }
+
+  Future<QuerySnapshot> getCollectionSnapshot(
+      String id, UserField field) async {
+    return _firestore.collection(RootKey).doc(id).collection(field.value).get();
+  }
+
+  Future<void> deleteCollectionSnapshot(
+      String id, UserField field, String fieldID) async {
+    _firestore
+        .collection(RootKey)
+        .doc(id)
+        .collection(field.value)
+        .doc(fieldID)
+        .delete();
+  }
+
   /// Get a user from Firestore using its id.
   /// This method does not lookup to the cache if the
   /// id is already used.
   Future<User> getUserFromID(String id) async {
-    Stopwatch stopwatch = new Stopwatch()..start();
+    Stopwatch stopwatch = Stopwatch()..start();
     final document = _firestore.collection(RootKey).doc(id);
     final snapshot = await document.get();
     final user = await User.from(snapshot);
@@ -123,7 +148,7 @@ class UserRepository {
       print('--- User not found in cache, fetching from Firestore');
       return getUserFromID(id);
     }
-    Stopwatch stopwatch = new Stopwatch()..start();
+    Stopwatch stopwatch = Stopwatch()..start();
     final document = _firestore.collection(RootKey).doc(id);
     final snapshot = await document.get();
     final user =

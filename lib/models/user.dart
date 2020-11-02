@@ -8,6 +8,7 @@ import 'package:location_project/helpers/gender_value_adapter.dart';
 import 'package:location_project/controllers/location_controller.dart';
 import 'package:location_project/models/user_settings.dart';
 import 'package:location_project/repositories/image_repository.dart';
+import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/stores/conf.dart';
 import 'package:location_project/stores/database.dart';
 import 'package:location_project/stores/store.dart';
@@ -88,9 +89,10 @@ class User extends HiveObject {
     DocumentSnapshot snapshot, {
     bool withoutImageFetching = false,
   }) async {
-    if (withoutImageFetching == true && !Database().keyExists(snapshot.id)) {
+    final id = snapshot.id;
+    if (withoutImageFetching == true && !Database().keyExists(id)) {
       print(
-          '+++++ error: from() if withoutImageFetching is true, ${snapshot.id} should be find in the database cache.');
+          '+++++ error: from() if withoutImageFetching is true, $id should be find in the database cache.');
       return null;
     }
     final Map<String, dynamic> data = snapshot.data();
@@ -116,29 +118,34 @@ class User extends HiveObject {
         GenderValueAdapter().stringToGender(data[UserField.Gender.value]);
     final age = data[UserField.Age.value];
     // By default, this entry does not exists in Firestore, so replace by
-    // empty array if not exists.
-    final blockedUserIDs = data[UserField.BlockedUserIDs.value] != null
-        ? List<String>.from(data[UserField.BlockedUserIDs.value])
-        : List<String>();
-    final userIDsWhoBlockedMe =
-        data[UserField.UserIDsWhoBlockedMe.value] != null
-            ? List<String>.from(data[UserField.UserIDsWhoBlockedMe.value])
-            : List<String>();
 
+    Stopwatch stopwatch = Stopwatch()..start();
+    final blockedUserIDs = List<String>.from((await UserRepository()
+            .getCollectionSnapshot(id, UserField.BlockedUserIDs))
+        .docs
+        .map((doc) => doc.id)
+        .toList());
+    final userIDsWhoBlockedMe = List<String>.from((await UserRepository()
+            .getCollectionSnapshot(id, UserField.UserIDsWhoBlockedMe))
+        .docs
+        .map((doc) => doc.id)
+        .toList());
+    print(
+        'blocked users for $id fetched in ${stopwatch.elapsed.inMilliseconds}ms');
     // Use cache for images if withoutImageFetching is true.
     // This part take lot of time to fetch.
     BitmapDescriptor icon;
     dynamic pictureURL;
     if (withoutImageFetching == true) {
-      User cachedUser = Database().getUser(snapshot.id);
+      User cachedUser = Database().getUser(id);
       icon = cachedUser.icon;
       pictureURL = cachedUser.pictureURL;
     } else {
-      icon = await _imageRepo.fetchUserIcon(snapshot.id);
-      pictureURL = await _imageRepo.getPictureDownloadURL(snapshot.id);
+      icon = await _imageRepo.fetchUserIcon(id);
+      pictureURL = await _imageRepo.getPictureDownloadURL(id);
     }
-    User user = User(snapshot.id, firstName, lastName, coord, icon, pictureURL,
-        distance, age, gender, settings, blockedUserIDs, userIDsWhoBlockedMe);
+    User user = User(id, firstName, lastName, coord, icon, pictureURL, distance,
+        age, gender, settings, blockedUserIDs, userIDsWhoBlockedMe);
     // Store the user fetched from firestore to the Database cache.
     if (!withoutImageFetching) Database().putUser(user);
     return user;
