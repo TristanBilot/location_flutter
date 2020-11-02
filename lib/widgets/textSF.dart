@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class TextSF extends StatelessWidget {
-  static const Weight = FontWeight.w500;
+  static const Weight = FontWeight.w600;
   static const FontSize = 14.0;
   // static const FontFamily = "SF Pro Display";
   static const LetterSpacing = 0.36;

@@ -65,14 +65,17 @@ class UserRepository {
     });
   }
 
-  /// Append a value in a collection of a user field.
-  Future<void> addValueToCollection(
+  /// Append a value in a collection at the root field.
+  /// If the value already exists, it will be replaced by
+  /// the new value.
+  Future<void> addOrReplaceToCollection(
       String id, UserField field, dynamic value) async {
     await _firestore
         .collection(RootKey)
         .doc(id)
         .collection(field.value)
-        .add({value: true});
+        .doc(value)
+        .set({});
   }
 
   /// Handle when the `UserIDsWhoBlockedMe` entry is modified,
@@ -96,21 +99,23 @@ class UserRepository {
     });
   }
 
-  Future<void> putBlockUserField(
-      String id, UserField field, String blockingID) async {
-    await _firestore
-        .collection(RootKey)
-        .doc(id)
-        .collection(field.value)
-        .doc(blockingID)
-        .set({});
-  }
-
+  /// Returns a snapshot of documents in the root of the user Field.
   Future<QuerySnapshot> getCollectionSnapshot(
       String id, UserField field) async {
     return _firestore.collection(RootKey).doc(id).collection(field.value).get();
   }
 
+  /// Returns a snapshot of documents in the root of the user Field as
+  /// a list of strings.
+  Future<List<String>> getCollectionSnapshotAsStringArray(
+      String id, UserField field) async {
+    return List<String>.from((await getCollectionSnapshot(id, field))
+        .docs
+        .map((doc) => doc.id)
+        .toList());
+  }
+
+  /// Delete a document designed by `fieldID` in the field.
   Future<void> deleteCollectionSnapshot(
       String id, UserField field, String fieldID) async {
     _firestore
@@ -167,5 +172,16 @@ class UserRepository {
     } catch (e) {
       throw e;
     }
+  }
+
+  /// Return a stream from a collection based in the root field.
+  /// `field` should be UserIDsWhoWiewedMe or ViewedUserIDs or other
+  /// collection at the root of the User field.
+  Future<Stream<QuerySnapshot>> getStream(String id, UserField field) async {
+    return _firestore
+        .collection(RootKey)
+        .doc(id)
+        .collection(field.value)
+        .snapshots();
   }
 }

@@ -11,14 +11,14 @@ import 'package:location_project/use_cases/messaging/firestore_chat_entry.dart';
 import 'package:location_project/use_cases/messaging/firestore_message_entry.dart';
 import 'package:location_project/use_cases/messaging/message_page.dart';
 import 'package:location_project/use_cases/messaging/messaging_repository.dart';
-import 'package:location_project/use_cases/messaging/pages/chats_page_type.dart';
+import 'package:location_project/use_cases/messaging/pages/tab_page_type.dart';
 import 'package:location_project/widgets/textSF.dart';
 import 'package:location_project/widgets/user_card.dart';
 
 class ChatTile extends StatefulWidget {
   final FirestoreChatEntry chat;
   final bool shouldRefreshCache;
-  final ChatsPageType chatsType;
+  final TabPageType tabPageType;
 
   /// Should display a section title for incoming requests on the first tile
   final bool isFirstIndex;
@@ -30,7 +30,7 @@ class ChatTile extends StatefulWidget {
   const ChatTile({
     @required this.chat,
     @required this.shouldRefreshCache,
-    @required this.chatsType,
+    @required this.tabPageType,
     @required this.isFirstIndex,
     @required this.isLimitBetweenRequestedAndRequests,
   });
@@ -120,21 +120,21 @@ class _ChatTileState extends State<ChatTile> {
   }
 
   List<Widget> _getSlideActions(User user, context) {
-    switch (widget.chatsType) {
-      case ChatsPageType.Discussions:
+    switch (widget.tabPageType) {
+      case TabPageType.Chats:
         return ChatTileSlideActionsDelegate()
             .discussionActions(widget, user, context);
-      case ChatsPageType.Requests:
+      case TabPageType.Requests:
         return ChatTileSlideActionsDelegate()
             .requestsActions(widget, user, context);
-      case ChatsPageType.Views:
+      case TabPageType.Views:
         return ChatTileSlideActionsDelegate()
             .viewsActions(widget, user, context);
     }
   }
 
   Widget _getSectionTitleIfNeeded(context) {
-    if (widget.chatsType != ChatsPageType.Requests ||
+    if (widget.tabPageType != TabPageType.Requests ||
         (!widget.isFirstIndex && !widget.isLimitBetweenRequestedAndRequests))
       return SizedBox();
     String text = '';

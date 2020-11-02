@@ -29,6 +29,9 @@ class UserStore extends ChangeNotifier {
   /// Init asynchronously the store at the launch of the
   /// app. Get the `id` from the local repo, then, get
   /// the user's data using the real repo.
+  /// All the data of the user are fetched at the start
+  /// to be loaded in the local store and thus need less
+  /// to call the distant firestore.
   Future<void> initAsynchronously() async {
     if (!_localRepo.isUserLoggedIn()) {
       print('User not connected. Store not initialized.');
@@ -86,15 +89,19 @@ class UserStore extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Add a blocked user in the local store and in the firestore
+  /// for both participants.
   Future<void> addBlockedUser(String blockedID) async {
     _user.blockedUserIDs.add(blockedID);
-    await _repo.putBlockUserField(
+    await _repo.addOrReplaceToCollection(
         _user.id, UserField.BlockedUserIDs, blockedID);
-    await _repo.putBlockUserField(
+    await _repo.addOrReplaceToCollection(
         blockedID, UserField.UserIDsWhoBlockedMe, _user.id);
     notifyListeners();
   }
 
+  /// Delete a blocked user from the local store and from the firestore
+  /// for both participants.
   Future<void> deleteBlockedUser(String blockedID) async {
     _user.blockedUserIDs.remove(blockedID);
     await UserRepository().deleteCollectionSnapshot(
@@ -109,5 +116,28 @@ class UserStore extends ChangeNotifier {
   /// Mandatory to update the data before refresh the map.
   void addLocalUserWhoBlockMe(String userIDWhoBlockedMe) {
     UserStore().user.userIDsWhoBlockedMe.add(userIDWhoBlockedMe);
+  }
+
+  /// Add a new view in the local store and in the firestore for both
+  /// participants.
+  Future<void> addView(String viewedID) async {
+    _user.viewedUserIDs.add(viewedID);
+    await _repo.addOrReplaceToCollection(
+        _user.id, UserField.ViewedUserIDs, viewedID);
+    await _repo.addOrReplaceToCollection(
+        viewedID, UserField.UserIDsWhoWiewedMe, _user.id);
+    notifyListeners();
+  }
+
+  /// Delete a blocked user in the local store and in the firestore.
+  /// Not used for the moment.
+  @deprecated
+  Future<void> deleteView(String viewedID) async {
+    _user.viewedUserIDs.remove(viewedID);
+    await _repo.deleteCollectionSnapshot(
+        _user.id, UserField.ViewedUserIDs, viewedID);
+    await _repo.deleteCollectionSnapshot(
+        viewedID, UserField.UserIDsWhoWiewedMe, _user.id);
+    notifyListeners();
   }
 }

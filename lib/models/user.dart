@@ -31,6 +31,8 @@ enum UserField {
   Connected,
   BlockedUserIDs,
   UserIDsWhoBlockedMe,
+  ViewedUserIDs,
+  UserIDsWhoWiewedMe,
 }
 
 @HiveType(typeId: 0)
@@ -56,8 +58,11 @@ class User extends HiveObject {
   Gender gender;
   @HiveField(9)
   UserSettings settings;
+  // Properties stored in the UserStore and fetched at start.
   List<String> blockedUserIDs;
   List<String> userIDsWhoBlockedMe;
+  List<String> viewedUserIDs;
+  List<String> userIDsWhoWiewedMe;
 
   User._();
 
@@ -74,6 +79,8 @@ class User extends HiveObject {
     this.settings,
     this.blockedUserIDs,
     this.userIDsWhoBlockedMe,
+    this.viewedUserIDs,
+    this.userIDsWhoWiewedMe,
   ) {
     this.id = email;
   }
@@ -117,21 +124,19 @@ class User extends HiveObject {
     final gender =
         GenderValueAdapter().stringToGender(data[UserField.Gender.value]);
     final age = data[UserField.Age.value];
-    // By default, this entry does not exists in Firestore, so replace by
 
     Stopwatch stopwatch = Stopwatch()..start();
-    final blockedUserIDs = List<String>.from((await UserRepository()
-            .getCollectionSnapshot(id, UserField.BlockedUserIDs))
-        .docs
-        .map((doc) => doc.id)
-        .toList());
-    final userIDsWhoBlockedMe = List<String>.from((await UserRepository()
-            .getCollectionSnapshot(id, UserField.UserIDsWhoBlockedMe))
-        .docs
-        .map((doc) => doc.id)
-        .toList());
+    final blockedUserIDs = await UserRepository()
+        .getCollectionSnapshotAsStringArray(id, UserField.BlockedUserIDs);
+    final userIDsWhoBlockedMe = await UserRepository()
+        .getCollectionSnapshotAsStringArray(id, UserField.UserIDsWhoBlockedMe);
     print(
-        'blocked users for $id fetched in ${stopwatch.elapsed.inMilliseconds}ms');
+        '++++ ${blockedUserIDs.length} & ${userIDsWhoBlockedMe.length} blocked users for $id fetched in ${stopwatch.elapsed.inMilliseconds}ms');
+    final viewedUserIDs = await UserRepository()
+        .getCollectionSnapshotAsStringArray(id, UserField.ViewedUserIDs);
+    final userIDsWhoWiewedMe = await UserRepository()
+        .getCollectionSnapshotAsStringArray(id, UserField.UserIDsWhoWiewedMe);
+
     // Use cache for images if withoutImageFetching is true.
     // This part take lot of time to fetch.
     BitmapDescriptor icon;
@@ -144,8 +149,21 @@ class User extends HiveObject {
       icon = await _imageRepo.fetchUserIcon(id);
       pictureURL = await _imageRepo.getPictureDownloadURL(id);
     }
-    User user = User(id, firstName, lastName, coord, icon, pictureURL, distance,
-        age, gender, settings, blockedUserIDs, userIDsWhoBlockedMe);
+    User user = User(
+        id,
+        firstName,
+        lastName,
+        coord,
+        icon,
+        pictureURL,
+        distance,
+        age,
+        gender,
+        settings,
+        blockedUserIDs,
+        userIDsWhoBlockedMe,
+        viewedUserIDs,
+        userIDsWhoWiewedMe);
     // Store the user fetched from firestore to the Database cache.
     if (!withoutImageFetching) Database().putUser(user);
     return user;

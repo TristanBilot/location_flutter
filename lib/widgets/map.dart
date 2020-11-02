@@ -112,6 +112,7 @@ class MapState extends State<Map> with WidgetsBindingObserver {
   }
 
   void _showUserCard(BuildContext context, User user) {
+    UserStore().addView(user.id);
     showGeneralDialog(
         transitionBuilder: (context, a1, a2, widget) {
           return Transform.scale(
@@ -128,6 +129,7 @@ class MapState extends State<Map> with WidgetsBindingObserver {
         barrierLabel: '',
         context: context,
         pageBuilder: (context, animation1, animation2) {});
+    print('++++ ${user.id} viewed.');
   }
 
   void update(Function completion) {
