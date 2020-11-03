@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:location_project/use_cases/messaging/pages/tab_page_factory.dart';
-import 'package:location_project/use_cases/messaging/pages/tab_page_template.dart';
+import 'package:location_project/use_cases/tab_pages/pages/tab_page_factory.dart';
 import 'package:location_project/widgets/textSF.dart';
 
 class MessagingTabsPage extends StatefulWidget {

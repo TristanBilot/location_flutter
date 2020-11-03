@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:location_project/stores/user_store.dart';
-import 'package:location_project/use_cases/messaging/chat_tile.dart';
-import 'package:location_project/use_cases/messaging/firestore_chat_entry.dart';
-import 'package:location_project/use_cases/messaging/pages/builders/tab_page_stream_builder.dart';
-import 'package:location_project/use_cases/messaging/pages/data/tab_page_stream_builder_data.dart';
-import 'package:location_project/use_cases/messaging/pages/tab_page_type.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/chat_tile.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/firestore_chat_entry.dart';
+import 'package:location_project/use_cases/tab_pages/pages/builders/tab_page_stream_builder.dart';
+import 'package:location_project/use_cases/tab_pages/pages/data/tab_page_stream_builder_data.dart';
+import 'package:location_project/use_cases/tab_pages/pages/tab_page_type.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../../../stores/extensions.dart';
 

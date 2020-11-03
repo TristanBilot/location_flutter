@@ -1,8 +1,8 @@
-import 'package:location_project/use_cases/messaging/pages/builders/tab_page_chat_request_stream_builder.dart';
-import 'package:location_project/use_cases/messaging/pages/tab_page_template.dart';
-import 'package:location_project/use_cases/messaging/pages/tab_page_type.dart';
-import 'package:location_project/use_cases/messaging/pages/data/tab_page_stream_builder_chat_data.dart';
-import 'package:location_project/use_cases/messaging/pages/data/tab_page_stream_builder_request_data.dart';
+import 'package:location_project/use_cases/tab_pages/pages/builders/tab_page_chat_request_stream_builder.dart';
+import 'package:location_project/use_cases/tab_pages/pages/tab_page_template.dart';
+import 'package:location_project/use_cases/tab_pages/pages/tab_page_type.dart';
+import 'package:location_project/use_cases/tab_pages/pages/data/tab_page_stream_builder_chat_data.dart';
+import 'package:location_project/use_cases/tab_pages/pages/data/tab_page_stream_builder_request_data.dart';
 
 class TabPageFactory {
   /// Setup a chat page adapted for different tabs.

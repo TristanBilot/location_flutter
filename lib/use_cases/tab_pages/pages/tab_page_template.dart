@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
 import 'package:location_project/stores/user_store.dart';
-import 'package:location_project/use_cases/messaging/messaging_repository.dart';
-import 'package:location_project/use_cases/messaging/pages/builders/tab_page_stream_builder.dart';
-import 'package:location_project/use_cases/messaging/pages/tab_page_type.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
+import 'package:location_project/use_cases/tab_pages/pages/builders/tab_page_stream_builder.dart';
+import 'package:location_project/use_cases/tab_pages/pages/tab_page_type.dart';
 import 'package:location_project/widgets/basic_cupertino_text_field.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 

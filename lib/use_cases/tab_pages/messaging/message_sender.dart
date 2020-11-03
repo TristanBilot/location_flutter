@@ -1,6 +1,6 @@
 import 'package:location_project/stores/user_store.dart';
-import 'package:location_project/use_cases/messaging/firestore_message_entry.dart';
-import 'package:location_project/use_cases/messaging/messaging_repository.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/firestore_message_entry.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
 
 class MessageSender {
   /// Create a new message in `chatID` with `message` content.

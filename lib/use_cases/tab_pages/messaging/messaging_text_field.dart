@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:location_project/use_cases/messaging/message_send_button.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/message_send_button.dart';
 import 'package:location_project/widgets/basic_cupertino_text_field.dart';
 
 class MessagingTextField extends StatefulWidget {

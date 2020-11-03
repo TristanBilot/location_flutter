@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:location_project/models/user.dart';
 import 'package:location_project/stores/database.dart';
-import 'package:location_project/use_cases/messaging/chat_tile.dart';
-import 'package:location_project/use_cases/messaging/messaging_repository.dart';
 import 'package:location_project/use_cases/start_path/basic_alert.dart';
 import 'package:location_project/use_cases/start_path/basic_alert_button.dart';
+
+import '../../../models/user.dart';
+import '../messaging/chat_tile.dart';
+import '../messaging/messaging_repository.dart';
 
 class ChatTileSlideActionsDelegate {
   List<Widget> discussionActions(ChatTile widget, User user, context) => [

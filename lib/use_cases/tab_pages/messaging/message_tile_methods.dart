@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:location_project/use_cases/messaging/firestore_message_entry.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/firestore_message_entry.dart';
 import 'package:location_project/widgets/textSF.dart';
 
 class MessageTileMethods {

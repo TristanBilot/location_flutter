@@ -1,8 +1,8 @@
 import 'dart:math';
 
-import 'package:location_project/use_cases/messaging/firestore_chat_entry.dart';
-import 'package:location_project/use_cases/messaging/firestore_message_entry.dart';
-import 'package:location_project/use_cases/messaging/messaging_repository.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/firestore_chat_entry.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/firestore_message_entry.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
 
 class MessagingMockRepository {
   final id1 = 'bilot.tristan@hotmail.fr';

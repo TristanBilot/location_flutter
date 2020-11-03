@@ -8,7 +8,6 @@ import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/account/widgets/account_list_tile.dart';
 import 'package:location_project/use_cases/account/widgets/account_log_out_list_tile.dart';
 import 'package:location_project/use_cases/account/widgets/account_section_title.dart';
-import 'package:location_project/use_cases/messaging/messaging_mock_repository.dart';
 import 'package:location_project/use_cases/start_path/gender_circle_icon_factory.dart';
 import 'package:location_project/use_cases/start_path/start_path_step2/start_path_step2.dart';
 import 'package:location_project/use_cases/start_path/widgets/equally_spaced_row.dart';
