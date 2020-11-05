@@ -37,7 +37,8 @@ class _TabPageViewsPageState extends State<TabPageViewsPage> {
 
   Future<void> _fetchChatsStream() async {
     final id = UserStore().user.id;
-    _stream = await UserRepository().getStream(id, UserField.ViewedUserIDs);
+    _stream =
+        await UserRepository().getStream(id, UserField.UserIDsWhoWiewedMe);
     setStateIfMounted(() => print("++++ ${_stream.toString()} fetched."));
   }
 

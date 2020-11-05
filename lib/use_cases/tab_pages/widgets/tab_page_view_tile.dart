@@ -3,6 +3,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/stores/database.dart';
+import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/cached_circle_user_image_with_active_status.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/firestore_message_entry.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_rich_text.dart';
@@ -46,6 +47,14 @@ class _TabPageViewTileState extends State<TabPageViewTile> {
   //     ),
   //   );
 
+  _onRemoveViewTap(String viewerID) {
+    final id = UserStore().user.id;
+    UserRepository()
+        .deleteCollectionSnapshot(id, UserField.UserIDsWhoWiewedMe, viewerID);
+    UserRepository()
+        .deleteCollectionSnapshot(viewerID, UserField.ViewedUserIDs, id);
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -65,7 +74,7 @@ class _TabPageViewTileState extends State<TabPageViewTile> {
                     children: [
                       TabPageSlidable(
                         isOnlyOneAction: true,
-                        action1: () => {},
+                        action1: () => _onRemoveViewTap(user.id),
                         child: ListTile(
                           title: Row(
                             children: [
@@ -78,7 +87,6 @@ class _TabPageViewTileState extends State<TabPageViewTile> {
                               ),
                             ],
                           ),
-                          // subtitle: Text('test'),
                           trailing: Icon(Icons.chevron_right),
                           leading: CachedCircleUserImageWithActiveStatus(
                             pictureURL: user.pictureURL,
