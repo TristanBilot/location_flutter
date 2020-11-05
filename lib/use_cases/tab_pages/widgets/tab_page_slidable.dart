@@ -55,6 +55,6 @@ class _TabPageSlidableState extends State<TabPageSlidable> {
   @override
   Widget build(BuildContext context) {
     if (widget.isOnlyOneAction) return _defaultSlidable([_defaultCloseIcon]);
-    return _defaultSlidable([_defaultCloseIcon, _defaultShareIcon]);
+    return _defaultSlidable([_defaultShareIcon, _defaultCloseIcon]);
   }
 }
