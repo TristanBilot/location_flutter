@@ -8,18 +8,40 @@ import 'package:location_project/use_cases/tab_pages/messaging/firestore_chat_en
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/message_page.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/message_sender.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
+import 'package:location_project/widgets/user_card.dart';
 import 'package:location_project/widgets/user_map_card_content.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import '../models/user.dart';
 
-class UserMapCard extends StatefulWidget {
+class UserMapCard extends StatefulWidget implements Showable {
+  final BuildContext context;
   final User user;
   final Future<void> Function() fetchAreaFunction;
 
   UserMapCard(
+    this.context,
     this.user,
     this.fetchAreaFunction,
   );
+
+  void show() {
+    showGeneralDialog(
+        transitionBuilder: (context, a1, a2, widget) {
+          return Transform.scale(
+            scale: a1.value,
+            child: Opacity(
+              opacity: a1.value,
+              child: this,
+            ),
+          );
+        },
+        transitionDuration: Duration(milliseconds: 150),
+        barrierColor: Colors.black.withOpacity(0.5),
+        barrierDismissible: true,
+        barrierLabel: '',
+        context: context,
+        pageBuilder: (context, animation1, animation2) {});
+  }
 
   static _UserCardState of(BuildContext context) =>
       context.findAncestorStateOfType<_UserCardState>();

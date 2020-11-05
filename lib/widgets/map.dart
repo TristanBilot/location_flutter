@@ -92,6 +92,11 @@ class MapState extends State<Map> with WidgetsBindingObserver {
     if (mounted) setState(f);
   }
 
+  _onMarkerTap(context, User user) {
+    UserMapCard(context, user, _fetchUsersAroundMe).show();
+    print('++++ ${user.id} viewed.');
+  }
+
   Future _fetchUsersAroundMe() async {
     // in the case when the user enable location from settings
     // we need to handle location again
@@ -105,31 +110,10 @@ class MapState extends State<Map> with WidgetsBindingObserver {
               user: user,
               icon: user.icon,
               position: LatLng(user.coord[0], user.coord[1]),
-              onTap: () => _showUserCard(context, user)));
+              onTap: () => _onMarkerTap(context, user)));
         });
       });
     });
-  }
-
-  void _showUserCard(BuildContext context, User user) {
-    UserStore().addView(user.id);
-    showGeneralDialog(
-        transitionBuilder: (context, a1, a2, widget) {
-          return Transform.scale(
-            scale: a1.value,
-            child: Opacity(
-              opacity: a1.value,
-              child: UserMapCard(user, _fetchUsersAroundMe),
-            ),
-          );
-        },
-        transitionDuration: Duration(milliseconds: 150),
-        barrierColor: Colors.black.withOpacity(0.5),
-        barrierDismissible: true,
-        barrierLabel: '',
-        context: context,
-        pageBuilder: (context, animation1, animation2) {});
-    print('++++ ${user.id} viewed.');
   }
 
   void update(Function completion) {
