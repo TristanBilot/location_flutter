@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:location_project/use_cases/tab_pages/pages/tab_page_factory.dart';
+import 'package:location_project/use_cases/tab_pages/tab_page_discussions_page.dart';
+import 'package:location_project/use_cases/tab_pages/tab_page_requests_page.dart';
+import 'package:location_project/use_cases/tab_pages/tab_page_views_page.dart';
 import 'package:location_project/widgets/textSF.dart';
 
 class MessagingTabsPage extends StatefulWidget {
@@ -55,9 +57,9 @@ class _MessagingTabsPageState extends State<MessagingTabsPage>
         ),
         body: TabBarView(
           children: [
-            TabPageFactory().makeDiscussionsPage(),
-            TabPageFactory().makeRequestsPage(),
-            TabPageFactory().makeViewsPage(),
+            TabPageDiscussionsPage(),
+            TabPageRequestsPage(),
+            TabPageViewsPage(),
           ],
         ),
       ),

@@ -1,5 +1,5 @@
 enum TabPageType {
-  Chats,
+  Discussions,
   Requests,
   Views,
 }

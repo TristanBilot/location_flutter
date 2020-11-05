@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/stores/database.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/themes/light_theme.dart';
-import 'package:location_project/use_cases/tab_pages/cahed_circle_user_image_with_active_status.dart';
-import 'package:location_project/use_cases/tab_pages/chat_tile_slide_actions_delegate.dart';
-import 'package:location_project/use_cases/tab_pages/firestore_chat_entry.dart';
-import 'package:location_project/use_cases/tab_pages/firestore_message_entry.dart';
-import 'package:location_project/use_cases/tab_pages/message_page.dart';
-import 'package:location_project/use_cases/tab_pages/messaging_repository.dart';
-import 'package:location_project/use_cases/tab_pages/pages/tab_page_type.dart';
+import 'package:location_project/use_cases/start_path/basic_alert.dart';
+import 'package:location_project/use_cases/start_path/basic_alert_button.dart';
+import 'package:location_project/use_cases/tab_pages/widgets/cached_circle_user_image_with_active_status.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/firestore_chat_entry.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/firestore_message_entry.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/widgets/message_page.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
+import 'package:location_project/use_cases/tab_pages/tab_page_type.dart';
+import 'package:location_project/use_cases/tab_pages/widgets/tab_page_rich_text.dart';
+import 'package:location_project/use_cases/tab_pages/widgets/tab_page_slidable.dart';
 import 'package:location_project/widgets/textSF.dart';
 import 'package:location_project/widgets/user_card.dart';
 
@@ -23,7 +25,7 @@ class ChatTile extends StatefulWidget {
   /// Should display a section title for incoming requests on the first tile
   final bool isFirstIndex;
 
-  /// Should displau a section title for requests sent when the first
+  /// Should display a section title for requests sent when the first
   /// requester tile is reached.
   final bool isLimitBetweenRequestedAndRequests;
 
@@ -31,8 +33,8 @@ class ChatTile extends StatefulWidget {
     @required this.chat,
     @required this.shouldRefreshCache,
     @required this.tabPageType,
-    @required this.isFirstIndex,
-    @required this.isLimitBetweenRequestedAndRequests,
+    this.isFirstIndex = false,
+    this.isLimitBetweenRequestedAndRequests = false,
   });
 
   @override
@@ -119,17 +121,60 @@ class _ChatTileState extends State<ChatTile> {
     ]);
   }
 
-  List<Widget> _getSlideActions(User user, context) {
+  void _onSharePress() {}
+
+  _onUnmatchPress(ChatTile widget, String userName, context) {
+    Color cancelButtonColor() {
+      bool isDark =
+          MediaQuery.of(context).platformBrightness == Brightness.dark;
+      return isDark
+          ? Color.fromRGBO(60, 60, 60, 1)
+          : Color.fromRGBO(140, 140, 140, 1);
+    }
+
+    void onCancelPress() => Navigator.of(context).pop();
+
+    void onUnmatchPress() {
+      MessagingReposiory().deleteMessages(widget.chat.chatID);
+      MessagingReposiory().deleteChat(widget.chat.chatID);
+      Database()
+          .deleteUser(widget.chat.requesterID)
+          .then((value) => Navigator.of(context).pop());
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) => BasicAlert(
+        'Are you sure to unmatch $userName?',
+        titleFontSize: 18,
+        titleAlignment: TextAlign.center,
+        contentPadding: EdgeInsets.only(bottom: 10),
+        actions: [
+          BasicAlertButton('CANCEL', onCancelPress, color: cancelButtonColor()),
+          BasicAlertButton('UNMATCH', onUnmatchPress, color: Colors.red[500]),
+        ],
+      ),
+    );
+  }
+
+  TabPageSlidable _getSlidableWithChild(User user, {@required Widget child}) {
     switch (widget.tabPageType) {
-      case TabPageType.Chats:
-        return ChatTileSlideActionsDelegate()
-            .discussionActions(widget, user, context);
+      case TabPageType.Discussions:
+        return TabPageSlidable(
+          child: child,
+          action1: () => _onUnmatchPress(widget, user.firstName, context),
+          action2: _onSharePress,
+        );
+
       case TabPageType.Requests:
-        return ChatTileSlideActionsDelegate()
-            .requestsActions(widget, user, context);
-      case TabPageType.Views:
-        return ChatTileSlideActionsDelegate()
-            .viewsActions(widget, user, context);
+        return TabPageSlidable(
+          isOnlyOneAction: true,
+          child: child,
+          action1: () => _onUnmatchPress(widget, user.firstName, context),
+          action2: _onSharePress,
+        );
+      default:
+        return null;
     }
   }
 
@@ -188,39 +233,17 @@ class _ChatTileState extends State<ChatTile> {
                 Card(
                   child: Column(
                     children: [
-                      Slidable(
-                        actionPane: SlidableDrawerActionPane(),
-                        actionExtentRatio: 0.25,
-                        secondaryActions: _getSlideActions(user, context),
+                      _getSlidableWithChild(
+                        user,
                         child: ListTile(
                           title: Row(
                             children: [
                               Expanded(
-                                child: RichText(
-                                  text: TextSpan(
-                                    style: TextStyle(
-                                        color: Theme.of(context)
-                                            .textTheme
-                                            .headline6
-                                            .color),
-                                    children: [
-                                      TextSpan(
-                                        text: '${user.firstName}',
-                                        style: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: isMsgUnread
-                                                ? unreadWeight
-                                                : FontWeight.w500),
-                                      ),
-                                      TextSpan(
-                                        text: '  -  ${user.distance}m',
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          fontWeight: readWeight,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                // display name and distance
+                                child: TabPageRichText(
+                                  user.firstName,
+                                  user.distance,
+                                  isMsgUnread: isMsgUnread,
                                 ),
                               ),
                               isMsgUnread
