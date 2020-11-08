@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:location_project/helpers/logger.dart';
 import 'package:location_project/widgets/textSF.dart';
 
 class ScrollableTextView extends StatelessWidget {
@@ -23,10 +26,10 @@ class ScrollableTextView extends StatelessWidget {
     this.customSendButton,
   }) {
     if (withSendButton && onSendPressed == null)
-      print("+++ Error: onSendPressed need a onSendPressed callback.");
+      Logger().e("onSendPressed need a onSendPressed callback.");
     if (sendButtontext.length > 4)
-      print(
-          "+++ Warning: the sendButtontext length is greater than 4 and will be too big, need to adapat.");
+      Logger().w(
+          "the sendButtontext length is greater than 4 and will be too big, need to adapat.");
   }
 
   @override

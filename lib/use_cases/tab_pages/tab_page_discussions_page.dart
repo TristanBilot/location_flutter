@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
+import 'package:location_project/helpers/logger.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/chat_tile.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/firestore_chat_entry.dart';
@@ -50,9 +51,12 @@ class _TabPageDiscussionsPageState extends State<TabPageDiscussionsPage>
   }
 
   Future<void> _fetchChatsStream() async {
+    Stopwatch stopwatch = Stopwatch()..start();
     final userID = UserStore().user.id;
     _stream = await MessagingReposiory().getChats(userID);
-    setStateIfMounted(() => print("++++ ${_stream.toString()} fetched."));
+    int discussionsFetchingTime = stopwatch.elapsed.inMilliseconds;
+    setStateIfMounted(() =>
+        Logger().v("discussions fetched in ${discussionsFetchingTime}ms."));
   }
 
   /// Sort the snapshots in ascending last message order.

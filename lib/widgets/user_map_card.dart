@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:location_project/controllers/messaging_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:location_project/helpers/logger.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/firestore_chat_entry.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/message_page.dart';
@@ -137,8 +138,8 @@ class _UserCardState extends State<UserMapCard> {
     final chat1 = MessagingReposiory().getChat(chatID1);
     final chat2 = MessagingReposiory().getChat(chatID2);
     await Future.wait([chat1, chat2]);
-    print(
-        '_fetchChatInfo($id) fetched in ${stopwatch.elapsed.inMilliseconds}ms');
+    int chatInfoFetchingTime = stopwatch.elapsed.inMilliseconds;
+    Logger().v('chat info fetched in ${chatInfoFetchingTime}ms');
     return Future.wait([chat1, chat2]);
   }
 

@@ -6,6 +6,7 @@ import 'package:location_project/caches/location_cache.dart';
 import 'package:location_project/caches/user_cache.dart';
 import 'package:location_project/helpers/gender_value_adapter.dart';
 import 'package:location_project/controllers/location_controller.dart';
+import 'package:location_project/helpers/logger.dart';
 import 'package:location_project/models/user_settings.dart';
 import 'package:location_project/repositories/image_repository.dart';
 import 'package:location_project/repositories/user_repository.dart';
@@ -98,10 +99,11 @@ class User extends HiveObject {
   }) async {
     final id = snapshot.id;
     if (withoutImageFetching == true && !Database().keyExists(id)) {
-      print(
-          '+++++ error: from() if withoutImageFetching is true, $id should be find in the database cache.');
+      Logger().e(
+          'from() if withoutImageFetching is true, $id should be find in the database cache.');
       return null;
     }
+    Stopwatch stopwatch = Stopwatch()..start();
     final Map<String, dynamic> data = snapshot.data();
     final _imageRepo = ImageRepository();
     final realPosition = (await LocationController().isLocationEnabled() &&
@@ -124,21 +126,25 @@ class User extends HiveObject {
     final gender =
         GenderValueAdapter().stringToGender(data[UserField.Gender.value]);
     final age = data[UserField.Age.value];
+    int infoFetchingTime = stopwatch.elapsed.inMilliseconds;
 
-    Stopwatch stopwatch = Stopwatch()..start();
+    stopwatch = Stopwatch()..start();
     final blockedUserIDs = await UserRepository()
         .getCollectionSnapshotAsStringArray(id, UserField.BlockedUserIDs);
     final userIDsWhoBlockedMe = await UserRepository()
         .getCollectionSnapshotAsStringArray(id, UserField.UserIDsWhoBlockedMe);
-    print(
-        '++++ ${blockedUserIDs.length} & ${userIDsWhoBlockedMe.length} blocked users for $id fetched in ${stopwatch.elapsed.inMilliseconds}ms');
+    int blockedFetchingTime = stopwatch.elapsed.inMilliseconds;
+
+    stopwatch = Stopwatch()..start();
     final viewedUserIDs = await UserRepository()
         .getCollectionSnapshotAsStringArray(id, UserField.ViewedUserIDs);
     final userIDsWhoWiewedMe = await UserRepository()
         .getCollectionSnapshotAsStringArray(id, UserField.UserIDsWhoWiewedMe);
+    int viewsFetchingTime = stopwatch.elapsed.inMilliseconds;
 
     // Use cache for images if withoutImageFetching is true.
     // This part take lot of time to fetch.
+    stopwatch = Stopwatch()..start();
     BitmapDescriptor icon;
     dynamic pictureURL;
     if (withoutImageFetching == true) {
@@ -149,6 +155,8 @@ class User extends HiveObject {
       icon = await _imageRepo.fetchUserIcon(id);
       pictureURL = await _imageRepo.getPictureDownloadURL(id);
     }
+    int imagesFetchingTime = stopwatch.elapsed.inMilliseconds;
+
     User user = User(
         id,
         firstName,
@@ -164,8 +172,17 @@ class User extends HiveObject {
         userIDsWhoBlockedMe,
         viewedUserIDs,
         userIDsWhoWiewedMe);
-    // Store the user fetched from firestore to the Database cache.
+    // Stores the user fetched from firestore to the Database cache.
     if (!withoutImageFetching) Database().putUser(user);
+    int timeSum = infoFetchingTime +
+        blockedFetchingTime +
+        viewsFetchingTime +
+        imagesFetchingTime;
+    Logger().v('''=> $id from ${withoutImageFetching ? 'cache' : 'firestore'}
+    infoFetchingTime: \t${infoFetchingTime}ms
+    blockedFetchingTime: \t${blockedFetchingTime}ms
+    viewsFetchingTime: \t${viewsFetchingTime}ms
+    imagesFetchingTime: \t${imagesFetchingTime}ms\t${timeSum}ms''');
     return user;
   }
 

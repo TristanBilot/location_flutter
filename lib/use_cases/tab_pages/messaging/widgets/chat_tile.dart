@@ -222,7 +222,6 @@ class _ChatTileState extends State<ChatTile> {
           // check if it is null = no message sent
           bool isChatEngaged = msg != null;
           bool isMsgUnread = _shouldMarkMsgAsUnread(isChatEngaged, msg);
-          print('=> in chats: ${user.email}');
           // if (!Database().keyExists(user.id)) Database().putUser(user);
           return GestureDetector(
             onTap: () => _onTileTapped(context, user, isChatEngaged, msg),

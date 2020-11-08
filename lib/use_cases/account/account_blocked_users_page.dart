@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:location_project/helpers/logger.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/stores/user_store.dart';
@@ -36,7 +37,7 @@ class _AccountBlockedUsersPageState extends State<AccountBlockedUsersPage> {
       await Future.delayed(Duration(milliseconds: 200));
 
       setStateIfMounted(() {});
-      print("++++ $blockedID unblocked successfuly.");
+      Logger().i("$blockedID unblocked successfuly.");
     });
   }
 

@@ -64,8 +64,6 @@ class _TabPageViewTileState extends State<TabPageViewTile> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           final user = snapshot.data as User;
-          print('=> in views: ${user.email}');
-
           return GestureDetector(
             onTap: () => _onTileTapped(context,
                 user), //_onTileTapped(context, user, isChatEngaged, msg),

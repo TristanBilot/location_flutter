@@ -1,6 +1,7 @@
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/caches/location_cache.dart';
+import 'package:location_project/helpers/logger.dart';
 import 'package:location_project/models/firestore_user_entry.dart';
 import 'package:location_project/models/user_settings.dart';
 import 'package:location_project/stores/database.dart';
@@ -130,12 +131,9 @@ class UserRepository {
   /// This method does not lookup to the cache if the
   /// id is already used.
   Future<User> getUserFromID(String id) async {
-    Stopwatch stopwatch = Stopwatch()..start();
     final document = _firestore.collection(RootKey).doc(id);
     final snapshot = await document.get();
     final user = await User.from(snapshot);
-    print(
-        'getUserFromID($id) fetched in ${stopwatch.elapsed.inMilliseconds}ms');
     return user;
   }
 
@@ -150,16 +148,13 @@ class UserRepository {
     bool useCache,
   }) async {
     if (!Database().keyExists(id)) {
-      print('--- User not found in cache, fetching from Firestore');
+      Logger().i('$id not found in cache, fetching from Firestore.');
       return getUserFromID(id);
     }
-    Stopwatch stopwatch = Stopwatch()..start();
     final document = _firestore.collection(RootKey).doc(id);
     final snapshot = await document.get();
     final user =
         await User.from(snapshot, withoutImageFetching: useCache ?? true);
-    print(
-        'getUserCachedFromID($id) fetched in ${stopwatch.elapsed.inMilliseconds}ms');
     return user;
   }
 

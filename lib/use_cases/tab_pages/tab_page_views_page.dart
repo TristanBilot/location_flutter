@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:location_project/helpers/logger.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/stores/user_store.dart';
@@ -36,10 +37,13 @@ class _TabPageViewsPageState extends State<TabPageViewsPage> {
   }
 
   Future<void> _fetchChatsStream() async {
+    Stopwatch stopwatch = Stopwatch()..start();
     final id = UserStore().user.id;
     _stream =
         await UserRepository().getStream(id, UserField.UserIDsWhoWiewedMe);
-    setStateIfMounted(() => print("++++ ${_stream.toString()} fetched."));
+    int viewsFetchingTime = stopwatch.elapsed.inMilliseconds;
+    setStateIfMounted(
+        () => Logger().v("views fetched in ${viewsFetchingTime}ms."));
   }
 
   Function(List<dynamic>) get filter => (snapshots) => snapshots
