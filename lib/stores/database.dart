@@ -1,23 +1,17 @@
-import 'dart:io';
-
 import 'package:hive/hive.dart';
-import 'package:location_project/models/gender.dart';
 import 'package:location_project/models/user.dart';
-import 'package:location_project/models/user_settings.dart';
-import 'package:path_provider/path_provider.dart';
 
 /// The database is used to store locally data
 /// on the physical device. Unlike the store, it is store
 /// in a file and not only in memory.
 class Database {
   static const UserBox = 'User';
+  static const MessagingBox = 'Messaging';
+
+  static const UserPrefix = 'user_';
+  static const MessagingPrefix = 'messaging_';
 
   static Future<void> initHiveDatabase() async {
-    Directory dir = await getApplicationDocumentsDirectory();
-    Hive.init(dir.path);
-    Hive.registerAdapter(GenderAdapter());
-    Hive.registerAdapter(UserSettingsAdapter());
-    Hive.registerAdapter(UserAdapter());
     _instance._box = await Hive.openBox(UserBox);
   }
 

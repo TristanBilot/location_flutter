@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/widgets/messaging_inherited_widget.dart';
 import 'package:location_project/use_cases/tab_pages/tab_page_discussions_page.dart';
 import 'package:location_project/use_cases/tab_pages/tab_page_requests_page.dart';
 import 'package:location_project/use_cases/tab_pages/tab_page_views_page.dart';
 import 'package:location_project/widgets/textSF.dart';
+import 'package:provider/provider.dart';
 
 class MessagingTabsPage extends StatefulWidget {
   MessagingTabsPage();
@@ -18,13 +20,9 @@ class _MessagingTabsPageState extends State<MessagingTabsPage>
     Tab(icon: Icon(Icons.location_on)),
     Tab(icon: Icon(Icons.textsms))
   ];
-  // TabController _tabController;
-  // final _initialIndex = 1;
 
   @override
   void initState() {
-    // _tabController = TabController(
-    //     vsync: this, length: tabs.length, initialIndex: _initialIndex);
     super.initState();
   }
 
@@ -35,23 +33,33 @@ class _MessagingTabsPageState extends State<MessagingTabsPage>
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<MessagingTabPagesCountedElements>(context, listen: false)
+        .initCounts();
+
     return DefaultTabController(
       length: 3,
       child: Scaffold(
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(50.0),
-          child: AppBar(
-            backgroundColor: _getTabColor(),
-            bottom: TabBar(
-              labelPadding: EdgeInsets.only(bottom: 10),
-              labelColor: Theme.of(context).textTheme.headline6.color,
-              indicatorColor: Theme.of(context).primaryColor,
-              tabs: [
-                TextSF('DISCUSSIONS'),
-                TextSF('REQUESTS'),
-                TextSF('VIEWS'),
-              ],
-            ),
+          child: Consumer<MessagingTabPagesCountedElements>(
+            builder: (context, counts, child) {
+              return AppBar(
+                backgroundColor: _getTabColor(),
+                bottom: TabBar(
+                  labelPadding: EdgeInsets.only(bottom: 10),
+                  labelColor: Theme.of(context).textTheme.headline6.color,
+                  indicatorColor: Theme.of(context).primaryColor,
+                  tabs: [
+                    TextSF(
+                        'DISCUSSIONS ${counts.nbDiscussions == 0 ? '' : counts.nbDiscussions}'),
+                    TextSF(
+                        'REQUESTS ${counts.nbRequests == 0 ? '' : counts.nbRequests}'),
+                    TextSF(
+                        'VIEWS ${counts.nbViews == 0 ? '' : counts.nbViews}'),
+                  ],
+                ),
+              );
+            },
             // title: Text('Tabs Demo'),
           ),
         ),

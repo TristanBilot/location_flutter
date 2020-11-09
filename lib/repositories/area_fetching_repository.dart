@@ -2,6 +2,7 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/caches/location_cache.dart';
 import 'package:location_project/helpers/gender_value_adapter.dart';
+import 'package:location_project/helpers/logger.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'dart:async';
@@ -17,7 +18,7 @@ class AreaFetchingRepository {
   FirebaseFirestore _firestore;
   ImageRepository _imageRepo;
 
-  static final double radius = 50; // 50 meters area
+  static final double radius = 500; // in meters
 
   AreaFetchingRepository() {
     _geo = Geoflutterfire();
@@ -50,6 +51,7 @@ class AreaFetchingRepository {
   Future<void> _listenAreaStream(Stream<List<DocumentSnapshot>> stream,
       GeoFirePoint center, Function completion) async {
     stream.listen((List<DocumentSnapshot> users) async {
+      Logger().v('=> ${users.length} users in area.');
       int userCount = 0;
       List<User> usersList = List();
       users.forEach((user) async {

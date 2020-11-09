@@ -108,7 +108,7 @@ class UserRepository {
         .collection(UserField.UserIDsWhoBlockedMe.value)
         .snapshots()
         .listen((event) {
-      if (event.docs.isEmpty) return;
+      if (event.docs.isEmpty || event.docs.first.data().keys.isEmpty) return;
       final userIDToBlock = event.docs.first.data().keys.first;
       UserStore().addLocalUserWhoBlockMe(userIDToBlock);
       fetchAreaFromMap();

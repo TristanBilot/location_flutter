@@ -4,12 +4,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/helpers/logger.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/repositories/user_repository.dart';
+import 'package:location_project/stores/messaging_database.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/firestore_chat_entry.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/widgets/messaging_inherited_widget.dart';
 import 'package:location_project/use_cases/tab_pages/tab_page_type.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_placeholder.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_refresher.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_view_tile.dart';
+import 'package:provider/provider.dart';
 import '../../stores/extensions.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -90,6 +93,8 @@ class _TabPageViewsPageState extends State<TabPageViewsPage> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   final viewersIDs = _fromSnapshotToIDsList(snapshot);
+                  MessagingDatabase().putNbViews(viewersIDs.length);
+
                   return TabPageRefresher(
                     _onRefresh,
                     _refreshController,

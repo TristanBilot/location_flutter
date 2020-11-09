@@ -9,8 +9,10 @@ import 'package:location_project/use_cases/tab_pages/messaging/firestore_chat_en
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/message_page.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/message_sender.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/widgets/messaging_inherited_widget.dart';
 import 'package:location_project/widgets/user_card.dart';
 import 'package:location_project/widgets/user_map_card_content.dart';
+import 'package:provider/provider.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import '../models/user.dart';
 
@@ -98,6 +100,10 @@ class _UserCardState extends State<UserMapCard> {
         ),
       ),
     );
+
+    /// Don't forget to use widget.context and not context, modal card not in the tree.
+    Provider.of<MessagingTabPagesCountedElements>(widget.context, listen: false)
+        .updateCounts(discussions: true, increment: true);
   }
 
   /// Action when a user requests to talk with another person.

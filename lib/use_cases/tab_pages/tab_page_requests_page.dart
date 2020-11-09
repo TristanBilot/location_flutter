@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
 import 'package:location_project/helpers/logger.dart';
+import 'package:location_project/stores/messaging_database.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/chat_tile.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/firestore_chat_entry.dart';
@@ -127,6 +128,8 @@ class _TabPageRequestsPageState extends State<TabPageRequestsPage>
                   final filteredChats = _filterStreamByName(
                       sortedChats, _messageEditingController.text);
                   final chats = _filter(filteredChats);
+                  MessagingDatabase().putNbRequests(chats.length);
+
                   return TabPageRefresher(
                     _onRefresh,
                     _refreshController,

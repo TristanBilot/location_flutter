@@ -6,6 +6,7 @@ import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/themes/light_theme.dart';
 import 'package:location_project/use_cases/start_path/basic_alert.dart';
 import 'package:location_project/use_cases/start_path/basic_alert_button.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/widgets/messaging_tab_pages_counted_elements.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/cached_circle_user_image_with_active_status.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/firestore_chat_entry.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/firestore_message_entry.dart';
@@ -16,6 +17,7 @@ import 'package:location_project/use_cases/tab_pages/widgets/tab_page_rich_text.
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_slidable.dart';
 import 'package:location_project/widgets/textSF.dart';
 import 'package:location_project/widgets/user_card.dart';
+import 'package:provider/provider.dart';
 
 class ChatTile extends StatefulWidget {
   final FirestoreChatEntry chat;
@@ -139,6 +141,8 @@ class _ChatTileState extends State<ChatTile> {
       Database()
           .deleteUser(widget.chat.requesterID)
           .then((value) => Navigator.of(context).pop());
+      Provider.of<MessagingTabPagesCountedElements>(context, listen: false)
+          .updateCounts(discussions: true, decrement: true);
     }
 
     showDialog(
