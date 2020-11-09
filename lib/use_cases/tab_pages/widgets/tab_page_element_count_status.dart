@@ -24,7 +24,11 @@ class _TabPageElementCountStatusState extends State<TabPageElementCountStatus> {
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 15.0),
-            child: TextSF(widget.title),
+            child: TextSF(
+              widget.title,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
           ),
           widget.nbElements != null && widget.nbElements != 0
               ? Align(

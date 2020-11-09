@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:location_project/helpers/distance_adapter.dart';
 
 class TabPageRichText extends StatelessWidget {
   final String firstName;
@@ -12,7 +13,7 @@ class TabPageRichText extends StatelessWidget {
     this.distance, {
     this.isMsgUnread = false,
     this.readWeight = FontWeight.w300,
-    this.unreadWeight = FontWeight.w700,
+    this.unreadWeight = FontWeight.w600,
   });
   @override
   Widget build(BuildContext context) {
@@ -24,11 +25,11 @@ class TabPageRichText extends StatelessWidget {
             TextSpan(
               text: '$firstName',
               style: TextStyle(
-                  fontSize: 15,
+                  fontSize: 17.5,
                   fontWeight: isMsgUnread ? unreadWeight : FontWeight.w500),
             ),
             TextSpan(
-              text: '  -  ${distance}m',
+              text: '  -  ${DistanceAdapter().adapt(distance)}',
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: readWeight,

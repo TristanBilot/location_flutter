@@ -17,6 +17,8 @@ import 'package:rounded_loading_button/rounded_loading_button.dart';
 import '../models/user.dart';
 
 class UserMapCard extends StatefulWidget implements Showable {
+  static const double UserMapCardHeight = 390;
+
   final BuildContext context;
   final User user;
   final Future<void> Function() fetchAreaFunction;
@@ -162,7 +164,7 @@ class _UserCardState extends State<UserMapCard> {
           padding:
               EdgeInsets.only(bottom: MediaQuery.of(context).size.height / 5),
           child: Container(
-            height: 400,
+            height: UserMapCard.UserMapCardHeight,
             child: FutureBuilder(
               future: _fetchChatInfo(widget.user.id),
               builder: (context, snapshot) {

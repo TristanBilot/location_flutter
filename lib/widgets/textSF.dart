@@ -4,7 +4,7 @@ class TextSF extends StatelessWidget {
   static const Weight = FontWeight.w600;
   static const FontSize = 14.0;
   // static const FontFamily = "SF Pro Display";
-  static const LetterSpacing = 0.36;
+  static const LetterSpacing = 0.50;
 
   static const TitleWeight = FontWeight.w800;
   static const TitleSize = 30.0;

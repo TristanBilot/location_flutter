@@ -23,7 +23,7 @@ class _TabPageSearchBarState extends State<TabPageSearchBar> {
       controller: widget.messageEditingController,
       onChanged: (text) => widget.setStateDelegate.setStateFromOutside(),
       maxLines: 1,
-      placeholder: 'Search someone',
+      placeholder: 'Search',
       clearButtonMode: OverlayVisibilityMode.editing,
       autoCorrect: false,
       enableSuggestions: false,

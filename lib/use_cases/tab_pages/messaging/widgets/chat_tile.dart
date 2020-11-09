@@ -232,47 +232,50 @@ class _ChatTileState extends State<ChatTile> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _getSectionTitleIfNeeded(context),
-                Card(
-                  child: Column(
-                    children: [
-                      _getSlidableWithChild(
-                        user,
-                        child: ListTile(
-                          title: Row(
-                            children: [
-                              Expanded(
-                                // display name and distance
-                                child: TabPageRichText(
-                                  user.firstName,
-                                  user.distance,
-                                  isMsgUnread: isMsgUnread,
+                Column(
+                  children: [
+                    _getSlidableWithChild(
+                      user,
+                      child: Column(
+                        children: [
+                          ListTile(
+                            title: Row(
+                              children: [
+                                Expanded(
+                                  // display name and distance
+                                  child: TabPageRichText(
+                                    user.firstName,
+                                    user.distance,
+                                    isMsgUnread: isMsgUnread,
+                                  ),
                                 ),
-                              ),
-                              isMsgUnread
-                                  ? Container(
-                                      height: 10,
-                                      width: 10,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: PrimaryColor,
-                                        // border: Border.all(color: Colors.white, width: 2),
-                                      ),
-                                    )
-                                  : SizedBox(),
-                            ],
+                                isMsgUnread
+                                    ? Container(
+                                        height: 10,
+                                        width: 10,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: PrimaryColor,
+                                        ),
+                                      )
+                                    : SizedBox(),
+                              ],
+                            ),
+                            subtitle: _getLastMsgText(
+                                msg, isChatEngaged, isMsgUnread),
+                            trailing: Icon(Icons.chevron_right),
+                            leading: CachedCircleUserImageWithActiveStatus(
+                              pictureURL: user.pictureURL,
+                              isActive: user.settings.connected,
+                              borderColor: Colors.transparent,
+                              onTapped: () => UserCard(context, user).show(),
+                            ),
                           ),
-                          subtitle:
-                              _getLastMsgText(msg, isChatEngaged, isMsgUnread),
-                          trailing: Icon(Icons.chevron_right),
-                          leading: CachedCircleUserImageWithActiveStatus(
-                            pictureURL: user.pictureURL,
-                            isActive: user.settings.connected,
-                            onTapped: () => UserCard(context, user).show(),
-                          ),
-                        ),
+                          Divider(),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ],
             ),

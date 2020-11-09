@@ -8,6 +8,7 @@ import 'package:location_project/widgets/cached_circle_user_image.dart';
 import 'package:location_project/widgets/say_hello_button.dart';
 import 'package:location_project/widgets/scrollable_textview.dart';
 import 'package:location_project/widgets/textSF.dart';
+import 'package:location_project/widgets/user_map_card.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import '../models/user.dart';
 
@@ -46,8 +47,8 @@ class _UserMapCardContentState extends State<UserMapCardContent> {
     const PictureSize = 130.0;
 
     return Container(
-      height: 400,
-      width: 400,
+      height: UserMapCard.UserMapCardHeight,
+      width: UserMapCard.UserMapCardHeight,
       padding: EdgeInsets.all(20),
       child: Material(
           color: Theme.of(context).canvasColor,
@@ -119,7 +120,9 @@ class _UserMapCardContentState extends State<UserMapCardContent> {
                                       ),
                                     ),
                                   ),
-                                  // Spacer(),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
                                   Container(
                                     height: SayHelloButton.Height,
                                     child: SayHelloButton(
