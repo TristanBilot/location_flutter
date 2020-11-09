@@ -2,7 +2,7 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/caches/location_cache.dart';
 import 'package:location_project/helpers/gender_value_adapter.dart';
-import 'package:location_project/stores/database.dart';
+import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'dart:async';
 import 'image_repository.dart';
@@ -55,25 +55,22 @@ class AreaFetchingRepository {
       users.forEach((user) async {
         userCount++;
         final data = user.data();
-        User newUser;
+        final id = user.id;
 
-        if (_displayConditions(data, user.id)) {
-          /* fresh position of each user */
+        if (_displayConditions(data, id)) {
+          // fresh position of each user.
           final geoPoint = user.data()[UserField.Position.value]['geopoint'];
-          // if (geoPoint.latitude != center.latitude &&
-          //     geoPoint.longitude != center.longitude){
-          if (!UserCache().userExists(user.id)) {
-            newUser = await User.from(user);
-          } else {
-            /*when getting a user already in cache, we need to update
-          the old coordinates with the newest */
-            newUser = User.fromCache(user.id);
-            newUser.coord =
-                List<double>.from([geoPoint.latitude, geoPoint.longitude]);
-          }
+
+          User newUser = await UserRepository().fetchUser(id,
+              fromSnapshot: user, useCache: true, withViews: false);
+          // updates the coords in the cache.
+          newUser.coord =
+              List<double>.from([geoPoint.latitude, geoPoint.longitude]);
+
           UserCache().putUser(newUser);
           usersList.add(newUser);
-          print('=> in area: ${newUser.email} at ${newUser.distance} meters');
+          print(
+              '=> in area: ${newUser.email} at ${newUser.distance} meters (cached).');
         }
         /* userCount used to know when the last user is reached */
         if (userCount == users.length) completion(usersList);

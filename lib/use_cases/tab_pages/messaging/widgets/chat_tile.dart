@@ -49,10 +49,9 @@ class _ChatTileState extends State<ChatTile> {
   Future<List<dynamic>> _fetchUserAndLastMsg() async {
     final loggedUserID = UserStore().user.id;
     final remainingID = (widget.chat.userIDs..remove(loggedUserID)).first;
-    bool useCache =
-        !widget.shouldRefreshCache && Database().keyExists(remainingID);
-    final user =
-        UserRepository().getUserCachedFromID(remainingID, useCache: useCache);
+    bool useDatabase = !widget.shouldRefreshCache;
+    final user = UserRepository().fetchUser(remainingID,
+        useDatabase: useDatabase, withViews: false, withBlocks: false);
     final lastMsg = MessagingReposiory().getLastMessage(widget.chat.chatID);
     return Future.wait([user, lastMsg]);
   }

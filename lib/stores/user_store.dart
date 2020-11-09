@@ -38,7 +38,7 @@ class UserStore extends ChangeNotifier {
       return;
     }
     final id = _localRepo.getLoggedUserID();
-    _user = await _repo.getUserFromID(id);
+    _user = await _repo.fetchUser(id);
     _language = _localRepo.getAppLanguage();
     setConnectedStatus(true);
   }

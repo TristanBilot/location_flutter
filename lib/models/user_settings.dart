@@ -8,12 +8,8 @@ part 'user_settings.g.dart';
 
 @HiveType(typeId: 1)
 class UserSettings {
-  static const bool DefaultShowMyProfile = true;
-  static const bool DefaultShowMyDistance = true;
-  static const bool DefaultConnected = true;
-  static const List<int> DefaultWantedAgeRange = [18, 25];
-  static final List<Gender> DefaultWantedGenders = [Gender.Other];
   UserSettings.defaultConstructor();
+
   @HiveField(0)
   List<int> wantedAgeRange;
   @HiveField(1)
@@ -40,6 +36,12 @@ class UserSettings {
         DefaultShowMyDistance,
         DefaultConnected,
       );
+
+  static const bool DefaultShowMyProfile = true;
+  static const bool DefaultShowMyDistance = true;
+  static const bool DefaultConnected = true;
+  static const List<int> DefaultWantedAgeRange = [18, 25];
+  static final List<Gender> DefaultWantedGenders = [Gender.Other];
 
   static UserSettings fromFirestoreObject(dynamic data) {
     final wantedAgeRange = List<int>.from(data[UserField.WantedAgeRange.value]);

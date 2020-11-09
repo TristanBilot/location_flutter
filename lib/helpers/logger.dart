@@ -1,3 +1,4 @@
+import 'package:location_project/repositories/user/time_measurable.dart';
 import 'package:logger/logger.dart' as log;
 
 class Logger {
@@ -31,5 +32,34 @@ class Logger {
 
   void v(dynamic message) {
     _logger.v(message);
+  }
+
+  void logUserInfo(
+    String id, {
+    TimeMeasurable infos,
+    TimeMeasurable pictures,
+    TimeMeasurable blocks,
+    TimeMeasurable views,
+  }) {
+    String str = '=> Fetch $id';
+    int sum = 0;
+    if (infos != null) {
+      str += '\ninfo fetching: \t${infos.timeToFetch}ms';
+      sum += infos.timeToFetch;
+    }
+    if (blocks != null) {
+      str += '\nblock fetching: \t${blocks.timeToFetch}ms';
+      sum += blocks.timeToFetch;
+    }
+    if (views != null) {
+      str += '\nviews fetching: \t${views.timeToFetch}ms';
+      sum += views.timeToFetch;
+    }
+    if (pictures != null) {
+      str += '\npictures fetching: \t${pictures.timeToFetch}ms';
+      sum += pictures.timeToFetch;
+    }
+    str += '\t=> ${sum}ms';
+    Logger().v(str);
   }
 }

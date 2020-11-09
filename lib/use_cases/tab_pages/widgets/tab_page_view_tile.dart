@@ -26,8 +26,9 @@ class TabPageViewTile extends StatefulWidget {
 class _TabPageViewTileState extends State<TabPageViewTile> {
   Future<User> _fetchUser() async {
     final id = widget.userID;
-    bool useCache = !widget.shouldRefreshCache && Database().keyExists(id);
-    return await UserRepository().getUserCachedFromID(id, useCache: useCache);
+    bool useDatabase = !widget.shouldRefreshCache && Database().keyExists(id);
+    return await UserRepository()
+        .fetchUser(id, useDatabase: useDatabase, withBlocks: false);
   }
 
   _onTileTapped(BuildContext context, User user) {
