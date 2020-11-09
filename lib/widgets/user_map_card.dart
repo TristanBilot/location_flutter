@@ -9,7 +9,7 @@ import 'package:location_project/use_cases/tab_pages/messaging/firestore_chat_en
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/message_page.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/message_sender.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/widgets/messaging_inherited_widget.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/widgets/messaging_tab_pages_counted_elements.dart';
 import 'package:location_project/widgets/user_card.dart';
 import 'package:location_project/widgets/user_map_card_content.dart';
 import 'package:provider/provider.dart';

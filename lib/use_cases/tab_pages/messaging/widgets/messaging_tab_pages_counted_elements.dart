@@ -7,9 +7,6 @@ class MessagingTabPagesCountedElements extends ChangeNotifier {
   int nbRequests;
   int nbViews;
 
-  MessagingTabPagesCountedElements(
-      this.nbDiscussions, this.nbRequests, this.nbViews);
-
   Future<void> initCounts() async {
     nbDiscussions = MessagingDatabase().getNbDiscussions();
     nbRequests = MessagingDatabase().getNbRequests();

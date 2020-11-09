@@ -8,7 +8,7 @@ import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/chat_tile.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/firestore_chat_entry.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/widgets/messaging_inherited_widget.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/widgets/messaging_tab_pages_counted_elements.dart';
 import 'package:location_project/use_cases/tab_pages/tab_page_type.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_placeholder.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_refresher.dart';

@@ -17,7 +17,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => MessagingTabPagesCountedElements(1, 2, 3),
+      create: (context) => MessagingTabPagesCountedElements(),
       child: HomePageContainer(),
     );
   }

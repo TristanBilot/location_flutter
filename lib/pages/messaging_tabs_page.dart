@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/widgets/messaging_inherited_widget.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/widgets/messaging_tab_pages_counted_elements.dart';
 import 'package:location_project/use_cases/tab_pages/tab_page_discussions_page.dart';
 import 'package:location_project/use_cases/tab_pages/tab_page_requests_page.dart';
 import 'package:location_project/use_cases/tab_pages/tab_page_views_page.dart';
+import 'package:location_project/use_cases/tab_pages/widgets/tab_page_element_count_status.dart';
 import 'package:location_project/widgets/textSF.dart';
 import 'package:provider/provider.dart';
 
@@ -50,12 +51,9 @@ class _MessagingTabsPageState extends State<MessagingTabsPage>
                   labelColor: Theme.of(context).textTheme.headline6.color,
                   indicatorColor: Theme.of(context).primaryColor,
                   tabs: [
-                    TextSF(
-                        'DISCUSSIONS ${counts.nbDiscussions == 0 ? '' : counts.nbDiscussions}'),
-                    TextSF(
-                        'REQUESTS ${counts.nbRequests == 0 ? '' : counts.nbRequests}'),
-                    TextSF(
-                        'VIEWS ${counts.nbViews == 0 ? '' : counts.nbViews}'),
+                    TabPageElementCountStatus('MESSAGES', counts.nbDiscussions),
+                    TabPageElementCountStatus('REQUESTS', counts.nbRequests),
+                    TabPageElementCountStatus('VIEWS', counts.nbViews),
                   ],
                 ),
               );
