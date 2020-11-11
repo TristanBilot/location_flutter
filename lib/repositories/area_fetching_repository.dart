@@ -1,7 +1,7 @@
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/caches/location_cache.dart';
-import 'package:location_project/helpers/gender_value_adapter.dart';
+import 'package:location_project/adapters/gender_value_adapter.dart';
 import 'package:location_project/helpers/logger.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/stores/user_store.dart';

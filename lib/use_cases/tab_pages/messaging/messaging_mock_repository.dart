@@ -34,11 +34,11 @@ class MessagingMockRepository {
     bool engaged,
   ) async {
     final rd = Random().nextBool();
-    final entry = FirestoreChatEntry.newChatEntry(
-      rd == true ? id1 : id2,
-      rd == true ? id2 : id1,
-      rd == true ? id1Name : id2Name,
-      rd == true ? id2Name : id1Name,
+    final entry = Chat.newChatEntry(
+      rd ? id1 : id2,
+      rd ? id2 : id1,
+      rd ? id1Name : id2Name,
+      rd ? id2Name : id1Name,
       engaged,
       false,
     );

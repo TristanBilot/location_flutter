@@ -2,9 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/helpers/logger.dart';
 import 'package:location_project/stores/messaging_database.dart';
 import 'package:location_project/stores/user_store.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/chat_tile.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/firestore_chat_entry.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
@@ -28,7 +30,6 @@ class TabPageDiscussionsPage extends StatefulWidget {
 
 class _TabPageDiscussionsPageState extends State<TabPageDiscussionsPage>
     implements SetStateDelegate {
-  Stream<QuerySnapshot> _stream;
   RefreshController _refreshController;
   TextEditingController _messageEditingController;
 
@@ -41,7 +42,7 @@ class _TabPageDiscussionsPageState extends State<TabPageDiscussionsPage>
     _messageEditingController = TextEditingController();
     _refreshController = RefreshController(initialRefresh: false);
     _shouldRefreshCache = false;
-    _fetchChatsStream();
+    _fetch();
 
     super.initState();
   }
@@ -49,35 +50,27 @@ class _TabPageDiscussionsPageState extends State<TabPageDiscussionsPage>
   @override
   void setStateFromOutside() => setState(() => {});
 
+  void _fetch() {
+    context.read<ChatCubit>().fetchChats();
+  }
+
   setStateIfMounted(Function f) {
     if (mounted) setState(f);
   }
 
-  Future<void> _fetchChatsStream() async {
-    Stopwatch stopwatch = Stopwatch()..start();
-    final userID = UserStore().user.id;
-    _stream = await MessagingReposiory().getChats(userID);
-    int discussionsFetchingTime = stopwatch.elapsed.inMilliseconds;
-    setStateIfMounted(() =>
-        Logger().v("discussions fetched in ${discussionsFetchingTime}ms."));
-  }
-
   /// Sort the snapshots in ascending last message order.
-  List<dynamic> _sortSnapshotsByMostRecent(List<dynamic> snapshots) {
-    final mostRecent = ChatField.LastActivityTime.value;
-    return snapshots
-      ..sort((a, b) => (b.data()[mostRecent] as int)
-          .compareTo((a.data()[mostRecent] as int)));
+  List<Chat> _sortChatsByMostRecent(List<Chat> chats) {
+    return chats
+      ..sort((a, b) => b.lastActivityTime.compareTo(a.lastActivityTime));
   }
 
   /// Return the same list of snapshots with only the chats with
   /// participants which the name match the string `pattern`.
   /// This function is used for the search feature.
   /// Return the same list of snapshots unchanged if `pattern` is empty.
-  List<dynamic> _filterStreamByName(List<dynamic> snapshots, String pattern) {
-    if (pattern.length == 0) return snapshots;
-    return snapshots.where((snapshot) {
-      final chat = FirestoreChatEntry.fromFirestoreObject(snapshot.data());
+  List<Chat> _filterChatsByName(List<Chat> chats, String pattern) {
+    if (pattern.length == 0) return chats;
+    return chats.where((chat) {
       final otherParticipantName = (chat.userNames
             ..removeWhere((userName) => userName == UserStore().user.firstName))
           .first;
@@ -85,10 +78,11 @@ class _TabPageDiscussionsPageState extends State<TabPageDiscussionsPage>
     }).toList();
   }
 
-  Function(List<dynamic>) get _filter => (snapshots) => snapshots
-      .where(
-          (chat) => chat.data()[ChatField.IsChatEngaged.value] as bool == true)
-      .toList();
+  List<Chat> _filter(List<Chat> chats, String pattern) {
+    return _sortChatsByMostRecent(_filterChatsByName(chats, pattern))
+        .where((chat) => chat.isChatEngaged)
+        .toList();
+  }
 
   void _onRefresh() async {
     _shouldRefreshCache = true;
@@ -118,15 +112,11 @@ class _TabPageDiscussionsPageState extends State<TabPageDiscussionsPage>
             ),
           ),
           Flexible(
-            child: StreamBuilder(
-              stream: _stream,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  final sortedChats =
-                      _sortSnapshotsByMostRecent(snapshot.data.documents);
-                  final filteredChats = _filterStreamByName(
-                      sortedChats, _messageEditingController.text);
-                  final chats = _filter(filteredChats);
+            child: BlocBuilder<ChatCubit, ChatState>(
+              builder: (context, state) {
+                if (state is ChatLoaded) {
+                  List<Chat> chats =
+                      _filter(state.chats, _messageEditingController.text);
                   MessagingDatabase().putNbDiscussions(chats.length);
 
                   return TabPageRefresher(
@@ -140,13 +130,10 @@ class _TabPageDiscussionsPageState extends State<TabPageDiscussionsPage>
                               bool isFirstIndex = index == 0;
                               bool isLimitBetweenRequestedAndRequests = index ==
                                   chats.indexWhere((chat) =>
-                                      (chat.data()[ChatField.RequesterID.value]
-                                          as String) ==
-                                      UserStore().user.id);
+                                      chat.requesterID == UserStore().user.id);
                               return ChatTile(
                                 tabPageType: type,
-                                chat: FirestoreChatEntry.fromFirestoreObject(
-                                    chats[index].data()),
+                                chat: chats[index],
                                 shouldRefreshCache: _shouldRefreshCache,
                                 isFirstIndex: isFirstIndex,
                                 isLimitBetweenRequestedAndRequests:
@@ -156,6 +143,7 @@ class _TabPageDiscussionsPageState extends State<TabPageDiscussionsPage>
                         : placeholder,
                   );
                 }
+                // TODO: handle other states
                 return Container();
               },
             ),

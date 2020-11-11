@@ -76,7 +76,7 @@ class _UserCardState extends State<UserMapCard> {
     // Create a new chat.
     User requester = UserStore().user;
     User requested = widget.user;
-    final chatEntry = FirestoreChatEntry.newChatEntry(
+    final chatEntry = Chat.newChatEntry(
       requester.id,
       requested.id,
       requester.firstName,
@@ -91,7 +91,7 @@ class _UserCardState extends State<UserMapCard> {
     setState(() => _messageEditingController.text = '');
 
     final data = (await MessagingReposiory().getChat(chatEntry.chatID)).data();
-    final chat = FirestoreChatEntry.fromFirestoreObject(data);
+    final chat = Chat.fromFirestoreObject(data);
     Navigator.pop(context);
     Navigator.push(
       context,
@@ -114,7 +114,7 @@ class _UserCardState extends State<UserMapCard> {
   Future<void> _sendHelloNotif() async {
     User requester = UserStore().user;
     User requested = widget.user;
-    final entry = FirestoreChatEntry.newChatEntry(
+    final entry = Chat.newChatEntry(
       requester.id,
       requested.id,
       requester.firstName,
@@ -173,7 +173,7 @@ class _UserCardState extends State<UserMapCard> {
                       snapshot.data[0].data() ?? snapshot.data[1].data();
                   final chatEntryIfExists = chatIfExists == null
                       ? null
-                      : FirestoreChatEntry.fromFirestoreObject(chatIfExists);
+                      : Chat.fromFirestoreObject(chatIfExists);
                   return UserMapCardContent(
                     user: widget.user,
                     onSendTap: _sendMessage,

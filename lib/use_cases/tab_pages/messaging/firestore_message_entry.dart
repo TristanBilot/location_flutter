@@ -20,6 +20,12 @@ class FirestoreMessageEntry implements FirestoreEntry {
     this.time,
   );
 
+  @override
+  bool get stringify => null;
+
+  @override
+  List<Object> get props => [message, sendBy, time];
+
   dynamic toFirestoreObject() {
     return {
       MessageField.Message.value: message,

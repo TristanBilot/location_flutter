@@ -19,7 +19,7 @@ class UserMapCardContent extends StatefulWidget {
   final Function onBlockTap;
   final TextEditingController messageEditingController;
   final RoundedLoadingButtonController blockButtonController;
-  final FirestoreChatEntry chatEntryIfExists;
+  final Chat chatEntryIfExists;
 
   UserMapCardContent({
     @required this.user,

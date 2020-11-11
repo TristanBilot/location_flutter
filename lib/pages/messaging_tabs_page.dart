@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_cubit.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/messaging_tab_pages_counted_elements.dart';
 import 'package:location_project/use_cases/tab_pages/tab_page_discussions_page.dart';
 import 'package:location_project/use_cases/tab_pages/tab_page_requests_page.dart';
@@ -37,36 +40,40 @@ class _MessagingTabsPageState extends State<MessagingTabsPage>
     Provider.of<MessagingTabPagesCountedElements>(context, listen: false)
         .initCounts();
 
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(50.0),
-          child: Consumer<MessagingTabPagesCountedElements>(
-            builder: (context, counts, child) {
-              return AppBar(
-                backgroundColor: _getTabColor(),
-                bottom: TabBar(
-                  labelPadding: EdgeInsets.only(bottom: 10),
-                  labelColor: Theme.of(context).textTheme.headline6.color,
-                  indicatorColor: Theme.of(context).primaryColor,
-                  tabs: [
-                    TabPageElementCountStatus('Messages', counts.nbDiscussions),
-                    TabPageElementCountStatus('Requests', counts.nbRequests),
-                    TabPageElementCountStatus('Views', counts.nbViews),
-                  ],
-                ),
-              );
-            },
-            // title: Text('Tabs Demo'),
+    return BlocProvider(
+      create: (context) => ChatCubit(MessagingReposiory()),
+      child: DefaultTabController(
+        length: 3,
+        child: Scaffold(
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(50.0),
+            child: Consumer<MessagingTabPagesCountedElements>(
+              builder: (context, counts, child) {
+                return AppBar(
+                  backgroundColor: _getTabColor(),
+                  bottom: TabBar(
+                    labelPadding: EdgeInsets.only(bottom: 10),
+                    labelColor: Theme.of(context).textTheme.headline6.color,
+                    indicatorColor: Theme.of(context).primaryColor,
+                    tabs: [
+                      TabPageElementCountStatus(
+                          'Messages', counts.nbDiscussions),
+                      TabPageElementCountStatus('Requests', counts.nbRequests),
+                      TabPageElementCountStatus('Views', counts.nbViews),
+                    ],
+                  ),
+                );
+              },
+              // title: Text('Tabs Demo'),
+            ),
           ),
-        ),
-        body: TabBarView(
-          children: [
-            TabPageDiscussionsPage(),
-            TabPageRequestsPage(),
-            TabPageViewsPage(),
-          ],
+          body: TabBarView(
+            children: [
+              TabPageDiscussionsPage(),
+              TabPageRequestsPage(),
+              TabPageViewsPage(),
+            ],
+          ),
         ),
       ),
     );

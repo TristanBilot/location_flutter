@@ -1,4 +1,4 @@
-import 'package:location_project/helpers/language_adapter.dart';
+import 'package:location_project/adapters/language_adapter.dart';
 import 'package:location_project/use_cases/account/account_language_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../stores/extensions.dart';

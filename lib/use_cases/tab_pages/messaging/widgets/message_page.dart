@@ -19,7 +19,7 @@ import 'package:location_project/widgets/textSF.dart';
 import 'package:location_project/widgets/user_card.dart';
 
 class MessagePage extends StatefulWidget {
-  final FirestoreChatEntry chat;
+  final Chat chat;
   final User user;
 
   MessagePage({

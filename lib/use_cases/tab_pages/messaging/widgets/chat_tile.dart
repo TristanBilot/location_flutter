@@ -20,7 +20,7 @@ import 'package:location_project/widgets/user_card.dart';
 import 'package:provider/provider.dart';
 
 class ChatTile extends StatefulWidget {
-  final FirestoreChatEntry chat;
+  final Chat chat;
   final bool shouldRefreshCache;
   final TabPageType tabPageType;
 

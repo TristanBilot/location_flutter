@@ -1,51 +1,60 @@
-import 'package:geoflutterfire/geoflutterfire.dart';
-import 'package:location_project/helpers/gender_value_adapter.dart';
+import 'package:location_project/adapters/gender_value_adapter.dart';
 import 'package:location_project/models/firestore_entry.dart';
 import 'package:location_project/models/user.dart';
-import 'package:location_project/models/user_settings.dart';
-import 'package:location_project/models/gender.dart';
 import '../stores/extensions.dart';
 
 /// Represents the User data stored in Firestore.
 /// Used to add new users.
 class FirestoreUserEntry implements FirestoreEntry {
-  String firstName;
-  String lastName;
-  String gender;
-  int age;
-  dynamic geoPointData;
-  bool showMyDistance;
-  bool showMyProfile;
-  bool connected;
-  List<int> wantedAgeRange;
-  List<String> wantedGenders;
-  List<String> blockedUserIDs;
-  List<String> userIDsWhoBlockedMe;
+  final String firstName;
+  final String lastName;
+  final String gender;
+  final int age;
+  final dynamic geoPointData;
+  final bool showMyDistance;
+  final bool showMyProfile;
+  final bool connected;
+  final List<int> wantedAgeRange;
+  final List<String> wantedGenders;
+  final List<String> blockedUserIDs;
+  final List<String> userIDsWhoBlockedMe;
+
+  @override
+  bool get stringify => null;
+
+  @override
+  List<Object> get props => [
+        firstName,
+        lastName,
+        gender,
+        age,
+        geoPointData,
+        showMyDistance,
+        showMyProfile,
+        connected,
+        wantedAgeRange,
+        wantedGenders,
+        blockedUserIDs,
+        userIDsWhoBlockedMe
+      ];
 
   FirestoreUserEntry(
-    String firstName,
-    String lastName,
-    Gender gender,
-    int age,
-    GeoFirePoint geoPoint,
-    UserSettings settings,
-    List<String> blockedUserIDs,
-    List<String> userIDsWhoBlockedMe,
-  ) {
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.gender = gender.value;
-    this.age = age;
-    this.geoPointData = geoPoint.data;
-    this.showMyDistance = settings.showMyDistance;
-    this.showMyProfile = settings.showMyprofile;
-    this.connected = settings.connected;
-    this.wantedAgeRange = settings.wantedAgeRange;
-    this.wantedGenders =
-        GenderValueAdapter().gendersToStrings(settings.wantedGenders);
-    this.blockedUserIDs = blockedUserIDs;
-    this.userIDsWhoBlockedMe = userIDsWhoBlockedMe;
-  }
+    this.firstName,
+    this.lastName,
+    gender,
+    this.age,
+    geoPoint,
+    settings,
+    this.blockedUserIDs,
+    this.userIDsWhoBlockedMe,
+  )   : this.gender = gender.value,
+        this.geoPointData = geoPoint.data,
+        this.showMyDistance = settings.showMyDistance,
+        this.showMyProfile = settings.showMyprofile,
+        this.connected = settings.connected,
+        this.wantedAgeRange = settings.wantedAgeRange,
+        this.wantedGenders =
+            GenderValueAdapter().gendersToStrings(settings.wantedGenders);
 
   dynamic toFirestoreObject() {
     return {

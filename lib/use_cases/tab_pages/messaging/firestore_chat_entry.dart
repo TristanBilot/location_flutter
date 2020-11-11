@@ -15,17 +15,41 @@ enum ChatField {
   RequestedID,
 }
 
-class FirestoreChatEntry implements FirestoreEntry {
-  List<String> userIDs;
-  List<String> userNames;
-  String chatID;
-  int lastActivityTime;
-  bool lastActivitySeen;
+class Chat implements FirestoreEntry {
+  final List<String> userIDs;
+  final List<String> userNames;
+  final String chatID;
+  final int lastActivityTime;
+  final bool lastActivitySeen;
   bool isChatEngaged;
-  String requesterID;
-  String requestedID;
+  final String requesterID;
+  final String requestedID;
 
-  FirestoreChatEntry(
+  @override
+  bool get stringify => null;
+
+  @override
+  List<Object> get props => [
+        userIDs,
+        userNames,
+        chatID,
+        lastActivityTime,
+        lastActivitySeen,
+        isChatEngaged,
+        requesterID,
+        requestedID
+      ];
+
+  //   String id;
+  // bool isEngaged;
+  // bool lastActivitySeen;
+  // double lastActivityTime;
+  // String requestedID;
+  // String requesterID;
+  // String requestedName;
+  // String requesterName;
+
+  Chat(
     this.userIDs,
     this.userNames,
     this.chatID,
@@ -49,8 +73,8 @@ class FirestoreChatEntry implements FirestoreEntry {
     };
   }
 
-  static FirestoreChatEntry fromFirestoreObject(dynamic data) {
-    return FirestoreChatEntry(
+  static Chat fromFirestoreObject(dynamic data) {
+    return Chat(
       List<String>.from(data[ChatField.UserIDs.value]),
       List<String>.from(data[ChatField.UserNames.value]),
       data[ChatField.ChatID.value] as String,
@@ -65,7 +89,7 @@ class FirestoreChatEntry implements FirestoreEntry {
   /// Prefer this method to build a chat entry instead of contstructor.
   /// `requesterID` is the requester and `requestedID` the
   /// requested user.
-  static FirestoreChatEntry newChatEntry(
+  static Chat newChatEntry(
     String requesterID,
     String requestedID,
     String requesterName,
@@ -74,7 +98,7 @@ class FirestoreChatEntry implements FirestoreEntry {
     bool isChatEngaged,
   ) {
     final chatID = MessagingReposiory.getChatID(requesterID, requestedID);
-    final entry = FirestoreChatEntry(
+    final entry = Chat(
       [requesterID, requestedID],
       [requesterName, requestedName],
       chatID,

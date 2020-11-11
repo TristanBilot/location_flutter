@@ -51,7 +51,7 @@ class _TabPageRequestsPageState extends State<TabPageRequestsPage>
   Future<void> _fetchChatsStream() async {
     Stopwatch stopwatch = Stopwatch()..start();
     final userID = UserStore().user.id;
-    _stream = await MessagingReposiory().getChats(userID);
+    // _stream = await MessagingReposiory().getChats(userID);
     int discussionsFetchingTime = stopwatch.elapsed.inMilliseconds;
     setStateIfMounted(
         () => Logger().v("requests fetched in ${discussionsFetchingTime}ms."));
@@ -72,7 +72,7 @@ class _TabPageRequestsPageState extends State<TabPageRequestsPage>
   List<dynamic> _filterStreamByName(List<dynamic> snapshots, String pattern) {
     if (pattern.length == 0) return snapshots;
     return snapshots.where((snapshot) {
-      final chat = FirestoreChatEntry.fromFirestoreObject(snapshot.data());
+      final chat = Chat.fromFirestoreObject(snapshot.data());
       final otherParticipantName = (chat.userNames
             ..removeWhere((userName) => userName == UserStore().user.firstName))
           .first;
@@ -146,7 +146,7 @@ class _TabPageRequestsPageState extends State<TabPageRequestsPage>
                                       UserStore().user.id);
                               return ChatTile(
                                 tabPageType: type,
-                                chat: FirestoreChatEntry.fromFirestoreObject(
+                                chat: Chat.fromFirestoreObject(
                                     chats[index].data()),
                                 shouldRefreshCache: _shouldRefreshCache,
                                 isFirstIndex: isFirstIndex,
