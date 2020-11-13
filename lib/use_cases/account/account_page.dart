@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:location_project/repositories/auth_repository.dart';
 import 'package:location_project/repositories/user_mock_repository.dart';
 import 'package:location_project/stores/routes.dart';
@@ -129,10 +130,19 @@ class _AccountPageState extends State<AccountPage>
                     ),
                   ),
                   Center(
-                    child: CachedCircleUserImage(
-                      UserStore().user.pictureURL,
-                      size: AccountPage.userImageSize + 20,
-                    ),
+                    // child: CachedCircleUserImage(
+                    //   UserStore().user.pictureURL,
+                    //   size: AccountPage.userImageSize + 20,
+                    // ),
+                    child: Container(
+                        width: 400,
+                        height: 400,
+                        child: SvgPicture.asset(
+                          'assets/logo.svg',
+                        )
+
+                        // ),
+                        ),
                   ),
                 ]),
               ),

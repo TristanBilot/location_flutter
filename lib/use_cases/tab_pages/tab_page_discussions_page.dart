@@ -114,7 +114,7 @@ class _TabPageDiscussionsPageState extends State<TabPageDiscussionsPage>
           Flexible(
             child: BlocBuilder<ChatCubit, ChatState>(
               builder: (context, state) {
-                if (state is ChatLoaded) {
+                if (state is ChatFetchedState) {
                   List<Chat> chats =
                       _filter(state.chats, _messageEditingController.text);
                   MessagingDatabase().putNbDiscussions(chats.length);
@@ -131,13 +131,15 @@ class _TabPageDiscussionsPageState extends State<TabPageDiscussionsPage>
                               bool isLimitBetweenRequestedAndRequests = index ==
                                   chats.indexWhere((chat) =>
                                       chat.requesterID == UserStore().user.id);
-                              return ChatTile(
-                                tabPageType: type,
-                                chat: chats[index],
-                                shouldRefreshCache: _shouldRefreshCache,
-                                isFirstIndex: isFirstIndex,
-                                isLimitBetweenRequestedAndRequests:
-                                    isLimitBetweenRequestedAndRequests,
+                              return Builder(
+                                builder: (context) => ChatTile(
+                                  tabPageType: type,
+                                  chat: chats[index],
+                                  shouldRefreshCache: _shouldRefreshCache,
+                                  isFirstIndex: isFirstIndex,
+                                  isLimitBetweenRequestedAndRequests:
+                                      isLimitBetweenRequestedAndRequests,
+                                ),
                               );
                             })
                         : placeholder,

@@ -17,6 +17,9 @@ import GoogleMaps
       UNUserNotificationCenter.current().delegate = self as UNUserNotificationCenterDelegate
     }
     GMSServices.provideAPIKey("AIzaSyBPrx_ld7IslbiyV1HtjDFytXKwU96pKu8")
+    var flutter_native_splash = 1
+    UIApplication.shared.isStatusBarHidden = false
+
     GeneratedPluginRegistrant.register(with: self)
     application.registerForRemoteNotifications()
 

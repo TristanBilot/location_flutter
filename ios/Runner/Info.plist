@@ -96,5 +96,8 @@
     <false/>
     <key>FirebaseScreenReportingEnabled</key>
     <true/>
+	<key>UIStatusBarHidden</key>
+	<true/>
+
 </dict>
 </plist>

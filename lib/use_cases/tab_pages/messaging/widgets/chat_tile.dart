@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/stores/database.dart';
@@ -6,6 +7,8 @@ import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/themes/light_theme.dart';
 import 'package:location_project/use_cases/start_path/basic_alert.dart';
 import 'package:location_project/use_cases/start_path/basic_alert_button.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_cubit.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_deleting_state.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/messaging_tab_pages_counted_elements.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/cached_circle_user_image_with_active_status.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/firestore_chat_entry.dart';
@@ -124,7 +127,7 @@ class _ChatTileState extends State<ChatTile> {
 
   void _onSharePress() {}
 
-  _onUnmatchPress(ChatTile widget, String userName, context) {
+  _onUnmatchPress(ChatTile widget, String userName, BuildContext context) {
     Color cancelButtonColor() {
       bool isDark =
           MediaQuery.of(context).platformBrightness == Brightness.dark;
@@ -135,14 +138,8 @@ class _ChatTileState extends State<ChatTile> {
 
     void onCancelPress() => Navigator.of(context).pop();
 
-    void onUnmatchPress() {
-      MessagingReposiory().deleteMessages(widget.chat.chatID);
-      MessagingReposiory().deleteChat(widget.chat.chatID);
-      Database()
-          .deleteUser(widget.chat.requesterID)
-          .then((value) => Navigator.of(context).pop());
-      Provider.of<MessagingTabPagesCountedElements>(context, listen: false)
-          .updateCounts(discussions: true, decrement: true);
+    void onUnmatchPress(BuildContext context) {
+      context.read<ChatCubit>().deleteChat(widget.chat);
     }
 
     showDialog(
@@ -154,10 +151,17 @@ class _ChatTileState extends State<ChatTile> {
         contentPadding: EdgeInsets.only(bottom: 10),
         actions: [
           BasicAlertButton('CANCEL', onCancelPress, color: cancelButtonColor()),
-          BasicAlertButton('UNMATCH', onUnmatchPress, color: Colors.red[500]),
+          BasicAlertButton('UNMATCH', () => onUnmatchPress(context),
+              color: Colors.red[500]),
         ],
       ),
     );
+  }
+
+  void _triggerUnmatchPress() {
+    Navigator.of(context).pop();
+    Provider.of<MessagingTabPagesCountedElements>(context, listen: false)
+        .updateCounts(discussions: true, decrement: true);
   }
 
   TabPageSlidable _getSlidableWithChild(User user, {@required Widget child}) {
@@ -226,58 +230,63 @@ class _ChatTileState extends State<ChatTile> {
           bool isChatEngaged = msg != null;
           bool isMsgUnread = _shouldMarkMsgAsUnread(isChatEngaged, msg);
           // if (!Database().keyExists(user.id)) Database().putUser(user);
-          return GestureDetector(
-            onTap: () => _onTileTapped(context, user, isChatEngaged, msg),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _getSectionTitleIfNeeded(context),
-                Column(
-                  children: [
-                    _getSlidableWithChild(
-                      user,
-                      child: Column(
-                        children: [
-                          ListTile(
-                            title: Row(
-                              children: [
-                                Expanded(
-                                  // display name and distance
-                                  child: TabPageRichText(
-                                    user.firstName,
-                                    user.distance,
-                                    isMsgUnread: isMsgUnread,
+          return BlocListener<ChatCubit, ChatState>(
+            listener: (context, state) {
+              if (state is ChatDeletedState) _triggerUnmatchPress();
+            },
+            child: GestureDetector(
+              onTap: () => _onTileTapped(context, user, isChatEngaged, msg),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _getSectionTitleIfNeeded(context),
+                  Column(
+                    children: [
+                      _getSlidableWithChild(
+                        user,
+                        child: Column(
+                          children: [
+                            ListTile(
+                              title: Row(
+                                children: [
+                                  Expanded(
+                                    // display name and distance
+                                    child: TabPageRichText(
+                                      user.firstName,
+                                      user.distance,
+                                      isMsgUnread: isMsgUnread,
+                                    ),
                                   ),
-                                ),
-                                isMsgUnread
-                                    ? Container(
-                                        height: 10,
-                                        width: 10,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: PrimaryColor,
-                                        ),
-                                      )
-                                    : SizedBox(),
-                              ],
+                                  isMsgUnread
+                                      ? Container(
+                                          height: 10,
+                                          width: 10,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: PrimaryColor,
+                                          ),
+                                        )
+                                      : SizedBox(),
+                                ],
+                              ),
+                              subtitle: _getLastMsgText(
+                                  msg, isChatEngaged, isMsgUnread),
+                              trailing: Icon(Icons.chevron_right),
+                              leading: CachedCircleUserImageWithActiveStatus(
+                                pictureURL: user.pictureURL,
+                                isActive: user.settings.connected,
+                                borderColor: Colors.transparent,
+                                onTapped: () => UserCard(context, user).show(),
+                              ),
                             ),
-                            subtitle: _getLastMsgText(
-                                msg, isChatEngaged, isMsgUnread),
-                            trailing: Icon(Icons.chevron_right),
-                            leading: CachedCircleUserImageWithActiveStatus(
-                              pictureURL: user.pictureURL,
-                              isActive: user.settings.connected,
-                              borderColor: Colors.transparent,
-                              onTapped: () => UserCard(context, user).show(),
-                            ),
-                          ),
-                          Divider(),
-                        ],
+                            Divider(),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           );
         }

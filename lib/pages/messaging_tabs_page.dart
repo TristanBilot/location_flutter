@@ -40,8 +40,10 @@ class _MessagingTabsPageState extends State<MessagingTabsPage>
     Provider.of<MessagingTabPagesCountedElements>(context, listen: false)
         .initCounts();
 
-    return BlocProvider(
-      create: (context) => ChatCubit(MessagingReposiory()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => ChatCubit(MessagingReposiory())),
+      ],
       child: DefaultTabController(
         length: 3,
         child: Scaffold(
