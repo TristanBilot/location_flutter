@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/views/cubit/view_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/messaging_tab_pages_counted_elements.dart';
 import 'package:location_project/use_cases/tab_pages/tab_page_discussions_page.dart';
 import 'package:location_project/use_cases/tab_pages/tab_page_requests_page.dart';
@@ -43,6 +45,7 @@ class _MessagingTabsPageState extends State<MessagingTabsPage>
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => ChatCubit(MessagingReposiory())),
+        BlocProvider(create: (context) => ViewCubit(UserRepository())),
       ],
       child: DefaultTabController(
         length: 3,

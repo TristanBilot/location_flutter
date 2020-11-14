@@ -30,6 +30,7 @@ class UserMapCard extends StatefulWidget implements Showable {
   );
 
   void show() {
+    UserStore().addView(user.id);
     showGeneralDialog(
         transitionBuilder: (context, a1, a2, widget) {
           return Transform.scale(

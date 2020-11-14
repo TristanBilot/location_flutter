@@ -246,7 +246,7 @@ class UserRepository {
   /// Return a stream from a collection based in the root field.
   /// `field` should be UserIDsWhoWiewedMe or ViewedUserIDs or other
   /// collection at the root of the User field.
-  Future<Stream<QuerySnapshot>> getStream(String id, UserField field) async {
+  Stream<QuerySnapshot> getStream(String id, UserField field) {
     return _firestore
         .collection(RootKey)
         .doc(id)

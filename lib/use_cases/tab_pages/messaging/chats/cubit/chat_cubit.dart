@@ -9,15 +9,15 @@ import 'package:location_project/use_cases/tab_pages/messaging/messaging_reposit
 part 'chat_fetching_state.dart';
 
 class ChatCubit extends Cubit<ChatState> {
-  final MessagingReposiory _repository;
+  final MessagingReposiory _msgRepository;
 
-  ChatCubit(this._repository) : super(ChatInitialState());
+  ChatCubit(this._msgRepository) : super(ChatInitialState());
 
   Future<void> fetchChats() async {
     try {
       emit(ChatFetchingState());
       final id = UserStore().user.id;
-      _repository.getChats(id).listen((chats) {
+      _msgRepository.getChats(id).listen((chats) {
         emit(ChatFetchedState(chats));
       });
     } on Exception {
@@ -28,8 +28,8 @@ class ChatCubit extends Cubit<ChatState> {
   Future<void> deleteChat(Chat chat) async {
     try {
       emit(ChatDeletingState());
-      MessagingReposiory().deleteMessages(chat.chatID);
-      MessagingReposiory().deleteChat(chat.chatID);
+      _msgRepository.deleteMessages(chat.chatID);
+      _msgRepository.deleteChat(chat.chatID);
       await Database().deleteUser(chat.requesterID);
       emit(ChatDeletedState());
     } on Exception {

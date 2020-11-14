@@ -1,19 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:location_project/helpers/logger.dart';
-import 'package:location_project/models/user.dart';
-import 'package:location_project/repositories/user_repository.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/stores/messaging_database.dart';
-import 'package:location_project/stores/user_store.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/firestore_chat_entry.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/widgets/messaging_tab_pages_counted_elements.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_cubit.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_views_fetching_state.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/views/cubit/view_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/tab_page_type.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_placeholder.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_refresher.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_view_tile.dart';
-import 'package:provider/provider.dart';
-import '../../stores/extensions.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class TabPageViewsPage extends StatefulWidget {
@@ -22,7 +17,6 @@ class TabPageViewsPage extends StatefulWidget {
 }
 
 class _TabPageViewsPageState extends State<TabPageViewsPage> {
-  Stream<QuerySnapshot> _stream;
   RefreshController _refreshController;
   bool _shouldRefreshCache;
 
@@ -30,35 +24,18 @@ class _TabPageViewsPageState extends State<TabPageViewsPage> {
   void initState() {
     _refreshController = RefreshController(initialRefresh: false);
     _shouldRefreshCache = false;
-    _fetchChatsStream();
+    _fetch();
 
     super.initState();
+  }
+
+  void _fetch() {
+    context.read<ViewCubit>().fetchViews();
   }
 
   setStateIfMounted(Function f) {
     if (mounted) setState(f);
   }
-
-  Future<void> _fetchChatsStream() async {
-    Stopwatch stopwatch = Stopwatch()..start();
-    final id = UserStore().user.id;
-    _stream =
-        await UserRepository().getStream(id, UserField.UserIDsWhoWiewedMe);
-    int viewsFetchingTime = stopwatch.elapsed.inMilliseconds;
-    setStateIfMounted(
-        () => Logger().v("views fetched in ${viewsFetchingTime}ms."));
-  }
-
-  Function(List<dynamic>) get filter => (snapshots) => snapshots
-      .where(
-          (chat) => chat.data()[ChatField.IsChatEngaged.value] as bool == false)
-      .toList()
-        ..sort((a, b) {
-          bool isUserRequested =
-              (b.data()[ChatField.RequestedID.value] as String) ==
-                  UserStore().user.id;
-          return isUserRequested ? 1 : -1;
-        });
 
   void _onRefresh() async {
     _shouldRefreshCache = true;
@@ -66,12 +43,6 @@ class _TabPageViewsPageState extends State<TabPageViewsPage> {
     _refreshController.refreshCompleted();
     // need to be improved later, set to false after stream building, not build().
     Future.delayed(Duration(seconds: 1), () => _shouldRefreshCache = false);
-  }
-
-  List<String> _fromSnapshotToIDsList(AsyncSnapshot snapshot) {
-    if (snapshot.data.documents.isEmpty) return [];
-    return List<String>.from(
-        snapshot.data.documents.map((doc) => doc.id).toList());
   }
 
   Widget get placeholder =>
@@ -88,11 +59,10 @@ class _TabPageViewsPageState extends State<TabPageViewsPage> {
       child: Column(
         children: [
           Flexible(
-            child: StreamBuilder(
-              stream: _stream,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  final viewersIDs = _fromSnapshotToIDsList(snapshot);
+            child: BlocBuilder<ViewCubit, ViewState>(
+              builder: (context, state) {
+                if (state is ViewFetchedState) {
+                  final viewersIDs = state.viewerIDs;
                   MessagingDatabase().putNbViews(viewersIDs.length);
 
                   return TabPageRefresher(
