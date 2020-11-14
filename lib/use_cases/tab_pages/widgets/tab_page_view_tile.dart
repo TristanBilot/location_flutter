@@ -54,37 +54,36 @@ class _TabPageViewTileState extends State<TabPageViewTile> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Card(
-                  child: Column(
-                    children: [
-                      TabPageSlidable(
-                        isOnlyOneAction: true,
-                        action1: () => _onRemoveViewTap(user.id),
-                        text1: 'Remove',
-                        child: ListTile(
-                          title: Row(
-                            children: [
-                              Expanded(
-                                // display name and distance
-                                child: TabPageRichText(
-                                  user.firstName,
-                                  user.distance,
-                                ),
+                Column(
+                  children: [
+                    TabPageSlidable(
+                      isOnlyOneAction: true,
+                      action1: () => _onRemoveViewTap(user.id),
+                      text1: 'Remove',
+                      child: ListTile(
+                        title: Row(
+                          children: [
+                            Expanded(
+                              // display name and distance
+                              child: TabPageRichText(
+                                user.firstName,
+                                user.distance,
                               ),
-                            ],
-                          ),
-                          trailing: Icon(Icons.chevron_right),
-                          leading: CachedCircleUserImageWithActiveStatus(
-                            pictureURL: user.pictureURL,
-                            isActive: false, //user.settings.connected,
-                            onTapped: () => UserCard(context, user).show(),
-                            size: 45,
-                            borderColor: Colors.transparent,
-                          ),
+                            ),
+                          ],
+                        ),
+                        trailing: Icon(Icons.chevron_right),
+                        leading: CachedCircleUserImageWithActiveStatus(
+                          pictureURL: user.pictureURL,
+                          isActive: false, //user.settings.connected,
+                          onTapped: () => UserCard(context, user).show(),
+                          size: 45,
+                          borderColor: Colors.transparent,
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                    Divider(),
+                  ],
                 ),
               ],
             ),

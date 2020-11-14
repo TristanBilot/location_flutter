@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:location_project/helpers/distance_adapter.dart';
 import 'package:location_project/helpers/string_formatter.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/firestore_chat_entry.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/message_page.dart';
@@ -81,11 +82,12 @@ class _UserMapCardContentState extends State<UserMapCardContent> {
                         ),
                         Padding(
                           padding: EdgeInsets.fromLTRB(0, 6, 0, 0),
-                          child: TextSF(
-                            widget.user.distance == 0
-                                ? ''
-                                : '${widget.user.distance} meters',
-                          ),
+                          child: widget.user.distance == 0
+                              ? SizedBox()
+                              : TextSF(
+                                  DistanceAdapter().adapt(widget.user.distance),
+                                  fontWeight: FontWeight.w400,
+                                ),
                         ),
                         Spacer(),
                         widget.chatEntryIfExists != null

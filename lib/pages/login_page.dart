@@ -38,13 +38,13 @@ class _LoginPageState extends State<LoginPage> {
               // }),
               BasicButton('Log as Tristan',
                   onPressed: () => _loginController
-                      .logInFromEmail('bilot.tristan@hotmail.fr')),
+                      .logInFromEmail('bilot.tristan.carrieres@hotmail.fr')),
               BasicButton('Log as Damien',
                   onPressed: () => _loginController
-                      .logInFromEmail('damien.duprat@hotmail.fr')),
+                      .logInFromEmail('damien.duprat.carrieres@hotmail.fr')),
               BasicButton('Log as Alexandre',
                   onPressed: () => _loginController
-                      .logInFromEmail('alexandre.roume@hotmail.fr')),
+                      .logInFromEmail('alexandre.roume.carrieres@hotmail.fr')),
               Spacer(),
             ],
           ),
