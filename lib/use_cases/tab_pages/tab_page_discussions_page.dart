@@ -58,7 +58,6 @@ class _TabPageDiscussionsPageState extends State<TabPageDiscussionsPage>
     if (mounted) setState(f);
   }
 
-  /// Sort the snapshots in ascending last message order.
   List<Chat> _sortChatsByMostRecent(List<Chat> chats) {
     return chats
       ..sort((a, b) => b.lastActivityTime.compareTo(a.lastActivityTime));

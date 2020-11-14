@@ -49,7 +49,6 @@ class Database {
   }
 
   Future<void> clear() async {
-    _box.clear();
     _box.deleteFromDisk();
   }
 

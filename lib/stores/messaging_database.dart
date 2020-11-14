@@ -42,6 +42,6 @@ class MessagingDatabase {
   }
 
   Future clear() async {
-    _box.clear();
+    _box.deleteFromDisk();
   }
 }

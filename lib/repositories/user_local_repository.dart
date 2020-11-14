@@ -48,7 +48,7 @@ class UserLocalRepository {
   }
 
   /// When the user log out, clear the `ConnectedIDKey` to ''
-  Future<void> forgetLoggedUser() async {
+  Future<void> clear() async {
     await _prefs.clear();
   }
 

@@ -27,6 +27,7 @@ class InitController {
   }
 
   Future initAfterLogin(String loggedID) async {
+    await _openHiveDatabases();
     await LocationController().handleLocationIfNeeded();
     await UserLocalRepository().rememberLoggedUser(loggedID);
     await UserStore().initAsynchronously();
@@ -44,6 +45,10 @@ class InitController {
     Hive.registerAdapter(UserSettingsAdapter());
     Hive.registerAdapter(UserAdapter());
 
+    await _openHiveDatabases();
+  }
+
+  Future _openHiveDatabases() async {
     await Database.initHiveDatabase();
     await MessagingDatabase.initHiveDatabase();
   }

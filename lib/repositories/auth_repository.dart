@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:location_project/models/user_settings.dart';
 import 'package:location_project/repositories/user_local_repository.dart';
 import 'package:location_project/stores/database.dart';
+import 'package:location_project/stores/messaging_database.dart';
 import 'package:location_project/stores/store.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'dart:convert';
@@ -62,7 +63,9 @@ class AuthRepository {
   /// Log out from Facebook API and clear shared preferences
   Future<void> logOut() async {
     UserStore().setConnectedStatus(false);
-    await UserLocalRepository().forgetLoggedUser();
+    await UserLocalRepository().clear();
+    await MessagingDatabase().clear();
+    await Database().clear();
     await _facebookLogin.logOut();
   }
 
