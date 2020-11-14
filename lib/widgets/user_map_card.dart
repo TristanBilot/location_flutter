@@ -29,8 +29,8 @@ class UserMapCard extends StatefulWidget implements Showable {
     this.fetchAreaFunction,
   );
 
-  void show() {
-    UserStore().addView(user.id);
+  void show({bool addViewToStore = true}) {
+    if (addViewToStore) UserStore().addView(user.id);
     showGeneralDialog(
         transitionBuilder: (context, a1, a2, widget) {
           return Transform.scale(

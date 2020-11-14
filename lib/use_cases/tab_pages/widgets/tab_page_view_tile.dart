@@ -33,22 +33,7 @@ class _TabPageViewTileState extends State<TabPageViewTile> {
   }
 
   _onTileTapped(BuildContext context, User user) {
-    showGeneralDialog(
-        transitionBuilder: (context, a1, a2, widget) {
-          return Transform.scale(
-            scale: a1.value,
-            child: Opacity(
-              opacity: a1.value,
-              child: UserMapCard(context, user, () async => {}),
-            ),
-          );
-        },
-        transitionDuration: Duration(milliseconds: 150),
-        barrierColor: Colors.black.withOpacity(0.5),
-        barrierDismissible: true,
-        barrierLabel: '',
-        context: context,
-        pageBuilder: (context, animation1, animation2) {});
+    UserMapCard(context, user, () async => {}).show(addViewToStore: false);
   }
 
   _onRemoveViewTap(String viewerID) {
