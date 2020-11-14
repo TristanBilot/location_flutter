@@ -78,7 +78,7 @@ class _TabPageViewsPageState extends State<TabPageViewsPage> {
                         : placeholder,
                   );
                 }
-                return Container();
+                return Center(child: CupertinoActivityIndicator());
               },
             ),
           ),

@@ -130,7 +130,7 @@ class _TabPageRequestsPageState extends State<TabPageRequestsPage>
                         : placeholder,
                   );
                 }
-                return Container();
+                return Center(child: CupertinoActivityIndicator());
               },
             ),
           ),

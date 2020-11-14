@@ -140,7 +140,7 @@ class _TabPageDiscussionsPageState extends State<TabPageDiscussionsPage>
                   );
                 }
                 // TODO: handle other states
-                return Container();
+                return Center(child: CupertinoActivityIndicator());
               },
             ),
           ),
