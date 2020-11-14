@@ -5,6 +5,8 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/stores/messaging_database.dart';
 import 'package:location_project/stores/user_store.dart';
+import 'package:location_project/use_cases/tab_pages/filters/filter.dart';
+import 'package:location_project/use_cases/tab_pages/filters/request_filter.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/chat_tile.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/firestore_chat_entry.dart';
@@ -22,9 +24,9 @@ class TabPageRequestsPage extends StatefulWidget {
 
 class _TabPageRequestsPageState extends State<TabPageRequestsPage>
     implements SetStateDelegate {
-  Stream<QuerySnapshot> _stream;
   RefreshController _refreshController;
   TextEditingController _messageEditingController;
+  ChatFilter _filter;
 
   bool _shouldRefreshCache;
 
@@ -32,6 +34,7 @@ class _TabPageRequestsPageState extends State<TabPageRequestsPage>
   void initState() {
     _messageEditingController = TextEditingController();
     _refreshController = RefreshController(initialRefresh: false);
+    _filter = RequestFilter();
     _shouldRefreshCache = false;
     _fetch();
 
@@ -47,28 +50,6 @@ class _TabPageRequestsPageState extends State<TabPageRequestsPage>
 
   setStateIfMounted(Function f) {
     if (mounted) setState(f);
-  }
-
-  List<Chat> _sortChatsByMostRecent(List<Chat> chats) {
-    return chats
-      ..sort((a, b) => b.lastActivityTime.compareTo(a.lastActivityTime));
-  }
-
-  List<Chat> _filterChatsByName(List<Chat> chats, String pattern) {
-    if (pattern.length == 0) return chats;
-    return chats.where((chat) {
-      final otherParticipantName = (chat.userNames
-            ..removeWhere((userName) => userName == UserStore().user.firstName))
-          .first;
-      return otherParticipantName.toLowerCase().contains(pattern.toLowerCase());
-    }).toList();
-  }
-
-  List<Chat> _filter(List<Chat> chats, String pattern) {
-    return _sortChatsByMostRecent(_filterChatsByName(chats, pattern))
-        .where((chat) => !chat.isChatEngaged)
-        .toList()
-          ..sort((a, b) => b.requestedID == UserStore().user.id ? 1 : -1);
   }
 
   void _onRefresh() async {
@@ -102,8 +83,8 @@ class _TabPageRequestsPageState extends State<TabPageRequestsPage>
             child: BlocBuilder<ChatCubit, ChatState>(
               builder: (context, state) {
                 if (state is ChatFetchedState) {
-                  List<Chat> chats =
-                      _filter(state.chats, _messageEditingController.text);
+                  List<Chat> chats = _filter.filter(
+                      state.chats, _messageEditingController.text);
                   MessagingDatabase().putNbRequests(chats.length);
 
                   return TabPageRefresher(

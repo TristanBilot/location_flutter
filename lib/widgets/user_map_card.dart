@@ -5,11 +5,11 @@ import 'package:location_project/controllers/messaging_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/helpers/logger.dart';
 import 'package:location_project/stores/user_store.dart';
+import 'package:location_project/use_cases/tab_pages/counters/cubit/counters_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/firestore_chat_entry.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/message_page.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/message_sender.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/widgets/messaging_tab_pages_counted_elements.dart';
 import 'package:location_project/widgets/user_card.dart';
 import 'package:location_project/widgets/user_map_card_content.dart';
 import 'package:provider/provider.dart';
@@ -105,8 +105,7 @@ class _UserCardState extends State<UserMapCard> {
     );
 
     /// Don't forget to use widget.context and not context, modal card not in the tree.
-    Provider.of<MessagingTabPagesCountedElements>(widget.context, listen: false)
-        .updateCounts(discussions: true, increment: true);
+    widget.context.read<CountersCubit>().incrementChats(1);
   }
 
   /// Action when a user requests to talk with another person.
@@ -124,6 +123,9 @@ class _UserCardState extends State<UserMapCard> {
       false,
     );
     MessagingReposiory().newChat(entry.chatID, entry);
+
+    /// Don't forget to use widget.context and not context, modal card not in the tree.
+    widget.context.read<CountersCubit>().incrementRequests(1);
     // await MessagingController().sendAndRetrieveMessage();
   }
 

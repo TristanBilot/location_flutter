@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/controllers/location_controller.dart';
 import 'package:location_project/pages/map_page.dart';
 import 'package:location_project/pages/messaging_tabs_page.dart';
+import 'package:location_project/stores/messaging_database.dart';
 import 'package:location_project/use_cases/account/account_page.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/widgets/messaging_tab_pages_counted_elements.dart';
-import 'package:provider/provider.dart';
+import 'package:location_project/use_cases/tab_pages/counters/cubit/counters_cubit.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -16,10 +17,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => MessagingTabPagesCountedElements(),
-      child: HomePageContainer(),
-    );
+    return HomePageContainer();
   }
 }
 
@@ -83,14 +81,17 @@ class _HomePageContainerState extends State<HomePageContainer>
               ),
             ),
           ),
-          body: TabBarView(
-            physics: NeverScrollableScrollPhysics(),
-            controller: _tabController,
-            children: [
-              AccountPage(),
-              MapPage(),
-              MessagingTabsPage(),
-            ],
+          body: BlocProvider(
+            create: (context) => CountersCubit(MessagingDatabase()),
+            child: TabBarView(
+              physics: NeverScrollableScrollPhysics(),
+              controller: _tabController,
+              children: [
+                AccountPage(),
+                MapPage(),
+                MessagingTabsPage(),
+              ],
+            ),
           ),
         ),
         // PositionedAppIcon(_tabController, _initialIndex)

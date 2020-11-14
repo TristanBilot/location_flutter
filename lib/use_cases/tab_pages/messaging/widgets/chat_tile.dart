@@ -4,11 +4,9 @@ import 'package:location_project/models/user.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/themes/light_theme.dart';
-import 'package:location_project/use_cases/start_path/basic_alert.dart';
-import 'package:location_project/use_cases/start_path/basic_alert_button.dart';
+import 'package:location_project/use_cases/tab_pages/counters/cubit/counters_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_deleting_state.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/widgets/messaging_tab_pages_counted_elements.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/cached_circle_user_image_with_active_status.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/firestore_chat_entry.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/firestore_message_entry.dart';
@@ -128,39 +126,51 @@ class _ChatTileState extends State<ChatTile> {
 
   void _onSharePress() {}
 
-  _onUnmatchPress(ChatTile widget, String userName, BuildContext context) {
-    Color cancelButtonColor() {
-      bool isDark =
-          MediaQuery.of(context).platformBrightness == Brightness.dark;
-      return isDark
-          ? Color.fromRGBO(60, 60, 60, 1)
-          : Color.fromRGBO(140, 140, 140, 1);
-    }
+  // _onUnmatchPress(ChatTile widget, String userName, BuildContext context) {
+  //   Color cancelButtonColor() {
+  //     bool isDark =
+  //         MediaQuery.of(context).platformBrightness == Brightness.dark;
+  //     return isDark
+  //         ? Color.fromRGBO(60, 60, 60, 1)
+  //         : Color.fromRGBO(140, 140, 140, 1);
+  //   }
 
-    void onCancelPress() => Navigator.of(context).pop(context);
+  //   void onCancelPress() => Navigator.of(context).pop(context);
 
-    void onUnmatchPress() => context.read<ChatCubit>().deleteChat(widget.chat);
+  //   void onUnmatchPress() => context.read<ChatCubit>().deleteChat(widget.chat);
 
-    showDialog(
-      context: context,
-      builder: (context) => BasicAlert(
-        'Are you sure to unmatch $userName?',
-        titleFontSize: 18,
-        titleAlignment: TextAlign.center,
-        contentPadding: EdgeInsets.only(bottom: 10),
-        actions: [
-          BasicAlertButton('CANCEL', onCancelPress, color: cancelButtonColor()),
-          BasicAlertButton('UNMATCH', () => onUnmatchPress(),
-              color: Colors.red[500]),
-        ],
-      ),
-    );
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) => BasicAlert(
+  //       'Are you sure to unmatch $userName?',
+  //       titleFontSize: 18,
+  //       titleAlignment: TextAlign.center,
+  //       contentPadding: EdgeInsets.only(bottom: 10),
+  //       actions: [
+  //         BasicAlertButton('CANCEL', onCancelPress, color: cancelButtonColor()),
+  //         BasicAlertButton('UNMATCH', () => onUnmatchPress(),
+  //             color: Colors.red[500]),
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  _onUnmatchPress() {
+    context.read<ChatCubit>().deleteChat(widget.chat);
   }
 
   void _triggerUnmatchPress(BuildContext context) {
     Navigator.of(context).pop(context);
-    Provider.of<MessagingTabPagesCountedElements>(context, listen: false)
-        .updateCounts(discussions: true, decrement: true);
+    switch (widget.tabPageType) {
+      case TabPageType.Discussions:
+        context.read<CountersCubit>().incrementChats(-1);
+        break;
+      case TabPageType.Requests:
+        context.read<CountersCubit>().incrementRequests(-1);
+        break;
+      default:
+        break;
+    }
   }
 
   TabPageSlidable _getSlidableWithChild(BuildContext context, User user,
@@ -169,14 +179,14 @@ class _ChatTileState extends State<ChatTile> {
       case TabPageType.Discussions:
         return TabPageSlidable(
           child: child,
-          action1: () => _onUnmatchPress(widget, user.firstName, context),
+          action1: () => _onUnmatchPress(),
           action2: _onSharePress,
         );
       case TabPageType.Requests:
         return TabPageSlidable(
           isOnlyOneAction: true,
           child: child,
-          action1: () => _onUnmatchPress(widget, user.firstName, context),
+          action1: () => _onUnmatchPress(),
           action2: _onSharePress,
         );
       default:

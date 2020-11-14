@@ -1,5 +1,6 @@
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:location_project/adapters/stream_adapter.dart';
 import 'package:location_project/caches/location_cache.dart';
 import 'package:location_project/caches/user_cache.dart';
 import 'package:location_project/helpers/logger.dart';
@@ -243,14 +244,15 @@ class UserRepository {
     }
   }
 
-  /// Return a stream from a collection based in the root field.
-  /// `field` should be UserIDsWhoWiewedMe or ViewedUserIDs or other
-  /// collection at the root of the User field.
-  Stream<QuerySnapshot> getStream(String id, UserField field) {
+  /// Returns a stream of list of `IDs` of documents of a collection
+  /// at root entry.
+  Stream<List<String>> getCollectionListOfIDs(String id, UserField field) {
     return _firestore
         .collection(RootKey)
         .doc(id)
         .collection(field.value)
-        .snapshots();
+        .snapshots()
+        .map((snapshot) =>
+            List<String>.from(snapshot.docs.map((doc) => doc.id).toList()));
   }
 }

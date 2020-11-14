@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/repositories/user_repository.dart';
+import 'package:location_project/use_cases/tab_pages/counters/cubit/counters_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/views/cubit/view_cubit.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/widgets/messaging_tab_pages_counted_elements.dart';
 import 'package:location_project/use_cases/tab_pages/tab_page_discussions_page.dart';
 import 'package:location_project/use_cases/tab_pages/tab_page_requests_page.dart';
 import 'package:location_project/use_cases/tab_pages/tab_page_views_page.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_element_count_status.dart';
-import 'package:location_project/widgets/textSF.dart';
 import 'package:provider/provider.dart';
 
 class MessagingTabsPage extends StatefulWidget {
@@ -29,6 +28,7 @@ class _MessagingTabsPageState extends State<MessagingTabsPage>
 
   @override
   void initState() {
+    context.read<CountersCubit>().initCounters();
     super.initState();
   }
 
@@ -39,9 +39,6 @@ class _MessagingTabsPageState extends State<MessagingTabsPage>
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<MessagingTabPagesCountedElements>(context, listen: false)
-        .initCounts();
-
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => ChatCubit(MessagingReposiory())),
@@ -52,8 +49,8 @@ class _MessagingTabsPageState extends State<MessagingTabsPage>
         child: Scaffold(
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(50.0),
-            child: Consumer<MessagingTabPagesCountedElements>(
-              builder: (context, counts, child) {
+            child: BlocBuilder<CountersCubit, CountersState>(
+              builder: (context, state) {
                 return AppBar(
                   backgroundColor: _getTabColor(),
                   bottom: TabBar(
@@ -62,9 +59,10 @@ class _MessagingTabsPageState extends State<MessagingTabsPage>
                     indicatorColor: Theme.of(context).primaryColor,
                     tabs: [
                       TabPageElementCountStatus(
-                          'Messages', counts.nbDiscussions),
-                      TabPageElementCountStatus('Requests', counts.nbRequests),
-                      TabPageElementCountStatus('Views', counts.nbViews),
+                          'Messages', state.counter.nbChats),
+                      TabPageElementCountStatus(
+                          'Requests', state.counter.nbRequests),
+                      TabPageElementCountStatus('Views', state.counter.nbViews),
                     ],
                   ),
                 );

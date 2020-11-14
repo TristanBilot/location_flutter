@@ -121,7 +121,7 @@ class MessagingReposiory {
         .collection(RootKey)
         .where(ChatField.UserIDs.value, arrayContains: userID)
         .snapshots()
-        .transform(StreamAdapter().mapToListOf<Chat>());
+        .transform(StreamAdapter().mapToListOfEntries<Chat>());
   }
 
   /// Returns the firestore chat designed by the `chatID`.

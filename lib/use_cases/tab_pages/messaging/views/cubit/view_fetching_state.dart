@@ -9,11 +9,6 @@ abstract class ViewState extends Equatable {
 
 class ViewInitial extends ViewState {}
 
-class ViewFetchingState extends ViewState {
-  @override
-  List<Object> get props => [];
-}
-
 class ViewFetchedState extends ViewState {
   final List<String> viewerIDs;
 

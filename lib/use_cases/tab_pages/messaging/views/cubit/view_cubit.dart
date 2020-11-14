@@ -14,13 +14,10 @@ class ViewCubit extends Cubit<ViewState> {
 
   Future<void> fetchViews() async {
     try {
-      emit(ViewFetchingState());
       final id = UserStore().user.id;
       _userRepository
-          .getStream(id, UserField.UserIDsWhoWiewedMe)
-          .listen((snapshot) {
-        List views =
-            List<String>.from(snapshot.docs.map((doc) => doc.id).toList());
+          .getCollectionListOfIDs(id, UserField.UserIDsWhoWiewedMe)
+          .listen((views) {
         emit(ViewFetchedState(views));
       });
     } on Exception {
@@ -30,7 +27,6 @@ class ViewCubit extends Cubit<ViewState> {
 
   Future<void> deleteView(String viewerID) async {
     try {
-      emit(ViewDeletingState());
       final id = UserStore().user.id;
       _userRepository.deleteCollectionSnapshot(
           id, UserField.UserIDsWhoWiewedMe, viewerID);
