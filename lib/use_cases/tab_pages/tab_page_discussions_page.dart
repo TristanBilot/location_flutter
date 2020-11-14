@@ -10,7 +10,7 @@ import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/chat_tile.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/firestore_chat_entry.dart';
 import 'package:location_project/use_cases/tab_pages/tab_page_type.dart';
-import 'package:location_project/use_cases/tab_pages/widgets/tab_page_placeholder.dart';
+import 'package:location_project/widgets/basic_placeholder.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_refresher.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_search_bar.dart';
 import 'package:provider/provider.dart';
@@ -65,7 +65,7 @@ class _TabPageDiscussionsPageState extends State<TabPageDiscussionsPage>
     Future.delayed(Duration(seconds: 1), () => _shouldRefreshCache = false);
   }
 
-  Widget get placeholder => TabPagePlaceholer('No discussions yet.');
+  Widget get placeholder => BasicPlaceholer('No discussions yet.');
   TabPageType get type => TabPageType.Discussions;
 
   @override

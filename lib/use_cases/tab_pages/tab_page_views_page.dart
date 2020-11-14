@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/stores/messaging_database.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/views/cubit/view_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/tab_page_type.dart';
-import 'package:location_project/use_cases/tab_pages/widgets/tab_page_placeholder.dart';
+import 'package:location_project/widgets/basic_placeholder.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_refresher.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_view_tile.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -43,8 +43,7 @@ class _TabPageViewsPageState extends State<TabPageViewsPage> {
     Future.delayed(Duration(seconds: 1), () => _shouldRefreshCache = false);
   }
 
-  Widget get placeholder =>
-      TabPagePlaceholer('Nobody viewed your profile yet.');
+  Widget get placeholder => BasicPlaceholer('Nobody viewed your profile yet.');
 
   @override
   Widget build(BuildContext context) {

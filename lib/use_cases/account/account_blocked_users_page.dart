@@ -6,6 +6,7 @@ import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/account/widgets/account_list_tile.dart';
 import 'package:location_project/use_cases/start_path/widgets/basic_button.dart';
+import 'package:location_project/widgets/basic_placeholder.dart';
 import 'package:location_project/widgets/cached_circle_user_image.dart';
 import 'package:location_project/widgets/textSF.dart';
 
@@ -56,7 +57,7 @@ class _AccountBlockedUsersPageState extends State<AccountBlockedUsersPage> {
             if (snapshot.hasData) {
               final blockedUsers = snapshot.data;
               if (blockedUsers.length == 0)
-                return Center(child: TextSF('Nobody blocked yet.'));
+                return BasicPlaceholer('Nobody blocked yet.');
               return ListView.builder(
                   itemCount: blockedUsers.length,
                   itemBuilder: (context, index) {

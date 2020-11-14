@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:location_project/widgets/textSF.dart';
 
-class TabPagePlaceholer extends StatelessWidget {
+class BasicPlaceholer extends StatelessWidget {
   final String message;
 
-  const TabPagePlaceholer(this.message);
+  const BasicPlaceholer(this.message);
 
   @override
   Widget build(BuildContext context) {

@@ -12,7 +12,7 @@ import 'package:location_project/use_cases/tab_pages/messaging/widgets/chat_tile
 import 'package:location_project/use_cases/tab_pages/messaging/firestore_chat_entry.dart';
 import 'package:location_project/use_cases/tab_pages/tab_page_discussions_page.dart';
 import 'package:location_project/use_cases/tab_pages/tab_page_type.dart';
-import 'package:location_project/use_cases/tab_pages/widgets/tab_page_placeholder.dart';
+import 'package:location_project/widgets/basic_placeholder.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_refresher.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_search_bar.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -60,7 +60,7 @@ class _TabPageRequestsPageState extends State<TabPageRequestsPage>
     Future.delayed(Duration(seconds: 1), () => _shouldRefreshCache = false);
   }
 
-  Widget get placeholder => TabPagePlaceholer('No requests yet.');
+  Widget get placeholder => BasicPlaceholer('No requests yet.');
   TabPageType get type => TabPageType.Requests;
 
   @override
