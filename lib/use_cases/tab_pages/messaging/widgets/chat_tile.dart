@@ -23,6 +23,7 @@ import 'package:location_project/widgets/user_card.dart';
 import 'package:provider/provider.dart';
 
 class ChatTile extends StatefulWidget {
+  // final BuildContext context;
   final Chat chat;
   final bool shouldRefreshCache;
   final TabPageType tabPageType;
@@ -35,6 +36,7 @@ class ChatTile extends StatefulWidget {
   final bool isLimitBetweenRequestedAndRequests;
 
   const ChatTile({
+    // @required this.context,
     @required this.chat,
     @required this.shouldRefreshCache,
     @required this.tabPageType,
@@ -88,14 +90,14 @@ class _ChatTileState extends State<ChatTile> {
   /// using the repo, and then navigate to the message page.
   /// The last seen message should be update only if the last message
   /// emitter is the other person.
-  void _onTileTapped(BuildContext context, User user, bool isChatEngaged,
+  void _onTileTapped(BuildContext thisContext, User user, bool isChatEngaged,
       FirestoreMessageEntry lastMsg) {
     final loggedUserID = UserStore().user.id;
     if (isChatEngaged && lastMsg.sendBy != loggedUserID)
       MessagingReposiory()
           .updateChatLastActivity(widget.chat.chatID, lastActivitySeen: true);
     Navigator.push(
-      context,
+      thisContext,
       MaterialPageRoute(
         builder: (context) => MessagePage(
           chat: widget.chat,
@@ -136,11 +138,9 @@ class _ChatTileState extends State<ChatTile> {
           : Color.fromRGBO(140, 140, 140, 1);
     }
 
-    void onCancelPress() => Navigator.of(context).pop();
+    void onCancelPress() => Navigator.of(context).pop(context);
 
-    void onUnmatchPress(BuildContext context) {
-      context.read<ChatCubit>().deleteChat(widget.chat);
-    }
+    void onUnmatchPress() => context.read<ChatCubit>().deleteChat(widget.chat);
 
     showDialog(
       context: context,
@@ -151,20 +151,21 @@ class _ChatTileState extends State<ChatTile> {
         contentPadding: EdgeInsets.only(bottom: 10),
         actions: [
           BasicAlertButton('CANCEL', onCancelPress, color: cancelButtonColor()),
-          BasicAlertButton('UNMATCH', () => onUnmatchPress(context),
+          BasicAlertButton('UNMATCH', () => onUnmatchPress(),
               color: Colors.red[500]),
         ],
       ),
     );
   }
 
-  void _triggerUnmatchPress() {
-    Navigator.of(context).pop();
+  void _triggerUnmatchPress(BuildContext context) {
+    Navigator.of(context).pop(context);
     Provider.of<MessagingTabPagesCountedElements>(context, listen: false)
         .updateCounts(discussions: true, decrement: true);
   }
 
-  TabPageSlidable _getSlidableWithChild(User user, {@required Widget child}) {
+  TabPageSlidable _getSlidableWithChild(BuildContext context, User user,
+      {@required Widget child}) {
     switch (widget.tabPageType) {
       case TabPageType.Discussions:
         return TabPageSlidable(
@@ -172,7 +173,6 @@ class _ChatTileState extends State<ChatTile> {
           action1: () => _onUnmatchPress(widget, user.firstName, context),
           action2: _onSharePress,
         );
-
       case TabPageType.Requests:
         return TabPageSlidable(
           isOnlyOneAction: true,
@@ -185,7 +185,7 @@ class _ChatTileState extends State<ChatTile> {
     }
   }
 
-  Widget _getSectionTitleIfNeeded(context) {
+  Widget _getSectionTitleIfNeeded() {
     if (widget.tabPageType != TabPageType.Requests ||
         (!widget.isFirstIndex && !widget.isLimitBetweenRequestedAndRequests))
       return SizedBox();
@@ -215,10 +215,10 @@ class _ChatTileState extends State<ChatTile> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext thisContext) {
     return FutureBuilder(
       future: _fetchUserAndLastMsg(),
-      builder: (context, snapshot) {
+      builder: (futureContext, snapshot) {
         if (snapshot.hasData) {
           final _deserialized = _deserializeUserAndLastMsg(snapshot);
           final user = _deserialized[0] as User;
@@ -231,18 +231,20 @@ class _ChatTileState extends State<ChatTile> {
           bool isMsgUnread = _shouldMarkMsgAsUnread(isChatEngaged, msg);
           // if (!Database().keyExists(user.id)) Database().putUser(user);
           return BlocListener<ChatCubit, ChatState>(
-            listener: (context, state) {
-              if (state is ChatDeletedState) _triggerUnmatchPress();
+            listener: (blocContext, state) {
+              if (state is ChatDeletedState) _triggerUnmatchPress(thisContext);
             },
             child: GestureDetector(
-              onTap: () => _onTileTapped(context, user, isChatEngaged, msg),
+              onTap: () =>
+                  _onTileTapped(futureContext, user, isChatEngaged, msg),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _getSectionTitleIfNeeded(context),
+                  _getSectionTitleIfNeeded(),
                   Column(
                     children: [
                       _getSlidableWithChild(
+                        futureContext,
                         user,
                         child: Column(
                           children: [
