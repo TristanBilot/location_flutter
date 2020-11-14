@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/stores/database.dart';
-import 'package:location_project/stores/user_store.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/views/cubit/view_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/cached_circle_user_image_with_active_status.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_rich_text.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_slidable.dart';
@@ -51,11 +52,7 @@ class _TabPageViewTileState extends State<TabPageViewTile> {
   }
 
   _onRemoveViewTap(String viewerID) {
-    final id = UserStore().user.id;
-    UserRepository()
-        .deleteCollectionSnapshot(id, UserField.UserIDsWhoWiewedMe, viewerID);
-    UserRepository()
-        .deleteCollectionSnapshot(viewerID, UserField.ViewedUserIDs, id);
+    context.read<ViewCubit>().deleteView(viewerID);
   }
 
   @override

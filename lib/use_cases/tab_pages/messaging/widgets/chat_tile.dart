@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/repositories/user_repository.dart';
-import 'package:location_project/stores/database.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/themes/light_theme.dart';
 import 'package:location_project/use_cases/start_path/basic_alert.dart';

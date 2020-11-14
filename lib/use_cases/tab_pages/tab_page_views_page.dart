@@ -2,8 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/stores/messaging_database.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_cubit.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_views_fetching_state.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/views/cubit/view_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/tab_page_type.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_placeholder.dart';
@@ -47,7 +45,6 @@ class _TabPageViewsPageState extends State<TabPageViewsPage> {
 
   Widget get placeholder =>
       TabPagePlaceholer('Nobody viewed your profile yet.');
-  TabPageType get type => TabPageType.Views;
 
   @override
   Widget build(BuildContext context) {
