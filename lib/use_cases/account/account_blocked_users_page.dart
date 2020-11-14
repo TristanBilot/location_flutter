@@ -57,7 +57,7 @@ class _AccountBlockedUsersPageState extends State<AccountBlockedUsersPage> {
             if (snapshot.hasData) {
               final blockedUsers = snapshot.data;
               if (blockedUsers.length == 0)
-                return BasicPlaceholer('Nobody blocked yet.');
+                return BasicPlaceholder('Nobody blocked yet.');
               return ListView.builder(
                   itemCount: blockedUsers.length,
                   itemBuilder: (context, index) {

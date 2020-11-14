@@ -65,7 +65,7 @@ class _TabPageDiscussionsPageState extends State<TabPageDiscussionsPage>
     Future.delayed(Duration(seconds: 1), () => _shouldRefreshCache = false);
   }
 
-  Widget get placeholder => BasicPlaceholer('No discussions yet.');
+  Widget get placeholder => BasicPlaceholder('No discussions yet.');
   TabPageType get type => TabPageType.Discussions;
 
   @override

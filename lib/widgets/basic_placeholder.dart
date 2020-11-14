@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:location_project/widgets/textSF.dart';
 
-class BasicPlaceholer extends StatelessWidget {
+class BasicPlaceholder extends StatelessWidget {
   final String message;
 
-  const BasicPlaceholer(this.message);
+  const BasicPlaceholder(this.message);
 
   @override
   Widget build(BuildContext context) {

@@ -60,7 +60,7 @@ class _TabPageRequestsPageState extends State<TabPageRequestsPage>
     Future.delayed(Duration(seconds: 1), () => _shouldRefreshCache = false);
   }
 
-  Widget get placeholder => BasicPlaceholer('No requests yet.');
+  Widget get placeholder => BasicPlaceholder('No requests yet.');
   TabPageType get type => TabPageType.Requests;
 
   @override
