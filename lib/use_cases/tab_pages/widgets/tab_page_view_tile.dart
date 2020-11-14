@@ -40,12 +40,7 @@ class _TabPageViewTileState extends State<TabPageViewTile> {
 
   _onRemoveViewTap(String viewerID) {
     context.read<ViewCubit>().deleteView(viewerID);
-    context.read<CountersCubit>().incrementViews(-1);
   }
-
-  // _triggerRemoveView() {
-
-  // }
 
   @override
   Widget build(BuildContext context) {

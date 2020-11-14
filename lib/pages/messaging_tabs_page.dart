@@ -28,7 +28,6 @@ class _MessagingTabsPageState extends State<MessagingTabsPage>
 
   @override
   void initState() {
-    context.read<CountersCubit>().initCounters();
     super.initState();
   }
 

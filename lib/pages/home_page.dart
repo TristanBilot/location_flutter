@@ -82,7 +82,7 @@ class _HomePageContainerState extends State<HomePageContainer>
             ),
           ),
           body: BlocProvider(
-            create: (context) => CountersCubit(MessagingDatabase()),
+            create: (context) => CountersCubit(MessagingDatabase())..init(),
             child: TabBarView(
               physics: NeverScrollableScrollPhysics(),
               controller: _tabController,

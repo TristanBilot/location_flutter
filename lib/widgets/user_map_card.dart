@@ -103,9 +103,6 @@ class _UserCardState extends State<UserMapCard> {
         ),
       ),
     );
-
-    /// Don't forget to use widget.context and not context, modal card not in the tree.
-    widget.context.read<CountersCubit>().incrementChats(1);
   }
 
   /// Action when a user requests to talk with another person.
@@ -124,8 +121,6 @@ class _UserCardState extends State<UserMapCard> {
     );
     MessagingReposiory().newChat(entry.chatID, entry);
 
-    /// Don't forget to use widget.context and not context, modal card not in the tree.
-    widget.context.read<CountersCubit>().incrementRequests(1);
     // await MessagingController().sendAndRetrieveMessage();
   }
 

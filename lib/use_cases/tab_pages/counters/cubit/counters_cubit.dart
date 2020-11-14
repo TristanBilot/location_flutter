@@ -1,7 +1,13 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:location_project/models/user.dart';
+import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/stores/messaging_database.dart';
+import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/tab_pages/counters/cubit/counter.dart';
+import 'package:location_project/use_cases/tab_pages/filters/chats_filter.dart';
+import 'package:location_project/use_cases/tab_pages/filters/request_filter.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
 
 part 'counters_state.dart';
 
@@ -10,35 +16,32 @@ class CountersCubit extends Cubit<CountersState> {
 
   MessagingDatabase _database;
 
-  void initCounters() {
+  void init() {
+    final id = UserStore().user.id;
+    final chatsStream = MessagingReposiory().getChats(id);
+    final viewsStream = UserRepository()
+        .getCollectionListOfIDs(id, UserField.UserIDsWhoWiewedMe);
+
+    chatsStream.listen((chats) {
+      int nbChats = ChatsFilter().filter(chats, '').length;
+      int nbRequests = RequestFilter().filter(chats, '').length;
+      MessagingDatabase().putNbDiscussions(nbChats);
+      MessagingDatabase().putNbRequests(nbRequests);
+      _emitCounters();
+    });
+
+    viewsStream.listen((views) {
+      int nbViews = views.length;
+      MessagingDatabase().putNbViews(nbViews);
+      _emitCounters();
+    });
+  }
+
+  void _emitCounters() {
     emit(CounterStoreState(Counter(
       _database.getNbDiscussions(),
       _database.getNbRequests(),
       _database.getNbViews(),
     )));
-  }
-
-  void incrementChats(int value) {
-    int nbReq = _database.getNbRequests();
-    int nbViews = _database.getNbViews();
-    int newValue = _database.getNbDiscussions() + value;
-    _database.putNbDiscussions(newValue);
-    emit(CounterStoreState(Counter(newValue, nbReq, nbViews)));
-  }
-
-  void incrementRequests(int value) {
-    int nbChats = _database.getNbDiscussions();
-    int nbViews = _database.getNbViews();
-    int newValue = _database.getNbRequests() + value;
-    _database.putNbRequests(newValue);
-    emit(CounterStoreState(Counter(nbChats, newValue, nbViews)));
-  }
-
-  void incrementViews(int value) {
-    int nbChats = _database.getNbDiscussions();
-    int nbReq = _database.getNbRequests();
-    int newValue = _database.getNbViews() + value;
-    _database.putNbViews(newValue);
-    emit(CounterStoreState(Counter(nbChats, nbReq, newValue)));
   }
 }

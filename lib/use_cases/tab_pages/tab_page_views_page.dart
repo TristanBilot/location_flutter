@@ -43,7 +43,7 @@ class _TabPageViewsPageState extends State<TabPageViewsPage> {
     Future.delayed(Duration(seconds: 1), () => _shouldRefreshCache = false);
   }
 
-  Widget get placeholder => BasicPlaceholer('Nobody viewed your profile yet.');
+  Widget get placeholder => BasicPlaceholder('Nobody viewed your profile yet.');
 
   @override
   Widget build(BuildContext context) {

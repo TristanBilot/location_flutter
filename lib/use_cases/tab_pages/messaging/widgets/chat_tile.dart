@@ -159,16 +159,6 @@ class _ChatTileState extends State<ChatTile> {
 
   _triggerUnmatchPress() {
     Navigator.of(context).pop();
-    switch (widget.tabPageType) {
-      case TabPageType.Discussions:
-        context.read<CountersCubit>().incrementChats(-1);
-        break;
-      case TabPageType.Requests:
-        context.read<CountersCubit>().incrementRequests(-1);
-        break;
-      default:
-        break;
-    }
   }
 
   TabPageSlidable _getSlidableWithChild(User user, {@required Widget child}) {
