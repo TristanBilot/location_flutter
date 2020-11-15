@@ -21,6 +21,10 @@ class MessagingDatabase {
     _box.put(NbDiscussionsKey, nb);
   }
 
+  Future<void> putNbUnreadDiscussions(int nb) async {
+    _box.put(NbDiscussionsKey, nb);
+  }
+
   Future<void> putNbRequests(int nb) async {
     _box.put(NbRequestsKey, nb);
   }
@@ -30,6 +34,10 @@ class MessagingDatabase {
   }
 
   int getNbDiscussions() {
+    return _box.get(NbDiscussionsKey) ?? 0;
+  }
+
+  int getNbUnreadDiscussions() {
     return _box.get(NbDiscussionsKey) ?? 0;
   }
 

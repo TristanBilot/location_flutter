@@ -7,13 +7,12 @@ import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/tab_pages/counters/cubit/counter.dart';
 import 'package:location_project/use_cases/tab_pages/filters/chats_filter.dart';
 import 'package:location_project/use_cases/tab_pages/filters/request_filter.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/chat.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
 
 part 'counters_state.dart';
 
 class CountersCubit extends Cubit<CountersState> {
-  CountersCubit(this._database) : super(CountersInitial(Counter(0, 0, 0)));
+  CountersCubit(this._database) : super(CountersInitial(Counter(0, 0, 0, 0)));
 
   MessagingDatabase _database;
 
@@ -24,10 +23,15 @@ class CountersCubit extends Cubit<CountersState> {
         .getCollectionListOfIDs(id, UserField.UserIDsWhoWiewedMe);
 
     chatsStream.listen((chats) {
-      int nbChats = ChatsFilter().filter(chats, '').length;
+      final filteredChats = ChatsFilter().filter(chats, '');
+      int nbChats = filteredChats.length;
       int nbRequests = RequestFilter().filter(chats, '').length;
+      int nbUnReadChats =
+          filteredChats.where((chat) => chat.myActivitySeen == false).length;
+
       MessagingDatabase().putNbDiscussions(nbChats);
       MessagingDatabase().putNbRequests(nbRequests);
+      MessagingDatabase().putNbUnreadDiscussions(nbUnReadChats);
       _emitCounters();
     });
 
@@ -43,6 +47,7 @@ class CountersCubit extends Cubit<CountersState> {
       _database.getNbDiscussions(),
       _database.getNbRequests(),
       _database.getNbViews(),
+      _database.getNbUnreadDiscussions(),
     )));
   }
 }
