@@ -4,7 +4,7 @@ import 'package:location_project/use_cases/tab_pages/messaging/firestore_message
 import 'package:location_project/widgets/textSF.dart';
 
 class MessageTileMethods {
-  final FirestoreMessageEntry message;
+  final Message message;
   final int diffWithPrevMsgTime;
 
   static const ValueForFirstMessage = -1;

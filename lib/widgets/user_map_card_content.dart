@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:location_project/helpers/distance_adapter.dart';
 import 'package:location_project/helpers/string_formatter.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/firestore_chat_entry.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/chat.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/message_page.dart';
 import 'package:location_project/use_cases/start_path/widgets/basic_button.dart';
 import 'package:location_project/widgets/cached_circle_user_image.dart';

@@ -6,7 +6,7 @@ import 'package:location_project/use_cases/tab_pages/messaging/message_tile_meth
 import 'package:location_project/widgets/textSF.dart';
 
 class MessageTile extends StatelessWidget {
-  final FirestoreMessageEntry message;
+  final Message message;
   final int diffWithPrevMsgTime;
 
   MessageTile({

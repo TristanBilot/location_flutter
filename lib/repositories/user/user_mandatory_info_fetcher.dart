@@ -38,16 +38,16 @@ class UserMandatoryInfo implements TimeMeasurable {
 }
 
 class UserMandatoryInfoFetcher {
-  Future<UserMandatoryInfo> fetch(
+  UserMandatoryInfo fetch(
     DocumentSnapshot snapshot,
-  ) async {
+  ) {
     Stopwatch stopwatch = Stopwatch()..start();
     final id = snapshot.id;
     final Map<String, dynamic> data = snapshot.data();
-    final realPosition = (await LocationController().isLocationEnabled() &&
-            LocationCache().isLocationAvailable)
-        ? LocationCache().locationGeoPoint
-        : LocationCache().dummyLocationGeoPoint;
+    final realPosition = //await LocationController().isLocationEnabled() &&
+        LocationCache().isLocationAvailable
+            ? LocationCache().locationGeoPoint
+            : LocationCache().dummyLocationGeoPoint;
     final GeoFirePoint center =
         Conf.testMode ? Store.parisGeoPosition : realPosition;
     final geoPoint = data[UserField.Position.value]['geopoint'];

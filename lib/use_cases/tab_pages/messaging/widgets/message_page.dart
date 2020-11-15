@@ -5,7 +5,7 @@ import 'package:location_project/models/user.dart';
 import 'package:location_project/stores/database.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/cached_circle_user_image_with_active_status.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/firestore_chat_entry.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/chat.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/firestore_message_entry.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/message_sender.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/message_tile.dart';
@@ -62,13 +62,13 @@ class _MessagePageState extends State<MessagePage> {
   int _getDifferenceTimeBetweenMsgAndPrevious(
     dynamic data,
     int index,
-    FirestoreMessageEntry msg,
+    Message msg,
   ) {
     var prevMsg;
     if (index >= data.documents.length - 1)
       prevMsg = null;
     else
-      prevMsg = FirestoreMessageEntry.fromFirestoreObject(
+      prevMsg = Message.fromFirestoreObject(
         // +1 and not -1 because the list in descending order.
         data.documents[index + 1].data(),
       );
@@ -99,7 +99,7 @@ class _MessagePageState extends State<MessagePage> {
                 reverse: true,
                 itemCount: snapshot.data.documents.length,
                 itemBuilder: (context, index) {
-                  final msg = FirestoreMessageEntry.fromFirestoreObject(
+                  final msg = Message.fromFirestoreObject(
                       snapshot.data.documents[index].data());
                   final diff = _getDifferenceTimeBetweenMsgAndPrevious(
                       snapshot.data, index, msg);
@@ -215,7 +215,7 @@ class _MessagePageState extends State<MessagePage> {
     await MessagingReposiory().updateChatEngaged(widget.chat.chatID, true);
     await MessagingReposiory().updateChatLastActivity(
       widget.chat.chatID,
-      lastActivityTime: FirestoreMessageEntry.Time,
+      lastActivityTime: Message.Time,
       lastActivitySeen: true,
     );
     setState(() => widget.chat.isChatEngaged = true);

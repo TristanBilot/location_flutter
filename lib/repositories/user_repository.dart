@@ -244,6 +244,14 @@ class UserRepository {
     }
   }
 
+  Stream<UserMandatoryInfo> fetchUserInfoStream(String id) {
+    return _firestore
+        .collection(RootKey)
+        .doc(id)
+        .snapshots()
+        .map((snapshot) => UserMandatoryInfoFetcher().fetch(snapshot));
+  }
+
   /// Returns a stream of list of `IDs` of documents of a collection
   /// at root entry.
   Stream<List<String>> getCollectionListOfIDs(String id, UserField field) {

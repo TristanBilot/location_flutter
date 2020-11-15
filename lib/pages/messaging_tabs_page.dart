@@ -9,7 +9,6 @@ import 'package:location_project/use_cases/tab_pages/tab_page_discussions_page.d
 import 'package:location_project/use_cases/tab_pages/tab_page_requests_page.dart';
 import 'package:location_project/use_cases/tab_pages/tab_page_views_page.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_element_count_status.dart';
-import 'package:provider/provider.dart';
 
 class MessagingTabsPage extends StatefulWidget {
   MessagingTabsPage();

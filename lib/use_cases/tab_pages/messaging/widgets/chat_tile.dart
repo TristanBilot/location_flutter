@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/models/user.dart';
+import 'package:location_project/repositories/user/user_mandatory_info_fetcher.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:location_project/repositories/user/user_pictures_fetcher.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/themes/light_theme.dart';
 import 'package:location_project/use_cases/start_path/basic_alert.dart';
 import 'package:location_project/use_cases/start_path/basic_alert_button.dart';
-import 'package:location_project/use_cases/tab_pages/counters/cubit/counters_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_deleting_state.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/cached_circle_user_image_with_active_status.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/firestore_chat_entry.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/chat.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/firestore_message_entry.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/message_page.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
@@ -51,34 +53,10 @@ class _ChatTileState extends State<ChatTile> {
   static const FontWeight unreadWeight = FontWeight.w700;
   static const FontWeight readWeight = FontWeight.w300;
 
-  /// Returns the user and the last msg printed in the tile.
-  Future<List<dynamic>> _fetchUserAndLastMsg() async {
-    final loggedUserID = UserStore().user.id;
-    final remainingID = (widget.chat.userIDs..remove(loggedUserID)).first;
-    bool useDatabase = !widget.shouldRefreshCache;
-    final user = UserRepository().fetchUser(remainingID,
-        useDatabase: useDatabase, withViews: false, withBlocks: false);
-    final lastMsg = MessagingReposiory().getLastMessage(widget.chat.chatID);
-    return Future.wait([user, lastMsg]);
-  }
-
-  /// Transforms the fetched user and last msg from firestore objects
-  /// to real objects. If no message is already sent, msgEntry is null
-  /// and need to be checked when printed.
-  List<dynamic> _deserializeUserAndLastMsg(AsyncSnapshot<dynamic> snapshot) {
-    final user = snapshot.data[0] as User;
-    final noMessagesSent = snapshot.data[1].documents.length == 0;
-    final msgEntry = noMessagesSent
-        ? null
-        : FirestoreMessageEntry.fromFirestoreObject(
-            snapshot.data[1].documents[0].data());
-    return [user, msgEntry];
-  }
-
   /// Returns wether the last message is marked as unread or not.
   /// When the last msg is sent by the logged user, it should
   /// not be marked as unread.
-  bool _shouldMarkMsgAsUnread(bool isChatEngaged, FirestoreMessageEntry msg) {
+  bool _shouldMarkMsgAsUnread(bool isChatEngaged, Message msg) {
     if (!isChatEngaged) return false; // change later to support new match
     final loggedUserID = UserStore().user.id;
     if (loggedUserID == msg.sendBy) return false;
@@ -90,7 +68,7 @@ class _ChatTileState extends State<ChatTile> {
   /// The last seen message should be update only if the last message
   /// emitter is the other person.
   void _onTileTapped(BuildContext thisContext, User user, bool isChatEngaged,
-      FirestoreMessageEntry lastMsg) {
+      Message lastMsg) {
     final loggedUserID = UserStore().user.id;
     if (isChatEngaged && lastMsg.sendBy != loggedUserID)
       MessagingReposiory()
@@ -108,10 +86,11 @@ class _ChatTileState extends State<ChatTile> {
 
   /// Format the text with sent icon with the last message sent.
   Widget _getLastMsgText(
-      FirestoreMessageEntry lastMsg, bool isChatEngaged, bool isMsgUnread) {
+      Message lastMsg, bool isChatEngaged, bool isMsgUnread) {
     final style =
         TextStyle(fontWeight: isMsgUnread ? unreadWeight : readWeight);
-    if (!isChatEngaged) return Text('New discussion!', style: style);
+    if (!isChatEngaged && !widget.chat.isChatEngaged) return Text('');
+    if (!isChatEngaged) return Text('New chat!', style: style);
 
     bool sentByMe = UserStore().user.id == lastMsg.sendBy;
     return Row(children: [
@@ -210,85 +189,127 @@ class _ChatTileState extends State<ChatTile> {
     );
   }
 
+  Future<List<dynamic>> _fetch() async {
+    final loggedUserID = UserStore().user.id;
+    final remainingID = (widget.chat.userIDs..remove(loggedUserID)).first;
+    bool useDatabase = !widget.shouldRefreshCache;
+
+    Future<Stream<List<Message>>> futureLastMSg() async =>
+        MessagingReposiory().getLastMessage(widget.chat.chatID);
+
+    Future<Stream<UserMandatoryInfo>> futureUser() async =>
+        UserRepository().fetchUserInfoStream(remainingID);
+
+    final lastMsgStream = futureLastMSg();
+    final userInfoStream = futureUser();
+    final userPictures = UserPicturesInfoFetcher().fetch(remainingID);
+    return Future.wait([lastMsgStream, userInfoStream, userPictures]);
+  }
+
+  Message _getSafeMessage(AsyncSnapshot<dynamic> snapshot) {
+    if (!snapshot.hasData || snapshot.data == null || snapshot.data.isEmpty)
+      return null;
+    return snapshot.data.first;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _fetchUserAndLastMsg(),
-      builder: (futureContext, snapshot) {
-        if (snapshot.hasData) {
-          final _deserialized = _deserializeUserAndLastMsg(snapshot);
-          final user = _deserialized[0] as User;
-          final msg = _deserialized[1] == null
-              ? null
-              : _deserialized[1] as FirestoreMessageEntry;
-          // always verify `isChatEngaged` before using msg to
-          // check if it is null = no message sent
-          bool isChatEngaged = msg != null;
-          bool isMsgUnread = _shouldMarkMsgAsUnread(isChatEngaged, msg);
-          // if (!Database().keyExists(user.id)) Database().putUser(user);
-          return BlocListener<ChatCubit, ChatState>(
-            listener: (blocContext, state) {
-              if (state is ChatDeletedState) _triggerUnmatchPress();
-            },
-            child: GestureDetector(
-              onTap: () =>
-                  _onTileTapped(futureContext, user, isChatEngaged, msg),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _getSectionTitleIfNeeded(),
-                  Column(
-                    children: [
-                      _getSlidableWithChild(
-                        user,
-                        child: Column(
-                          children: [
-                            ListTile(
-                              title: Row(
+    return BlocListener<ChatCubit, ChatState>(
+      listener: (blocContext, state) {
+        if (state is ChatDeletedState) _triggerUnmatchPress();
+      },
+      child: FutureBuilder(
+        future: _fetch(),
+        builder: (futureContext, snapshot) {
+          if (snapshot.hasData) {
+            final lastMsgStream = snapshot.data[0] as Stream<List<Message>>;
+            final userInfoStream =
+                snapshot.data[1] as Stream<UserMandatoryInfo>;
+            final userPictures = snapshot.data[2] as UserPicturesInfo;
+
+            return StreamBuilder(
+              stream: userInfoStream,
+              builder: (context, userSnapshot) {
+                if (userSnapshot.hasData) {
+                  final userInfo = userSnapshot.data as UserMandatoryInfo;
+                  final user = User.public()
+                    ..build(infos: userInfo)
+                    ..build(pictures: userPictures);
+
+                  return StreamBuilder(
+                      stream: lastMsgStream,
+                      builder: (context, lastMsgSnapshot) {
+                        final msg = _getSafeMessage(lastMsgSnapshot);
+                        // always check `isChatEngaged` before using msg
+                        bool isChatEngaged = msg != null;
+                        bool isMsgUnread =
+                            _shouldMarkMsgAsUnread(isChatEngaged, msg);
+
+                        return GestureDetector(
+                          onTap: () => _onTileTapped(
+                              futureContext, user, isChatEngaged, msg),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _getSectionTitleIfNeeded(),
+                              Column(
                                 children: [
-                                  Expanded(
-                                    // display name and distance
-                                    child: TabPageRichText(
-                                      user.firstName,
-                                      user.distance,
-                                      isMsgUnread: isMsgUnread,
+                                  _getSlidableWithChild(
+                                    user,
+                                    child: Column(
+                                      children: [
+                                        ListTile(
+                                          title: Row(
+                                            children: [
+                                              Expanded(
+                                                // display name and distance
+                                                child: TabPageRichText(
+                                                  user.firstName,
+                                                  user.distance,
+                                                  isMsgUnread: isMsgUnread,
+                                                ),
+                                              ),
+                                              isMsgUnread
+                                                  ? Container(
+                                                      height: 10,
+                                                      width: 10,
+                                                      decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        color: PrimaryColor,
+                                                      ),
+                                                    )
+                                                  : SizedBox(),
+                                            ],
+                                          ),
+                                          subtitle: _getLastMsgText(
+                                              msg, isChatEngaged, isMsgUnread),
+                                          trailing: Icon(Icons.chevron_right),
+                                          leading:
+                                              CachedCircleUserImageWithActiveStatus(
+                                            pictureURL: user.pictureURL,
+                                            isActive: user.settings.connected,
+                                            borderColor: Colors.transparent,
+                                            onTapped: () =>
+                                                UserCard(context, user).show(),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  isMsgUnread
-                                      ? Container(
-                                          height: 10,
-                                          width: 10,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: PrimaryColor,
-                                          ),
-                                        )
-                                      : SizedBox(),
                                 ],
                               ),
-                              subtitle: _getLastMsgText(
-                                  msg, isChatEngaged, isMsgUnread),
-                              trailing: Icon(Icons.chevron_right),
-                              leading: CachedCircleUserImageWithActiveStatus(
-                                pictureURL: user.pictureURL,
-                                isActive: user.settings.connected,
-                                borderColor: Colors.transparent,
-                                onTapped: () => UserCard(context, user).show(),
-                              ),
-                            ),
-                            Divider(),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          );
-        }
-        return Container();
-      },
+                            ],
+                          ),
+                        );
+                      });
+                }
+                return Container();
+              },
+            );
+          }
+          return Container();
+        },
+      ),
     );
   }
 }

@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:location_project/use_cases/tab_pages/messaging/firestore_chat_entry.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/chat.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/firestore_message_entry.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
 
@@ -53,10 +53,10 @@ class MessagingMockRepository {
     String message,
   ) async {
     final chatID = MessagingReposiory.getChatID(id1, id2);
-    final entry = FirestoreMessageEntry(
+    final entry = Message(
       message,
       Random().nextBool() == true ? id1 : id2,
-      FirestoreMessageEntry.Time,
+      Message.Time,
     );
     MessagingReposiory().newMessage(chatID, entry);
     print('message successfully inserted to Firestore.');

@@ -1,6 +1,6 @@
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/tab_pages/filters/filter.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/firestore_chat_entry.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/chat.dart';
 
 class RequestFilter extends ChatFilter {
   List<Chat> filter(List<Chat> chats, String pattern) {

@@ -102,7 +102,7 @@ class Chat implements FirestoreEntry {
       [requesterID, requestedID],
       [requesterName, requestedName],
       chatID,
-      FirestoreMessageEntry.Time,
+      Message.Time,
       lastActivitySeen,
       isChatEngaged,
       requesterID,

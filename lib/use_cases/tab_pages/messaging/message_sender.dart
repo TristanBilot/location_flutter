@@ -8,8 +8,8 @@ class MessageSender {
   /// and the last activity is update.
   Future<void> send(String message, String chatID) async {
     final sendBy = UserStore().user.id;
-    final time = FirestoreMessageEntry.Time;
-    final entry = FirestoreMessageEntry(message, sendBy, time);
+    final time = Message.Time;
+    final entry = Message(message, sendBy, time);
 
     MessagingReposiory().newMessage(chatID, entry);
     MessagingReposiory().updateChatLastActivity(

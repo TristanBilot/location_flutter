@@ -7,6 +7,7 @@ import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/tab_pages/counters/cubit/counter.dart';
 import 'package:location_project/use_cases/tab_pages/filters/chats_filter.dart';
 import 'package:location_project/use_cases/tab_pages/filters/request_filter.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/chat.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
 
 part 'counters_state.dart';
