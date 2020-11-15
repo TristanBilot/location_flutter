@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:location_project/adapters/time_adapter.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/repositories/user/user_mandatory_info_fetcher.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/repositories/user/user_pictures_fetcher.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/stores/user_store.dart';
@@ -37,7 +37,6 @@ class ChatTile extends StatefulWidget {
   final bool isLimitBetweenRequestedAndRequests;
 
   const ChatTile({
-    // @required this.context,
     @required this.chat,
     @required this.shouldRefreshCache,
     @required this.tabPageType,
@@ -63,10 +62,6 @@ class _ChatTileState extends State<ChatTile> {
     return widget.chat.lastActivitySeen == false;
   }
 
-  /// When the tile is tapped, update the last activity in Firestore
-  /// using the repo, and then navigate to the message page.
-  /// The last seen message should be update only if the last message
-  /// emitter is the other person.
   void _onTileTapped(BuildContext thisContext, User user, bool isChatEngaged,
       Message lastMsg) {
     final loggedUserID = UserStore().user.id;
@@ -87,12 +82,13 @@ class _ChatTileState extends State<ChatTile> {
   /// Format the text with sent icon with the last message sent.
   Widget _getLastMsgText(
       Message lastMsg, bool isChatEngaged, bool isMsgUnread) {
-    final style =
-        TextStyle(fontWeight: isMsgUnread ? unreadWeight : readWeight);
+    final style = TextSF.TextSFStyle.copyWith(
+        fontWeight: isMsgUnread ? unreadWeight : readWeight);
     if (!isChatEngaged && !widget.chat.isChatEngaged) return Text('');
     if (!isChatEngaged) return Text('New chat!', style: style);
 
     bool sentByMe = UserStore().user.id == lastMsg.sendBy;
+    final time = TimeAdapter().adapt(lastMsg.time);
     return Row(children: [
       sentByMe
           ? Icon(
@@ -101,7 +97,11 @@ class _ChatTileState extends State<ChatTile> {
               size: 18,
             )
           : Text(''),
-      Text(' ${lastMsg.message}', style: style),
+      Flexible(
+          child: Container(
+        child: Text(' ${lastMsg.message} · $time',
+            style: style, overflow: TextOverflow.ellipsis),
+      )),
     ]);
   }
 
@@ -154,6 +154,7 @@ class _ChatTileState extends State<ChatTile> {
           child: child,
           action1: () => _onUnmatchPress(widget, user.firstName),
           action2: _onSharePress,
+          text1: 'Remove',
         );
       default:
         return null;

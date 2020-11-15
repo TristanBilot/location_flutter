@@ -3,9 +3,7 @@ import 'package:location_project/models/user.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/stores/database.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:location_project/use_cases/tab_pages/counters/cubit/counters_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/views/cubit/view_cubit.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/views/cubit/view_deleting_state.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/cached_circle_user_image_with_active_status.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_rich_text.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_slidable.dart';
@@ -82,7 +80,6 @@ class _TabPageViewTileState extends State<TabPageViewTile> {
                         ),
                       ),
                     ),
-                    Divider(),
                   ],
                 ),
               ],

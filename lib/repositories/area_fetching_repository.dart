@@ -18,7 +18,7 @@ class AreaFetchingRepository {
   FirebaseFirestore _firestore;
   ImageRepository _imageRepo;
 
-  static final double radius = 500; // in meters
+  static final double radius = 30000; // in meters
 
   AreaFetchingRepository() {
     _geo = Geoflutterfire();
