@@ -55,7 +55,7 @@ class _MessagePageState extends State<MessagePage> {
   void _sendMessage() {
     if (_messageEditingController.text.isEmpty) return;
     final message = _messageEditingController.text;
-    MessageSender().send(message, widget.chat.chatID);
+    MessageSender().send(message, widget.chat);
     setState(() => _messageEditingController.text = '');
   }
 
@@ -214,9 +214,16 @@ class _MessagePageState extends State<MessagePage> {
   Future<void> _onRequestAccepted() async {
     await MessagingReposiory().updateChatEngaged(widget.chat.chatID, true);
     await MessagingReposiory().updateChatLastActivity(
-      widget.chat.chatID,
+      widget.chat,
       lastActivityTime: Message.Time,
       lastActivitySeen: true,
+      lastActivitySeenParticipant: Participant.Me,
+    );
+    await MessagingReposiory().updateChatLastActivity(
+      widget.chat,
+      lastActivityTime: Message.Time,
+      lastActivitySeen: false,
+      lastActivitySeenParticipant: Participant.Other,
     );
     setState(() => widget.chat.isChatEngaged = true);
   }

@@ -59,15 +59,18 @@ class _ChatTileState extends State<ChatTile> {
     if (!isChatEngaged) return false; // change later to support new match
     final loggedUserID = UserStore().user.id;
     if (loggedUserID == msg.sendBy) return false;
-    return widget.chat.lastActivitySeen == false;
+    return widget.chat.myActivitySeen == false;
   }
 
   void _onTileTapped(BuildContext thisContext, User user, bool isChatEngaged,
       Message lastMsg) {
     final loggedUserID = UserStore().user.id;
     if (isChatEngaged && lastMsg.sendBy != loggedUserID)
-      MessagingReposiory()
-          .updateChatLastActivity(widget.chat.chatID, lastActivitySeen: true);
+      MessagingReposiory().updateChatLastActivity(
+        widget.chat,
+        lastActivitySeen: true,
+        lastActivitySeenParticipant: Participant.Me,
+      );
     Navigator.push(
       thisContext,
       MaterialPageRoute(

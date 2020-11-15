@@ -1,4 +1,5 @@
 import 'package:location_project/models/firestore_entry.dart';
+import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/firestore_message_entry.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
 import '../../../stores/extensions.dart';
@@ -8,11 +9,17 @@ enum ChatField {
   UserNames,
   ChatID,
   LastActivityTime,
-  LastActivitySeen,
+  RequesterLastActivitySeen,
+  RequestedLastActivitySeen,
 
   IsChatEngaged,
-  RequesterID,
-  RequestedID,
+}
+
+/// Represents the 2 participants of a chat:
+/// Me is the logged usern other is the other one.
+enum Participant {
+  Me,
+  Other,
 }
 
 class Chat implements FirestoreEntry {
@@ -20,10 +27,11 @@ class Chat implements FirestoreEntry {
   final List<String> userNames;
   final String chatID;
   final int lastActivityTime;
-  final bool lastActivitySeen;
+  final bool requesterLastActivitySeen;
+  final bool requestedLastActivitySeen;
   bool isChatEngaged;
-  final String requesterID;
-  final String requestedID;
+  final String requesterID; // userIDs[0]
+  final String requestedID; // userIDs[1]
 
   @override
   bool get stringify => null;
@@ -34,31 +42,28 @@ class Chat implements FirestoreEntry {
         userNames,
         chatID,
         lastActivityTime,
-        lastActivitySeen,
+        requesterLastActivitySeen,
+        requestedLastActivitySeen,
         isChatEngaged,
         requesterID,
         requestedID
       ];
-
-  //   String id;
-  // bool isEngaged;
-  // bool lastActivitySeen;
-  // double lastActivityTime;
-  // String requestedID;
-  // String requesterID;
-  // String requestedName;
-  // String requesterName;
 
   Chat(
     this.userIDs,
     this.userNames,
     this.chatID,
     this.lastActivityTime,
-    this.lastActivitySeen,
+    this.requesterLastActivitySeen,
+    this.requestedLastActivitySeen,
     this.isChatEngaged,
-    this.requesterID,
-    this.requestedID,
-  );
+  )   : this.requesterID = userIDs[0],
+        this.requestedID = userIDs[1];
+
+  bool get iAmRequester => UserStore().user.id == requesterID;
+
+  bool get myActivitySeen =>
+      iAmRequester ? requesterLastActivitySeen : requestedLastActivitySeen;
 
   dynamic toFirestoreObject() {
     return {
@@ -66,10 +71,9 @@ class Chat implements FirestoreEntry {
       ChatField.UserNames.value: userNames,
       ChatField.ChatID.value: chatID,
       ChatField.LastActivityTime.value: lastActivityTime,
-      ChatField.LastActivitySeen.value: lastActivitySeen,
+      ChatField.RequesterLastActivitySeen.value: requesterLastActivitySeen,
+      ChatField.RequestedLastActivitySeen.value: requestedLastActivitySeen,
       ChatField.IsChatEngaged.value: isChatEngaged,
-      ChatField.RequesterID.value: requesterID,
-      ChatField.RequestedID.value: requestedID,
     };
   }
 
@@ -79,10 +83,9 @@ class Chat implements FirestoreEntry {
       List<String>.from(data[ChatField.UserNames.value]),
       data[ChatField.ChatID.value] as String,
       data[ChatField.LastActivityTime.value] as int,
-      data[ChatField.LastActivitySeen.value] as bool,
+      data[ChatField.RequesterLastActivitySeen.value] as bool,
+      data[ChatField.RequestedLastActivitySeen.value] as bool,
       data[ChatField.IsChatEngaged.value] as bool,
-      data[ChatField.RequesterID.value] as String,
-      data[ChatField.RequestedID.value] as String,
     );
   }
 
@@ -94,7 +97,8 @@ class Chat implements FirestoreEntry {
     String requestedID,
     String requesterName,
     String requestedName,
-    bool lastActivitySeen,
+    bool requesterLastActivitySeen,
+    bool requestedLastActivitySeen,
     bool isChatEngaged,
   ) {
     final chatID = MessagingReposiory.getChatID(requesterID, requestedID);
@@ -103,25 +107,52 @@ class Chat implements FirestoreEntry {
       [requesterName, requestedName],
       chatID,
       Message.Time,
-      lastActivitySeen,
+      requesterLastActivitySeen,
+      requestedLastActivitySeen,
       isChatEngaged,
-      requesterID,
-      requestedID,
     );
     return entry;
   }
 
-  static dynamic getCorrespondingUpdateObject(
-      int lastActivityTime, bool lastActivitySeen) {
-    if (lastActivityTime != null && lastActivitySeen != null)
+  static dynamic getCorrespondingUpdateObject({
+    int lastActivityTime,
+    bool requesterLastActivitySeen,
+    bool requestedLastActivitySeen,
+  }) {
+    if (lastActivityTime != null &&
+        requesterLastActivitySeen != null &&
+        requestedLastActivitySeen != null)
       return {
         ChatField.LastActivityTime.value: lastActivityTime,
-        ChatField.LastActivitySeen.value: lastActivitySeen
+        ChatField.RequesterLastActivitySeen.value: requesterLastActivitySeen,
+        ChatField.RequestedLastActivitySeen.value: requestedLastActivitySeen
+      };
+    else if (lastActivityTime != null && requesterLastActivitySeen != null)
+      return {
+        ChatField.LastActivityTime.value: lastActivityTime,
+        ChatField.RequesterLastActivitySeen.value: requesterLastActivitySeen,
+      };
+    else if (lastActivityTime != null && requestedLastActivitySeen != null)
+      return {
+        ChatField.LastActivityTime.value: lastActivityTime,
+        ChatField.RequestedLastActivitySeen.value: requestedLastActivitySeen,
+      };
+    else if (requesterLastActivitySeen != null &&
+        requestedLastActivitySeen != null)
+      return {
+        ChatField.RequesterLastActivitySeen.value: requesterLastActivitySeen,
+        ChatField.RequestedLastActivitySeen.value: requestedLastActivitySeen,
       };
     else if (lastActivityTime != null)
       return {ChatField.LastActivityTime.value: lastActivityTime};
-    else if (lastActivitySeen != null)
-      return {ChatField.LastActivitySeen.value: lastActivitySeen};
+    else if (requesterLastActivitySeen != null)
+      return {
+        ChatField.RequesterLastActivitySeen.value: requesterLastActivitySeen
+      };
+    else if (requestedLastActivitySeen != null)
+      return {
+        ChatField.RequestedLastActivitySeen.value: requestedLastActivitySeen
+      };
     return null;
   }
 }

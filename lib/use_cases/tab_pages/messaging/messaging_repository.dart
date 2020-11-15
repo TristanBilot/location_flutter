@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/adapters/stream_adapter.dart';
 import 'package:location_project/helpers/logger.dart';
+import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/chat.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/firestore_message_entry.dart';
 import '../../../stores/extensions.dart';
@@ -47,23 +48,39 @@ class MessagingReposiory {
     }).catchError((e) => print(e));
   }
 
-  /// Update the values of `lastActivityTime` and `lastActivitySeen`
-  /// in the chat, so that we can fetch the last chat and know
-  /// if a message had been opened.
   Future<void> updateChatLastActivity(
-    String chatID, {
+    Chat chat, {
     int lastActivityTime,
     bool lastActivitySeen,
+    Participant lastActivitySeenParticipant,
   }) async {
-    final toUpdate =
-        Chat.getCorrespondingUpdateObject(lastActivityTime, lastActivitySeen);
+    if (lastActivitySeen != null && lastActivitySeenParticipant == null ||
+        lastActivitySeenParticipant != null && lastActivitySeen == null)
+      Logger().e(
+          '`updateLoggedUserChatLastActivity()` LastActivitySeen should design a participant.');
+    dynamic toUpdate;
+    if (lastActivitySeenParticipant == Participant.Me) {
+      toUpdate = Chat.getCorrespondingUpdateObject(
+        lastActivityTime: lastActivityTime,
+        requesterLastActivitySeen: chat.iAmRequester ? lastActivitySeen : null,
+        requestedLastActivitySeen: !chat.iAmRequester ? lastActivitySeen : null,
+      );
+    } else if (lastActivitySeenParticipant == Participant.Other) {
+      toUpdate = Chat.getCorrespondingUpdateObject(
+        lastActivityTime: lastActivityTime,
+        requesterLastActivitySeen: !chat.iAmRequester ? lastActivitySeen : null,
+        requestedLastActivitySeen: chat.iAmRequester ? lastActivitySeen : null,
+      );
+    } else
+      Logger().e(
+          '`updateLoggedUserChatLastActivity()` This user is not a correct user.');
     if (toUpdate == null) {
       Logger().e('`updateChatLastActivity()` need parameters.');
       return;
     }
     _firestore
         .collection(RootKey)
-        .doc(chatID)
+        .doc(chat.chatID)
         .update(toUpdate)
         .catchError((e) => print(e));
   }

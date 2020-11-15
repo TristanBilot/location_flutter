@@ -40,6 +40,7 @@ class MessagingMockRepository {
       rd ? id1Name : id2Name,
       rd ? id2Name : id1Name,
       engaged,
+      !engaged,
       false,
     );
     MessagingReposiory().newChat(entry.chatID, entry);

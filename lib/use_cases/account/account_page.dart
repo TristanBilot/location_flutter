@@ -130,19 +130,16 @@ class _AccountPageState extends State<AccountPage>
                     ),
                   ),
                   Center(
-                    // child: CachedCircleUserImage(
-                    //   UserStore().user.pictureURL,
-                    //   size: AccountPage.userImageSize + 20,
-                    // ),
-                    child: Container(
-                        width: 400,
-                        height: 400,
-                        child: SvgPicture.asset(
-                          'assets/logo.svg',
-                        )
-
-                        // ),
-                        ),
+                    child: CachedCircleUserImage(
+                      UserStore().user.pictureURL,
+                      size: AccountPage.userImageSize + 20,
+                    ),
+                    // child: Container(
+                    //     width: 400,
+                    //     height: 400,
+                    //     child: SvgPicture.asset(
+                    //       'assets/logo.svg',
+                    //     )
                   ),
                 ]),
               ),

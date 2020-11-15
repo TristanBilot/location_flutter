@@ -83,12 +83,13 @@ class _UserCardState extends State<UserMapCard> {
       requester.firstName,
       requested.firstName,
       true,
+      false,
       true,
     );
     await MessagingReposiory().newChat(chatEntry.chatID, chatEntry);
     // Insert the first message.
     final message = _messageEditingController.text;
-    MessageSender().send(message, chatEntry.chatID);
+    MessageSender().send(message, chatEntry);
     setState(() => _messageEditingController.text = '');
 
     final data = (await MessagingReposiory().getChat(chatEntry.chatID)).data();
@@ -117,6 +118,7 @@ class _UserCardState extends State<UserMapCard> {
       requester.firstName,
       requested.firstName,
       true,
+      false,
       false,
     );
     MessagingReposiory().newChat(entry.chatID, entry);
