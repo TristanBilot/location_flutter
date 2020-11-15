@@ -12,7 +12,8 @@ import 'package:location_project/use_cases/tab_pages/messaging/messaging_reposit
 part 'counters_state.dart';
 
 class CountersCubit extends Cubit<CountersState> {
-  CountersCubit(this._database) : super(CountersInitial(Counter(0, 0, 0, 0)));
+  CountersCubit(this._database)
+      : super(CountersInitial(Counter(0, 0, 0, 0, 0, 0)));
 
   MessagingDatabase _database;
 
@@ -24,30 +25,37 @@ class CountersCubit extends Cubit<CountersState> {
 
     chatsStream.listen((chats) {
       final filteredChats = ChatsFilter().filter(chats, '');
+      final filteredRequests = RequestFilter().filter(chats, '');
       int nbChats = filteredChats.length;
-      int nbRequests = RequestFilter().filter(chats, '').length;
-      int nbUnReadChats =
+      int nbRequests = filteredRequests.length;
+      int nbUnreadChats =
           filteredChats.where((chat) => chat.myActivitySeen == false).length;
+      int nbUnreadRequests = filteredRequests
+          .where((request) => request.myActivitySeen == false)
+          .length;
 
-      MessagingDatabase().putNbDiscussions(nbChats);
-      MessagingDatabase().putNbRequests(nbRequests);
-      MessagingDatabase().putNbUnreadDiscussions(nbUnReadChats);
+      MessagingDatabase().put(nbChats: nbChats);
+      MessagingDatabase().put(nbRequests: nbRequests);
+      MessagingDatabase().put(nbUnreadChats: nbUnreadChats);
+      MessagingDatabase().put(nbUnreadRequests: nbUnreadRequests);
       _emitCounters();
     });
 
     viewsStream.listen((views) {
       int nbViews = views.length;
-      MessagingDatabase().putNbViews(nbViews);
+      MessagingDatabase().put(nbViews: nbViews);
       _emitCounters();
     });
   }
 
   void _emitCounters() {
     emit(CounterStoreState(Counter(
-      _database.getNbDiscussions(),
-      _database.getNbRequests(),
-      _database.getNbViews(),
-      _database.getNbUnreadDiscussions(),
+      _database.get(nbChats: true),
+      _database.get(nbRequests: true),
+      _database.get(nbViews: true),
+      _database.get(nbUnreadChats: true),
+      _database.get(nbUnreadRequests: true),
+      _database.get(nbUnreadViews: true),
     )));
   }
 }

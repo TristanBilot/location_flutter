@@ -90,7 +90,7 @@ class _TabPageDiscussionsPageState extends State<TabPageDiscussionsPage>
                 if (state is ChatFetchedState) {
                   List<Chat> chats = _filter.filter(
                       state.chats, _messageEditingController.text);
-                  MessagingDatabase().putNbDiscussions(chats.length);
+                  MessagingDatabase().put(nbChats: chats.length);
 
                   return TabPageRefresher(
                     _onRefresh,

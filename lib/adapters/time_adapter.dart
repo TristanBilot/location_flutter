@@ -13,7 +13,7 @@ class TimeAdapter {
     if (days > 7) return '${(days / 7).round()}w';
     if (days > 0) return '${days}d'; // OU J EN FRANCAIS
     if (hours > 0) return '${hours}h';
-    if (mins > 1) return '${mins}m';
+    if (mins >= 1) return '${mins}m';
     return 'Now';
   }
 }

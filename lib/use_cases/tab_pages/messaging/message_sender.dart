@@ -15,6 +15,10 @@ class MessageSender {
     MessagingReposiory().newMessage(chat.chatID, entry);
     MessagingReposiory().updateChatLastActivity(chat,
         lastActivityTime: time,
+        lastActivitySeen: true,
+        lastActivitySeenParticipant: Participant.Me);
+    MessagingReposiory().updateChatLastActivity(chat,
+        lastActivityTime: time,
         lastActivitySeen: false,
         lastActivitySeenParticipant: Participant.Other);
   }

@@ -85,7 +85,7 @@ class _TabPageRequestsPageState extends State<TabPageRequestsPage>
                 if (state is ChatFetchedState) {
                   List<Chat> chats = _filter.filter(
                       state.chats, _messageEditingController.text);
-                  MessagingDatabase().putNbRequests(chats.length);
+                  MessagingDatabase().put(nbRequests: chats.length);
 
                   return TabPageRefresher(
                     _onRefresh,

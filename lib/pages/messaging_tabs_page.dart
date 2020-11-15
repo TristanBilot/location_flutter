@@ -59,7 +59,7 @@ class _MessagingTabsPageState extends State<MessagingTabsPage>
                       TabPageElementCountStatus(
                           'Messages', state.counter.nbUnreadChats),
                       TabPageElementCountStatus(
-                          'Requests', state.counter.nbRequests),
+                          'Requests', state.counter.nbUnreadRequests),
                       TabPageElementCountStatus('Views', state.counter.nbViews),
                     ],
                   ),

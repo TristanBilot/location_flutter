@@ -55,22 +55,28 @@ class _ChatTileState extends State<ChatTile> {
   /// Returns wether the last message is marked as unread or not.
   /// When the last msg is sent by the logged user, it should
   /// not be marked as unread.
-  bool _shouldMarkMsgAsUnread(bool isChatEngaged, Message msg) {
-    if (!isChatEngaged) return false; // change later to support new match
-    final loggedUserID = UserStore().user.id;
-    if (loggedUserID == msg.sendBy) return false;
-    return widget.chat.myActivitySeen == false;
+  bool _shouldMarkMsgAsUnread(bool lastMessageExists, Message msg) {
+    final chat = widget.chat;
+    final userID = UserStore().user.id;
+
+    /// For requests.
+    if (!chat.isChatEngaged &&
+        chat.requestedID == userID &&
+        chat.myActivitySeen == false) return true;
+
+    /// For chats.
+    if (!lastMessageExists) return false;
+    //  || userID == msg.sendBy
+    return chat.myActivitySeen == false;
   }
 
   void _onTileTapped(BuildContext thisContext, User user, bool isChatEngaged,
       Message lastMsg) {
-    final loggedUserID = UserStore().user.id;
-    if (isChatEngaged && lastMsg.sendBy != loggedUserID)
-      MessagingReposiory().updateChatLastActivity(
-        widget.chat,
-        lastActivitySeen: true,
-        lastActivitySeenParticipant: Participant.Me,
-      );
+    MessagingReposiory().updateChatLastActivity(
+      widget.chat,
+      lastActivitySeen: true,
+      lastActivitySeenParticipant: Participant.Me,
+    );
     Navigator.push(
       thisContext,
       MaterialPageRoute(
@@ -84,11 +90,11 @@ class _ChatTileState extends State<ChatTile> {
 
   /// Format the text with sent icon with the last message sent.
   Widget _getLastMsgText(
-      Message lastMsg, bool isChatEngaged, bool isMsgUnread) {
+      Message lastMsg, bool lastMsgExists, bool isMsgUnread) {
     final style = TextSF.TextSFStyle.copyWith(
         fontWeight: isMsgUnread ? unreadWeight : readWeight);
-    if (!isChatEngaged && !widget.chat.isChatEngaged) return Text('');
-    if (!isChatEngaged) return Text('New chat!', style: style);
+    if (!lastMsgExists && !widget.chat.isChatEngaged) return Text('');
+    if (!lastMsgExists) return Text('New chat!', style: style);
 
     bool sentByMe = UserStore().user.id == lastMsg.sendBy;
     final time = TimeAdapter().adapt(lastMsg.time);
@@ -244,14 +250,14 @@ class _ChatTileState extends State<ChatTile> {
                       stream: lastMsgStream,
                       builder: (context, lastMsgSnapshot) {
                         final msg = _getSafeMessage(lastMsgSnapshot);
-                        // always check `isChatEngaged` before using msg
-                        bool isChatEngaged = msg != null;
+                        // always check `lastMessageExists` before using msg
+                        bool lastMsgExists = msg != null;
                         bool isMsgUnread =
-                            _shouldMarkMsgAsUnread(isChatEngaged, msg);
+                            _shouldMarkMsgAsUnread(lastMsgExists, msg);
 
                         return GestureDetector(
                           onTap: () => _onTileTapped(
-                              futureContext, user, isChatEngaged, msg),
+                              futureContext, user, lastMsgExists, msg),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -286,7 +292,7 @@ class _ChatTileState extends State<ChatTile> {
                                             ],
                                           ),
                                           subtitle: _getLastMsgText(
-                                              msg, isChatEngaged, isMsgUnread),
+                                              msg, lastMsgExists, isMsgUnread),
                                           trailing: Icon(Icons.chevron_right),
                                           leading:
                                               CachedCircleUserImageWithActiveStatus(

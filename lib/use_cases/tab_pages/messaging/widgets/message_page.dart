@@ -216,7 +216,7 @@ class _MessagePageState extends State<MessagePage> {
     await MessagingReposiory().updateChatLastActivity(
       widget.chat,
       lastActivityTime: Message.Time,
-      lastActivitySeen: true,
+      lastActivitySeen: false,
       lastActivitySeenParticipant: Participant.Me,
     );
     await MessagingReposiory().updateChatLastActivity(

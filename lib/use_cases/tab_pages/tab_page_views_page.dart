@@ -59,7 +59,7 @@ class _TabPageViewsPageState extends State<TabPageViewsPage> {
               builder: (context, state) {
                 if (state is ViewFetchedState) {
                   final viewersIDs = state.viewerIDs;
-                  MessagingDatabase().putNbViews(viewersIDs.length);
+                  MessagingDatabase().put(nbViews: viewersIDs.length);
 
                   return TabPageRefresher(
                     _onRefresh,
