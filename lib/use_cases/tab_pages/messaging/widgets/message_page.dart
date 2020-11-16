@@ -53,9 +53,9 @@ class _MessagePageState extends State<MessagePage> {
   }
 
   void _sendMessage() {
-    if (_messageEditingController.text.isEmpty) return;
-    final message = _messageEditingController.text;
-    MessageSender().send(message, widget.chat);
+    final content = _messageEditingController.text.trim();
+    if (content.isEmpty) return;
+    MessageSender().send(content, widget.chat);
     setState(() => _messageEditingController.text = '');
   }
 
@@ -112,6 +112,7 @@ class _MessagePageState extends State<MessagePage> {
                   _handleLastMsgView(isLastMessage, msg);
                   return MessageTile(
                     message: msg,
+                    chat: widget.chat,
                     diffWithPrevMsgTime: diff,
                     isLastMessage: isLastMessage,
                   );

@@ -2,6 +2,7 @@ import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/message.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/models/reaction.dart';
 
 class MessageSender {
   /// Create a new message in `chatID` with `message` content.
@@ -10,7 +11,7 @@ class MessageSender {
   Future<void> send(String message, Chat chat) async {
     final sendBy = UserStore().user.id;
     final time = Message.Time;
-    final entry = Message(message, sendBy, time, false);
+    final entry = Message(message, sendBy, time, false, Reaction.NoReaction);
 
     MessagingReposiory().newMessage(chat.chatID, entry);
     MessagingReposiory().updateChatLastActivity(chat,

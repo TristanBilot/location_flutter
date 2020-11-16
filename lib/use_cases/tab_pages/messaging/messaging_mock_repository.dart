@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/message.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/models/reaction.dart';
 
 class MessagingMockRepository {
   final id1 = 'bilot.tristan@hotmail.fr';
@@ -69,6 +70,7 @@ class MessagingMockRepository {
       Random().nextBool() == true ? id1 : id2,
       Message.Time,
       false,
+      Reaction.NoReaction,
     );
     MessagingReposiory().newMessage(chatID, entry);
     print('message successfully inserted to Firestore.');

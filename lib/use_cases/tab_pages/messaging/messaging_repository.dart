@@ -5,6 +5,7 @@ import 'package:location_project/adapters/stream_adapter.dart';
 import 'package:location_project/helpers/logger.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/message.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/models/reaction.dart';
 import '../../../stores/extensions.dart';
 
 class MessagingReposiory {
@@ -37,6 +38,18 @@ class MessagingReposiory {
   /// user deny a request.
   Future<void> deleteChat(String chatID) async {
     _firestore.collection(RootKey).doc(chatID).delete();
+  }
+
+  Future<void> deleteMessage(String chatID, Message message) async {
+    _firestore
+        .collection(RootKey)
+        .doc(chatID)
+        .collection(ChatKey)
+        .where(MessageField.Time.value, isEqualTo: message.time)
+        .get()
+        .then((snapshot) {
+      for (DocumentSnapshot doc in snapshot.docs) doc.reference.delete();
+    });
   }
 
   /// Update tghe boolean value if `IsChatEngaged` in the chat.
@@ -156,6 +169,21 @@ class MessagingReposiory {
       if (snapshot.docs == null || snapshot.docs.isEmpty) return;
       snapshot.docs.first.reference
           .update({MessageField.IsViewed.value: isViewed});
+    });
+  }
+
+  void updateMessageReaction(Chat chat, Message message, Reaction reaction) {
+    _firestore
+        .collection(RootKey)
+        .doc(chat.chatID)
+        .collection(ChatKey)
+        .where(MessageField.Time.value, isEqualTo: message.time)
+        .get()
+        .then((snapshot) {
+      if (snapshot.docs == null || snapshot.docs.isEmpty) return;
+      snapshot.docs.first.reference.update({
+        MessageField.Reaction.value: reaction.value,
+      });
     });
   }
 }

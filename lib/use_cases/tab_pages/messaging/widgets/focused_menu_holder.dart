@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:location_project/themes/theme_utils.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/focused_menu_item.dart';
 
@@ -58,6 +59,7 @@ class _FocusedMenuHolderState extends State<FocusedMenuHolder> {
         key: containerKey,
         onTap: widget.onPressed,
         onLongPress: () async {
+          HapticFeedback.heavyImpact();
           getOffset();
           await Navigator.push(
               context,
