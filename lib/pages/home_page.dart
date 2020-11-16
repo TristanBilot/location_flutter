@@ -4,8 +4,12 @@ import 'package:location_project/controllers/location_controller.dart';
 import 'package:location_project/pages/map_page.dart';
 import 'package:location_project/pages/messaging_tabs_page.dart';
 import 'package:location_project/stores/messaging_database.dart';
+import 'package:location_project/themes/theme_utils.dart';
 import 'package:location_project/use_cases/account/account_page.dart';
 import 'package:location_project/use_cases/tab_pages/counters/cubit/counters_cubit.dart';
+import 'package:location_project/widgets/home_page_status_without_count.dart';
+import 'package:location_project/widgets/home_page_tab_bar_icon.dart';
+import 'package:location_project/widgets/home_page_tab_bar_image_icon.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -17,7 +21,10 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return HomePageContainer();
+    return BlocProvider(
+      create: (context) => CountersCubit(MessagingDatabase())..init(),
+      child: HomePageContainer(),
+    );
   }
 }
 
@@ -30,22 +37,22 @@ class HomePageContainer extends StatefulWidget {
 
 class _HomePageContainerState extends State<HomePageContainer>
     with SingleTickerProviderStateMixin, WidgetsBindingObserver {
-  final List<Tab> tabs = <Tab>[
-    Tab(icon: Icon(Icons.account_circle)),
-    Tab(icon: Icon(Icons.location_on)),
-    Tab(icon: Icon(Icons.textsms))
-  ];
+  static const NbTabs = 3;
   final _initialIndex = 1;
   TabController _tabController;
 
   @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addObserver(this);
 
-    _tabController = TabController(
-        vsync: this, length: tabs.length, initialIndex: _initialIndex);
+    _tabController =
+        TabController(vsync: this, length: NbTabs, initialIndex: _initialIndex);
+    _tabController.addListener(_handleTabSelection);
   }
+
+  void _handleTabSelection() => setState(() {});
 
   @override
   void dispose() {
@@ -75,23 +82,51 @@ class _HomePageContainerState extends State<HomePageContainer>
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(50.0),
             child: AppBar(
+              elevation: 1,
+              backgroundColor: ThemeUtils.getTabColor(context),
               bottom: TabBar(
-                tabs: tabs,
+                indicatorColor:
+                    Colors.transparent, // Theme.of(context).primaryColor,
+                tabs: [
+                  // Tab 1.
+                  Tab(
+                      icon: HomePageTabBarIcon(
+                          Icons.account_circle, _tabController.index == 0)),
+                  // Tab 2.
+                  Tab(icon: HomePageTabBarImageIcon(_tabController.index == 1)),
+                  // Tab 3.
+                  Tab(
+                      icon: Container(
+                          width: 40, // to fix position of status
+                          height: 30,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              HomePageTabBarIcon(
+                                  Icons.textsms, _tabController.index == 2),
+                              BlocBuilder<CountersCubit, CountersState>(
+                                  builder: (context, state) {
+                                if (state.isANotificationUnread())
+                                  return Align(
+                                      alignment: Alignment.topRight,
+                                      child: HomePageStatusWithoutCount());
+                                return SizedBox();
+                              })
+                            ],
+                          )))
+                ],
                 controller: _tabController,
               ),
             ),
           ),
-          body: BlocProvider(
-            create: (context) => CountersCubit(MessagingDatabase())..init(),
-            child: TabBarView(
-              physics: NeverScrollableScrollPhysics(),
-              controller: _tabController,
-              children: [
-                AccountPage(),
-                MapPage(),
-                MessagingTabsPage(),
-              ],
-            ),
+          body: TabBarView(
+            physics: NeverScrollableScrollPhysics(),
+            controller: _tabController,
+            children: [
+              AccountPage(),
+              MapPage(),
+              MessagingTabsPage(),
+            ],
           ),
         ),
         // PositionedAppIcon(_tabController, _initialIndex)

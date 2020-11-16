@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/repositories/user_repository.dart';
+import 'package:location_project/themes/dark_theme.dart';
+import 'package:location_project/themes/theme_utils.dart';
 import 'package:location_project/use_cases/tab_pages/counters/cubit/counters_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
@@ -30,11 +32,6 @@ class _MessagingTabsPageState extends State<MessagingTabsPage>
     super.initState();
   }
 
-  Color _getTabColor() {
-    bool isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
-    return isDark ? Color.fromRGBO(33, 33, 33, 1) : Colors.white;
-  }
-
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -50,7 +47,7 @@ class _MessagingTabsPageState extends State<MessagingTabsPage>
             child: BlocBuilder<CountersCubit, CountersState>(
               builder: (context, state) {
                 return AppBar(
-                  backgroundColor: _getTabColor(),
+                  backgroundColor: ThemeUtils.getTabColor(context),
                   bottom: TabBar(
                     labelPadding: EdgeInsets.only(bottom: 10),
                     labelColor: Theme.of(context).textTheme.headline6.color,

@@ -6,6 +6,12 @@ abstract class CountersState extends Equatable {
 
   @override
   List<Object> get props => [];
+
+  bool isANotificationUnread() {
+    return counter.nbUnreadChats != 0 ||
+        counter.nbUnreadRequests != 0 ||
+        counter.nbUnreadViews != 0;
+  }
 }
 
 class CountersInitial extends CountersState {
