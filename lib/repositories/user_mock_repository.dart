@@ -2,8 +2,10 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/models/firestore_user_entry.dart';
 import 'package:location_project/models/gender.dart';
+import 'package:location_project/models/user.dart';
 import 'package:location_project/models/user_settings.dart';
 import 'package:location_project/repositories/user_repository.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/models/view.dart';
 import 'image_repository.dart';
 import '../stores/store.dart';
 
@@ -49,6 +51,12 @@ class UserMockRepository {
     String lastName,
     GeoFirePoint geoPoint,
   ) async {
+    await UserRepository().deleteCollection(id, UserField.BlockedUserIDs);
+    await UserRepository().deleteCollection(id, UserField.UserIDsWhoBlockedMe);
+    await UserRepository().deleteCollection(id, UserField.ViewedUserIDs);
+    await UserRepository().deleteCollection(id, UserField.UserIDsWhoWiewedMe);
+    await _firestore.collection(UserRepository.RootKey).doc(id).delete();
+
     _firestore
         .collection(UserRepository.RootKey)
         .doc(id)
@@ -61,6 +69,8 @@ class UserMockRepository {
           UserSettings.DefaultUserSettings,
           List<String>(),
           List<String>(),
+          List<View>(),
+          List<View>(),
         ).toFirestoreObject());
     final ext = Store.defaultProfilePictureExtension;
     final assetImage = await ImageRepository()

@@ -4,6 +4,7 @@ import 'package:location_project/repositories/user_local_repository.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/use_cases/account/account_language_page.dart';
 import 'package:location_project/models/gender.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/models/view.dart';
 import '../stores/extensions.dart';
 
 /// Manage all the data of the logged user.
@@ -121,11 +122,11 @@ class UserStore extends ChangeNotifier {
   /// Add a new view in the local store and in the firestore for both
   /// participants.
   Future<void> addView(String viewedID) async {
-    _user.viewedUserIDs.add(viewedID);
-    await _repo.addOrReplaceToCollection(
-        _user.id, UserField.ViewedUserIDs, viewedID);
-    await _repo.addOrReplaceToCollection(
-        viewedID, UserField.UserIDsWhoWiewedMe, _user.id);
+    final viewed = View(viewedID, false);
+    final view = View(_user.id, false);
+    _user.viewedUserIDs.add(viewed);
+    await _repo.addView(_user.id, UserField.ViewedUserIDs, viewed);
+    await _repo.addView(viewedID, UserField.UserIDsWhoWiewedMe, view);
     notifyListeners();
   }
 

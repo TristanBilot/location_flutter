@@ -8,7 +8,7 @@ import 'package:location_project/use_cases/tab_pages/filters/chats_filter.dart';
 import 'package:location_project/use_cases/tab_pages/filters/filter.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/chat_tile.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/chat.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
 import 'package:location_project/use_cases/tab_pages/tab_page_type.dart';
 import 'package:location_project/widgets/basic_placeholder.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_refresher.dart';

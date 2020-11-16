@@ -6,6 +6,7 @@ import 'package:location_project/repositories/user/user_mandatory_info_fetcher.d
 import 'package:location_project/repositories/user/user_pictures_fetcher.dart';
 import 'package:location_project/repositories/user/user_views_info.fetcher.dart';
 import 'package:location_project/models/gender.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/models/view.dart';
 
 part 'user.g.dart';
 
@@ -53,8 +54,8 @@ class User extends HiveObject {
   // Properties stored in the UserStore and fetched at start.
   List<String> blockedUserIDs;
   List<String> userIDsWhoBlockedMe;
-  List<String> viewedUserIDs;
-  List<String> userIDsWhoWiewedMe;
+  List<View> viewedUserIDs;
+  List<View> userIDsWhoWiewedMe;
 
   User._();
   User.public();

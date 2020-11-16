@@ -58,19 +58,19 @@ class _TabPageViewsPageState extends State<TabPageViewsPage> {
             child: BlocBuilder<ViewCubit, ViewState>(
               builder: (context, state) {
                 if (state is ViewFetchedState) {
-                  final viewersIDs = state.viewerIDs;
-                  MessagingDatabase().put(nbViews: viewersIDs.length);
+                  final views = state.viewerIDs;
+                  MessagingDatabase().put(nbViews: views.length);
 
                   return TabPageRefresher(
                     _onRefresh,
                     _refreshController,
-                    viewersIDs.length != 0
+                    views.length != 0
                         ? ListView.builder(
-                            itemCount: viewersIDs.length,
+                            itemCount: views.length,
                             shrinkWrap: true,
                             itemBuilder: (context, index) {
                               return TabPageViewTile(
-                                viewersIDs[index],
+                                views[index],
                                 _shouldRefreshCache,
                               );
                             })

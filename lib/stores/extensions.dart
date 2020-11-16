@@ -1,8 +1,9 @@
 import 'package:location_project/models/user.dart';
 import 'package:location_project/use_cases/account/account_language_page.dart';
 import 'package:location_project/models/gender.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/chat.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/firestore_message_entry.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/models/message.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/models/view.dart';
 import 'package:location_project/use_cases/tab_pages/tab_page_type.dart';
 
 extension GenderExtension on Gender {
@@ -31,6 +32,11 @@ extension MessageFieldExtension on MessageField {
 }
 
 extension ChatsPageTypeExtension on TabPageType {
+  String get value =>
+      this.toString().substring(this.toString().indexOf('.') + 1);
+}
+
+extension ViewFieldExtension on ViewField {
   String get value =>
       this.toString().substring(this.toString().indexOf('.') + 1);
 }

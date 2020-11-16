@@ -10,7 +10,7 @@ abstract class ViewState extends Equatable {
 class ViewInitial extends ViewState {}
 
 class ViewFetchedState extends ViewState {
-  final List<String> viewerIDs;
+  final List<View> viewerIDs;
 
   ViewFetchedState(this.viewerIDs);
 

@@ -1,6 +1,6 @@
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/tab_pages/filters/filter.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/chat.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
 
 class ChatsFilter extends ChatFilter {
   List<Chat> filter(List<Chat> chats, String pattern) {

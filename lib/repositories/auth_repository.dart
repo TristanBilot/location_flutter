@@ -7,6 +7,7 @@ import 'package:location_project/stores/database.dart';
 import 'package:location_project/stores/messaging_database.dart';
 import 'package:location_project/stores/store.dart';
 import 'package:location_project/stores/user_store.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/models/view.dart';
 import 'dart:convert';
 
 import 'image_repository.dart';
@@ -115,8 +116,8 @@ class AuthRepository {
       UserSettings.DefaultUserSettings,
       List<String>(),
       List<String>(),
-      List<String>(),
-      List<String>(),
+      List<View>(),
+      List<View>(),
     );
 
     final hasPicture = !data['picture']['data']['is_silhouette'];

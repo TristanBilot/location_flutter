@@ -13,6 +13,7 @@ import 'package:location_project/use_cases/start_path/gender_circle_icon_factory
 import 'package:location_project/use_cases/start_path/start_path_step2/start_path_step2.dart';
 import 'package:location_project/use_cases/start_path/widgets/equally_spaced_row.dart';
 import 'package:location_project/use_cases/start_path/widgets/gender_circle_icon.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/messaging_mock_repository.dart';
 import 'package:location_project/widgets/cached_circle_user_image.dart';
 import 'package:location_project/widgets/cupertino_range_slider.dart';
 import 'package:location_project/widgets/textSF.dart';
@@ -235,9 +236,9 @@ class _AccountPageState extends State<AccountPage>
                         onPressed: () {
                           UserMockRepository().putParisDataset();
                           UserMockRepository().putCarrieresDataset();
-                          // MessagingMockRepository().insertChatMock().then(
-                          //     (value) => MessagingMockRepository()
-                          //         .insertMessageMock());
+                          MessagingMockRepository().insertChatMock().then(
+                              (value) => MessagingMockRepository()
+                                  .insertMessageMock());
                         },
                       ),
                       Padding(

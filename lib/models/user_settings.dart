@@ -41,7 +41,11 @@ class UserSettings {
   static const bool DefaultShowMyDistance = true;
   static const bool DefaultConnected = true;
   static const List<int> DefaultWantedAgeRange = [18, 25];
-  static final List<Gender> DefaultWantedGenders = [Gender.Other];
+  static final List<Gender> DefaultWantedGenders = [
+    Gender.Other,
+    Gender.Female,
+    Gender.Male
+  ];
 
   static UserSettings fromFirestoreObject(dynamic data) {
     final wantedAgeRange = List<int>.from(data[UserField.WantedAgeRange.value]);

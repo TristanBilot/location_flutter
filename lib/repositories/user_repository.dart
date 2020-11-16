@@ -12,6 +12,7 @@ import 'package:location_project/repositories/user/user_pictures_fetcher.dart';
 import 'package:location_project/repositories/user/user_views_info.fetcher.dart';
 import 'package:location_project/stores/database.dart';
 import 'package:location_project/stores/user_store.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/models/view.dart';
 import 'dart:io';
 import 'image_repository.dart';
 import '../models/user.dart';
@@ -52,15 +53,17 @@ class UserRepository {
         ? Store.parisGeoPosition
         : LocationCache().locationGeoPoint;
     await _firestore.collection(RootKey).doc(user.id).set(FirestoreUserEntry(
-          user.firstName,
-          user.lastName,
-          user.gender,
-          user.age,
-          geoPoint,
-          UserSettings.DefaultUserSettings,
-          user.blockedUserIDs,
-          user.userIDsWhoBlockedMe,
-        ).toFirestoreObject());
+            user.firstName,
+            user.lastName,
+            user.gender,
+            user.age,
+            geoPoint,
+            UserSettings.DefaultUserSettings,
+            user.blockedUserIDs,
+            user.userIDsWhoBlockedMe,
+            user.viewedUserIDs,
+            user.userIDsWhoWiewedMe)
+        .toFirestoreObject());
     File userPicture = await _imageRepo.urlToFile(user.pictureURL);
     return await _imageRepo.uploadFile(
         userPicture, user.id + Store.defaultProfilePictureExtension);
@@ -141,6 +144,17 @@ class UserRepository {
         .collection(field.value)
         .doc(fieldID)
         .delete();
+  }
+
+  Future<void> deleteCollection(String id, UserField field) async {
+    _firestore
+        .collection(RootKey)
+        .doc(id)
+        .collection(field.value)
+        .get()
+        .then((snapshot) {
+      for (DocumentSnapshot doc in snapshot.docs) doc.reference.delete();
+    });
   }
 
   Future<User> fetchUser(
@@ -250,6 +264,47 @@ class UserRepository {
         .doc(id)
         .snapshots()
         .map((snapshot) => UserMandatoryInfoFetcher().fetch(snapshot));
+  }
+
+  Future<void> addView(String id, UserField field, View view) async {
+    final ref = _firestore
+        .collection(RootKey)
+        .doc(id)
+        .collection(field.value)
+        .doc(view.id);
+    final viewExists = (await ref.get()).exists;
+    if (!viewExists) ref.set(view.toFirestoreObject());
+  }
+
+  Future<void> updateView(
+      String id, UserField field, View view, bool isViewed) async {
+    final newView = View(view.id, isViewed);
+    _firestore
+        .collection(RootKey)
+        .doc(id)
+        .collection(field.value)
+        .doc(view.id)
+        .set(newView.toFirestoreObject());
+  }
+
+  Stream<List<View>> fetchViewsAsStream(String id) {
+    return _firestore
+        .collection(RootKey)
+        .doc(id)
+        .collection(UserField.UserIDsWhoWiewedMe.value)
+        .snapshots()
+        .transform(StreamAdapter().mapToListOfEntries<View>());
+  }
+
+  Future<List<View>> fetchViewsAsList(String id) async {
+    return (await _firestore
+            .collection(RootKey)
+            .doc(id)
+            .collection(UserField.UserIDsWhoWiewedMe.value)
+            .get())
+        .docs
+        .map((view) => View.fromFirestoreObject(view.data()))
+        .toList();
   }
 
   /// Returns a stream of list of `IDs` of documents of a collection

@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:location_project/stores/database.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_deleting_state.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/chat.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
 
 part 'chat_fetching_state.dart';

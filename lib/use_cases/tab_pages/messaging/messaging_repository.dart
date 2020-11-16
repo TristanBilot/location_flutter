@@ -4,8 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/adapters/stream_adapter.dart';
 import 'package:location_project/helpers/logger.dart';
 import 'package:location_project/stores/user_store.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/chat.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/firestore_message_entry.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/models/message.dart';
 import '../../../stores/extensions.dart';
 
 class MessagingReposiory {

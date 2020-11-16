@@ -1,6 +1,8 @@
 import 'package:location_project/adapters/gender_value_adapter.dart';
 import 'package:location_project/models/firestore_entry.dart';
+import 'package:location_project/models/gender.dart';
 import 'package:location_project/models/user.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/models/view.dart';
 import '../stores/extensions.dart';
 
 /// Represents the User data stored in Firestore.
@@ -18,6 +20,8 @@ class FirestoreUserEntry implements FirestoreEntry {
   final List<String> wantedGenders;
   final List<String> blockedUserIDs;
   final List<String> userIDsWhoBlockedMe;
+  final List<View> viewedUserIDs;
+  final List<View> userIDsWhoWiewedMe;
 
   @override
   bool get stringify => null;
@@ -35,18 +39,22 @@ class FirestoreUserEntry implements FirestoreEntry {
         wantedAgeRange,
         wantedGenders,
         blockedUserIDs,
-        userIDsWhoBlockedMe
+        userIDsWhoBlockedMe,
+        viewedUserIDs,
+        userIDsWhoWiewedMe,
       ];
 
   FirestoreUserEntry(
     this.firstName,
     this.lastName,
-    gender,
+    Gender gender,
     this.age,
     geoPoint,
     settings,
     this.blockedUserIDs,
     this.userIDsWhoBlockedMe,
+    this.viewedUserIDs,
+    this.userIDsWhoWiewedMe,
   )   : this.gender = gender.value,
         this.geoPointData = geoPoint.data,
         this.showMyDistance = settings.showMyDistance,
@@ -68,6 +76,8 @@ class FirestoreUserEntry implements FirestoreEntry {
       UserField.ShowMyProfile.value: showMyProfile,
       UserField.WantedAgeRange.value: wantedAgeRange,
       UserField.WantedGenders.value: wantedGenders,
+      UserField.ViewedUserIDs.value: viewedUserIDs,
+      UserField.UserIDsWhoWiewedMe.value: userIDsWhoWiewedMe,
     };
   }
 }

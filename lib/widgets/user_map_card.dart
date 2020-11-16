@@ -5,14 +5,12 @@ import 'package:location_project/controllers/messaging_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/helpers/logger.dart';
 import 'package:location_project/stores/user_store.dart';
-import 'package:location_project/use_cases/tab_pages/counters/cubit/counters_cubit.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/chat.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/message_page.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/message_sender.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
 import 'package:location_project/widgets/user_card.dart';
 import 'package:location_project/widgets/user_map_card_content.dart';
-import 'package:provider/provider.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import '../models/user.dart';
 

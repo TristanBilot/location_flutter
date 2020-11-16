@@ -20,8 +20,7 @@ class CountersCubit extends Cubit<CountersState> {
   void init() {
     final id = UserStore().user.id;
     final chatsStream = MessagingReposiory().getChats(id);
-    final viewsStream = UserRepository()
-        .getCollectionListOfIDs(id, UserField.UserIDsWhoWiewedMe);
+    final viewsStream = UserRepository().fetchViewsAsStream(id);
 
     chatsStream.listen((chats) {
       final filteredChats = ChatsFilter().filter(chats, '');
@@ -43,7 +42,9 @@ class CountersCubit extends Cubit<CountersState> {
 
     viewsStream.listen((views) {
       int nbViews = views.length;
+      int nbUnreadViews = views.where((view) => !view.isViewed).length;
       MessagingDatabase().put(nbViews: nbViews);
+      MessagingDatabase().put(nbUnreadViews: nbUnreadViews);
       _emitCounters();
     });
   }

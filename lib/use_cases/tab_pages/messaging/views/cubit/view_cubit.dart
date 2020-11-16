@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/stores/user_store.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/models/view.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/views/cubit/view_deleting_state.dart';
 
 part 'view_fetching_state.dart';
@@ -15,9 +16,7 @@ class ViewCubit extends Cubit<ViewState> {
   Future<void> fetchViews() async {
     try {
       final id = UserStore().user.id;
-      _userRepository
-          .getCollectionListOfIDs(id, UserField.UserIDsWhoWiewedMe)
-          .listen((views) {
+      _userRepository.fetchViewsAsStream(id).listen((views) {
         emit(ViewFetchedState(views));
       });
     } on Exception {
