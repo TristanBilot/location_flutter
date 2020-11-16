@@ -10,7 +10,7 @@ class MessageSender {
   Future<void> send(String message, Chat chat) async {
     final sendBy = UserStore().user.id;
     final time = Message.Time;
-    final entry = Message(message, sendBy, time);
+    final entry = Message(message, sendBy, time, false);
 
     MessagingReposiory().newMessage(chat.chatID, entry);
     MessagingReposiory().updateChatLastActivity(chat,

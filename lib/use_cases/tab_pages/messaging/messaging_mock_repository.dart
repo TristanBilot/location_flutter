@@ -8,6 +8,9 @@ class MessagingMockRepository {
   final id1 = 'bilot.tristan@hotmail.fr';
   final id2 = 'damien.duprat@hotmail.fr';
   final id3 = 'alexandre.roume@hotmail.fr';
+  final id4 = 'bilot.tristan.carrieres@hotmail.fr';
+  final id5 = 'damien.duprat.carrieres@hotmail.fr';
+  final id6 = 'alexandre.roume.carrieres@hotmail.fr';
 
   final id1Name = 'Tristan';
   final id2Name = 'Damien';
@@ -15,8 +18,12 @@ class MessagingMockRepository {
 
   Future<void> insertChatMock() async {
     _insertChatMock(id1, id2, id1Name, id2Name, true);
-    _insertChatMock(id1, id3, id1Name, id3Name, true);
     _insertChatMock(id1, id2, id1Name, id2Name, true);
+    _insertChatMock(id1, id3, id1Name, id3Name, true);
+
+    _insertChatMock(id1, id4, id1Name, id1Name, true);
+    _insertChatMock(id1, id5, id1Name, id2Name, true);
+    _insertChatMock(id1, id6, id1Name, id3Name, true);
   }
 
   Future<void> insertMessageMock() async {
@@ -33,6 +40,8 @@ class MessagingMockRepository {
     String id2Name,
     bool engaged,
   ) async {
+    final chatID = MessagingReposiory.getChatID(id1, id2);
+    // await MessagingReposiory().deleteChat(chatID);
     final rd = Random().nextBool();
     final entry = Chat.newChatEntry(
       rd ? id1 : id2,
@@ -54,10 +63,12 @@ class MessagingMockRepository {
     String message,
   ) async {
     final chatID = MessagingReposiory.getChatID(id1, id2);
+    await MessagingReposiory().deleteMessages(chatID);
     final entry = Message(
       message,
       Random().nextBool() == true ? id1 : id2,
       Message.Time,
+      false,
     );
     MessagingReposiory().newMessage(chatID, entry);
     print('message successfully inserted to Firestore.');

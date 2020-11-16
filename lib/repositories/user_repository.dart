@@ -146,10 +146,10 @@ class UserRepository {
         .delete();
   }
 
-  Future<void> deleteCollection(String id, UserField field) async {
+  Future<void> deleteCollection(String chatID, UserField field) async {
     _firestore
         .collection(RootKey)
-        .doc(id)
+        .doc(chatID)
         .collection(field.value)
         .get()
         .then((snapshot) {

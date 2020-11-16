@@ -5,12 +5,14 @@ enum MessageField {
   Message,
   SendBy,
   Time,
+  IsViewed,
 }
 
 class Message implements FirestoreEntry {
   final String message;
   final String sendBy;
   final int time;
+  final bool isViewed;
 
   static get Time => DateTime.now().microsecondsSinceEpoch;
 
@@ -18,19 +20,21 @@ class Message implements FirestoreEntry {
     this.message,
     this.sendBy,
     this.time,
+    this.isViewed,
   );
 
   @override
   bool get stringify => null;
 
   @override
-  List<Object> get props => [message, sendBy, time];
+  List<Object> get props => [message, sendBy, time, isViewed];
 
   dynamic toFirestoreObject() {
     return {
       MessageField.Message.value: message,
       MessageField.SendBy.value: sendBy,
       MessageField.Time.value: time,
+      MessageField.IsViewed.value: isViewed,
     };
   }
 
@@ -39,6 +43,7 @@ class Message implements FirestoreEntry {
       data[MessageField.Message.value],
       data[MessageField.SendBy.value],
       data[MessageField.Time.value],
+      data[MessageField.IsViewed.value],
     );
   }
 }

@@ -59,6 +59,12 @@ class _MessagePageState extends State<MessagePage> {
     setState(() => _messageEditingController.text = '');
   }
 
+  void _handleLastMsgView(bool isLastMsg, Message msg) {
+    if (!isLastMsg) return;
+    if (msg.sendBy != UserStore().user.id)
+      MessagingReposiory().updateLastMessageView(widget.chat, true);
+  }
+
   int _getDifferenceTimeBetweenMsgAndPrevious(
     dynamic data,
     int index,
@@ -86,26 +92,28 @@ class _MessagePageState extends State<MessagePage> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final userID = UserStore().user.id;
+            final docs = snapshot.data.documents;
             if (!widget.chat.isChatEngaged) {
               if (userID == widget.chat.requesterID)
                 return _requestWaitingPlaceholder;
               if (userID == widget.chat.requestedID)
                 return _requestInvitationPlaceholder;
             }
-            if (snapshot.data.documents.length == 0)
-              return _noMessagesPlaceholder;
+            if (docs.length == 0) return _noMessagesPlaceholder;
 
             return ListView.builder(
                 reverse: true,
-                itemCount: snapshot.data.documents.length,
+                itemCount: docs.length,
                 itemBuilder: (context, index) {
-                  final msg = Message.fromFirestoreObject(
-                      snapshot.data.documents[index].data());
+                  final msg = Message.fromFirestoreObject(docs[index].data());
                   final diff = _getDifferenceTimeBetweenMsgAndPrevious(
                       snapshot.data, index, msg);
+                  final isLastMessage = index == 0;
+                  _handleLastMsgView(isLastMessage, msg);
                   return MessageTile(
                     message: msg,
                     diffWithPrevMsgTime: diff,
+                    isLastMessage: isLastMessage,
                   );
                 });
           }
