@@ -28,13 +28,13 @@ class TabPageRichText extends StatelessWidget {
                   fontSize: 17.5,
                   fontWeight: isMsgUnread ? unreadWeight : FontWeight.w500),
             ),
-            TextSpan(
-              text: '  -  ${DistanceAdapter().adapt(distance)}',
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: readWeight,
-              ),
-            ),
+            // TextSpan(
+            //   text: '  -  ${DistanceAdapter().adapt(distance)}',
+            //   style: TextStyle(
+            //     fontSize: 11,
+            //     fontWeight: readWeight,
+            //   ),
+            // ),
           ],
         ),
       ),

@@ -19,6 +19,7 @@ import 'package:location_project/use_cases/tab_pages/messaging/messaging_reposit
 import 'package:location_project/use_cases/tab_pages/tab_page_type.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_rich_text.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_slidable.dart';
+import 'package:location_project/widgets/home_page_status_without_count.dart';
 import 'package:location_project/widgets/textSF.dart';
 import 'package:location_project/widgets/user_card.dart';
 import 'package:provider/provider.dart';
@@ -92,7 +93,10 @@ class _ChatTileState extends State<ChatTile> {
   Widget _getLastMsgText(
       Message lastMsg, bool lastMsgExists, bool isMsgUnread) {
     final style = TextSF.TextSFStyle.copyWith(
-        fontWeight: isMsgUnread ? unreadWeight : readWeight);
+      fontWeight: isMsgUnread ? unreadWeight : readWeight,
+      color: isMsgUnread ? Theme.of(context).textTheme.headline6.color : null,
+    );
+    final timeStyle = TextSF.TextSFStyle.copyWith(fontWeight: readWeight);
     if (!lastMsgExists && !widget.chat.isChatEngaged) return Text('');
     if (!lastMsgExists) return Text('New chat!', style: style);
 
@@ -107,9 +111,16 @@ class _ChatTileState extends State<ChatTile> {
             )
           : Text(''),
       Flexible(
-          child: Container(
-        child: Text(' ${lastMsg.message} · $time',
-            style: style, overflow: TextOverflow.ellipsis),
+          child: Row(
+        children: [
+          Flexible(
+            child: Text(' ${lastMsg.message}',
+                style: style, overflow: TextOverflow.ellipsis),
+          ),
+          Text(' · $time',
+              style: timeStyle.copyWith(fontSize: 12),
+              overflow: TextOverflow.ellipsis),
+        ],
       )),
     ]);
   }
@@ -280,14 +291,7 @@ class _ChatTileState extends State<ChatTile> {
                                                 ),
                                               ),
                                               isMsgUnread
-                                                  ? Container(
-                                                      height: 10,
-                                                      width: 10,
-                                                      decoration: BoxDecoration(
-                                                        shape: BoxShape.circle,
-                                                        color: PrimaryColor,
-                                                      ),
-                                                    )
+                                                  ? HomePageStatusWithoutCount()
                                                   : SizedBox(),
                                             ],
                                           ),

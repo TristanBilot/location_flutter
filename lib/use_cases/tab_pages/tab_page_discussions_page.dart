@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/stores/messaging_database.dart';
 import 'package:location_project/stores/user_store.dart';
@@ -12,7 +11,6 @@ import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart'
 import 'package:location_project/use_cases/tab_pages/tab_page_type.dart';
 import 'package:location_project/widgets/basic_placeholder.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_refresher.dart';
-import 'package:location_project/use_cases/tab_pages/widgets/tab_page_search_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -77,13 +75,14 @@ class _TabPageDiscussionsPageState extends State<TabPageDiscussionsPage>
       },
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TabPageSearchBar(
-              messageEditingController: _messageEditingController,
-              setStateDelegate: this,
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.all(8.0),
+          //   child: TabPageSearchBar(
+          //     messageEditingController: _messageEditingController,
+          //     setStateDelegate: this,
+          //   ),
+          // ),
+          SizedBox(height: 3),
           Flexible(
             child: BlocBuilder<ChatCubit, ChatState>(
               builder: (context, state) {

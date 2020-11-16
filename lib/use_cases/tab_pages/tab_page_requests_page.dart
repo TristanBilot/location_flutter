@@ -72,13 +72,14 @@ class _TabPageRequestsPageState extends State<TabPageRequestsPage>
       },
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TabPageSearchBar(
-              messageEditingController: _messageEditingController,
-              setStateDelegate: this,
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.all(8.0),
+          //   child: TabPageSearchBar(
+          //     messageEditingController: _messageEditingController,
+          //     setStateDelegate: this,
+          //   ),
+          // ),
+          SizedBox(height: 3),
           Flexible(
             child: BlocBuilder<ChatCubit, ChatState>(
               builder: (context, state) {

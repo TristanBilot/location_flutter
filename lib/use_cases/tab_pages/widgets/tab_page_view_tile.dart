@@ -10,6 +10,7 @@ import 'package:location_project/use_cases/tab_pages/messaging/views/cubit/view_
 import 'package:location_project/use_cases/tab_pages/widgets/cached_circle_user_image_with_active_status.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_rich_text.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_slidable.dart';
+import 'package:location_project/widgets/home_page_status_without_count.dart';
 import 'package:location_project/widgets/user_card.dart';
 import 'package:location_project/widgets/user_map_card.dart';
 
@@ -77,14 +78,7 @@ class _TabPageViewTileState extends State<TabPageViewTile> {
                               ),
                             ),
                             isViewUnread
-                                ? Container(
-                                    height: 10,
-                                    width: 10,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: PrimaryColor,
-                                    ),
-                                  )
+                                ? HomePageStatusWithoutCount()
                                 : SizedBox(),
                           ],
                         ),
