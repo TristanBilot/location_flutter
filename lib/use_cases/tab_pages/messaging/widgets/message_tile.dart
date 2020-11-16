@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
@@ -34,8 +35,10 @@ class MessageTile extends StatelessWidget {
   }
 
   _onDoubleTap() {
-    if (message.sendBy != UserStore().user.id)
+    if (message.sendBy != UserStore().user.id) {
       MessagingReposiory().updateMessageReaction(chat, message, Reaction.Heart);
+      HapticFeedback.heavyImpact();
+    }
   }
 
   @override
