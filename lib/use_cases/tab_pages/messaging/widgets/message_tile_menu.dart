@@ -36,42 +36,37 @@ class _MessageTileMenuState extends State<MessageTileMenu> {
 
   @override
   Widget build(BuildContext context) {
+    bool isMsgSentByMe = widget.message.sendBy == UserStore().user.id;
     return FocusedMenuHolder(
       onPressed: () => {},
       menuItems: [
-        FocusedMenuItem(
-            title: Text("React"),
-            trailingIcon: Row(children: [
-              Reaction.Heart.emojiWidget(widget.chat, widget.message, context),
-              Reaction.Laugh.emojiWidget(widget.chat, widget.message, context),
-              Reaction.Sad.emojiWidget(widget.chat, widget.message, context),
-              Reaction.Yes.emojiWidget(widget.chat, widget.message, context),
-            ]), // Icon(Icons.favorite_border)]),
-            onPressed: () {}),
-        if (widget.message.reaction != Reaction.NoReaction) ...[
+        if (!isMsgSentByMe)
+          FocusedMenuItem(
+              title: Text("React"),
+              trailingIcon: Row(children: [
+                Reaction.Heart.emojiWidget(
+                    widget.chat, widget.message, context),
+                Reaction.Laugh.emojiWidget(
+                    widget.chat, widget.message, context),
+                Reaction.Sad.emojiWidget(widget.chat, widget.message, context),
+                Reaction.Yes.emojiWidget(widget.chat, widget.message, context),
+              ]), // Icon(Icons.favorite_border)]),
+              onPressed: () {}),
+        if (!isMsgSentByMe && widget.message.reaction != Reaction.NoReaction)
           FocusedMenuItem(
               title: Text("Delete reaction"),
               trailingIcon: Icon(Icons.close),
               onPressed: () => _onDeleteReactionPress(context)),
-        ],
         FocusedMenuItem(
             title: Text("Copy"),
             trailingIcon: Icon(Icons.content_copy),
             onPressed: _onCopyPress),
-      ]..addAll(widget.message.sendBy == UserStore().user.id
-          ? [
-              FocusedMenuItem(
-                  title: Text(
-                    "Delete",
-                    style: TextStyle(color: Colors.redAccent),
-                  ),
-                  trailingIcon: Icon(
-                    Icons.delete_forever,
-                    color: Colors.redAccent,
-                  ),
-                  onPressed: _onDeletePress)
-            ]
-          : []),
+        if (isMsgSentByMe)
+          FocusedMenuItem(
+              title: Text("Delete", style: TextStyle(color: Colors.redAccent)),
+              trailingIcon: Icon(Icons.delete_forever, color: Colors.redAccent),
+              onPressed: _onDeletePress)
+      ],
       child: widget.child,
     );
   }
