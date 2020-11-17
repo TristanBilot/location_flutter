@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:location_project/helpers/string_formatter.dart';
+import 'package:location_project/widgets/cached_circle_user_image.dart';
 import 'package:location_project/widgets/textSF.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import '../models/user.dart';
@@ -65,57 +66,60 @@ class _UserCardContentState extends State<UserCardContent> {
   Widget build(BuildContext context) {
     return Container(
       height: 600,
+      width: MediaQuery.of(context).size.width,
       child: Material(
         color: Theme.of(context).canvasColor,
         borderRadius: BorderRadius.circular(10),
         child: SafeArea(
-          top: false,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Stack(
-                children: [
-                  CachedNetworkImage(
-                    imageUrl: widget.user.pictureURL,
-                    width: MediaQuery.of(context).size.width,
-                  ),
-                  Positioned(
-                    right: 20,
-                    top: 40,
-                    child: GestureDetector(
-                      child: Container(
-                        child: Icon(Icons.close, size: 24),
-                        padding: EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Theme.of(context).scaffoldBackgroundColor),
+            top: false,
+            child: Stack(
+              children: [
+                Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(height: 80),
+                      CachedCircleUserImage(
+                        widget.user.pictureURL,
+                        size: 200,
                       ),
-                      onTap: () => Navigator.pop(context),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                        child: TextSF(
+                          StringFormatter().getNameAgeLabel(
+                              widget.user.firstName, widget.user.age),
+                          fontSize: TextSF.FontSize + 6,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(0, 6, 0, 0),
+                        child: TextSF(
+                          widget.user.distance == 0
+                              ? ''
+                              : '${widget.user.distance} meters',
+                        ),
+                      ),
+                      Spacer(),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  right: 30,
+                  top: 50,
+                  child: GestureDetector(
+                    child: Container(
+                      child: Icon(Icons.close, size: 24),
+                      padding: EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Theme.of(context).primaryColor),
                     ),
-                  )
-                ],
-              ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                child: TextSF(
-                  StringFormatter()
-                      .getNameAgeLabel(widget.user.firstName, widget.user.age),
-                  fontSize: TextSF.FontSize + 6,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(0, 6, 0, 0),
-                child: TextSF(
-                  widget.user.distance == 0
-                      ? ''
-                      : '${widget.user.distance} meters',
-                ),
-              ),
-              Spacer(),
-            ],
-          ),
-        ),
+                    onTap: () => Navigator.pop(context),
+                  ),
+                )
+              ],
+            )),
       ),
     );
   }

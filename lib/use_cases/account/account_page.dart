@@ -21,7 +21,8 @@ import 'package:location_project/models/gender.dart';
 
 class AccountPage extends StatefulWidget {
   static const curveContainerHeight = 100.0;
-  static const userImageSize = 130.0;
+  static const userImageSize = 150.0;
+  static const picAnimDuration = 100;
 
   @override
   _AccountPageState createState() => _AccountPageState();
@@ -37,6 +38,7 @@ class _AccountPageState extends State<AccountPage>
   List<double> _wantedAgeValues;
   String _name;
   int _age;
+  double _picSize = AccountPage.userImageSize;
 
   AuthRepository _authRepo;
 
@@ -104,6 +106,12 @@ class _AccountPageState extends State<AccountPage>
   }
 
   _onPicturePress() async {
+    // Animation.
+    setState(() => _picSize = AccountPage.userImageSize - 20);
+    await Future.delayed(Duration(milliseconds: AccountPage.picAnimDuration));
+    setState(() => _picSize = AccountPage.userImageSize);
+    await Future.delayed(Duration(milliseconds: AccountPage.picAnimDuration));
+
     final success =
         await ImageRepository().pickImageAndUpload(UserStore().user.id);
     if (success) {
@@ -141,28 +149,34 @@ class _AccountPageState extends State<AccountPage>
                   Center(
                     child: GestureDetector(
                       onTap: _onPicturePress,
-                      child: Stack(
-                        alignment: Alignment.topRight,
-                        children: [
-                          CachedCircleUserImage(
-                            UserStore().user.pictureURL,
-                            size: AccountPage.userImageSize + 20,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 6, right: 6),
-                            child: Container(
-                              child: Icon(
-                                Icons.edit,
-                                size: 20,
-                              ),
-                              padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Theme.of(context).backgroundColor,
+                      child: AnimatedContainer(
+                        width: _picSize,
+                        height: _picSize,
+                        duration:
+                            Duration(milliseconds: AccountPage.picAnimDuration),
+                        child: Stack(
+                          alignment: Alignment.topRight,
+                          children: [
+                            CachedCircleUserImage(
+                              UserStore().user.pictureURL,
+                              size: AccountPage.userImageSize,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 6, right: 6),
+                              child: Container(
+                                child: Icon(
+                                  Icons.edit,
+                                  size: 20,
+                                ),
+                                padding: EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Theme.of(context).backgroundColor,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
