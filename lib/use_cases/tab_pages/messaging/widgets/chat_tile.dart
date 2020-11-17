@@ -12,12 +12,14 @@ import 'package:location_project/use_cases/start_path/basic_alert_button.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_deleting_state.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
+import 'package:location_project/use_cases/tab_pages/tab_page_chats_requests_page.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/cached_circle_user_image_with_active_status.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/message.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/message_page.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
 import 'package:location_project/use_cases/tab_pages/tab_page_type.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_rich_text.dart';
+import 'package:location_project/use_cases/tab_pages/widgets/tab_page_search_bar.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_slidable.dart';
 import 'package:location_project/widgets/home_page_status_without_count.dart';
 import 'package:location_project/widgets/textSF.dart';
@@ -36,6 +38,9 @@ class ChatTile extends StatefulWidget {
   /// Should display a section title for requests sent when the first
   /// requester tile is reached.
   final bool isLimitBetweenRequestedAndRequests;
+  final bool shouldDisplaySearchBar;
+  final TextEditingController messageEditingController;
+  final SetStateDelegate setStateDelegate;
 
   const ChatTile({
     @required this.chat,
@@ -43,6 +48,9 @@ class ChatTile extends StatefulWidget {
     @required this.tabPageType,
     this.isFirstIndex = false,
     this.isLimitBetweenRequestedAndRequests = false,
+    this.shouldDisplaySearchBar,
+    this.messageEditingController,
+    this.setStateDelegate,
   });
 
   @override
@@ -52,6 +60,11 @@ class ChatTile extends StatefulWidget {
 class _ChatTileState extends State<ChatTile> {
   static const FontWeight unreadWeight = FontWeight.w700;
   static const FontWeight readWeight = FontWeight.w300;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   /// Returns wether the last message is marked as unread or not.
   /// When the last msg is sent by the logged user, it should
@@ -181,6 +194,14 @@ class _ChatTileState extends State<ChatTile> {
     }
   }
 
+  Widget get _searchBar => Padding(
+        padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+        child: TabPageSearchBar(
+          messageEditingController: widget.messageEditingController,
+          setStateDelegate: widget.setStateDelegate,
+        ),
+      );
+
   Widget _getSectionTitleIfNeeded() {
     if (widget.tabPageType != TabPageType.Requests ||
         (!widget.isFirstIndex && !widget.isLimitBetweenRequestedAndRequests))
@@ -196,16 +217,21 @@ class _ChatTileState extends State<ChatTile> {
 
     return Padding(
       padding: const EdgeInsets.only(top: 10),
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: backgroundColor,
-        ),
-        child: TextSF(
-          text,
-          fontSize: 13,
-        ),
+      child: Column(
+        children: [
+          if (widget.isFirstIndex && widget.shouldDisplaySearchBar) _searchBar,
+          Container(
+            width: MediaQuery.of(context).size.width,
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: backgroundColor,
+            ),
+            child: TextSF(
+              text,
+              fontSize: 13,
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/stores/messaging_database.dart';
 import 'package:location_project/stores/user_store.dart';
@@ -28,7 +29,9 @@ class TabPageChatsRequestsPage extends StatefulWidget {
 
 class _TabPageRequestsPageState extends State<TabPageChatsRequestsPage>
     implements SetStateDelegate {
+  static const NumberOfChatsToDisplaySearchBar = 10;
   TextEditingController _messageEditingController;
+  ScrollController _scrollController;
   ChatFilter _filter;
 
   // Only true when the refresh controller is used when
@@ -38,12 +41,13 @@ class _TabPageRequestsPageState extends State<TabPageChatsRequestsPage>
   @override
   void initState() {
     _messageEditingController = TextEditingController();
+    _scrollController = ScrollController();
     _filter = widget.type == TabPageType.Discussions
         ? ChatsFilter()
         : RequestFilter();
     _shouldRefreshCache = false;
     _fetch();
-
+    // _hideSearchBarIfNeeded();
     super.initState();
   }
 
@@ -58,12 +62,27 @@ class _TabPageRequestsPageState extends State<TabPageChatsRequestsPage>
     if (mounted) setState(f);
   }
 
+  /// To improve.
+  // _hideSearchBarIfNeeded() async {
+  //   bool enoughChats = MessagingDatabase().get(nbChats: true) >=
+  //       NumberOfChatsToDisplaySearchBar;
+  //   bool enoughRequests = MessagingDatabase().get(nbRequests: true) >=
+  //       NumberOfChatsToDisplaySearchBar;
+  //   if (enoughChats && widget.type == TabPageType.Discussions ||
+  //       enoughRequests && widget.type == TabPageType.Requests)
+  //     Future.delayed(Duration(milliseconds: 10))
+  //         .then((value) => _scrollController.jumpTo(55));
+  // }
+
   Future<void> _onRefresh() async {
     _shouldRefreshCache = true;
     setStateIfMounted(() {});
+    HapticFeedback.mediumImpact();
     // need to be improved later, set to false after stream building, not build().
-    await Future.delayed(
-        Duration(milliseconds: 800), () => _shouldRefreshCache = false);
+    await Future.delayed(Duration(milliseconds: 800), () {
+      _shouldRefreshCache = false;
+      HapticFeedback.lightImpact();
+    });
   }
 
   Widget get placeholder => widget.type == TabPageType.Discussions
@@ -79,13 +98,6 @@ class _TabPageRequestsPageState extends State<TabPageChatsRequestsPage>
       },
       child: Column(
         children: [
-          // Padding(
-          //   padding: const EdgeInsets.all(8.0),
-          //   child: TabPageSearchBar(
-          //     messageEditingController: _messageEditingController,
-          //     setStateDelegate: this,
-          //   ),
-          // ),
           SizedBox(height: 3),
           Flexible(
             child: BlocBuilder<ChatCubit, ChatState>(
@@ -100,6 +112,7 @@ class _TabPageRequestsPageState extends State<TabPageChatsRequestsPage>
 
                   return chats.length != 0
                       ? CustomScrollView(
+                          controller: _scrollController,
                           physics: const BouncingScrollPhysics(
                             parent: AlwaysScrollableScrollPhysics(),
                           ),
@@ -110,11 +123,14 @@ class _TabPageRequestsPageState extends State<TabPageChatsRequestsPage>
                                 delegate: SliverChildBuilderDelegate(
                               (context, index) {
                                 bool isFirstIndex = index == 0;
+                                bool shouldDisplaySearchBar = chats.length >=
+                                    NumberOfChatsToDisplaySearchBar;
                                 bool isLimitBetweenRequestedAndRequests =
                                     index ==
                                         chats.indexWhere((chat) =>
                                             chat.requesterID ==
                                             UserStore().user.id);
+
                                 return Builder(
                                   builder: (context) => ChatTile(
                                     tabPageType: widget.type,
@@ -123,6 +139,11 @@ class _TabPageRequestsPageState extends State<TabPageChatsRequestsPage>
                                     isFirstIndex: isFirstIndex,
                                     isLimitBetweenRequestedAndRequests:
                                         isLimitBetweenRequestedAndRequests,
+                                    shouldDisplaySearchBar:
+                                        shouldDisplaySearchBar,
+                                    messageEditingController:
+                                        _messageEditingController,
+                                    setStateDelegate: this,
                                   ),
                                 );
                               },

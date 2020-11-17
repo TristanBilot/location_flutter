@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/stores/messaging_database.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/views/cubit/view_cubit.dart';
@@ -33,9 +34,12 @@ class _TabPageViewsPageState extends State<TabPageViewsPage> {
   Future<void> _onRefresh() async {
     _shouldRefreshCache = true;
     setStateIfMounted(() {});
+    HapticFeedback.mediumImpact();
     // need to be improved later, set to false after stream building, not build().
-    Future.delayed(
-        Duration(milliseconds: 800), () => _shouldRefreshCache = false);
+    await Future.delayed(Duration(milliseconds: 800), () {
+      _shouldRefreshCache = false;
+      HapticFeedback.lightImpact();
+    });
   }
 
   Widget get placeholder => BasicPlaceholder('Nobody viewed your profile yet.');
