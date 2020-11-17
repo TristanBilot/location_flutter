@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/repositories/user_repository.dart';
-import 'package:location_project/themes/dark_theme.dart';
 import 'package:location_project/themes/theme_utils.dart';
 import 'package:location_project/use_cases/tab_pages/counters/cubit/counters_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/views/cubit/view_cubit.dart';
-import 'package:location_project/use_cases/tab_pages/tab_page_discussions_page.dart';
-import 'package:location_project/use_cases/tab_pages/tab_page_requests_page.dart';
+import 'package:location_project/use_cases/tab_pages/tab_page_chats_requests_page.dart';
+import 'package:location_project/use_cases/tab_pages/tab_page_type.dart';
 import 'package:location_project/use_cases/tab_pages/tab_page_views_page.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_element_count_status.dart';
 
@@ -68,8 +67,8 @@ class _MessagingTabsPageState extends State<MessagingTabsPage>
           ),
           body: TabBarView(
             children: [
-              TabPageDiscussionsPage(),
-              TabPageRequestsPage(),
+              TabPageChatsRequestsPage(TabPageType.Discussions),
+              TabPageChatsRequestsPage(TabPageType.Requests),
               TabPageViewsPage(),
             ],
           ),

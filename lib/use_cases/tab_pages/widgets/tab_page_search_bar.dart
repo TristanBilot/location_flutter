@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:location_project/use_cases/tab_pages/tab_page_discussions_page.dart';
+import 'package:location_project/use_cases/tab_pages/tab_page_chats_requests_page.dart';
 import 'package:location_project/widgets/basic_cupertino_text_field.dart';
 
 class TabPageSearchBar extends StatefulWidget {

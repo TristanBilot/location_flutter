@@ -5,27 +5,29 @@ import 'package:location_project/stores/messaging_database.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/tab_pages/filters/chats_filter.dart';
 import 'package:location_project/use_cases/tab_pages/filters/filter.dart';
+import 'package:location_project/use_cases/tab_pages/filters/request_filter.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/chat_tile.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
 import 'package:location_project/use_cases/tab_pages/tab_page_type.dart';
 import 'package:location_project/widgets/basic_placeholder.dart';
-import 'package:location_project/use_cases/tab_pages/widgets/tab_page_refresher.dart';
 import 'package:provider/provider.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 abstract class SetStateDelegate {
   void setStateFromOutside();
 }
 
-class TabPageDiscussionsPage extends StatefulWidget {
+class TabPageChatsRequestsPage extends StatefulWidget {
+  final TabPageType type;
+
+  const TabPageChatsRequestsPage(this.type);
+
   @override
-  _TabPageDiscussionsPageState createState() => _TabPageDiscussionsPageState();
+  _TabPageRequestsPageState createState() => _TabPageRequestsPageState();
 }
 
-class _TabPageDiscussionsPageState extends State<TabPageDiscussionsPage>
+class _TabPageRequestsPageState extends State<TabPageChatsRequestsPage>
     implements SetStateDelegate {
-  RefreshController _refreshController;
   TextEditingController _messageEditingController;
   ChatFilter _filter;
 
@@ -36,8 +38,9 @@ class _TabPageDiscussionsPageState extends State<TabPageDiscussionsPage>
   @override
   void initState() {
     _messageEditingController = TextEditingController();
-    _refreshController = RefreshController(initialRefresh: false);
-    _filter = ChatsFilter();
+    _filter = widget.type == TabPageType.Discussions
+        ? ChatsFilter()
+        : RequestFilter();
     _shouldRefreshCache = false;
     _fetch();
 
@@ -55,16 +58,17 @@ class _TabPageDiscussionsPageState extends State<TabPageDiscussionsPage>
     if (mounted) setState(f);
   }
 
-  void _onRefresh() async {
+  Future<void> _onRefresh() async {
     _shouldRefreshCache = true;
     setStateIfMounted(() {});
-    _refreshController.refreshCompleted();
     // need to be improved later, set to false after stream building, not build().
-    Future.delayed(Duration(seconds: 1), () => _shouldRefreshCache = false);
+    await Future.delayed(
+        Duration(milliseconds: 800), () => _shouldRefreshCache = false);
   }
 
-  Widget get placeholder => BasicPlaceholder('No discussions yet.');
-  TabPageType get type => TabPageType.Discussions;
+  Widget get placeholder => widget.type == TabPageType.Discussions
+      ? BasicPlaceholder('No discussions yet.')
+      : BasicPlaceholder('No requests yet.');
 
   @override
   Widget build(BuildContext context) {
@@ -89,33 +93,44 @@ class _TabPageDiscussionsPageState extends State<TabPageDiscussionsPage>
                 if (state is ChatFetchedState) {
                   List<Chat> chats = _filter.filter(
                       state.chats, _messageEditingController.text);
-                  MessagingDatabase().put(nbChats: chats.length);
+                  if (widget.type == TabPageType.Discussions)
+                    MessagingDatabase().put(nbChats: chats.length);
+                  else
+                    MessagingDatabase().put(nbRequests: chats.length);
 
-                  return TabPageRefresher(
-                    _onRefresh,
-                    _refreshController,
-                    chats.length != 0
-                        ? ListView.builder(
-                            itemCount: chats.length,
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              bool isFirstIndex = index == 0;
-                              bool isLimitBetweenRequestedAndRequests = index ==
-                                  chats.indexWhere((chat) =>
-                                      chat.requesterID == UserStore().user.id);
-                              return Builder(
-                                builder: (context) => ChatTile(
-                                  tabPageType: type,
-                                  chat: chats[index],
-                                  shouldRefreshCache: _shouldRefreshCache,
-                                  isFirstIndex: isFirstIndex,
-                                  isLimitBetweenRequestedAndRequests:
-                                      isLimitBetweenRequestedAndRequests,
-                                ),
-                              );
-                            })
-                        : placeholder,
-                  );
+                  return chats.length != 0
+                      ? CustomScrollView(
+                          physics: const BouncingScrollPhysics(
+                            parent: AlwaysScrollableScrollPhysics(),
+                          ),
+                          slivers: [
+                            CupertinoSliverRefreshControl(
+                                onRefresh: _onRefresh),
+                            SliverList(
+                                delegate: SliverChildBuilderDelegate(
+                              (context, index) {
+                                bool isFirstIndex = index == 0;
+                                bool isLimitBetweenRequestedAndRequests =
+                                    index ==
+                                        chats.indexWhere((chat) =>
+                                            chat.requesterID ==
+                                            UserStore().user.id);
+                                return Builder(
+                                  builder: (context) => ChatTile(
+                                    tabPageType: widget.type,
+                                    chat: chats[index],
+                                    shouldRefreshCache: _shouldRefreshCache,
+                                    isFirstIndex: isFirstIndex,
+                                    isLimitBetweenRequestedAndRequests:
+                                        isLimitBetweenRequestedAndRequests,
+                                  ),
+                                );
+                              },
+                              childCount: chats.length,
+                            )),
+                          ],
+                        )
+                      : placeholder;
                 }
                 // TODO: handle other states
                 return Center(child: CupertinoActivityIndicator());

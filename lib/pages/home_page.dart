@@ -76,61 +76,57 @@ class _HomePageContainerState extends State<HomePageContainer>
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Scaffold(
-          appBar: PreferredSize(
-            preferredSize: Size.fromHeight(50.0),
-            child: AppBar(
-              elevation: 1,
-              backgroundColor: ThemeUtils.getTabColor(context),
-              bottom: TabBar(
-                indicatorColor:
-                    Colors.transparent, // Theme.of(context).primaryColor,
-                tabs: [
-                  // Tab 1.
-                  Tab(
-                      icon: HomePageTabBarIcon(
-                          Icons.account_circle, _tabController.index == 0)),
-                  // Tab 2.
-                  Tab(icon: HomePageTabBarImageIcon(_tabController.index == 1)),
-                  // Tab 3.
-                  Tab(
-                      icon: Container(
-                          width: 40, // to fix position of status
-                          height: 30,
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              HomePageTabBarIcon(
-                                  Icons.textsms, _tabController.index == 2),
-                              BlocBuilder<CountersCubit, CountersState>(
-                                  builder: (context, state) {
-                                if (state.isANotificationUnread())
-                                  return Align(
-                                      alignment: Alignment.topRight,
-                                      child: HomePageStatusWithoutCount());
-                                return SizedBox();
-                              })
-                            ],
-                          )))
-                ],
-                controller: _tabController,
-              ),
-            ),
-          ),
-          body: TabBarView(
-            physics: NeverScrollableScrollPhysics(),
-            controller: _tabController,
-            children: [
-              AccountPage(),
-              MapPage(),
-              MessagingTabsPage(),
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(48.0),
+        child: AppBar(
+          elevation: 1,
+          backgroundColor: ThemeUtils.getTabColor(context),
+          bottom: TabBar(
+            indicatorColor:
+                Colors.transparent, // Theme.of(context).primaryColor,
+            tabs: [
+              // Tab 1.
+              Tab(
+                  icon: HomePageTabBarIcon(
+                      Icons.account_circle, _tabController.index == 0)),
+              // Tab 2.
+              Tab(icon: HomePageTabBarImageIcon(_tabController.index == 1)),
+              // Tab 3.
+              Tab(
+                  icon: Container(
+                      width: 40, // to fix position of status
+                      height: 30,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          HomePageTabBarIcon(
+                              Icons.textsms, _tabController.index == 2),
+                          BlocBuilder<CountersCubit, CountersState>(
+                              builder: (context, state) {
+                            if (state.isANotificationUnread())
+                              return Align(
+                                  alignment: Alignment.topRight,
+                                  child: HomePageStatusWithoutCount());
+                            return SizedBox();
+                          })
+                        ],
+                      )))
             ],
+            controller: _tabController,
           ),
         ),
-        // PositionedAppIcon(_tabController, _initialIndex)
-      ],
+      ),
+      body: TabBarView(
+        physics: NeverScrollableScrollPhysics(),
+        controller: _tabController,
+        children: [
+          AccountPage(),
+          MapPage(),
+          MessagingTabsPage(),
+        ],
+      ),
+      // PositionedAppIcon(_tabController, _initialIndex)
     );
   }
 }

@@ -3,11 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/stores/messaging_database.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/views/cubit/view_cubit.dart';
-import 'package:location_project/use_cases/tab_pages/tab_page_type.dart';
 import 'package:location_project/widgets/basic_placeholder.dart';
-import 'package:location_project/use_cases/tab_pages/widgets/tab_page_refresher.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_view_tile.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class TabPageViewsPage extends StatefulWidget {
   @override
@@ -15,12 +12,10 @@ class TabPageViewsPage extends StatefulWidget {
 }
 
 class _TabPageViewsPageState extends State<TabPageViewsPage> {
-  RefreshController _refreshController;
   bool _shouldRefreshCache;
 
   @override
   void initState() {
-    _refreshController = RefreshController(initialRefresh: false);
     _shouldRefreshCache = false;
     _fetch();
 
@@ -35,12 +30,12 @@ class _TabPageViewsPageState extends State<TabPageViewsPage> {
     if (mounted) setState(f);
   }
 
-  void _onRefresh() async {
+  Future<void> _onRefresh() async {
     _shouldRefreshCache = true;
     setStateIfMounted(() {});
-    _refreshController.refreshCompleted();
     // need to be improved later, set to false after stream building, not build().
-    Future.delayed(Duration(seconds: 1), () => _shouldRefreshCache = false);
+    Future.delayed(
+        Duration(milliseconds: 800), () => _shouldRefreshCache = false);
   }
 
   Widget get placeholder => BasicPlaceholder('Nobody viewed your profile yet.');
@@ -54,6 +49,7 @@ class _TabPageViewsPageState extends State<TabPageViewsPage> {
       },
       child: Column(
         children: [
+          SizedBox(height: 3),
           Flexible(
             child: BlocBuilder<ViewCubit, ViewState>(
               builder: (context, state) {
@@ -61,21 +57,25 @@ class _TabPageViewsPageState extends State<TabPageViewsPage> {
                   final views = state.viewerIDs;
                   MessagingDatabase().put(nbViews: views.length);
 
-                  return TabPageRefresher(
-                    _onRefresh,
-                    _refreshController,
-                    views.length != 0
-                        ? ListView.builder(
-                            itemCount: views.length,
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              return TabPageViewTile(
-                                views[index],
-                                _shouldRefreshCache,
-                              );
-                            })
-                        : placeholder,
-                  );
+                  return views.length != 0
+                      ? CustomScrollView(
+                          physics: const BouncingScrollPhysics(
+                            parent: AlwaysScrollableScrollPhysics(),
+                          ),
+                          slivers: [
+                              CupertinoSliverRefreshControl(
+                                  onRefresh: _onRefresh),
+                              SliverList(
+                                delegate: SliverChildBuilderDelegate(
+                                  (context, index) {
+                                    return TabPageViewTile(
+                                        views[index], _shouldRefreshCache);
+                                  },
+                                  childCount: views.length,
+                                ),
+                              )
+                            ])
+                      : placeholder;
                 }
                 return Center(child: CupertinoActivityIndicator());
               },
