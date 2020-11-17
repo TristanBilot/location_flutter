@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
 class CachedCircleUserImage extends StatelessWidget {
   final String imageUrl;
@@ -40,11 +42,20 @@ class CachedCircleUserImage extends StatelessWidget {
           image: DecorationImage(image: imageProvider, fit: BoxFit.fill),
         ),
       ),
-      placeholder: (context, url) => CircularProgressIndicator(
-        valueColor: AlwaysStoppedAnimation<Color>(
-          Theme.of(context).primaryColor,
+      placeholder: (context, url) => Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Theme.of(context).backgroundColor,
         ),
-        strokeWidth: 3.0,
+        child: Shimmer.fromColors(
+          baseColor: Colors.grey[300],
+          highlightColor: Colors.grey[100],
+          enabled: true,
+          child: Container(
+            height: size,
+            width: size,
+          ),
+        ),
       ),
       errorWidget: (context, url, error) => Icon(Icons.error),
     );
