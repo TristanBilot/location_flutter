@@ -4,6 +4,7 @@ import 'package:location_project/widgets/textSF.dart';
 class BasicButton extends StatefulWidget {
   static const Weight = FontWeight.w700;
   static const FontSize = 21.0;
+  static const CornerRadius = 10.0;
 
   final String text;
   final bool enabled;
@@ -34,7 +35,8 @@ class _BasicButtonState extends State<BasicButton> {
       child: Container(
         width: widget.width,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
+            borderRadius:
+                BorderRadius.all(Radius.circular(BasicButton.CornerRadius)),
             color: widget.enabled
                 ? Theme.of(context).primaryColor
                 : Colors.black12),

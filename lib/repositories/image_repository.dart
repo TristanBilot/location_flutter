@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:location_project/stores/user_store.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:math';
 import '../stores/store.dart';
@@ -58,10 +59,11 @@ class ImageRepository {
     });
   }
 
-  Future<void> pickImageAndUpload() async {
+  Future<bool> pickImageAndUpload(String id) async {
     final File pickedIcon = await IconPicker().pickImageFromGalery();
-    return uploadFile(pickedIcon,
-        Store.defaultProfilePictureName + Store.defaultProfilePictureExtension);
+    if (pickedIcon == null) return false;
+    await uploadFile(pickedIcon, id + Store.defaultProfilePictureExtension);
+    return true;
   }
 
   Future<void> uploadFile(File file, String name) async {

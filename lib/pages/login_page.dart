@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:location_project/repositories/login_controller.dart';
 import 'package:location_project/use_cases/start_path/widgets/basic_button.dart';
+import 'package:location_project/widgets/textSF.dart';
 
 import '../stores/routes.dart';
 
@@ -30,8 +32,14 @@ class _LoginPageState extends State<LoginPage> {
         child: Container(
           child: Column(
             children: [
+              SvgPicture.asset(
+                'assets/logo.svg',
+                height: 300,
+              ),
               Spacer(),
-              FacebookSignInButton(onPressed: () => _loginController.logIn()),
+              FacebookSignInButton(
+                  borderRadius: BasicButton.CornerRadius,
+                  onPressed: () => _loginController.logIn()),
               SizedBox(height: 20),
               // BasicButton('Route to map', onPressed: () {
               //   Navigator.pushReplacementNamed(context, Routes.map.value);

@@ -1,8 +1,8 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:location_project/repositories/auth_repository.dart';
+import 'package:location_project/repositories/image_repository.dart';
 import 'package:location_project/repositories/user_mock_repository.dart';
 import 'package:location_project/stores/routes.dart';
 import 'package:location_project/stores/user_store.dart';
@@ -22,8 +22,6 @@ import 'package:location_project/models/gender.dart';
 class AccountPage extends StatefulWidget {
   static const curveContainerHeight = 100.0;
   static const userImageSize = 130.0;
-
-  AccountPage({Key key}) : super(key: key);
 
   @override
   _AccountPageState createState() => _AccountPageState();
@@ -105,6 +103,16 @@ class _AccountPageState extends State<AccountPage>
     return isDark ? Color.fromRGBO(66, 66, 66, 1) : Colors.white;
   }
 
+  _onPicturePress() async {
+    final success =
+        await ImageRepository().pickImageAndUpload(UserStore().user.id);
+    if (success) {
+      final newURL =
+          await ImageRepository().getPictureDownloadURL(UserStore().user.id);
+      setState(() => UserStore().user.pictureURL = newURL);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -131,16 +139,32 @@ class _AccountPageState extends State<AccountPage>
                     ),
                   ),
                   Center(
-                    child: CachedCircleUserImage(
-                      UserStore().user.pictureURL,
-                      size: AccountPage.userImageSize + 20,
+                    child: GestureDetector(
+                      onTap: _onPicturePress,
+                      child: Stack(
+                        alignment: Alignment.topRight,
+                        children: [
+                          CachedCircleUserImage(
+                            UserStore().user.pictureURL,
+                            size: AccountPage.userImageSize + 20,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 6, right: 6),
+                            child: Container(
+                              child: Icon(
+                                Icons.edit,
+                                size: 20,
+                              ),
+                              padding: EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Theme.of(context).backgroundColor,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    // child: Container(
-                    //     width: 400,
-                    //     height: 400,
-                    //     child: SvgPicture.asset(
-                    //       'assets/logo.svg',
-                    //     )
                   ),
                 ]),
               ),
