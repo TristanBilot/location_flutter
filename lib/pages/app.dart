@@ -12,6 +12,8 @@ import 'package:location_project/use_cases/start_path/start_path_step2/start_pat
 import 'package:location_project/use_cases/start_path/start_path_step3/start_path_step3.dart';
 import 'package:location_project/use_cases/start_path/start_path_step4/start_path_step4.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/test.dart';
+import 'package:location_project/generated/l10n.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import '../pages/login_page.dart';
 import 'home_page.dart';
 import '../stores/routes.dart';
@@ -52,6 +54,13 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.delegate.supportedLocales,
       // initialRoute: Routes.startPathStep1.value,
       // initialRoute: 'test',
 
