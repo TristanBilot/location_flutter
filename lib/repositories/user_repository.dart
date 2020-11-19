@@ -319,4 +319,16 @@ class UserRepository {
         .map((snapshot) =>
             List<String>.from(snapshot.docs.map((doc) => doc.id).toList()));
   }
+
+  Future<void> addDeviceID(String id, String deviceID) async {
+    _firestore.collection(RootKey).doc(id).update({
+      UserField.DeviceTokens.value: FieldValue.arrayUnion([deviceID]),
+    });
+  }
+
+  Future<void> removeDeviceID(String id, String deviceID) async {
+    _firestore.collection(RootKey).doc(id).update({
+      UserField.DeviceTokens.value: FieldValue.arrayRemove([deviceID]),
+    });
+  }
 }

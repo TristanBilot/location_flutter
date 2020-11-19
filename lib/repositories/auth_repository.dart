@@ -1,6 +1,7 @@
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
+import 'package:location_project/controllers/device_id_controller.dart';
 import 'package:location_project/models/user_settings.dart';
 import 'package:location_project/repositories/user_local_repository.dart';
 import 'package:location_project/stores/database.dart';
@@ -64,6 +65,7 @@ class AuthRepository {
   /// Log out from Facebook API and clear shared preferences
   Future<void> logOut() async {
     UserStore().setConnectedStatus(false);
+    await DeviceIDController().forgetDeviceID();
     await UserLocalRepository().clear();
     await MessagingDatabase().clear();
     await Database().clear();

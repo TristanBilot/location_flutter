@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:location_project/controllers/device_id_controller.dart';
 import 'package:location_project/controllers/location_controller.dart';
 import 'package:location_project/repositories/user_local_repository.dart';
+import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/stores/database.dart';
 import 'package:location_project/stores/messaging_database.dart';
 import 'package:location_project/stores/user_store.dart';
@@ -9,6 +11,8 @@ import 'package:hive/hive.dart';
 import 'package:location_project/models/gender.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/models/user_settings.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif_handler.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif_listener.dart';
 import 'package:path_provider/path_provider.dart';
 
 class InitController {
@@ -21,6 +25,8 @@ class InitController {
       await LocationController().handleLocationIfNeeded();
       if (await LocationController().isLocationEnabled())
         await UserStore().initAsynchronously();
+
+      listenToNotifications();
     }
   }
 
@@ -28,6 +34,7 @@ class InitController {
     await _openHiveDatabases();
     await LocationController().handleLocationIfNeeded();
     await UserLocalRepository().rememberLoggedUser(loggedID);
+    await DeviceIDController().updateDeviceID();
     await UserStore().initAsynchronously();
   }
 

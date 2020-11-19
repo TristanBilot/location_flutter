@@ -5,6 +5,7 @@ import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart'
 import 'package:location_project/use_cases/tab_pages/messaging/models/message.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/reaction.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/view.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif.dart';
 import 'package:location_project/use_cases/tab_pages/tab_page_type.dart';
 
 extension GenderExtension on Gender {
@@ -43,6 +44,16 @@ extension ViewFieldExtension on ViewField {
 }
 
 extension ReactionExtension2 on Reaction {
+  String get value =>
+      this.toString().substring(this.toString().indexOf('.') + 1);
+}
+
+extension NotifFieldExtension on NotifField {
+  String get value =>
+      this.toString().substring(this.toString().indexOf('.') + 1);
+}
+
+extension NotifTypeExtension2 on NotifType {
   String get value =>
       this.toString().substring(this.toString().indexOf('.') + 1);
 }

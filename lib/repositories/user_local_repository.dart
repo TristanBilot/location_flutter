@@ -8,6 +8,7 @@ class UserLocalRepository {
   static const LanguageKey = 'language';
   static const ConnectedIDKey = 'connectedId';
   static const LocationAskedKey = 'locationAsked';
+  static const CurrentDeviceID = 'deviceID';
 
   SharedPreferences _prefs;
 
@@ -77,5 +78,14 @@ class UserLocalRepository {
   bool isLocationAlreadyAsked() {
     if (!keyExists(LocationAskedKey)) return false;
     return _prefs.getBool(LocationAskedKey);
+  }
+
+  Future<void> setCurrentDeviceID(String deviceID) async {
+    await _prefs.setString(CurrentDeviceID, deviceID);
+  }
+
+  String getCurrentDeviceID() {
+    if (!_prefs.containsKey(CurrentDeviceID)) return null;
+    return _prefs.getString(CurrentDeviceID);
   }
 }
