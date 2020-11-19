@@ -7,6 +7,7 @@ import 'package:location_project/stores/messaging_database.dart';
 import 'package:location_project/themes/theme_utils.dart';
 import 'package:location_project/use_cases/account/account_page.dart';
 import 'package:location_project/use_cases/tab_pages/counters/cubit/counters_cubit.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif_listener.dart';
 import 'package:location_project/widgets/home_page_status_without_count.dart';
 import 'package:location_project/widgets/home_page_tab_bar_icon.dart';
 import 'package:location_project/widgets/home_page_tab_bar_image_icon.dart';
@@ -21,6 +22,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
+    listenToNotifications(context);
+
     return BlocProvider(
       create: (context) => CountersCubit(MessagingDatabase())..init(),
       child: HomePageContainer(),

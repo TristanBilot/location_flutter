@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:location_project/repositories/auth_repository.dart';
 import 'package:location_project/repositories/image_repository.dart';
 import 'package:location_project/repositories/user_mock_repository.dart';
@@ -109,6 +110,7 @@ class _AccountPageState extends State<AccountPage>
     // Animation.
     setState(() => _picSize = AccountPage.userImageSize - 20);
     await Future.delayed(Duration(milliseconds: AccountPage.picAnimDuration));
+    HapticFeedback.mediumImpact();
     setState(() => _picSize = AccountPage.userImageSize);
     await Future.delayed(Duration(milliseconds: AccountPage.picAnimDuration));
 

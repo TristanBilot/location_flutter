@@ -1,7 +1,7 @@
 enum NotifField {
   notification,
   title,
-  message,
+  body,
 
   data,
   type,

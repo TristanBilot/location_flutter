@@ -1,13 +1,15 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:location_project/helpers/logger.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif.dart';
+import 'package:location_project/utils/toaster/message_toaster.dart';
 import '../../../../stores/extensions.dart';
 
 final _firebaseMessaging = FirebaseMessaging();
 
-void listenToNotifications() {
+void listenToNotifications(BuildContext context) {
   _firebaseMessaging.configure(
-    onMessage: (message) => _handle(message),
+    onMessage: (message) => _handle(message, context),
     // onBackgroundMessage: _handle,
     onLaunch: (message) async {
       print("onLaunch: $message");
@@ -18,25 +20,26 @@ void listenToNotifications() {
   );
 }
 
-Future<dynamic> _handle(Map<String, dynamic> message) {
-  print(message);
-  if (!message.containsKey(NotifField.notification.value)) return null;
+Future<dynamic> _handle(Map<String, dynamic> message, BuildContext context) {
+  if (!message.containsKey(NotifField.notification.value)) {
+    Logger().w('Notif handled but invalid format.');
+    return null;
+  }
+  Logger().i('Message received');
   final dynamic notification = message[NotifField.notification.value];
   final String title = notification[NotifField.title.value];
-  final String text = notification[NotifField.message.value];
+  final String text = notification[NotifField.body.value];
+  final NotifType notifType =
+      Notif.fromString(notification[NotifField.type.value]);
+  if (title == null || text == null) return null;
 
-  if (message.containsKey(NotifField.data.value)) {
-    final dynamic data = message[NotifField.data.value];
-    final notifType = Notif.fromString(data[NotifField.type.value]);
-
-    switch (notifType) {
-      case NotifType.message:
-        print('$title, $text');
-        break;
-      case NotifType.unknown:
-        Logger().e('Invalid notif type.');
-        return null;
-    }
+  switch (notifType) {
+    case NotifType.message:
+      MessageToast(context, title, text).show();
+      break;
+    case NotifType.unknown:
+      Logger().e('Invalid notif type.');
+      return null;
   }
   return null;
 }

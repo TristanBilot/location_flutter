@@ -97,8 +97,8 @@ exports.sendMessage = functions.firestore
       notification: {
           title: user.FirstName,
           body: text,
+          type: 'message',
       },
-      data: { type: 'message' },
     };
     /// send the push notif   message
     admin.messaging().sendToDevice(deviceTokens, message, {
