@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:location_project/adapters/time_adapter.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/message.dart';
 import 'package:location_project/widgets/textSF.dart';
 
@@ -22,24 +23,10 @@ class MessageTileMethods {
 
     if (diffWithPrevMsgTime == ValueForFirstMessage ||
         diffInHours > IntervalToDisplayTime) {
-      DateTime time = DateTime.fromMicrosecondsSinceEpoch(message.time);
-      int diffBetweenMsgAndNow =
-          DateTime.now().subtract(Duration(microseconds: message.time)).day - 1;
-
-      String day = time.day.toString().padLeft(2, '0');
-      String month = time.month.toString().padLeft(2, '0');
-      String dayStr;
-
-      if (diffBetweenMsgAndNow == 0)
-        dayStr = 'Today ';
-      else if (diffBetweenMsgAndNow == 1)
-        dayStr = 'Yesterday ';
-      else
-        dayStr = '$day/$month - '; // inverse order in English
-
-      String hour = time.hour.toString().padLeft(2, '0');
-      String min = time.minute.toString().padLeft(2, '0');
-      String hourMinStr = '$hour:$min';
+      final time = TimeAdapter()
+          .adaptToIntervalSinceNow(message.time, diffWithPrevMsgTime);
+      final dayStr = time[0];
+      final hourMinStr = time[1];
 
       final fontSize = 12.0;
       TextSpan displayedTime = TextSpan(

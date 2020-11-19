@@ -1,5 +1,6 @@
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
+import 'package:location_project/adapters/time_adapter.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
@@ -40,6 +41,9 @@ class _MessageTileMenuState extends State<MessageTileMenu> {
     return FocusedMenuHolder(
       onPressed: () => {},
       menuItems: [
+        FocusedMenuItem(
+            title: Text(TimeAdapter().adaptToDate(widget.message.time)),
+            onPressed: () => {}),
         if (!isMsgSentByMe)
           FocusedMenuItem(
               title: Text("React"),
