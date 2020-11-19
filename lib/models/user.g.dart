@@ -26,13 +26,14 @@ class UserAdapter extends TypeAdapter<User> {
       ..distance = fields[6] as int
       ..age = fields[7] as int
       ..gender = fields[8] as Gender
-      ..settings = fields[9] as UserSettings;
+      ..settings = fields[9] as UserSettings
+      ..deviceTokens = (fields[10] as List)?.cast<String>();
   }
 
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -52,7 +53,9 @@ class UserAdapter extends TypeAdapter<User> {
       ..writeByte(8)
       ..write(obj.gender)
       ..writeByte(9)
-      ..write(obj.settings);
+      ..write(obj.settings)
+      ..writeByte(10)
+      ..write(obj.deviceTokens);
   }
 
   @override

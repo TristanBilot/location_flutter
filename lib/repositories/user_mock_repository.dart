@@ -71,6 +71,9 @@ class UserMockRepository {
           List<String>(),
           List<View>(),
           List<View>(),
+          [
+            'cy1EFZn8dkSeiJS_dubUTi:APA91bGTRcQU8Hpz-qGgIOYAJZVmhw-Tk6s8KuUawX9fNNBADvHbauov9pSjOlY85wjIxTri4V41cGpH64ujNF6EnDE49P4z6JfEkeLpyKQHSt0SwHkhuWe-KF8iwua-EdUZbPVTikqe'
+          ],
         ).toFirestoreObject());
     final ext = Store.defaultProfilePictureExtension;
     final assetImage = await ImageRepository()

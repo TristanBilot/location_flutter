@@ -61,7 +61,7 @@ class _MessagePageState extends State<MessagePage> {
 
   void _handleLastMsgView(bool isLastMsg, Message msg) {
     if (!isLastMsg) return;
-    if (msg.sendBy != UserStore().user.id)
+    if (msg.sentBy != UserStore().user.id)
       MessagingReposiory().updateLastMessageView(widget.chat, true);
   }
 

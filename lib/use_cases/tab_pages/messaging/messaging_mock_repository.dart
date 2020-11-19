@@ -65,9 +65,12 @@ class MessagingMockRepository {
   ) async {
     final chatID = MessagingReposiory.getChatID(id1, id2);
     await MessagingReposiory().deleteMessages(chatID);
+    String sentBy = Random().nextBool() == true ? id1 : id2;
+    String sentTo = sentBy == id1 ? id2 : id1;
     final entry = Message(
       message,
-      Random().nextBool() == true ? id1 : id2,
+      sentBy,
+      sentTo,
       Message.Time,
       false,
       Reaction.NoReaction,

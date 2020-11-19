@@ -63,6 +63,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
       supportedLocales: S.delegate.supportedLocales,
       // initialRoute: Routes.startPathStep1.value,
       // initialRoute: 'test',
+      // initialRoute: Routes.test.value,
 
       initialRoute:
           UserStore().isuserLoggedIn() ? Routes.map.value : Routes.login.value,
@@ -77,7 +78,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
         Routes.startPathStep3.value: (context) => StartPathStep3(),
         Routes.startPathStep4.value: (context) => StartPathStep4(),
         Routes.test.value: (context) => PushMessagingExample(),
-        'test': (context) => CupertinoRefreshControlDemo(),
+        // 'test': (context) => CupertinoRefreshControlDemo(),
       },
       theme: LightTheme.defaultTheme,
       darkTheme: DarkTheme.defaultTheme,

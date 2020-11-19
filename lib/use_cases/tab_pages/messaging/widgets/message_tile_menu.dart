@@ -36,7 +36,7 @@ class _MessageTileMenuState extends State<MessageTileMenu> {
 
   @override
   Widget build(BuildContext context) {
-    bool isMsgSentByMe = widget.message.sendBy == UserStore().user.id;
+    bool isMsgSentByMe = widget.message.sentBy == UserStore().user.id;
     return FocusedMenuHolder(
       onPressed: () => {},
       menuItems: [

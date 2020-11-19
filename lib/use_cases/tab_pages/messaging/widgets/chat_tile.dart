@@ -113,7 +113,7 @@ class _ChatTileState extends State<ChatTile> {
     if (!lastMsgExists && !widget.chat.isChatEngaged) return Text('');
     if (!lastMsgExists) return Text('New chat!', style: style);
 
-    bool sentByMe = UserStore().user.id == lastMsg.sendBy;
+    bool sentByMe = UserStore().user.id == lastMsg.sentBy;
     final time = TimeAdapter().adapt(lastMsg.time);
     return Row(children: [
       sentByMe

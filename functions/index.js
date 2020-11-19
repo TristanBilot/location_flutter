@@ -16,7 +16,6 @@ const size = 150;
  * When an image is uploaded in the Storage bucket, we want to 
  * resize it and circle it.
  */
-
 exports.onFileUploaded = functions.storage.object().onFinalize(async (file) => {
   const fileBucket = file.bucket; // The Storage bucket that contains the file.
   const filePath = file.name; // File path in the bucket.
@@ -47,12 +46,12 @@ exports.onFileUploaded = functions.storage.object().onFinalize(async (file) => {
 
   gm(inTmpPath) // could use crop()
   .resize(size, size, "!") // force the image to resize
-  .write(outTmpPath, async function() {
+  .write(outTmpPath, async () => {
     console.log('writing');
     gm(size, size, 'none')
         .fill(outTmpPath) // scale
         .drawCircle(size / 2, size / 2, size / 2, 0)
-        .write(outTmpPath, async function() {
+        .write(outTmpPath, async () => {
           console.log('Circles photo created at', outTmpPath);
         
           const firestoreFilePath = path.join(path.dirname(filePath), outputFilePrefix + fileNameWithPng);
@@ -68,4 +67,49 @@ exports.onFileUploaded = functions.storage.object().onFinalize(async (file) => {
           return fs.unlinkSync(inTmpPath);
         });
   });
+  return null;
 });
+
+/// Handle when a new message is created in firestore
+exports.sendMessage = functions.firestore
+.document('/messages/{chatID}/chats/{msgID}')
+.onCreate((doc, context) => {
+  const msg = doc.data();
+  const sentToID = msg.SentTo;
+  const text = msg.Message;
+
+  if (!sentToID) {
+    console.log('error: sentToID is null.');
+    return;
+  }
+  /// fetch user from user ID
+  admin.firestore().doc('/locations/' + sentToID).get().then((snapshot) => {
+    const user = snapshot.data();
+    const deviceTokens = user.DeviceTokens;
+
+    if (!deviceTokens) {
+      console.log('error: user device tokens null.');
+      return;
+    }
+    console.log('tokens: ' + deviceTokens);
+
+    const message = {
+      notification: {
+          title: 'Message from ' + user.FirstName,
+          body: text,
+      },
+      data: { type:'' },
+    };
+    /// send the push notif   message
+    admin.messaging().sendToDevice(deviceTokens, message, {
+      mutableContent: true,
+      contentAvailable: true,
+      apnsPushType: "background"
+    })
+      .then((response) => {
+        console.log('Message succefully sent to ' + sentToID);
+        return response;
+      }).catch((error) => { console.log('sending message error:', error); });
+      return null;
+    }).catch(error => { console.log('get document error ' + error); });
+  });

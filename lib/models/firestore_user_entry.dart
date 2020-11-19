@@ -22,6 +22,7 @@ class FirestoreUserEntry implements FirestoreEntry {
   final List<String> userIDsWhoBlockedMe;
   final List<View> viewedUserIDs;
   final List<View> userIDsWhoWiewedMe;
+  final List<String> devicesTokens;
 
   @override
   bool get stringify => null;
@@ -55,6 +56,7 @@ class FirestoreUserEntry implements FirestoreEntry {
     this.userIDsWhoBlockedMe,
     this.viewedUserIDs,
     this.userIDsWhoWiewedMe,
+    this.devicesTokens,
   )   : this.gender = gender.value,
         this.geoPointData = geoPoint.data,
         this.showMyDistance = settings.showMyDistance,
@@ -78,6 +80,7 @@ class FirestoreUserEntry implements FirestoreEntry {
       UserField.WantedGenders.value: wantedGenders,
       UserField.ViewedUserIDs.value: viewedUserIDs,
       UserField.UserIDsWhoWiewedMe.value: userIDsWhoWiewedMe,
+      UserField.DeviceTokens.value: devicesTokens,
     };
   }
 }

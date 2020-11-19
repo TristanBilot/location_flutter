@@ -28,11 +28,16 @@ import GoogleMaps
   
   override func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
       Auth.auth().setAPNSToken(deviceToken, type: .prod)
+//    print(deviceToken.reduce("", {$0 + String(format: "%02X", $1)}))
+      
+      Messaging.messaging().apnsToken = deviceToken
+      super.application(application, didRegisterForRemoteNotificationsWithDeviceToken: deviceToken)
   }
 
   override func application(_ application: UIApplication,
       didReceiveRemoteNotification notification: [AnyHashable : Any],
       fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+    Messaging.messaging().appDidReceiveMessage(notification)
       if Auth.auth().canHandleNotification(notification) {
         completionHandler(.noData)
         return

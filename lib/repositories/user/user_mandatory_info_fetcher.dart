@@ -22,6 +22,7 @@ class UserMandatoryInfo implements TimeMeasurable {
   int age;
   Gender gender;
   UserSettings settings;
+  List<String> deviceTokens;
 
   UserMandatoryInfo(
     this.timeToFetch,
@@ -34,6 +35,7 @@ class UserMandatoryInfo implements TimeMeasurable {
     this.age,
     this.gender,
     this.settings,
+    this.deviceTokens,
   );
 }
 
@@ -64,8 +66,10 @@ class UserMandatoryInfoFetcher {
     final gender =
         GenderValueAdapter().stringToGender(data[UserField.Gender.value]);
     final age = data[UserField.Age.value];
+    final deviceTokens =
+        (data[UserField.DeviceTokens.value] as List)?.cast<String>();
     final timeToFetch = stopwatch.elapsed.inMilliseconds;
     return UserMandatoryInfo(timeToFetch, id, id, firstName, lastName, coord,
-        distance, age, gender, settings);
+        distance, age, gender, settings, deviceTokens);
   }
 }

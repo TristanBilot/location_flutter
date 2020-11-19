@@ -65,6 +65,8 @@ class Chat implements FirestoreEntry {
   bool get myActivitySeen =>
       iAmRequester ? requesterLastActivitySeen : requestedLastActivitySeen;
 
+  String get otherParticipantID => iAmRequester ? requestedID : requesterID;
+
   dynamic toFirestoreObject() {
     return {
       ChatField.UserIDs.value: userIDs,

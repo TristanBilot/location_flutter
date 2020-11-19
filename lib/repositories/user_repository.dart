@@ -62,7 +62,8 @@ class UserRepository {
             user.blockedUserIDs,
             user.userIDsWhoBlockedMe,
             user.viewedUserIDs,
-            user.userIDsWhoWiewedMe)
+            user.userIDsWhoWiewedMe,
+            user.deviceTokens)
         .toFirestoreObject());
     File userPicture = await _imageRepo.urlToFile(user.pictureURL);
     return await _imageRepo.uploadFile(

@@ -24,7 +24,7 @@ class MessageTile extends StatelessWidget {
   });
 
   List<Widget> get _messagesSeenText {
-    if (!isLastMessage || message.sendBy != UserStore().user.id) return [];
+    if (!isLastMessage || message.sentBy != UserStore().user.id) return [];
     return [
       Padding(
         padding: const EdgeInsets.only(top: 3.0),
@@ -35,7 +35,7 @@ class MessageTile extends StatelessWidget {
   }
 
   _onDoubleTap() {
-    if (message.sendBy != UserStore().user.id) {
+    if (message.sentBy != UserStore().user.id) {
       MessagingReposiory().updateMessageReaction(chat, message, Reaction.Heart);
       HapticFeedback.heavyImpact();
     }
@@ -44,7 +44,7 @@ class MessageTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final methods = MessageTileMethods(message, diffWithPrevMsgTime);
-    bool sentByMe = UserStore().user.id == message.sendBy;
+    bool sentByMe = UserStore().user.id == message.sentBy;
 
     return GestureDetector(
       onDoubleTap: _onDoubleTap,
@@ -64,7 +64,7 @@ class MessageTile extends StatelessWidget {
               children: [
                 methods.getTimeText(context, sentByMe),
                 Stack(
-                  alignment: message.sendBy == UserStore().user.id
+                  alignment: message.sentBy == UserStore().user.id
                       ? Alignment.centerLeft
                       : Alignment.centerRight,
                   children: [

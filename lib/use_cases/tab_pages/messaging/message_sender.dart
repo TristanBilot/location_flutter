@@ -9,9 +9,11 @@ class MessageSender {
   /// The message is sent by the `logged user` at the `current time`
   /// and the last activity is update.
   Future<void> send(String message, Chat chat) async {
-    final sendBy = UserStore().user.id;
+    final sentBy = UserStore().user.id;
+    final sentTo = chat.otherParticipantID;
     final time = Message.Time;
-    final entry = Message(message, sendBy, time, false, Reaction.NoReaction);
+    final entry =
+        Message(message, sentBy, sentTo, time, false, Reaction.NoReaction);
 
     MessagingReposiory().newMessage(chat.chatID, entry);
     MessagingReposiory().updateChatLastActivity(chat,

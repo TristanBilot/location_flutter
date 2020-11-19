@@ -16,6 +16,7 @@ enum UserField {
   Position,
   Age,
   Gender,
+  DeviceTokens,
 
   WantedGenders,
   WantedAgeRange,
@@ -51,6 +52,8 @@ class User extends HiveObject {
   Gender gender;
   @HiveField(9)
   UserSettings settings;
+  @HiveField(10)
+  List<String> deviceTokens;
   // Properties stored in the UserStore and fetched at start.
   List<String> blockedUserIDs;
   List<String> userIDsWhoBlockedMe;
@@ -75,6 +78,7 @@ class User extends HiveObject {
     this.userIDsWhoBlockedMe,
     this.viewedUserIDs,
     this.userIDsWhoWiewedMe,
+    this.deviceTokens,
   ) {
     this.id = email;
   }
@@ -99,6 +103,7 @@ class User extends HiveObject {
       this.distance = infos.distance;
       this.gender = infos.gender;
       this.settings = infos.settings;
+      this.deviceTokens = infos.deviceTokens;
     }
     if (views != null) {
       this.viewedUserIDs = views.viewedUserIDs;

@@ -118,6 +118,7 @@ class AuthRepository {
       List<String>(),
       List<View>(),
       List<View>(),
+      List<String>(),
     );
 
     final hasPicture = !data['picture']['data']['is_silhouette'];
