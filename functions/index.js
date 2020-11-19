@@ -95,7 +95,7 @@ exports.sendMessage = functions.firestore
 
     const message = {
       notification: {
-          title: 'Message from ' + user.FirstName,
+          title: user.FirstName,
           body: text,
       },
       data: { type: 'message' },

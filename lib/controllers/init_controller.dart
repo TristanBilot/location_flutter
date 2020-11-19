@@ -11,7 +11,6 @@ import 'package:hive/hive.dart';
 import 'package:location_project/models/gender.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/models/user_settings.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif_handler.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif_listener.dart';
 import 'package:path_provider/path_provider.dart';
 

@@ -59,10 +59,6 @@ class UserRepository {
             user.age,
             geoPoint,
             UserSettings.DefaultUserSettings,
-            user.blockedUserIDs,
-            user.userIDsWhoBlockedMe,
-            user.viewedUserIDs,
-            user.userIDsWhoWiewedMe,
             user.deviceTokens)
         .toFirestoreObject());
     File userPicture = await _imageRepo.urlToFile(user.pictureURL);

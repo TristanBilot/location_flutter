@@ -19,6 +19,7 @@ void listenToNotifications() {
 }
 
 Future<dynamic> _handle(Map<String, dynamic> message) {
+  print(message);
   if (!message.containsKey(NotifField.notification.value)) return null;
   final dynamic notification = message[NotifField.notification.value];
   final String title = notification[NotifField.title.value];
