@@ -41,6 +41,7 @@ class _MessagePageState extends State<MessagePage> {
 
   @override
   void initState() {
+    UserStore().disableMessageNotif();
     _fetchMessages();
     _messageEditingController = TextEditingController();
     super.initState();

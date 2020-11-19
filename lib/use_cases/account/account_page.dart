@@ -45,6 +45,7 @@ class _AccountPageState extends State<AccountPage>
 
   @override
   void initState() {
+    UserStore().enableMessageNotif();
     super.initState();
 
     _circleIcons = GenderCircleIconFactory().makeGenderIcons(null, this);

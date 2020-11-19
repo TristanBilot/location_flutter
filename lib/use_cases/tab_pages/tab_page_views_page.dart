@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/stores/messaging_database.dart';
+import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/views/cubit/view_cubit.dart';
 import 'package:location_project/widgets/basic_placeholder.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_view_tile.dart';
@@ -17,6 +18,7 @@ class _TabPageViewsPageState extends State<TabPageViewsPage> {
 
   @override
   void initState() {
+    UserStore().enableMessageNotif();
     _shouldRefreshCache = false;
     _fetch();
 

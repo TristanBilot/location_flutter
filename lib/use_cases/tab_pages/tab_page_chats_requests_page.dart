@@ -40,6 +40,9 @@ class _TabPageRequestsPageState extends State<TabPageChatsRequestsPage>
 
   @override
   void initState() {
+    widget.type == TabPageType.Discussions
+        ? UserStore().disableMessageNotif()
+        : UserStore().enableMessageNotif();
     _messageEditingController = TextEditingController();
     _scrollController = ScrollController();
     _filter = widget.type == TabPageType.Discussions

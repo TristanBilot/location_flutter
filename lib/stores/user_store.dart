@@ -14,6 +14,7 @@ import '../stores/extensions.dart';
 class UserStore extends ChangeNotifier {
   /* data get remotely from Firestore */
   User _user;
+  User get user => _user;
 
   /* data get from SharedPreferences */
   Language _language;
@@ -21,6 +22,9 @@ class UserStore extends ChangeNotifier {
   /* repositories to get and set data */
   UserRepository _repo = UserRepository();
   UserLocalRepository _localRepo = UserLocalRepository();
+
+  bool _shouldDisplayMessageNotif = true;
+  bool get shouldDisplayMessageNotif => _shouldDisplayMessageNotif;
 
   UserStore._internal();
   static final UserStore _instance = UserStore._internal();
@@ -47,8 +51,6 @@ class UserStore extends ChangeNotifier {
   bool isuserLoggedIn() {
     return _localRepo.isUserLoggedIn();
   }
-
-  User get user => _user;
 
   /// These methods are used to update the data of the user
   /// in local with this store class and in Firestore using
@@ -141,4 +143,7 @@ class UserStore extends ChangeNotifier {
         viewedID, UserField.UserIDsWhoWiewedMe, _user.id);
     notifyListeners();
   }
+
+  void enableMessageNotif() => _shouldDisplayMessageNotif = true;
+  void disableMessageNotif() => _shouldDisplayMessageNotif = false;
 }

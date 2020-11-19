@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:location_project/caches/location_cache.dart';
 import 'package:location_project/controllers/location_controller.dart';
 import 'package:location_project/pages/location_disabled_page.dart';
+import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/widgets/map.dart';
 
 class MapPage extends StatefulWidget {
@@ -12,6 +13,12 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
+  @override
+  void initState() {
+    UserStore().enableMessageNotif();
+    super.initState();
+  }
+
   Future<bool> _displayMapIfLocationEnabled() async {
     return LocationCache().isLocationAvailable &&
         await LocationController().isLocationEnabled();
