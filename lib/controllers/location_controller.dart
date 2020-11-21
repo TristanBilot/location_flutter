@@ -47,8 +47,7 @@ class LocationController {
   * the position of the device in a cache.
   */
   void _handleLocation() {
-    locator
-        .getPositionStream(
+    locator.Geolocator.getPositionStream(
             desiredAccuracy: locator.LocationAccuracy.best,
             timeLimit: Duration(milliseconds: 200))
         .listen((locator.Position position) {

@@ -33,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             children: [
               SvgPicture.asset(
-                'assets/logo.svg',
+                'assets/logo2.svg',
                 height: 300,
               ),
               Spacer(),
