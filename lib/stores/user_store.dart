@@ -121,6 +121,10 @@ class UserStore extends ChangeNotifier {
     UserStore().user.userIDsWhoBlockedMe.add(userIDWhoBlockedMe);
   }
 
+  void updateLocalUsersWhoBlockMe(List<String> userIDsWhoBlockedMe) {
+    UserStore().user.userIDsWhoBlockedMe = userIDsWhoBlockedMe;
+  }
+
   /// Add a new view in the local store and in the firestore for both
   /// participants.
   Future<void> addView(String viewedID) async {

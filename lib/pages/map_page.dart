@@ -20,6 +20,7 @@ class _MapPageState extends State<MapPage> {
   }
 
   Future<bool> _displayMapIfLocationEnabled() async {
+    await LocationController().handleLocationIfNeeded();
     return LocationCache().isLocationAvailable &&
         await LocationController().isLocationEnabled();
   }

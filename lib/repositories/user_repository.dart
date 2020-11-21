@@ -109,9 +109,16 @@ class UserRepository {
         .collection(UserField.UserIDsWhoBlockedMe.value)
         .snapshots()
         .listen((event) {
-      if (event.docs.isEmpty || event.docs.first.data().keys.isEmpty) return;
-      final userIDToBlock = event.docs.first.data().keys.first;
-      UserStore().addLocalUserWhoBlockMe(userIDToBlock);
+      if (event.docChanges.isEmpty) return;
+      final existingUsers = UserStore().user.userIDsWhoBlockedMe.toSet();
+      final changes = event.docChanges.map((e) => e.doc.id).toList();
+      for (var change in changes) {
+        if (existingUsers.contains(change))
+          existingUsers.remove(change);
+        else
+          existingUsers.add(change);
+      }
+      UserStore().updateLocalUsersWhoBlockMe(existingUsers.toList());
       fetchAreaFromMap();
     });
   }
