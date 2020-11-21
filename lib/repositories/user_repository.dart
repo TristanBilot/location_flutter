@@ -327,4 +327,20 @@ class UserRepository {
       UserField.DeviceTokens.value: FieldValue.arrayRemove([deviceID]),
     });
   }
+
+  /// If the user uninstall the app, we can't handle properly it so the device ID
+  /// still in the user's device IDs, so at the next login from another account,
+  /// after the app has been reinstalled, we need to delete the obsolete existing device ID
+  /// from the previous account used when that app had been uninstalled.
+  Future<void> removeDuplicateExistingDeviceID(String deviceID) async {
+    List<String> userIDsToUpdate = List();
+    await _firestore
+        .collection(RootKey)
+        .where(UserField.DeviceTokens.value, arrayContains: deviceID)
+        .get()
+        .then((snapshot) {
+      for (DocumentSnapshot doc in snapshot.docs) userIDsToUpdate.add(doc.id);
+    });
+    userIDsToUpdate.forEach((id) => removeDeviceID(id, deviceID));
+  }
 }

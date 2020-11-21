@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:location_project/controllers/init_controller.dart';
 import 'package:location_project/repositories/login_controller.dart';
 import 'package:location_project/use_cases/start_path/widgets/basic_button.dart';
-import 'package:location_project/widgets/textSF.dart';
-
-import '../stores/routes.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);

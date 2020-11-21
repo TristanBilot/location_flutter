@@ -8,7 +8,8 @@ class UserLocalRepository {
   static const LanguageKey = 'language';
   static const ConnectedIDKey = 'connectedId';
   static const LocationAskedKey = 'locationAsked';
-  static const CurrentDeviceID = 'deviceID';
+  static const CurrentDeviceIDKey = 'deviceID';
+  static const IsFirstAppLaunchKey = 'isFirstAppLaunch';
 
   SharedPreferences _prefs;
 
@@ -81,11 +82,20 @@ class UserLocalRepository {
   }
 
   Future<void> setCurrentDeviceID(String deviceID) async {
-    await _prefs.setString(CurrentDeviceID, deviceID);
+    await _prefs.setString(CurrentDeviceIDKey, deviceID);
   }
 
   String getCurrentDeviceID() {
-    if (!_prefs.containsKey(CurrentDeviceID)) return null;
-    return _prefs.getString(CurrentDeviceID);
+    if (!_prefs.containsKey(CurrentDeviceIDKey)) return null;
+    return _prefs.getString(CurrentDeviceIDKey);
+  }
+
+  Future<void> setIsFirstAppLaunch(bool isLaunch) async {
+    await _prefs.setBool(IsFirstAppLaunchKey, isLaunch);
+  }
+
+  bool getIsFirstAppLaunch() {
+    if (!_prefs.containsKey(IsFirstAppLaunchKey)) return true;
+    return _prefs.getBool(IsFirstAppLaunchKey);
   }
 }

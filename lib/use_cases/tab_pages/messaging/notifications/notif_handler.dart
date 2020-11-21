@@ -1,6 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-class NotifHandler {
+class DeviceIDFetcher {
   final _firebaseMessaging = FirebaseMessaging();
 
   Future<String> fetchDeviceToken() async {

@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:location_project/controllers/device_id_controller.dart';
 import 'package:location_project/controllers/location_controller.dart';
 import 'package:location_project/repositories/user_local_repository.dart';
-import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/stores/database.dart';
 import 'package:location_project/stores/messaging_database.dart';
 import 'package:location_project/stores/user_store.dart';
@@ -16,6 +15,7 @@ import 'package:path_provider/path_provider.dart';
 class InitController {
   Future initFromMain() async {
     await UserLocalRepository.initAsynchronously();
+    await DeviceIDController().storeDeviceID();
     await _initHiveDatabases();
     // UserLocalRepository().forgetLoggedUser();
     // return;
@@ -24,6 +24,7 @@ class InitController {
       if (await LocationController().isLocationEnabled())
         await UserStore().initAsynchronously();
     }
+    initAtFirstAppLaunch();
   }
 
   Future initAfterLogin(String loggedID) async {
@@ -37,6 +38,13 @@ class InitController {
   Future initAfterStartPath(String newUserID) async {
     await UserLocalRepository().rememberLoggedUser(newUserID);
     await UserStore().initAsynchronously();
+  }
+
+  Future initAtFirstAppLaunch() async {
+    if (UserLocalRepository().getIsFirstAppLaunch()) {
+      DeviceIDController().removeDuplicateExistingDeviceID();
+    }
+    UserLocalRepository().setIsFirstAppLaunch(false);
   }
 
   Future _initHiveDatabases() async {
