@@ -100,14 +100,34 @@ class MessagingReposiory {
   /// Return a stream of messages ordered by time from a chat ID.
   /// `descending` set to true because the list is reversed in
   /// the ListView builder UI.
-  Future<Stream<QuerySnapshot>> getMessages(String chatID) async {
+  Stream<QuerySnapshot> getMessages(String chatID) {
     return _firestore
         .collection(RootKey)
         .doc(chatID)
         .collection(ChatKey)
         .orderBy(MessageField.Time.value, descending: true)
+        .limit(20)
         .snapshots();
   }
+
+  // Future<Stream<QuerySnapshot>> getMoreMessages(
+  //     String chatID, Message lastMsg) async {
+  //   final lastDoc = await _firestore
+  //       .collection(RootKey)
+  //       .doc(chatID)
+  //       .collection(ChatKey)
+  //       .doc(lastMsg.docID)
+  //       .get();
+
+  //   return _firestore
+  //       .collection(RootKey)
+  //       .doc(chatID)
+  //       .collection(ChatKey)
+  //       .startAfterDocument(lastDoc)
+  //       .orderBy(MessageField.Time.value, descending: true)
+  //       .limit(20)
+  //       .snapshots();
+  // }
 
   /// Return the last message sent in a chat.
   Stream<List<Message>> getLastMessage(String chatID) {

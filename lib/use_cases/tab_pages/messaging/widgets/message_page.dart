@@ -1,9 +1,11 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/stores/database.dart';
 import 'package:location_project/stores/user_store.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/messages/cubit/messages_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/cached_circle_user_image_with_active_status.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/message.dart';
@@ -32,9 +34,30 @@ class MessagePage extends StatefulWidget {
 }
 
 class _MessagePageState extends State<MessagePage> {
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+        create: (context) => MessagesCubit(),
+        child: MessagePageContent(chat: widget.chat, user: widget.user));
+  }
+}
+
+class MessagePageContent extends StatefulWidget {
+  final Chat chat;
+  final User user;
+
+  MessagePageContent({
+    @required this.chat,
+    @required this.user,
+  });
+
+  @override
+  _MessagePageContentState createState() => _MessagePageContentState();
+}
+
+class _MessagePageContentState extends State<MessagePageContent> {
   Stream<QuerySnapshot> _messages;
   TextEditingController _messageEditingController;
-  bool _isMessagesEmpty;
 
   static const PlaceholderImageSize = 150.0;
   static const PlaceholderFontSize = 17.0;
@@ -42,15 +65,14 @@ class _MessagePageState extends State<MessagePage> {
   @override
   void initState() {
     UserStore().disableMessageNotif();
-    _fetchMessages();
+    _fetch();
     _messageEditingController = TextEditingController();
     super.initState();
   }
 
-  void _fetchMessages() {
-    MessagingReposiory()
-        .getMessages(widget.chat.chatID)
-        .then((messages) => setState(() => _messages = messages));
+  void _fetch() {
+    final chatID = widget.chat.chatID;
+    context.read<MessagesCubit>().fetchMessages(chatID);
   }
 
   void _sendMessage() {
@@ -67,18 +89,16 @@ class _MessagePageState extends State<MessagePage> {
   }
 
   int _getDifferenceTimeBetweenMsgAndPrevious(
-    dynamic data,
+    List<Message> messages,
     int index,
     Message msg,
   ) {
     var prevMsg;
-    if (index >= data.documents.length - 1)
+    if (index >= messages.length - 1)
       prevMsg = null;
     else
-      prevMsg = Message.fromFirestoreObject(
-        // +1 and not -1 because the list in descending order.
-        data.documents[index + 1].data(),
-      );
+      prevMsg = messages[index + 1];
+    // +1 and not -1 because the list in descending order.
     // when prevMsg == null, we say that it is the first msg
     // and by default, we want to print the time.
     int diff = prevMsg == null
@@ -88,40 +108,38 @@ class _MessagePageState extends State<MessagePage> {
   }
 
   /// Return the list of messages.
-  Widget get _messagesOrPlaceholderWidget => StreamBuilder(
-        stream: _messages,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final userID = UserStore().user.id;
-            final docs = snapshot.data.documents;
-            if (!widget.chat.isChatEngaged) {
-              if (userID == widget.chat.requesterID)
-                return _requestWaitingPlaceholder;
-              if (userID == widget.chat.requestedID)
-                return _requestInvitationPlaceholder;
-            }
-            if (docs.length == 0) return _noMessagesPlaceholder;
-
-            return ListView.builder(
-                reverse: true,
-                itemCount: docs.length,
-                itemBuilder: (context, index) {
-                  final msg = Message.fromFirestoreObject(docs[index].data());
-                  final diff = _getDifferenceTimeBetweenMsgAndPrevious(
-                      snapshot.data, index, msg);
-                  final isLastMessage = index == 0;
-                  _handleLastMsgView(isLastMessage, msg);
-                  return MessageTile(
-                    message: msg,
-                    chat: widget.chat,
-                    diffWithPrevMsgTime: diff,
-                    isLastMessage: isLastMessage,
-                  );
-                });
+  Widget get _messagesOrPlaceholderWidget =>
+      BlocBuilder<MessagesCubit, MessagesState>(builder: (context, state) {
+        if (state is MessagesFetchedState) {
+          final userID = UserStore().user.id;
+          final messages = state.messages;
+          if (!widget.chat.isChatEngaged) {
+            if (userID == widget.chat.requesterID)
+              return _requestWaitingPlaceholder;
+            if (userID == widget.chat.requestedID)
+              return _requestInvitationPlaceholder;
           }
-          return Container();
-        },
-      );
+          if (messages.isEmpty) return _noMessagesPlaceholder;
+
+          return ListView.builder(
+              reverse: true,
+              itemCount: messages.length,
+              itemBuilder: (context, index) {
+                final msg = messages[index];
+                final diff = _getDifferenceTimeBetweenMsgAndPrevious(
+                    messages, index, msg);
+                final isLastMessage = index == 0;
+                _handleLastMsgView(isLastMessage, msg);
+                return MessageTile(
+                  message: msg,
+                  chat: widget.chat,
+                  diffWithPrevMsgTime: diff,
+                  isLastMessage: isLastMessage,
+                );
+              });
+        }
+        return Container();
+      });
 
   /// Placeholder displayed when the user has requested the chat
   /// and the chat has been accepted by the other participant.
