@@ -15,7 +15,7 @@ class _HomePageTabBarIconState extends State<HomePageTabBarImageIcon> {
   Widget build(BuildContext context) {
     return Tab(
       icon: Image.asset(
-        'assets/logo.png',
+        widget.activated ? 'assets/logo.png' : 'assets/logo_grey.png',
         height: HomePageTabBarIcon.IconSize,
       ),
     );

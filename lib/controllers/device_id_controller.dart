@@ -1,6 +1,6 @@
 import 'package:location_project/repositories/user_local_repository.dart';
 import 'package:location_project/repositories/user_repository.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif_handler.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/notifications/device_id_fetcher.dart';
 
 class DeviceIDController {
   Future storeDeviceID() async {

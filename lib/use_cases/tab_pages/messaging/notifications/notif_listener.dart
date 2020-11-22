@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:location_project/helpers/logger.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif.dart';
-import 'package:location_project/utils/toaster/message_toaster.dart';
+import 'package:location_project/utils/toaster/toaster_widget.dart';
 import '../../../../stores/extensions.dart';
 
 final _firebaseMessaging = FirebaseMessaging();
@@ -39,7 +39,7 @@ Future<dynamic> _handle(Map<String, dynamic> message, BuildContext context) {
 
   switch (notifType) {
     case NotifType.message:
-      MessageToast(context, fromID, text).show();
+      // MessageToast(context, fromID, text).show();
       break;
     case NotifType.unknown:
       Logger().e('Invalid notif type.');

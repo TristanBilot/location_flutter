@@ -4,10 +4,12 @@ import 'package:location_project/controllers/location_controller.dart';
 import 'package:location_project/pages/map_page.dart';
 import 'package:location_project/pages/messaging_tabs_page.dart';
 import 'package:location_project/stores/messaging_database.dart';
+import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/themes/theme_utils.dart';
 import 'package:location_project/use_cases/account/account_page.dart';
 import 'package:location_project/use_cases/tab_pages/counters/cubit/counters_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif_listener.dart';
+import 'package:location_project/utils/toaster/toaster_widget.dart';
 import 'package:location_project/widgets/home_page_status_without_count.dart';
 import 'package:location_project/widgets/home_page_tab_bar_icon.dart';
 import 'package:location_project/widgets/home_page_tab_bar_image_icon.dart';
@@ -25,7 +27,7 @@ class _HomePageState extends State<HomePage> {
     listenToNotifications(context);
 
     return BlocProvider(
-      create: (context) => CountersCubit(MessagingDatabase())..init(),
+      create: (context) => CountersCubit(context, MessagingDatabase())..init(),
       child: HomePageContainer(),
     );
   }

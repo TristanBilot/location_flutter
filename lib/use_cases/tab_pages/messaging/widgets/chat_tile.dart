@@ -78,9 +78,6 @@ class _ChatTileState extends State<ChatTile> {
         chat.requestedID == userID &&
         chat.myActivitySeen == false) return true;
 
-    /// For chats.
-    if (!lastMessageExists) return false;
-    //  || userID == msg.sendBy
     return chat.myActivitySeen == false;
   }
 

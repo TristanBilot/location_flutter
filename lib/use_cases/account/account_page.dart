@@ -18,7 +18,7 @@ import 'package:location_project/use_cases/start_path/widgets/equally_spaced_row
 import 'package:location_project/use_cases/start_path/widgets/gender_circle_icon.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_mock_repository.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
-import 'package:location_project/utils/toaster/message_toaster.dart';
+import 'package:location_project/utils/toaster/toaster_widget.dart';
 import 'package:location_project/widgets/cached_circle_user_image.dart';
 import 'package:location_project/widgets/cupertino_range_slider.dart';
 import 'package:location_project/widgets/textSF.dart';

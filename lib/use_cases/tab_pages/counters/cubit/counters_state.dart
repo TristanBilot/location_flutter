@@ -3,9 +3,8 @@ part of 'counters_cubit.dart';
 abstract class CountersState extends Equatable {
   final Counter counter;
   const CountersState(this.counter);
-
   @override
-  List<Object> get props => [];
+  List<Object> get props => [counter];
 
   bool isANotificationUnread() {
     return counter.nbUnreadChats != 0 ||
