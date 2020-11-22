@@ -23,9 +23,6 @@ class UserStore extends ChangeNotifier {
   UserRepository _repo = UserRepository();
   UserLocalRepository _localRepo = UserLocalRepository();
 
-  bool _shouldDisplayMessageNotif = true;
-  bool get shouldDisplayMessageNotif => _shouldDisplayMessageNotif;
-
   UserStore._internal();
   static final UserStore _instance = UserStore._internal();
 
@@ -147,7 +144,4 @@ class UserStore extends ChangeNotifier {
         viewedID, UserField.UserIDsWhoWiewedMe, _user.id);
     notifyListeners();
   }
-
-  void enableMessageNotif() => _shouldDisplayMessageNotif = true;
-  void disableMessageNotif() => _shouldDisplayMessageNotif = false;
 }

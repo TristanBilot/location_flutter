@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:location_project/caches/user_cache.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/stores/messaging_database.dart';
 import 'package:location_project/stores/user_store.dart';
@@ -80,7 +81,8 @@ class CountersCubit extends Cubit<CountersState> {
   void _triggerChatToaster(List<Chat> filteredChats) {
     if (_previousChats != null)
       for (var chat in filteredChats)
-        if (!_previousChats.contains(chat.chatID))
+        if (!_previousChats.contains(chat.chatID) &&
+            UserCache().shouldDisplayChatToast)
           ChatToaster(context, chat, chat.otherParticipantID).show();
     Set<String> newChats = Set();
     filteredChats.forEach((chat) => newChats.add(chat.chatID));
@@ -90,7 +92,8 @@ class CountersCubit extends Cubit<CountersState> {
   void _triggerRequestToaster(List<Chat> filteredRequests) {
     if (_previousRequests != null)
       for (var chat in filteredRequests)
-        if (!_previousRequests.contains(chat.chatID))
+        if (!_previousRequests.contains(chat.chatID) &&
+            UserCache().shouldDisplayRequestToast)
           RequestToaster(context, chat, chat.otherParticipantID).show();
     Set<String> newRequests = Set();
     filteredRequests.forEach((req) => newRequests.add(req.chatID));
@@ -100,7 +103,8 @@ class CountersCubit extends Cubit<CountersState> {
   void _triggerViewToaster(List<View> views) {
     if (_previousViews != null)
       for (var view in views)
-        if (!_previousViews.contains(view.id))
+        if (!_previousViews.contains(view.id) &&
+            UserCache().shouldDisplayViewToast)
           ViewToaster(context, view.id).show();
     Set<String> newViews = Set();
     views.forEach((view) => newViews.add(view.id));

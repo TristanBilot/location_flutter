@@ -2,28 +2,50 @@ import 'dart:collection';
 
 import '../models/user.dart';
 
-/// Cache used to store only the area users.
+/// Cache used to store the area users and memory-only data.
 /// Logged user is managed by `UserStore`.
 class UserCache {
-  HashMap<String, User> _cache = HashMap();
-
   UserCache._internal();
   static final UserCache _instance = UserCache._internal();
-
   factory UserCache() => _instance;
 
   /* 
   * functions used to cache the fetched users
   */
-  void putUser(User user) {
-    _cache[user.id] = user;
-  }
+  HashMap<String, User> _areaUsersCache = HashMap();
+  void putUser(User user) => _areaUsersCache[user.id] = user;
+  User getUser(String id) => _areaUsersCache[id];
+  bool userExists(String id) => _areaUsersCache.containsKey(id);
 
-  User getUser(String id) {
-    return _cache[id];
-  }
+  /*
+  * displaying of toast notifications
+  */
+  String _userChattingWithNow = '';
+  get getUserChattingWithNow => _userChattingWithNow;
 
-  bool userExists(String id) {
-    return _cache.containsKey(id);
+  bool _displayMessageToast = true;
+  get shouldDisplayMessageToast => _displayMessageToast;
+
+  bool _displayChatToast = true;
+  get shouldDisplayChatToast => _displayChatToast;
+
+  bool _displayRequestToast = true;
+  get shouldDisplayRequestToast => _displayRequestToast;
+
+  bool _displayViewToast = true;
+  get shouldDisplayViewToast => _displayViewToast;
+
+  void setDisplayToastValues(
+    bool displayChats,
+    bool displayRequests,
+    bool displayViews,
+    bool displayMessageToast,
+    String userChattingWithMeNow,
+  ) {
+    _displayChatToast = displayChats;
+    _displayRequestToast = displayRequests;
+    _displayViewToast = displayViews;
+    _displayMessageToast = displayMessageToast;
+    _userChattingWithNow = userChattingWithMeNow;
   }
 }

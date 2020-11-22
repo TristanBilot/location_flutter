@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:location_project/repositories/user_local_repository.dart';
+import 'package:location_project/caches/user_cache.dart';
 import 'package:location_project/stores/messaging_database.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/tab_pages/filters/chats_filter.dart';
@@ -56,10 +56,10 @@ class _TabPageRequestsPageState extends State<TabPageChatsRequestsPage>
   void _init() {
     if (widget.type == TabPageType.Discussions) {
       _filter = ChatsFilter();
-      UserStore().disableMessageNotif();
+      UserCache().setDisplayToastValues(false, true, true, false, '');
     } else if (widget.type == TabPageType.Requests) {
       _filter = RequestFilter();
-      UserStore().enableMessageNotif();
+      UserCache().setDisplayToastValues(true, false, true, true, '');
     }
   }
 

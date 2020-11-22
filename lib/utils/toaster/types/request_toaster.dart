@@ -18,6 +18,7 @@ class RequestToaster extends Toaster {
       Navigator.push(
         context,
         MaterialPageRoute(
+          // maybe change to route to messages like chat
           builder: (context) => TabPageChatsRequestsPage(TabPageType.Requests),
         ),
       );

@@ -1,9 +1,8 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:location_project/caches/user_cache.dart';
 import 'package:location_project/helpers/logger.dart';
-import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif.dart';
-import 'package:location_project/utils/toaster/toaster_widget.dart';
 import '../../../../stores/extensions.dart';
 
 final _firebaseMessaging = FirebaseMessaging();
@@ -22,13 +21,14 @@ void listenToNotifications(BuildContext context) {
 }
 
 Future<dynamic> _handle(Map<String, dynamic> message, BuildContext context) {
+  return null;
   if (!message.containsKey(NotifField.notification.value)) {
     Logger().w('Notif handled but invalid format.');
     return null;
   }
   Logger().i('Message received');
   // Do not display toast on some pages.
-  if (!UserStore().shouldDisplayMessageNotif) return null;
+  if (!UserCache().shouldDisplayMessageToast) return null;
   final dynamic notification = message[NotifField.notification.value];
 
   final String text = notification[NotifField.body.value];

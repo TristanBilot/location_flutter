@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:location_project/caches/user_cache.dart';
 import 'package:location_project/repositories/auth_repository.dart';
 import 'package:location_project/repositories/image_repository.dart';
 import 'package:location_project/repositories/user_mock_repository.dart';
@@ -45,13 +46,17 @@ class _AccountPageState extends State<AccountPage>
 
   @override
   void initState() {
-    UserStore().enableMessageNotif();
+    _init();
     super.initState();
 
     _circleIcons = GenderCircleIconFactory().makeGenderIcons(null, this);
     _selectedGenders = HashSet();
     _authRepo = AuthRepository();
     _loadUserData();
+  }
+
+  void _init() {
+    UserCache().setDisplayToastValues(true, true, true, true, '');
   }
 
   @override

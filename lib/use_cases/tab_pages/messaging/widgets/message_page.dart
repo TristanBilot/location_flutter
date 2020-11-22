@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:location_project/caches/user_cache.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/stores/database.dart';
 import 'package:location_project/stores/user_store.dart';
@@ -56,7 +57,6 @@ class MessagePageContent extends StatefulWidget {
 }
 
 class _MessagePageContentState extends State<MessagePageContent> {
-  Stream<QuerySnapshot> _messages;
   TextEditingController _messageEditingController;
 
   static const PlaceholderImageSize = 150.0;
@@ -64,10 +64,14 @@ class _MessagePageContentState extends State<MessagePageContent> {
 
   @override
   void initState() {
-    UserStore().disableMessageNotif();
+    _init();
     _fetch();
     _messageEditingController = TextEditingController();
     super.initState();
+  }
+
+  void _init() {
+    UserCache().setDisplayToastValues(true, true, true, false, widget.user.id);
   }
 
   void _fetch() {
@@ -240,6 +244,7 @@ class _MessagePageContentState extends State<MessagePageContent> {
   /// the two participants. Also update the last activity time to be
   /// at the top of messages and set seen to true for the moment.
   Future<void> _onRequestAccepted() async {
+    UserCache().setDisplayToastValues(false, true, true, false, widget.user.id);
     await MessagingReposiory().updateChatEngaged(widget.chat.chatID, true);
     await MessagingReposiory().updateChatLastActivity(
       widget.chat,
