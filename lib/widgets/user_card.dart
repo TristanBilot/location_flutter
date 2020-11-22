@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:location_project/helpers/string_formatter.dart';
@@ -62,6 +61,11 @@ class _UserCardContentState extends State<UserCardContent> {
     super.initState();
   }
 
+  Color get _closeIconColor =>
+      MediaQuery.of(context).platformBrightness == Brightness.dark
+          ? Theme.of(context).primaryColor
+          : Color.fromRGBO(200, 200, 200, 1);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -109,11 +113,10 @@ class _UserCardContentState extends State<UserCardContent> {
                   top: 50,
                   child: GestureDetector(
                     child: Container(
-                      child: Icon(Icons.close, size: 24),
+                      child: Icon(Icons.close, size: 22, color: Colors.white),
                       padding: EdgeInsets.all(5),
                       decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Theme.of(context).primaryColor),
+                          shape: BoxShape.circle, color: _closeIconColor),
                     ),
                     onTap: () => Navigator.pop(context),
                   ),
