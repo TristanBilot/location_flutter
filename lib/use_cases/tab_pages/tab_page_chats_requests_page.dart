@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:location_project/repositories/user_local_repository.dart';
 import 'package:location_project/stores/messaging_database.dart';
 import 'package:location_project/stores/user_store.dart';
 import 'package:location_project/use_cases/tab_pages/filters/chats_filter.dart';
@@ -40,14 +41,9 @@ class _TabPageRequestsPageState extends State<TabPageChatsRequestsPage>
 
   @override
   void initState() {
-    widget.type == TabPageType.Discussions
-        ? UserStore().disableMessageNotif()
-        : UserStore().enableMessageNotif();
+    _init();
     _messageEditingController = TextEditingController();
     _scrollController = ScrollController();
-    _filter = widget.type == TabPageType.Discussions
-        ? ChatsFilter()
-        : RequestFilter();
     _shouldRefreshCache = false;
     _fetch();
     // _hideSearchBarIfNeeded();
@@ -56,6 +52,16 @@ class _TabPageRequestsPageState extends State<TabPageChatsRequestsPage>
 
   @override
   void setStateFromOutside() => setState(() => {});
+
+  void _init() {
+    if (widget.type == TabPageType.Discussions) {
+      _filter = ChatsFilter();
+      UserStore().disableMessageNotif();
+    } else if (widget.type == TabPageType.Requests) {
+      _filter = RequestFilter();
+      UserStore().enableMessageNotif();
+    }
+  }
 
   void _fetch() {
     context.read<ChatCubit>().fetchChats();

@@ -1,12 +1,12 @@
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/caches/location_cache.dart';
-import 'package:location_project/controllers/location_controller.dart';
 import 'package:location_project/adapters/gender_value_adapter.dart';
 import 'package:location_project/models/gender.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/models/user_settings.dart';
 import 'package:location_project/repositories/user/time_measurable.dart';
+import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/stores/conf.dart';
 import 'package:location_project/stores/store.dart';
 import '../../stores/extensions.dart';
@@ -40,9 +40,12 @@ class UserMandatoryInfo implements TimeMeasurable {
 }
 
 class UserMandatoryInfoFetcher {
-  UserMandatoryInfo fetch(
-    DocumentSnapshot snapshot,
-  ) {
+  Future<UserMandatoryInfo> fetch(String id) async {
+    final snapshot = await UserRepository().fetchUserDocumentSnapshot(id);
+    return fetchFromSnapshot(snapshot);
+  }
+
+  UserMandatoryInfo fetchFromSnapshot(DocumentSnapshot snapshot) {
     Stopwatch stopwatch = Stopwatch()..start();
     final id = snapshot.id;
     final Map<String, dynamic> data = snapshot.data();

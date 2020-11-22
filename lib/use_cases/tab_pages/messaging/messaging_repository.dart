@@ -22,7 +22,7 @@ class MessagingReposiory {
   /// By default, the chatID is the concatenation of
   /// the two participants IDs unioned with an _.
   static String getChatID(String id1, String id2) {
-    return [id1, id2].join('_');
+    return ([id1, id2]..sort()).join('_');
   }
 
   /// Create the first chat between 2 users.
@@ -175,6 +175,11 @@ class MessagingReposiory {
   /// Returns the firestore chat designed by the `chatID`.
   Future<DocumentSnapshot> getChat(String chatID) async {
     return _firestore.collection(RootKey).doc(chatID).snapshots().first;
+  }
+
+  Future<Chat> getChatAsChat(String chatID) async {
+    final snapshot = await _firestore.collection(RootKey).doc(chatID).get();
+    return Chat.fromFirestoreObject(snapshot.data());
   }
 
   void updateLastMessageView(Chat chat, bool isViewed) {

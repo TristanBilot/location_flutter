@@ -139,14 +139,11 @@ class _UserCardState extends State<UserMapCard> {
   Future<List<DocumentSnapshot>> _fetchChatInfo(String otherUserID) async {
     Stopwatch stopwatch = new Stopwatch()..start();
     String id = UserStore().user.id;
-    String chatID1 = MessagingReposiory.getChatID(id, otherUserID);
-    String chatID2 = MessagingReposiory.getChatID(otherUserID, id);
-    final chat1 = MessagingReposiory().getChat(chatID1);
-    final chat2 = MessagingReposiory().getChat(chatID2);
-    await Future.wait([chat1, chat2]);
+    String chatID = MessagingReposiory.getChatID(id, otherUserID);
+    final chat = MessagingReposiory().getChat(chatID);
     int chatInfoFetchingTime = stopwatch.elapsed.inMilliseconds;
     Logger().v('chat info fetched in ${chatInfoFetchingTime}ms');
-    return Future.wait([chat1, chat2]);
+    return Future.wait([chat]);
   }
 
   @override
@@ -167,8 +164,7 @@ class _UserCardState extends State<UserMapCard> {
               future: _fetchChatInfo(widget.user.id),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  final chatIfExists =
-                      snapshot.data[0].data() ?? snapshot.data[1].data();
+                  final chatIfExists = snapshot.data[0].data();
                   final chatEntryIfExists = chatIfExists == null
                       ? null
                       : Chat.fromFirestoreObject(chatIfExists);

@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:location_project/repositories/auth_repository.dart';
 import 'package:location_project/repositories/image_repository.dart';
+import 'package:location_project/repositories/user/user_mandatory_info_fetcher.dart';
+import 'package:location_project/repositories/user/user_pictures_fetcher.dart';
 import 'package:location_project/repositories/user_mock_repository.dart';
 import 'package:location_project/stores/routes.dart';
 import 'package:location_project/stores/user_store.dart';
@@ -15,6 +17,8 @@ import 'package:location_project/use_cases/start_path/start_path_step2/start_pat
 import 'package:location_project/use_cases/start_path/widgets/equally_spaced_row.dart';
 import 'package:location_project/use_cases/start_path/widgets/gender_circle_icon.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_mock_repository.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
+import 'package:location_project/utils/toaster/message_toaster.dart';
 import 'package:location_project/widgets/cached_circle_user_image.dart';
 import 'package:location_project/widgets/cupertino_range_slider.dart';
 import 'package:location_project/widgets/textSF.dart';

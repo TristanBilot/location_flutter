@@ -212,14 +212,12 @@ class UserRepository {
 
   Future<User> _fetchUserWithSpecificInfos(
     String id, {
-    DocumentSnapshot fromSnapshot,
+    DocumentSnapshot snapshot,
     bool withBlocks,
     bool withPictures,
     bool withInfos,
     bool withViews,
   }) async {
-    final snapshot =
-        fromSnapshot ?? await _firestore.collection(RootKey).doc(id).get();
     User user = User.public();
 
     UserMandatoryInfo userInfos;
@@ -228,7 +226,9 @@ class UserRepository {
     UserViewsInfo userViews;
 
     if (withInfos) {
-      userInfos = await _mandatoryInfoFetcher.fetch(snapshot);
+      userInfos = snapshot != null
+          ? _mandatoryInfoFetcher.fetchFromSnapshot(snapshot)
+          : await _mandatoryInfoFetcher.fetch(id);
       user.build(infos: userInfos);
     }
     if (withPictures) {
@@ -251,6 +251,10 @@ class UserRepository {
     return user;
   }
 
+  Future<DocumentSnapshot> fetchUserDocumentSnapshot(String id) async {
+    return _firestore.collection(RootKey).doc(id).get();
+  }
+
   /// Return true if the user id exists in the Firestore.
   Future<bool> usersExists(String id) async {
     try {
@@ -263,11 +267,8 @@ class UserRepository {
   }
 
   Stream<UserMandatoryInfo> fetchUserInfoStream(String id) {
-    return _firestore
-        .collection(RootKey)
-        .doc(id)
-        .snapshots()
-        .map((snapshot) => UserMandatoryInfoFetcher().fetch(snapshot));
+    return _firestore.collection(RootKey).doc(id).snapshots().map(
+        (snapshot) => UserMandatoryInfoFetcher().fetchFromSnapshot(snapshot));
   }
 
   Future<void> addView(String id, UserField field, View view) async {

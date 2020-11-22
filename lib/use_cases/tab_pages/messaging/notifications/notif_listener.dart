@@ -30,15 +30,16 @@ Future<dynamic> _handle(Map<String, dynamic> message, BuildContext context) {
   // Do not display toast on some pages.
   if (!UserStore().shouldDisplayMessageNotif) return null;
   final dynamic notification = message[NotifField.notification.value];
-  final String title = notification[NotifField.title.value];
+
   final String text = notification[NotifField.body.value];
+  final String fromID = notification[NotifField.fromID.value];
   final NotifType notifType =
       Notif.fromString(notification[NotifField.type.value]);
-  if (title == null || text == null) return null;
+  if (fromID == null || text == null) return null;
 
   switch (notifType) {
     case NotifType.message:
-      MessageToast(context, title, text).show();
+      MessageToast(context, fromID, text).show();
       break;
     case NotifType.unknown:
       Logger().e('Invalid notif type.');

@@ -1,7 +1,7 @@
 enum NotifField {
   notification,
-  title,
   body,
+  fromID,
 
   data,
   type,
@@ -13,11 +13,6 @@ enum NotifType {
 }
 
 class Notif {
-// final String message;
-
-// Notif.fromJson(dynamic data) {
-//   this
-// }
   static NotifType fromString(String type) {
     switch (type) {
       case 'message':

@@ -76,6 +76,7 @@ exports.sendMessage = functions.firestore
 .onCreate((doc, context) => {
   const msg = doc.data();
   const sentToID = msg.SentTo;
+  const fromID = msg.SentBy;
   const text = msg.Message;
 
   if (!sentToID) {
@@ -95,9 +96,9 @@ exports.sendMessage = functions.firestore
 
     const message = {
       notification: {
-          title: user.FirstName,
           body: text,
           type: 'message',
+          fromID: fromID,
       },
     };
     /// send the push notif   message
