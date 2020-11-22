@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/repositories/user_repository.dart';
-import 'package:location_project/storage/databases/database.dart';
+import 'package:location_project/storage/databases/user_database.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/view.dart';

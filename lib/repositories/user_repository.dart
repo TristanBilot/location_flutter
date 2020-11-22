@@ -11,7 +11,7 @@ import 'package:location_project/repositories/user/user_blocked_info_fetcher.dar
 import 'package:location_project/repositories/user/user_mandatory_info_fetcher.dart';
 import 'package:location_project/repositories/user/user_pictures_fetcher.dart';
 import 'package:location_project/repositories/user/user_views_info.fetcher.dart';
-import 'package:location_project/storage/databases/database.dart';
+import 'package:location_project/storage/databases/user_database.dart';
 import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/storage/memory/location_cache.dart';
 import 'package:location_project/storage/memory/memory_store.dart';
