@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:location_project/conf/routes.dart';
 import 'package:location_project/controllers/init_controller.dart';
 import 'package:location_project/controllers/location_controller.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/repositories/auth_repository.dart';
-import 'package:location_project/repositories/user_local_repository.dart';
-import 'package:location_project/stores/routes.dart';
-import 'package:location_project/stores/start_path_store.dart';
+import 'package:location_project/storage/shared%20preferences/local_store.dart';
+import 'package:location_project/storage/memory/start_path_store.dart';
 
 class LoginController {
   final BuildContext _context;
@@ -36,7 +36,7 @@ class LoginController {
       await InitController().initAfterLogin(loggedID);
       Navigator.of(_context).pushReplacementNamed(Routes.map.value);
     } else {
-      if (UserLocalRepository().isLocationAlreadyAsked())
+      if (LocalStore().isLocationAlreadyAsked())
         Navigator.of(_context).pushReplacementNamed(Routes.map.value);
       else {
         StartPathStore().ignoreUserCreation = true;

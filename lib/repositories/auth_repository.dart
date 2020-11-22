@@ -1,13 +1,13 @@
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
+import 'package:location_project/conf/store.dart';
 import 'package:location_project/controllers/device_id_controller.dart';
 import 'package:location_project/models/user_settings.dart';
-import 'package:location_project/repositories/user_local_repository.dart';
-import 'package:location_project/stores/database.dart';
-import 'package:location_project/stores/messaging_database.dart';
-import 'package:location_project/stores/store.dart';
-import 'package:location_project/stores/user_store.dart';
+import 'package:location_project/storage/shared%20preferences/local_store.dart';
+import 'package:location_project/storage/databases/database.dart';
+import 'package:location_project/storage/databases/messaging_database.dart';
+import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/view.dart';
 import 'dart:convert';
 
@@ -66,9 +66,9 @@ class AuthRepository {
   Future<void> logOut() async {
     UserStore().setConnectedStatus(false);
     await DeviceIDController().forgetDeviceID();
-    await UserLocalRepository().clear();
+    await LocalStore().clear();
     await MessagingDatabase().clear();
-    await Database().clear();
+    await UserDatabase().clear();
     await _facebookLogin.logOut();
   }
 

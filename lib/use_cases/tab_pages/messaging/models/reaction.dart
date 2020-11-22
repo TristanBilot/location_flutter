@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/message.dart';
-import '../../../../stores/extensions.dart';
+import 'package:location_project/conf/extensions.dart';
 
 enum Reaction {
   NoReaction,

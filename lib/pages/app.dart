@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:location_project/conf/routes.dart';
 import 'package:location_project/helpers/messaging_example.dart';
-import 'package:location_project/repositories/user_local_repository.dart';
-import 'package:location_project/stores/user_store.dart';
+import 'package:location_project/storage/shared%20preferences/local_store.dart';
+import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/themes/dark_theme.dart';
 import 'package:location_project/themes/light_theme.dart';
 import 'package:location_project/use_cases/account/account_blocked_users_page.dart';
@@ -15,7 +16,6 @@ import 'package:location_project/generated/l10n.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import '../pages/login_page.dart';
 import 'home_page.dart';
-import '../stores/routes.dart';
 
 class App extends StatefulWidget {
   App({Key key}) : super(key: key);
@@ -43,7 +43,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   /// Also put at true at the beginning of the app (main).
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (!UserLocalRepository().isUserLoggedIn()) return;
+    if (!LocalStore().isUserLoggedIn()) return;
     if (state == AppLifecycleState.resumed)
       UserStore().setConnectedStatus(true);
     if (state == AppLifecycleState.paused)

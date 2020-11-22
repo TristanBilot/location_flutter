@@ -1,8 +1,9 @@
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/adapters/stream_adapter.dart';
-import 'package:location_project/caches/location_cache.dart';
-import 'package:location_project/caches/user_cache.dart';
+import 'package:location_project/conf/conf.dart';
+import 'package:location_project/conf/extensions.dart';
+import 'package:location_project/conf/store.dart';
 import 'package:location_project/helpers/logger.dart';
 import 'package:location_project/models/firestore_user_entry.dart';
 import 'package:location_project/models/user_settings.dart';
@@ -10,15 +11,14 @@ import 'package:location_project/repositories/user/user_blocked_info_fetcher.dar
 import 'package:location_project/repositories/user/user_mandatory_info_fetcher.dart';
 import 'package:location_project/repositories/user/user_pictures_fetcher.dart';
 import 'package:location_project/repositories/user/user_views_info.fetcher.dart';
-import 'package:location_project/stores/database.dart';
-import 'package:location_project/stores/user_store.dart';
+import 'package:location_project/storage/databases/database.dart';
+import 'package:location_project/storage/distant/user_store.dart';
+import 'package:location_project/storage/memory/location_cache.dart';
+import 'package:location_project/storage/memory/memory_store.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/view.dart';
 import 'dart:io';
 import 'image_repository.dart';
 import '../models/user.dart';
-import '../stores/store.dart';
-import '../stores/conf.dart';
-import '../stores/extensions.dart';
 
 class UserRepository {
   static const RootKey = 'locations';
@@ -175,7 +175,7 @@ class UserRepository {
       Logger().e(
           'fetchUser(): useCache and useDatabase should not be used together');
     if (useDatabase) {
-      if (!Database().keyExists(id)) {
+      if (!UserDatabase().keyExists(id)) {
         Logger().w('useDatabase true but user not found in database.');
         return fetchUser(id,
             fromSnapshot: fromSnapshot,
@@ -184,10 +184,10 @@ class UserRepository {
             withInfos: withInfos,
             withViews: withViews);
       }
-      return Database().getUser(id);
+      return UserDatabase().getUser(id);
     }
     if (useCache) {
-      if (!UserCache().userExists(id)) {
+      if (!MemoryStore().userExists(id)) {
         Logger().w('useCache true but user not found in cache.');
         return fetchUser(id,
             fromSnapshot: fromSnapshot,
@@ -196,7 +196,7 @@ class UserRepository {
             withInfos: withInfos,
             withViews: withViews);
       }
-      return UserCache().getUser(id);
+      return MemoryStore().getUser(id);
     }
 
     User user = await _fetchUserWithSpecificInfos(id,
@@ -205,8 +205,8 @@ class UserRepository {
         withPictures: withPictures,
         withViews: withViews);
 
-    // Stores the user fetched from firestore to the Database cache.
-    Database().putUser(user);
+    // Stores the user fetched from firestore to the UserDatabase cache.
+    UserDatabase().putUser(user);
     return user;
   }
 

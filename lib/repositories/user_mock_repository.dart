@@ -1,13 +1,12 @@
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:location_project/conf/store.dart';
 import 'package:location_project/models/firestore_user_entry.dart';
 import 'package:location_project/models/gender.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/models/user_settings.dart';
 import 'package:location_project/repositories/user_repository.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/models/view.dart';
 import 'image_repository.dart';
-import '../stores/store.dart';
 
 class UserMockRepository {
   static const MockAssetPath = 'mock_images/';

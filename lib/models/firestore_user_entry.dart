@@ -2,7 +2,7 @@ import 'package:location_project/adapters/gender_value_adapter.dart';
 import 'package:location_project/models/firestore_entry.dart';
 import 'package:location_project/models/gender.dart';
 import 'package:location_project/models/user.dart';
-import '../stores/extensions.dart';
+import 'package:location_project/conf/extensions.dart';
 
 /// Represents the User data stored in Firestore.
 /// Used to add new users.

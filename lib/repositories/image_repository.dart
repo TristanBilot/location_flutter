@@ -4,10 +4,9 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:location_project/stores/user_store.dart';
+import 'package:location_project/conf/store.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:math';
-import '../stores/store.dart';
 import '../helpers/icon_picker.dart';
 
 class ImageRepository {

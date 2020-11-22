@@ -1,10 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:location_project/caches/user_cache.dart';
 import 'package:location_project/repositories/user_repository.dart';
-import 'package:location_project/stores/messaging_database.dart';
-import 'package:location_project/stores/user_store.dart';
+import 'package:location_project/storage/databases/messaging_database.dart';
+import 'package:location_project/storage/distant/user_store.dart';
+import 'package:location_project/storage/memory/memory_store.dart';
 import 'package:location_project/use_cases/tab_pages/counters/cubit/counter.dart';
 import 'package:location_project/use_cases/tab_pages/filters/chats_filter.dart';
 import 'package:location_project/use_cases/tab_pages/filters/request_filter.dart';
@@ -82,7 +82,7 @@ class CountersCubit extends Cubit<CountersState> {
     if (_previousChats != null)
       for (var chat in filteredChats)
         if (!_previousChats.contains(chat.chatID) &&
-            UserCache().shouldDisplayChatToast)
+            MemoryStore().shouldDisplayChatToast)
           ChatToaster(context, chat, chat.otherParticipantID).show();
     Set<String> newChats = Set();
     filteredChats.forEach((chat) => newChats.add(chat.chatID));
@@ -93,7 +93,7 @@ class CountersCubit extends Cubit<CountersState> {
     if (_previousRequests != null)
       for (var chat in filteredRequests)
         if (!_previousRequests.contains(chat.chatID) &&
-            UserCache().shouldDisplayRequestToast)
+            MemoryStore().shouldDisplayRequestToast)
           RequestToaster(context, chat, chat.otherParticipantID).show();
     Set<String> newRequests = Set();
     filteredRequests.forEach((req) => newRequests.add(req.chatID));
@@ -104,7 +104,7 @@ class CountersCubit extends Cubit<CountersState> {
     if (_previousViews != null)
       for (var view in views)
         if (!_previousViews.contains(view.id) &&
-            UserCache().shouldDisplayViewToast)
+            MemoryStore().shouldDisplayViewToast)
           ViewToaster(context, view.id).show();
     Set<String> newViews = Set();
     views.forEach((view) => newViews.add(view.id));

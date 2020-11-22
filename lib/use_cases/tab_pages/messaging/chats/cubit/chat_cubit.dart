@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:location_project/stores/database.dart';
-import 'package:location_project/stores/user_store.dart';
+import 'package:location_project/storage/databases/database.dart';
+import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_deleting_state.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
@@ -30,7 +30,7 @@ class ChatCubit extends Cubit<ChatState> {
       emit(ChatDeletingState());
       _msgRepository.deleteMessages(chat.chatID);
       _msgRepository.deleteChat(chat.chatID);
-      await Database().deleteUser(chat.requesterID);
+      await UserDatabase().deleteUser(chat.requesterID);
       emit(ChatDeletedState());
     } on Exception {
       emit(ChatError("Couldn't delete chats. Is the device online?"));

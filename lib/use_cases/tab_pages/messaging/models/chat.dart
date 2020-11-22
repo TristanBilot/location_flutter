@@ -1,8 +1,8 @@
 import 'package:location_project/models/firestore_entry.dart';
-import 'package:location_project/stores/user_store.dart';
+import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/message.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
-import '../../../../stores/extensions.dart';
+import 'package:location_project/conf/extensions.dart';
 
 enum ChatField {
   UserIDs,

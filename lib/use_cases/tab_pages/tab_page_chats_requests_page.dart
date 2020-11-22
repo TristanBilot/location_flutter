@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:location_project/caches/user_cache.dart';
-import 'package:location_project/stores/messaging_database.dart';
-import 'package:location_project/stores/user_store.dart';
+import 'package:location_project/storage/databases/messaging_database.dart';
+import 'package:location_project/storage/distant/user_store.dart';
+import 'package:location_project/storage/memory/memory_store.dart';
 import 'package:location_project/use_cases/tab_pages/filters/chats_filter.dart';
 import 'package:location_project/use_cases/tab_pages/filters/filter.dart';
 import 'package:location_project/use_cases/tab_pages/filters/request_filter.dart';
@@ -56,10 +56,10 @@ class _TabPageRequestsPageState extends State<TabPageChatsRequestsPage>
   void _init() {
     if (widget.type == TabPageType.Discussions) {
       _filter = ChatsFilter();
-      UserCache().setDisplayToastValues(false, true, true, false, '');
+      MemoryStore().setDisplayToastValues(false, true, true, false, '');
     } else if (widget.type == TabPageType.Requests) {
       _filter = RequestFilter();
-      UserCache().setDisplayToastValues(true, false, true, true, '');
+      MemoryStore().setDisplayToastValues(true, false, true, true, '');
     }
   }
 

@@ -2,12 +2,12 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:location_project/caches/user_cache.dart';
+import 'package:location_project/conf/routes.dart';
 import 'package:location_project/repositories/auth_repository.dart';
 import 'package:location_project/repositories/image_repository.dart';
 import 'package:location_project/repositories/user_mock_repository.dart';
-import 'package:location_project/stores/routes.dart';
-import 'package:location_project/stores/user_store.dart';
+import 'package:location_project/storage/memory/memory_store.dart';
+import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/use_cases/account/widgets/account_list_tile.dart';
 import 'package:location_project/use_cases/account/widgets/account_log_out_list_tile.dart';
 import 'package:location_project/use_cases/account/widgets/account_section_title.dart';
@@ -56,7 +56,7 @@ class _AccountPageState extends State<AccountPage>
   }
 
   void _init() {
-    UserCache().setDisplayToastValues(true, true, true, true, '');
+    MemoryStore().setDisplayToastValues(true, true, true, true, '');
   }
 
   @override

@@ -1,4 +1,4 @@
-import 'package:location_project/stores/user_store.dart';
+import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/use_cases/tab_pages/filters/filter.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
 

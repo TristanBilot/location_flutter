@@ -2,10 +2,10 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:location_project/caches/user_cache.dart';
 import 'package:location_project/models/user.dart';
-import 'package:location_project/stores/database.dart';
-import 'package:location_project/stores/user_store.dart';
+import 'package:location_project/storage/databases/database.dart';
+import 'package:location_project/storage/distant/user_store.dart';
+import 'package:location_project/storage/memory/memory_store.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messages/cubit/messages_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/cached_circle_user_image_with_active_status.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
@@ -14,7 +14,6 @@ import 'package:location_project/use_cases/tab_pages/messaging/message_sender.da
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/message_tile.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/message_tile_methods.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/messaging_text_field.dart';
 import 'package:location_project/use_cases/start_path/widgets/basic_button.dart';
 import 'package:location_project/widgets/cached_circle_user_image.dart';
@@ -71,7 +70,8 @@ class _MessagePageContentState extends State<MessagePageContent> {
   }
 
   void _init() {
-    UserCache().setDisplayToastValues(true, true, true, false, widget.user.id);
+    MemoryStore()
+        .setDisplayToastValues(true, true, true, false, widget.user.id);
   }
 
   void _fetch() {
@@ -234,7 +234,7 @@ class _MessagePageContentState extends State<MessagePageContent> {
   /// chats page.
   void _onRequestDenied() {
     MessagingReposiory().deleteChat(widget.chat.chatID);
-    Database()
+    UserDatabase()
         .deleteUser(widget.chat.requesterID)
         .then((value) => Navigator.of(context).pop());
   }
@@ -244,7 +244,8 @@ class _MessagePageContentState extends State<MessagePageContent> {
   /// the two participants. Also update the last activity time to be
   /// at the top of messages and set seen to true for the moment.
   Future<void> _onRequestAccepted() async {
-    UserCache().setDisplayToastValues(false, true, true, false, widget.user.id);
+    MemoryStore()
+        .setDisplayToastValues(false, true, true, false, widget.user.id);
     await MessagingReposiory().updateChatEngaged(widget.chat.chatID, true);
     await MessagingReposiory().updateChatLastActivity(
       widget.chat,

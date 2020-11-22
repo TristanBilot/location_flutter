@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/repositories/user_repository.dart';
-import 'package:location_project/stores/user_store.dart';
+import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/view.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/views/cubit/view_deleting_state.dart';
 

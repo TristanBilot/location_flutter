@@ -1,5 +1,5 @@
 import 'package:location_project/models/gender.dart';
-import '../stores/extensions.dart';
+import 'package:location_project/conf/extensions.dart';
 
 class GenderValueAdapter {
   Gender stringToGender(String string) {

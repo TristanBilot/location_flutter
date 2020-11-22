@@ -1,10 +1,10 @@
 import 'package:location_project/adapters/language_adapter.dart';
 import 'package:location_project/use_cases/account/account_language_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../stores/extensions.dart';
+import 'package:location_project/conf/extensions.dart';
 
 /// Singleton class.
-class UserLocalRepository {
+class LocalStore {
   static const LanguageKey = 'language';
   static const ConnectedIDKey = 'connectedId';
   static const LocationAskedKey = 'locationAsked';
@@ -13,15 +13,15 @@ class UserLocalRepository {
 
   SharedPreferences _prefs;
 
-  UserLocalRepository._internal();
-  static final UserLocalRepository _instance = UserLocalRepository._internal();
+  LocalStore._internal();
+  static final LocalStore _instance = LocalStore._internal();
 
-  factory UserLocalRepository() => _instance;
+  factory LocalStore() => _instance;
 
   /// Due to asynchronous calls when instanciating, this
   /// class need to load using await at the beginning
   /// of the app (usualy in the init). Should be called one.
-  static Future<UserLocalRepository> initAsynchronously() async {
+  static Future<LocalStore> initAsynchronously() async {
     await _instance.getSharedPreferencesInstance();
     return _instance;
   }

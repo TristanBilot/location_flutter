@@ -4,7 +4,7 @@ import 'package:location_project/models/user.dart';
 /// The database is used to store locally data
 /// on the physical device. Unlike the store, it is store
 /// in a file and not only in memory.
-class Database {
+class UserDatabase {
   static const UserBox = 'User';
   static const MessagingBox = 'Messaging';
 
@@ -15,9 +15,9 @@ class Database {
     _instance._box = await Hive.openBox(UserBox);
   }
 
-  Database._internal();
-  static final Database _instance = Database._internal();
-  factory Database() => _instance;
+  UserDatabase._internal();
+  static final UserDatabase _instance = UserDatabase._internal();
+  factory UserDatabase() => _instance;
 
   Box _box;
 
@@ -53,8 +53,8 @@ class Database {
   }
 
   // Future<void> manageCache(User user) async {
-  //   if (Database().keyExists(user.id)) {
-  //     final cachedUser = Database().getUser(user.id);
+  //   if (UserDatabase().keyExists(user.id)) {
+  //     final cachedUser = UserDatabase().getUser(user.id);
   //     if (cachedUser.id != user.id) cachedUser.id = user.id;
   //     if (cachedUser.email != user.email) cachedUser.email = user.email;
   //     if (cachedUser.firstName != user.firstName)
@@ -72,6 +72,6 @@ class Database {
   //       cachedUser.settings = user.settings;
   //     cachedUser.save();
   //   } else
-  //     Database().putUser(user);
+  //     UserDatabase().putUser(user);
   // }
 }

@@ -2,7 +2,7 @@ import 'package:hive/hive.dart';
 import 'package:location_project/adapters/gender_value_adapter.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/models/gender.dart';
-import '../stores/extensions.dart';
+import 'package:location_project/conf/extensions.dart';
 
 part 'user_settings.g.dart';
 

@@ -2,8 +2,8 @@ import 'dart:collection';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:location_project/stores/routes.dart';
-import 'package:location_project/stores/start_path_store.dart';
+import 'package:location_project/conf/routes.dart';
+import 'package:location_project/storage/memory/start_path_store.dart';
 import 'package:location_project/use_cases/start_path/gender_circle_icon_factory.dart';
 import 'package:location_project/use_cases/start_path/start_path_step1/start_path_step1.dart';
 import 'package:location_project/use_cases/start_path/widgets/basic_button.dart';

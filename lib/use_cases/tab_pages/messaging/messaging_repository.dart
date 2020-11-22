@@ -6,7 +6,7 @@ import 'package:location_project/helpers/logger.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/message.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/reaction.dart';
-import '../../../stores/extensions.dart';
+import 'package:location_project/conf/extensions.dart';
 
 class MessagingReposiory {
   static const RootKey = 'messages';

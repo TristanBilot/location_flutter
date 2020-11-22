@@ -1,9 +1,9 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:location_project/caches/user_cache.dart';
 import 'package:location_project/helpers/logger.dart';
+import 'package:location_project/storage/memory/memory_store.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif.dart';
-import '../../../../stores/extensions.dart';
+import 'package:location_project/conf/extensions.dart';
 
 final _firebaseMessaging = FirebaseMessaging();
 
@@ -28,7 +28,7 @@ Future<dynamic> _handle(Map<String, dynamic> message, BuildContext context) {
   }
   Logger().i('Message received');
   // Do not display toast on some pages.
-  if (!UserCache().shouldDisplayMessageToast) return null;
+  if (!MemoryStore().shouldDisplayMessageToast) return null;
   final dynamic notification = message[NotifField.notification.value];
 
   final String text = notification[NotifField.body.value];

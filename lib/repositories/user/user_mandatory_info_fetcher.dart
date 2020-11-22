@@ -1,15 +1,15 @@
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:location_project/caches/location_cache.dart';
 import 'package:location_project/adapters/gender_value_adapter.dart';
+import 'package:location_project/conf/conf.dart';
+import 'package:location_project/conf/store.dart';
 import 'package:location_project/models/gender.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/models/user_settings.dart';
 import 'package:location_project/repositories/user/time_measurable.dart';
 import 'package:location_project/repositories/user_repository.dart';
-import 'package:location_project/stores/conf.dart';
-import 'package:location_project/stores/store.dart';
-import '../../stores/extensions.dart';
+import 'package:location_project/storage/memory/location_cache.dart';
+import 'package:location_project/conf/extensions.dart';
 
 class UserMandatoryInfo implements TimeMeasurable {
   int timeToFetch;

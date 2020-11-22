@@ -1,13 +1,13 @@
 import 'dart:collection';
 
-import '../models/user.dart';
+import '../../models/user.dart';
 
 /// Cache used to store the area users and memory-only data.
 /// Logged user is managed by `UserStore`.
-class UserCache {
-  UserCache._internal();
-  static final UserCache _instance = UserCache._internal();
-  factory UserCache() => _instance;
+class MemoryStore {
+  MemoryStore._internal();
+  static final MemoryStore _instance = MemoryStore._internal();
+  factory MemoryStore() => _instance;
 
   /* 
   * functions used to cache the fetched users

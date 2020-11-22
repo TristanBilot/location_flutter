@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:location_project/models/user.dart';
-import 'package:location_project/repositories/user_local_repository.dart';
+import 'package:location_project/storage/shared%20preferences/local_store.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/use_cases/account/account_language_page.dart';
 import 'package:location_project/models/gender.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/view.dart';
-import '../stores/extensions.dart';
+import 'package:location_project/conf/extensions.dart';
 
 /// Manage all the data of the logged user.
 /// Mainly the update of local and distant data
@@ -21,7 +21,7 @@ class UserStore extends ChangeNotifier {
 
   /* repositories to get and set data */
   UserRepository _repo = UserRepository();
-  UserLocalRepository _localRepo = UserLocalRepository();
+  LocalStore _localRepo = LocalStore();
 
   UserStore._internal();
   static final UserStore _instance = UserStore._internal();

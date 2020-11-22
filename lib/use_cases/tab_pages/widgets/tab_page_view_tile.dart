@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/repositories/user_repository.dart';
-import 'package:location_project/stores/database.dart';
+import 'package:location_project/storage/databases/database.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:location_project/stores/user_store.dart';
-import 'package:location_project/themes/light_theme.dart';
+import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/view.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/views/cubit/view_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/cached_circle_user_image_with_active_status.dart';
@@ -31,7 +30,8 @@ class TabPageViewTile extends StatefulWidget {
 class _TabPageViewTileState extends State<TabPageViewTile> {
   Future<User> _fetchUser() async {
     final id = widget.view.id;
-    bool useDatabase = !widget.shouldRefreshCache && Database().keyExists(id);
+    bool useDatabase =
+        !widget.shouldRefreshCache && UserDatabase().keyExists(id);
     return await UserRepository()
         .fetchUser(id, useDatabase: useDatabase, withBlocks: false);
   }

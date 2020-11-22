@@ -3,9 +3,9 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart' as locator;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location_project/repositories/user_local_repository.dart';
+import 'package:location_project/storage/memory/location_cache.dart';
+import 'package:location_project/storage/shared%20preferences/local_store.dart';
 import 'package:permission_handler/permission_handler.dart' as handler;
-import '../caches/location_cache.dart';
 import '../repositories/user_repository.dart';
 
 /// Singleton class.
@@ -23,7 +23,7 @@ class LocationController {
   Future enableLocation() async {
     await _enableService();
     await _grant();
-    UserLocalRepository().setLocationAsked(true);
+    LocalStore().setLocationAsked(true);
   }
 
   PermissionStatus get permissionStatus => _permissionGranted;

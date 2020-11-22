@@ -1,6 +1,6 @@
 import 'package:location_project/models/firestore_entry.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/reaction.dart';
-import '../../../../stores/extensions.dart';
+import 'package:location_project/conf/extensions.dart';
 
 enum MessageField {
   Message,

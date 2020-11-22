@@ -1,17 +1,17 @@
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:location_project/caches/location_cache.dart';
 import 'package:location_project/adapters/gender_value_adapter.dart';
+import 'package:location_project/conf/conf.dart';
+import 'package:location_project/conf/store.dart';
 import 'package:location_project/helpers/logger.dart';
 import 'package:location_project/repositories/user_repository.dart';
-import 'package:location_project/stores/user_store.dart';
+import 'package:location_project/storage/distant/user_store.dart';
+import 'package:location_project/storage/memory/location_cache.dart';
+import 'package:location_project/storage/memory/memory_store.dart';
+import 'package:location_project/conf/extensions.dart';
 import 'dart:async';
 import 'image_repository.dart';
 import '../models/user.dart';
-import '../stores/store.dart';
-import '../caches/user_cache.dart';
-import '../stores/conf.dart';
-import '../stores/extensions.dart';
 
 class AreaFetchingRepository {
   Geoflutterfire _geo;
@@ -69,7 +69,7 @@ class AreaFetchingRepository {
           newUser.coord =
               List<double>.from([geoPoint.latitude, geoPoint.longitude]);
 
-          UserCache().putUser(newUser);
+          MemoryStore().putUser(newUser);
           usersList.add(newUser);
           print(
               '=> in area: ${newUser.email} at ${newUser.distance} meters (cached).');

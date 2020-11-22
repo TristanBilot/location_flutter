@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import 'package:location_project/caches/location_cache.dart';
+import 'package:location_project/conf/conf.dart';
+import 'package:location_project/conf/store.dart';
 import 'package:location_project/controllers/location_controller.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/repositories/area_fetching_repository.dart';
 import 'package:location_project/repositories/user_repository.dart';
-import 'package:location_project/stores/user_store.dart';
+import 'package:location_project/storage/distant/user_store.dart';
+import 'package:location_project/storage/memory/location_cache.dart';
 import 'package:location_project/widgets/user_map_card.dart';
 
-import '../stores/conf.dart';
-import '../stores/store.dart';
 import 'user_marker.dart';
 
 class Map extends StatefulWidget {
