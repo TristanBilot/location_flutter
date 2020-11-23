@@ -6,25 +6,24 @@ import 'package:location_project/use_cases/tab_pages/messaging/messaging_reposit
 import 'package:location_project/use_cases/tab_pages/messaging/models/reaction.dart';
 
 class MessagingMockRepository {
-  final id1 = 'bilot.tristan@hotmail.fr';
-  final id2 = 'damien.duprat@hotmail.fr';
-  final id3 = 'alexandre.roume@hotmail.fr';
-  final id4 = 'bilot.tristan.carrieres@hotmail.fr';
-  final id5 = 'damien.duprat.carrieres@hotmail.fr';
-  final id6 = 'alexandre.roume.carrieres@hotmail.fr';
-
-  final id1Name = 'Tristan';
-  final id2Name = 'Damien';
-  final id3Name = 'Alexandre';
+  final id1 = {'id': 'bilot.tristan@hotmail.fr', 'name': 'Tristan'};
+  final id2 = {'id': 'damien.duprat@hotmail.fr', 'name': 'Damien'};
+  final id3 = {'id': 'alexandre.roume@hotmail.fr', 'name': 'Alexandre'};
+  final id4 = {'id': 'bilot.tristan.carrieres@hotmail.fr', 'name': 'Tristan'};
+  final id5 = {'id': 'damien.duprat.carrieres@hotmail.fr', 'name': 'Damien'};
+  final id6 = {
+    'id': 'alexandre.roume.carrieres@hotmail.fr',
+    'name': 'Alexandre'
+  };
 
   Future<void> insertChatMock() async {
-    _insertChatMock(id1, id2, id1Name, id2Name, true);
-    _insertChatMock(id1, id2, id1Name, id2Name, true);
-    _insertChatMock(id1, id3, id1Name, id3Name, true);
+    _insertChatMock(id1, id2, true);
+    _insertChatMock(id1, id2, true);
+    _insertChatMock(id1, id3, true);
 
-    _insertChatMock(id1, id4, id1Name, id1Name, true);
-    _insertChatMock(id1, id5, id1Name, id2Name, true);
-    _insertChatMock(id1, id6, id1Name, id3Name, true);
+    _insertChatMock(id1, id4, true);
+    _insertChatMock(id1, id5, true);
+    _insertChatMock(id1, id6, true);
   }
 
   Future<void> insertMessageMock() async {
@@ -35,20 +34,18 @@ class MessagingMockRepository {
 
   /// Insert a mock chat in the Firestore.
   Future<void> _insertChatMock(
-    String id1,
-    String id2,
-    String id1Name,
-    String id2Name,
+    dynamic id1,
+    dynamic id2,
     bool engaged,
   ) async {
     final chatID = MessagingReposiory.getChatID(id1, id2);
     // await MessagingReposiory().deleteChat(chatID);
     final rd = Random().nextBool();
     final entry = Chat.newChatEntry(
-      rd ? id1 : id2,
-      rd ? id2 : id1,
-      rd ? id1Name : id2Name,
-      rd ? id2Name : id1Name,
+      rd ? id1.id : id2.id,
+      rd ? id2.id : id1.id,
+      rd ? id1.name : id2.name,
+      rd ? id2.name : id1.name,
       engaged,
       !engaged,
       false,
@@ -59,21 +56,22 @@ class MessagingMockRepository {
 
   /// Insert a mock message in the Firestore.
   Future<void> _insertMessageMock(
-    String id1,
-    String id2,
+    dynamic id1,
+    dynamic id2,
     String message,
   ) async {
     final chatID = MessagingReposiory.getChatID(id1, id2);
     await MessagingReposiory().deleteMessages(chatID);
-    String sentBy = Random().nextBool() == true ? id1 : id2;
-    String sentTo = sentBy == id1 ? id2 : id1;
+    final sentBy = Random().nextBool() == true ? id1 : id2;
+    final sentTo = sentBy == id1 ? id2 : id1;
     final entry = Message(
       message,
-      sentBy,
-      sentTo,
+      sentBy.id,
+      sentTo.id,
       Message.Time,
       false,
       Reaction.NoReaction,
+      sentBy.name,
     );
     MessagingReposiory().newMessage(chatID, entry);
     print('message successfully inserted to Firestore.');

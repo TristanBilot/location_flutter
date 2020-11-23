@@ -78,6 +78,7 @@ exports.sendMessage = functions.firestore
   const sentToID = msg.SentTo;
   const fromID = msg.SentBy;
   const body = msg.Message;
+  const firstName = msg.SentByFirstName;
 
   if (!sentToID) {
     console.log('error: sentToID is null.');
@@ -102,10 +103,17 @@ exports.sendMessage = functions.firestore
 
     const message = {
       notification: {
+          title: firstName,
+          // badge: '2',
+          sound: 'default',
           body: body,
           type: 'message',
           fromID: fromID,
+          priority: '10'
       },
+      data: {
+        click_action: 'FLUTTER_NOTIFICATION_CLICK'
+      }
     };
     /// send the push notif   message
     admin.messaging().sendToDevice(deviceTokens, message, {

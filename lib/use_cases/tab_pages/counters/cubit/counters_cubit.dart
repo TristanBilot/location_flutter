@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:location_project/controllers/app_badge_controller.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/storage/databases/messaging_database.dart';
 import 'package:location_project/storage/distant/user_store.dart';
@@ -49,10 +50,11 @@ class CountersCubit extends Cubit<CountersState> {
       MessagingDatabase().put(nbRequests: nbRequests);
       MessagingDatabase().put(nbUnreadChats: nbUnreadChats);
       MessagingDatabase().put(nbUnreadRequests: nbUnreadRequests);
-      _emitCounters();
 
       _triggerChatToaster(filteredChats);
       _triggerRequestToaster(filteredRequests);
+
+      _emitCounters();
     });
 
     /// Listens to new views.
@@ -61,9 +63,10 @@ class CountersCubit extends Cubit<CountersState> {
       int nbUnreadViews = views.where((view) => !view.isViewed).length;
       MessagingDatabase().put(nbViews: nbViews);
       MessagingDatabase().put(nbUnreadViews: nbUnreadViews);
-      _emitCounters();
 
       _triggerViewToaster(views);
+
+      _emitCounters();
     });
   }
 
@@ -76,6 +79,7 @@ class CountersCubit extends Cubit<CountersState> {
       _database.get(nbUnreadRequests: true),
       _database.get(nbUnreadViews: true),
     )));
+    AppBadgeController().updateAppBadge();
   }
 
   void _triggerChatToaster(List<Chat> filteredChats) {

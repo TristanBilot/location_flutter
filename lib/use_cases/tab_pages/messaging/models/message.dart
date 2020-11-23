@@ -9,6 +9,7 @@ enum MessageField {
   Time,
   IsViewed,
   Reaction,
+  SentByFirstName,
 }
 
 class Message implements FirestoreEntry {
@@ -18,6 +19,7 @@ class Message implements FirestoreEntry {
   final int time;
   final bool isViewed;
   final Reaction reaction;
+  final String sentByFirstName;
 
   static get Time => DateTime.now().microsecondsSinceEpoch;
 
@@ -28,6 +30,7 @@ class Message implements FirestoreEntry {
     this.time,
     this.isViewed,
     this.reaction,
+    this.sentByFirstName,
   );
 
   @override
@@ -44,6 +47,7 @@ class Message implements FirestoreEntry {
       MessageField.Time.value: time,
       MessageField.IsViewed.value: isViewed,
       MessageField.Reaction.value: reaction.value,
+      MessageField.SentByFirstName.value: sentByFirstName,
     };
   }
 
@@ -55,6 +59,7 @@ class Message implements FirestoreEntry {
       data[MessageField.Time.value],
       data[MessageField.IsViewed.value],
       ReactionExtension.fromString(data[MessageField.Reaction.value]),
+      data[MessageField.SentByFirstName.value],
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:location_project/controllers/app_badge_controller.dart';
 import 'package:location_project/controllers/location_controller.dart';
 import 'package:location_project/pages/map_page.dart';
 import 'package:location_project/pages/messaging_tabs_page.dart';
@@ -73,6 +74,7 @@ class _HomePageContainerState extends State<HomePageContainer>
       LocationController().handleLocationIfNeeded().then((value) {
         setState(() {});
         print('come back to foreground');
+        AppBadgeController().updateAppBadge();
       });
     }
   }

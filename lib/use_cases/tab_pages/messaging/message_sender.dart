@@ -12,8 +12,9 @@ class MessageSender {
     final sentBy = UserStore().user.id;
     final sentTo = chat.otherParticipantID;
     final time = Message.Time;
-    final entry =
-        Message(message, sentBy, sentTo, time, false, Reaction.NoReaction);
+    final sentByFirstName = UserStore().user.firstName;
+    final entry = Message(message, sentBy, sentTo, time, false,
+        Reaction.NoReaction, sentByFirstName);
 
     MessagingReposiory().newMessage(chat.chatID, entry);
     MessagingReposiory().updateChatLastActivity(chat,

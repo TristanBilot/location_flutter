@@ -22,6 +22,7 @@ void listenToNotifications(BuildContext context) {
 }
 
 Future<dynamic> _handle(Map<String, dynamic> message, BuildContext context) {
+  return null;
   if (!message.containsKey(NotifField.notification.value)) {
     Logger().w('Notif handled but invalid format.');
     return null;
