@@ -77,7 +77,7 @@ exports.sendMessage = functions.firestore
   const msg = doc.data();
   const sentToID = msg.SentTo;
   const fromID = msg.SentBy;
-  const text = msg.Message;
+  const body = msg.Message;
 
   if (!sentToID) {
     console.log('error: sentToID is null.');
@@ -87,16 +87,22 @@ exports.sendMessage = functions.firestore
   admin.firestore().doc('/locations/' + sentToID).get().then((snapshot) => {
     const user = snapshot.data();
     const deviceTokens = user.DeviceTokens;
+    const notifSettings = user.NotificationSettings;
 
-    if (!deviceTokens) {
-      console.log('error: user device tokens null.');
+    if (!deviceTokens || !notifSettings) {
+      console.log('error: user device tokens or notif settings null.');
       return;
     }
-    console.log('tokens: ' + deviceTokens);
+    console.log(body);
+    const shouldSendMessage = !!notifSettings['Messages'];
+    if (!shouldSendMessage) {
+      console.log('Not sent because of disabled notifications settings');
+      return;
+    }
 
     const message = {
       notification: {
-          body: text,
+          body: body,
           type: 'message',
           fromID: fromID,
       },
