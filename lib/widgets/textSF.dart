@@ -30,7 +30,7 @@ class TextSF extends StatelessWidget {
   final FontWeight fontWeight;
   final bool isTitle;
   final double letterSpacing;
-  // final String fontFamily;
+  final TextOverflow overflow;
   final Color color;
 
   TextSF(
@@ -40,21 +40,19 @@ class TextSF extends StatelessWidget {
     this.fontWeight = Weight,
     this.isTitle = false,
     this.letterSpacing = LetterSpacing,
-    // this.fontFamily = FontFamily,
+    this.overflow,
     this.color,
     TextStyle style = const TextStyle(),
   }) : style = isTitle
             ? style.copyWith(
                 fontWeight: TitleWeight,
                 fontSize: TitleSize,
-                // fontFamily: fontFamily,
                 letterSpacing: letterSpacing,
                 color: color,
               )
             : style.copyWith(
                 fontWeight: fontWeight,
                 fontSize: fontSize,
-                // fontFamily: fontFamily,
                 letterSpacing: letterSpacing,
                 color: color);
 
@@ -64,6 +62,7 @@ class TextSF extends StatelessWidget {
       text,
       textAlign: align,
       style: style,
+      overflow: overflow,
     );
   }
 }

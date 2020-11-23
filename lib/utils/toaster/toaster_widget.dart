@@ -42,7 +42,7 @@ class ToasterWidget extends StatelessWidget {
   void show() {
     fToast.showToast(
         child: this,
-        toastDuration: Duration(seconds: 2),
+        toastDuration: Duration(milliseconds: 2500),
         positionedToastBuilder: (context, child) {
           return Positioned(
             child: child,
@@ -68,23 +68,26 @@ class ToasterWidget extends StatelessWidget {
           color: DarkTheme.BackgroundDarkColor.withOpacity(0.92),
         ),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(8, 50, 8, 10),
+          padding: const EdgeInsets.fromLTRB(25, 50, 25, 10),
           child: Row(
             children: [
-              SizedBox(width: 20),
+              // SizedBox(width: 20),
               CachedCircleUserImage(user.pictureURL,
                   size: 40, borderColor: Colors.transparent),
               SizedBox(width: 20),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextSF(user.firstName, color: Colors.white, fontSize: 15),
-                  SizedBox(height: 5),
-                  TextSF(message,
-                      color: Colors.white,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w400),
-                ],
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextSF(user.firstName, color: Colors.white, fontSize: 15),
+                    SizedBox(height: 5),
+                    TextSF(message,
+                        color: Colors.white,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w400,
+                        overflow: TextOverflow.ellipsis),
+                  ],
+                ),
               ),
             ],
           ),
