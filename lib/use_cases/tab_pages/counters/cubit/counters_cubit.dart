@@ -82,7 +82,9 @@ class CountersCubit extends Cubit<CountersState> {
     if (_previousChats != null)
       for (var chat in filteredChats)
         if (!_previousChats.contains(chat.chatID) &&
-            MemoryStore().shouldDisplayChatToast)
+            MemoryStore().shouldDisplayChatToast &&
+            UserStore().user.isChatNotifEnable &&
+            !chat.iAmRequester)
           ChatToaster(context, chat, chat.otherParticipantID).show();
     Set<String> newChats = Set();
     filteredChats.forEach((chat) => newChats.add(chat.chatID));
@@ -93,7 +95,9 @@ class CountersCubit extends Cubit<CountersState> {
     if (_previousRequests != null)
       for (var chat in filteredRequests)
         if (!_previousRequests.contains(chat.chatID) &&
-            MemoryStore().shouldDisplayRequestToast)
+            MemoryStore().shouldDisplayRequestToast &&
+            UserStore().user.isRequestNotifEnable &&
+            !chat.iAmRequester)
           RequestToaster(context, chat, chat.otherParticipantID).show();
     Set<String> newRequests = Set();
     filteredRequests.forEach((req) => newRequests.add(req.chatID));
@@ -104,7 +108,8 @@ class CountersCubit extends Cubit<CountersState> {
     if (_previousViews != null)
       for (var view in views)
         if (!_previousViews.contains(view.id) &&
-            MemoryStore().shouldDisplayViewToast)
+            MemoryStore().shouldDisplayViewToast &&
+            UserStore().user.isViewNotifEnable)
           ViewToaster(context, view.id).show();
     Set<String> newViews = Set();
     views.forEach((view) => newViews.add(view.id));

@@ -91,6 +91,15 @@ class User extends HiveObject {
   bool getNotifSett(NofifSettingsField key) =>
       settings.notificationSettings[key.value];
 
+  bool get isMessageNotifEnable =>
+      settings.notificationSettings[NofifSettingsField.Messages.value];
+  bool get isChatNotifEnable =>
+      settings.notificationSettings[NofifSettingsField.Chats.value];
+  bool get isRequestNotifEnable =>
+      settings.notificationSettings[NofifSettingsField.Requests.value];
+  bool get isViewNotifEnable =>
+      settings.notificationSettings[NofifSettingsField.Views.value];
+
   User build({
     UserMandatoryInfo infos,
     UserPicturesInfo pictures,
