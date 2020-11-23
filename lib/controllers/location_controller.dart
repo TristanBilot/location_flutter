@@ -4,7 +4,7 @@ import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart' as locator;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location_project/storage/memory/location_cache.dart';
-import 'package:location_project/storage/shared%20preferences/local_store.dart';
+import 'package:location_project/storage/shared preferences/local_store.dart';
 import 'package:permission_handler/permission_handler.dart' as handler;
 import '../repositories/user_repository.dart';
 

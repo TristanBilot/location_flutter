@@ -7,6 +7,7 @@ import 'package:location_project/themes/dark_theme.dart';
 import 'package:location_project/themes/light_theme.dart';
 import 'package:location_project/use_cases/account/account_blocked_users_page.dart';
 import 'package:location_project/use_cases/account/account_language_page.dart';
+import 'package:location_project/use_cases/account/account_notifications.dart';
 import 'package:location_project/use_cases/account/account_page.dart';
 import 'package:location_project/use_cases/start_path/start_path_step1/start_path_step1.dart';
 import 'package:location_project/use_cases/start_path/start_path_step2/start_path_step2.dart';
@@ -72,6 +73,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
         Routes.account.value: (context) => AccountPage(),
         Routes.languages.value: (context) => AccountLanguagePage(),
         Routes.blockedUsers.value: (context) => AccountBlockedUsersPage(),
+        Routes.notifications.value: (context) => AccountNotificationsPage(),
         Routes.startPathStep1.value: (context) => StartPathStep1(),
         Routes.startPathStep2.value: (context) => StartPathStep2(),
         Routes.startPathStep3.value: (context) => StartPathStep3(),

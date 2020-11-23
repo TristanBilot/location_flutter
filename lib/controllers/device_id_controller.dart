@@ -1,4 +1,4 @@
-import 'package:location_project/storage/shared%20preferences/local_store.dart';
+import 'package:location_project/storage/shared preferences/local_store.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/notifications/device_id_fetcher.dart';
 

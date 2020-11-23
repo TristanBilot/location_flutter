@@ -4,6 +4,7 @@ import 'package:location_project/adapters/stream_adapter.dart';
 import 'package:location_project/conf/conf.dart';
 import 'package:location_project/conf/extensions.dart';
 import 'package:location_project/conf/store.dart';
+import 'package:location_project/generated/l10n.dart';
 import 'package:location_project/helpers/logger.dart';
 import 'package:location_project/models/firestore_user_entry.dart';
 import 'package:location_project/models/user_settings.dart';
@@ -53,14 +54,15 @@ class UserRepository {
         ? Store.parisGeoPosition
         : LocationCache().locationGeoPoint;
     await _firestore.collection(RootKey).doc(user.id).set(FirestoreUserEntry(
-            user.firstName,
-            user.lastName,
-            user.gender,
-            user.age,
-            geoPoint,
-            UserSettings.DefaultUserSettings,
-            user.deviceTokens)
-        .toFirestoreObject());
+          user.firstName,
+          user.lastName,
+          user.gender,
+          user.age,
+          geoPoint,
+          UserSettings.DefaultUserSettings,
+          user.deviceTokens,
+          UserSettings.DefaultNotificationSettings,
+        ).toFirestoreObject());
     File userPicture = await _imageRepo.urlToFile(user.pictureURL);
     return await _imageRepo.uploadFile(
         userPicture, user.id + Store.defaultProfilePictureExtension);
@@ -350,5 +352,32 @@ class UserRepository {
       for (DocumentSnapshot doc in snapshot.docs) userIDsToUpdate.add(doc.id);
     });
     userIDsToUpdate.forEach((id) => removeDeviceID(id, deviceID));
+  }
+
+  Future<void> updateNotificationSettings(
+    String id, {
+    bool messages,
+    bool chats,
+    bool requests,
+    bool views,
+  }) async {
+    if (messages == null && chats == null && requests == null && views == null)
+      return;
+    String key = '${UserField.NotificationSettings.value}.';
+    bool value;
+    if (messages != null) {
+      key += NofifSettingsField.Messages.value;
+      value = messages;
+    } else if (chats != null) {
+      key += NofifSettingsField.Chats.value;
+      value = chats;
+    } else if (requests != null) {
+      key += NofifSettingsField.Requests.value;
+      value = requests;
+    } else if (views != null) {
+      key += NofifSettingsField.Views.value;
+      value = views;
+    }
+    _firestore.collection(RootKey).doc(id).update({key: value});
   }
 }

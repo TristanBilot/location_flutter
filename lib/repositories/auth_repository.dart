@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:location_project/conf/store.dart';
 import 'package:location_project/controllers/device_id_controller.dart';
 import 'package:location_project/models/user_settings.dart';
-import 'package:location_project/storage/shared%20preferences/local_store.dart';
+import 'package:location_project/storage/shared preferences/local_store.dart';
 import 'package:location_project/storage/databases/user_database.dart';
 import 'package:location_project/storage/databases/messaging_database.dart';
 import 'package:location_project/storage/distant/user_store.dart';

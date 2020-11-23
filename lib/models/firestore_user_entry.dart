@@ -18,6 +18,7 @@ class FirestoreUserEntry implements FirestoreEntry {
   final List<int> wantedAgeRange;
   final List<String> wantedGenders;
   final List<String> devicesTokens;
+  final Map<String, bool> notificationSettings;
 
   @override
   bool get stringify => null;
@@ -45,6 +46,7 @@ class FirestoreUserEntry implements FirestoreEntry {
     geoPoint,
     settings,
     this.devicesTokens,
+    this.notificationSettings,
   )   : this.gender = gender.value,
         this.geoPointData = geoPoint.data,
         this.showMyDistance = settings.showMyDistance,
@@ -67,6 +69,7 @@ class FirestoreUserEntry implements FirestoreEntry {
       UserField.WantedAgeRange.value: wantedAgeRange,
       UserField.WantedGenders.value: wantedGenders,
       UserField.DeviceTokens.value: devicesTokens,
+      UserField.NotificationSettings.value: notificationSettings,
     };
   }
 }

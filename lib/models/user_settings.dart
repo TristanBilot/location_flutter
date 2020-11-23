@@ -6,6 +6,13 @@ import 'package:location_project/conf/extensions.dart';
 
 part 'user_settings.g.dart';
 
+enum NofifSettingsField {
+  Messages,
+  Chats,
+  Requests,
+  Views,
+}
+
 @HiveType(typeId: 1)
 class UserSettings {
   UserSettings.defaultConstructor();
@@ -20,6 +27,7 @@ class UserSettings {
   bool showMyDistance;
   @HiveField(4)
   bool connected;
+  Map<String, bool> notificationSettings;
 
   UserSettings(
     this.wantedAgeRange,
@@ -27,15 +35,17 @@ class UserSettings {
     this.showMyprofile,
     this.showMyDistance,
     this.connected,
+    this.notificationSettings,
   );
 
-  static get DefaultUserSettings => UserSettings(
-        DefaultWantedAgeRange,
-        DefaultWantedGenders,
-        DefaultShowMyProfile,
-        DefaultShowMyDistance,
-        DefaultConnected,
-      );
+  static final DefaultUserSettings = UserSettings(
+    DefaultWantedAgeRange,
+    DefaultWantedGenders,
+    DefaultShowMyProfile,
+    DefaultShowMyDistance,
+    DefaultConnected,
+    DefaultNotificationSettings,
+  );
 
   static const bool DefaultShowMyProfile = true;
   static const bool DefaultShowMyDistance = true;
@@ -46,6 +56,12 @@ class UserSettings {
     Gender.Female,
     Gender.Male
   ];
+  static final Map<String, bool> DefaultNotificationSettings = {
+    NofifSettingsField.Messages.value: true,
+    NofifSettingsField.Chats.value: true,
+    NofifSettingsField.Requests.value: true,
+    NofifSettingsField.Views.value: true,
+  };
 
   static UserSettings fromFirestoreObject(dynamic data) {
     final wantedAgeRange = List<int>.from(data[UserField.WantedAgeRange.value]);
@@ -55,6 +71,9 @@ class UserSettings {
     final showMyProfile = data[UserField.ShowMyProfile.value] as bool;
     final showMyDistance = data[UserField.ShowMyDistance.value] as bool;
     final connected = data[UserField.Connected.value] as bool;
+    final notificationSettings =
+        (data[UserField.NotificationSettings.value] as Map)
+            ?.cast<String, bool>();
 
     return UserSettings(
       wantedAgeRange,
@@ -62,6 +81,7 @@ class UserSettings {
       showMyProfile,
       showMyDistance,
       connected,
+      notificationSettings,
     );
   }
 }

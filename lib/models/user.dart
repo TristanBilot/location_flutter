@@ -7,10 +7,12 @@ import 'package:location_project/repositories/user/user_pictures_fetcher.dart';
 import 'package:location_project/repositories/user/user_views_info.fetcher.dart';
 import 'package:location_project/models/gender.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/view.dart';
+import 'package:location_project/conf/extensions.dart';
 
 part 'user.g.dart';
 
 enum UserField {
+  // Root fields
   FirstName,
   LastName,
   Position,
@@ -18,11 +20,15 @@ enum UserField {
   Gender,
   DeviceTokens,
 
+  // Settings
   WantedGenders,
   WantedAgeRange,
   ShowMyProfile,
   ShowMyDistance,
   Connected,
+  NotificationSettings,
+
+  // Collections
   BlockedUserIDs,
   UserIDsWhoBlockedMe,
   ViewedUserIDs,
@@ -60,7 +66,6 @@ class User extends HiveObject {
   List<View> viewedUserIDs;
   List<View> userIDsWhoWiewedMe;
 
-  User._();
   User.public();
 
   User(
@@ -82,6 +87,9 @@ class User extends HiveObject {
   ) {
     this.id = email;
   }
+
+  bool getNotifSett(NofifSettingsField key) =>
+      settings.notificationSettings[key.value];
 
   User build({
     UserMandatoryInfo infos,

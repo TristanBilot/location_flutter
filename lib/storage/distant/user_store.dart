@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:location_project/models/user.dart';
-import 'package:location_project/storage/shared%20preferences/local_store.dart';
+import 'package:location_project/storage/shared preferences/local_store.dart';
+import 'package:location_project/models/user_settings.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/use_cases/account/account_language_page.dart';
 import 'package:location_project/models/gender.dart';
@@ -142,6 +143,36 @@ class UserStore extends ChangeNotifier {
         _user.id, UserField.ViewedUserIDs, viewedID);
     await _repo.deleteCollectionSnapshot(
         viewedID, UserField.UserIDsWhoWiewedMe, _user.id);
+    notifyListeners();
+  }
+
+  Future<void> toggleNotificationSettings(NofifSettingsField field) async {
+    var messages = NofifSettingsField.Messages.value;
+    var chats = NofifSettingsField.Chats.value;
+    var requests = NofifSettingsField.Requests.value;
+    var views = NofifSettingsField.Views.value;
+    switch (field) {
+      case NofifSettingsField.Messages:
+        var toggle = !_user.settings.notificationSettings[messages];
+        _user.settings.notificationSettings[messages] = toggle;
+        _repo.updateNotificationSettings(_user.id, messages: toggle);
+        break;
+      case NofifSettingsField.Chats:
+        var toggle = !_user.settings.notificationSettings[chats];
+        _user.settings.notificationSettings[chats] = toggle;
+        _repo.updateNotificationSettings(_user.id, chats: toggle);
+        break;
+      case NofifSettingsField.Requests:
+        var toggle = !_user.settings.notificationSettings[requests];
+        _user.settings.notificationSettings[requests] = toggle;
+        _repo.updateNotificationSettings(_user.id, requests: toggle);
+        break;
+      case NofifSettingsField.Views:
+        var toggle = !_user.settings.notificationSettings[views];
+        _user.settings.notificationSettings[views] = toggle;
+        _repo.updateNotificationSettings(_user.id, views: toggle);
+        break;
+    }
     notifyListeners();
   }
 }

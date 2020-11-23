@@ -22,6 +22,7 @@ class UserSettingsAdapter extends TypeAdapter<UserSettings> {
       fields[2] as bool,
       fields[3] as bool,
       fields[4] as bool,
+      Map<String, bool>(), // WARNING
     );
   }
 

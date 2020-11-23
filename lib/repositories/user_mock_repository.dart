@@ -67,6 +67,7 @@ class UserMockRepository {
           geoPoint,
           UserSettings.DefaultUserSettings,
           [],
+          UserSettings.DefaultNotificationSettings,
         ).toFirestoreObject());
     final ext = Store.defaultProfilePictureExtension;
     final assetImage = await ImageRepository()

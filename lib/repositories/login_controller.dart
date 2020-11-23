@@ -4,7 +4,7 @@ import 'package:location_project/controllers/init_controller.dart';
 import 'package:location_project/controllers/location_controller.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/repositories/auth_repository.dart';
-import 'package:location_project/storage/shared%20preferences/local_store.dart';
+import 'package:location_project/storage/shared preferences/local_store.dart';
 import 'package:location_project/storage/memory/start_path_store.dart';
 
 class LoginController {
