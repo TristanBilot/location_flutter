@@ -17,6 +17,7 @@ import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/storage/memory/location_cache.dart';
 import 'package:location_project/storage/memory/memory_store.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/view.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif.dart';
 import 'dart:io';
 import 'image_repository.dart';
 import '../models/user.dart';
@@ -366,16 +367,16 @@ class UserRepository {
     String key = '${UserField.NotificationSettings.value}.';
     bool value;
     if (messages != null) {
-      key += NofifSettingsField.Messages.value;
+      key += NotifType.Messages.value;
       value = messages;
     } else if (chats != null) {
-      key += NofifSettingsField.Chats.value;
+      key += NotifType.Chats.value;
       value = chats;
     } else if (requests != null) {
-      key += NofifSettingsField.Requests.value;
+      key += NotifType.Requests.value;
       value = requests;
     } else if (views != null) {
-      key += NofifSettingsField.Views.value;
+      key += NotifType.Views.value;
       value = views;
     }
     _firestore.collection(RootKey).doc(id).update({key: value});

@@ -8,6 +8,7 @@ import 'package:location_project/repositories/user/user_views_info.fetcher.dart'
 import 'package:location_project/models/gender.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/view.dart';
 import 'package:location_project/conf/extensions.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif.dart';
 
 part 'user.g.dart';
 
@@ -88,17 +89,16 @@ class User extends HiveObject {
     this.id = email;
   }
 
-  bool getNotifSett(NofifSettingsField key) =>
-      settings.notificationSettings[key.value];
+  bool getNotifSett(NotifType key) => settings.notificationSettings[key.value];
 
   bool get isMessageNotifEnable =>
-      settings.notificationSettings[NofifSettingsField.Messages.value];
+      settings.notificationSettings[NotifType.Messages.value];
   bool get isChatNotifEnable =>
-      settings.notificationSettings[NofifSettingsField.Chats.value];
+      settings.notificationSettings[NotifType.Chats.value];
   bool get isRequestNotifEnable =>
-      settings.notificationSettings[NofifSettingsField.Requests.value];
+      settings.notificationSettings[NotifType.Requests.value];
   bool get isViewNotifEnable =>
-      settings.notificationSettings[NofifSettingsField.Views.value];
+      settings.notificationSettings[NotifType.Views.value];
 
   User build({
     UserMandatoryInfo infos,

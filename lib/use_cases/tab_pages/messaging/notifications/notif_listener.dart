@@ -42,6 +42,7 @@ Future<dynamic> _onPushNotificationTap(
   Map<String, dynamic> message,
   BuildContext context,
 ) async {
+  print('RECEIVED $message');
   final fromID = (message[NotifField.fromID.value] ?? '') as String;
   if (fromID.isEmpty) {
     Logger().w('listenToNotiofications(): invalid id');
@@ -83,10 +84,10 @@ Future<dynamic> _handle(Map<String, dynamic> message, BuildContext context) {
       body == null) return null;
 
   switch (notifType) {
-    case NotifType.message:
+    case NotifType.Messages:
       MessageToaster(context, fromID, body).show();
       break;
-    case NotifType.unknown:
+    case NotifType.Unknown:
       Logger().e('Invalid notif type.');
       return null;
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:location_project/models/user_settings.dart';
 import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/use_cases/account/widgets/account_list_tile.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif.dart';
 import 'package:location_project/widgets/textSF.dart';
 
 class AccountNotificationsPage extends StatefulWidget {
@@ -24,10 +25,9 @@ class _AccountNotificationsPageState extends State<AccountNotificationsPage> {
           AccountListTile(
             title: 'Messages',
             trailing: Switch.adaptive(
-              value: UserStore().user.getNotifSett(NofifSettingsField.Messages),
+              value: UserStore().user.getNotifSett(NotifType.Messages),
               onChanged: (_) {
-                UserStore()
-                    .toggleNotificationSettings(NofifSettingsField.Messages);
+                UserStore().toggleNotificationSettings(NotifType.Messages);
                 setState(() => {});
               },
             ),
@@ -35,21 +35,18 @@ class _AccountNotificationsPageState extends State<AccountNotificationsPage> {
           AccountListTile(
             title: 'Conversations',
             trailing: Switch.adaptive(
-                value: UserStore().user.getNotifSett(NofifSettingsField.Chats),
+                value: UserStore().user.getNotifSett(NotifType.Chats),
                 onChanged: (_) {
-                  UserStore()
-                      .toggleNotificationSettings(NofifSettingsField.Chats);
+                  UserStore().toggleNotificationSettings(NotifType.Chats);
                   setState(() => {});
                 }),
           ),
           AccountListTile(
             title: 'Requests',
             trailing: Switch.adaptive(
-                value:
-                    UserStore().user.getNotifSett(NofifSettingsField.Requests),
+                value: UserStore().user.getNotifSett(NotifType.Requests),
                 onChanged: (_) {
-                  UserStore()
-                      .toggleNotificationSettings(NofifSettingsField.Requests);
+                  UserStore().toggleNotificationSettings(NotifType.Requests);
                   setState(() => {});
                 }),
           ),
@@ -57,10 +54,9 @@ class _AccountNotificationsPageState extends State<AccountNotificationsPage> {
             title: 'Profile views',
             withDivider: false,
             trailing: Switch.adaptive(
-                value: UserStore().user.getNotifSett(NofifSettingsField.Views),
+                value: UserStore().user.getNotifSett(NotifType.Views),
                 onChanged: (_) {
-                  UserStore()
-                      .toggleNotificationSettings(NofifSettingsField.Views);
+                  UserStore().toggleNotificationSettings(NotifType.Views);
                   setState(() => {});
                 }),
           ),

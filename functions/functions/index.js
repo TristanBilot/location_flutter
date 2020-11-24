@@ -76,10 +76,12 @@ exports.onFileUploaded = functions.storage.object().onFinalize(async (file) => {
 
 const DeviceTokensKey = 'DeviceTokens';
 const NotificationSettingsKey = 'NotificationSettings';
-const MessagesKey = 'Messages';
 
 /// notif types
-const MessageType = 'messages';
+const MessageType = 'Messages';
+const ChatType = 'Chats';
+const RequestType = 'Requests';
+const viewType = 'Views';
 
 /**
 * Handle when a new message is created in firestore.
@@ -92,7 +94,58 @@ exports.sendMessage = functions.firestore
   const fromID = msg.SentBy;
   const body = msg.Message;
   const firstName = msg.SentByFirstName;
+  const notifType = MessageType;
+  const conditionToSendNotifCallback = (userNotifSettings) => {
+    return Boolean(userNotifSettings[MessageType]);
+  }
+  return _sendPushNotification(sentToID, fromID, firstName, body, notifType, conditionToSendNotifCallback);
+  });
 
+
+/**
+* Handle when a new chat or request is created in firestore.
+*/
+exports.sendChatOrRequest = functions.firestore
+.document('/messages/{chatID}')
+.onCreate((doc, context) => {
+  const chat = doc.data();
+  const sentToID = chat.UserIDs[1]; // requested ID
+  const fromID = chat.UserIDs[0]; // requester ID
+  const isChat = Boolean(chat.IsChatEngaged); // or request
+  const firstName = chat.UserNames[1];
+  const body = 'Has sent you a request!'; // penser à traduire en checkant le language du user
+  const notifType = isChat ? ChatType : RequestType;
+  const conditionToSendNotifCallback = (userNotifSettings) => {
+    return (isChat && Boolean(userNotifSettings[ChatType])) ||
+    (!isChat && Boolean(userNotifSettings[RequestType]));
+  }
+  return _sendPushNotification(sentToID, fromID, firstName, body, notifType, conditionToSendNotifCallback);
+  });
+
+/**
+* Handle when a view is inserted
+*/
+exports.sendChatOrRequest = functions.firestore
+.document('/messages/{chatID}')
+.onCreate((doc, context) => {
+  const chat = doc.data();
+  const sentToID = chat.UserIDs[1]; // requested ID
+  const fromID = chat.UserIDs[0]; // requester ID
+  const isChat = Boolean(chat.IsChatEngaged); // or request
+  const firstName = chat.UserNames[1];
+  const body = 'Has sent you a request!'; // penser à traduire en checkant le language du user
+  const notifType = isChat ? ChatType : RequestType;
+  const conditionToSendNotifCallback = (userNotifSettings) => {
+    return (isChat && Boolean(userNotifSettings[ChatType])) ||
+    (!isChat && Boolean(userNotifSettings[RequestType]));
+  }
+  return _sendPushNotification(sentToID, fromID, firstName, body, notifType, conditionToSendNotifCallback);
+  });
+
+  /**
+   * method used generically to send a push notif with user data fetching
+   */
+function _sendPushNotification(sentToID, fromID, body, firstName, notifType, conditionToSendNotifCallback) {
   if (!sentToID) {
     console.log('error: sentToID is null.');
     return;
@@ -107,17 +160,16 @@ exports.sendMessage = functions.firestore
       console.log('error: user device tokens or notif settings null.');
       return;
     }
-    console.log(body);
-    const shouldSendMessage = !!notifSettings[MessagesKey];
+    const shouldSendMessage = conditionToSendNotifCallback(notifSettings);
     if (!shouldSendMessage) {
       console.log('Not sent because of disabled notifications settings');
       return;
     }
+    console.log('Sending notif of type ' + notifType + ': ' + body);
 
     const message = {
       notification: {
           title: firstName,
-          // badge: '2',
           sound: 'default',
           body: body,
           priority: '10',
@@ -126,7 +178,7 @@ exports.sendMessage = functions.firestore
       /// to access information in every handler methods in the app, 
       /// use the `data` element.
       data: {
-        type: MessageType,
+        type: notifType,
         fromID: fromID,
       }
     };
@@ -137,9 +189,9 @@ exports.sendMessage = functions.firestore
       apnsPushType: "background"
     })
       .then((response) => {
-        console.log('Message succefully sent to ' + sentToID);
+        console.log('Notification succefully sent to ' + sentToID);
         return response;
-      }).catch((error) => { console.log('sending message error:', error); });
+      }).catch((error) => { console.log('Sending notification error:', error); });
       return null;
-    }).catch(error => { console.log('get document error ' + error); });
-  });
+    }).catch(error => { console.log('Get document error ' + error); });
+}

@@ -3,15 +3,9 @@ import 'package:location_project/adapters/gender_value_adapter.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/models/gender.dart';
 import 'package:location_project/conf/extensions.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif.dart';
 
 part 'user_settings.g.dart';
-
-enum NofifSettingsField {
-  Messages,
-  Chats,
-  Requests,
-  Views,
-}
 
 @HiveType(typeId: 1)
 class UserSettings {
@@ -57,10 +51,10 @@ class UserSettings {
     Gender.Male
   ];
   static final Map<String, bool> DefaultNotificationSettings = {
-    NofifSettingsField.Messages.value: true,
-    NofifSettingsField.Chats.value: true,
-    NofifSettingsField.Requests.value: true,
-    NofifSettingsField.Views.value: true,
+    NotifType.Messages.value: true,
+    NotifType.Chats.value: true,
+    NotifType.Requests.value: true,
+    NotifType.Views.value: true,
   };
 
   static UserSettings fromFirestoreObject(dynamic data) {

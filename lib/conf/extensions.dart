@@ -58,8 +58,3 @@ extension NotifTypeExtension2 on NotifType {
   String get value =>
       this.toString().substring(this.toString().indexOf('.') + 1);
 }
-
-extension NofificationSettingsFieldExtension on NofifSettingsField {
-  String get value =>
-      this.toString().substring(this.toString().indexOf('.') + 1);
-}

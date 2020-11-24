@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:location_project/helpers/logger.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/storage/shared preferences/local_store.dart';
 import 'package:location_project/models/user_settings.dart';
@@ -7,6 +8,7 @@ import 'package:location_project/use_cases/account/account_language_page.dart';
 import 'package:location_project/models/gender.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/view.dart';
 import 'package:location_project/conf/extensions.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif.dart';
 
 /// Manage all the data of the logged user.
 /// Mainly the update of local and distant data
@@ -146,31 +148,34 @@ class UserStore extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> toggleNotificationSettings(NofifSettingsField field) async {
-    var messages = NofifSettingsField.Messages.value;
-    var chats = NofifSettingsField.Chats.value;
-    var requests = NofifSettingsField.Requests.value;
-    var views = NofifSettingsField.Views.value;
+  Future<void> toggleNotificationSettings(NotifType field) async {
+    var messages = NotifType.Messages.value;
+    var chats = NotifType.Chats.value;
+    var requests = NotifType.Requests.value;
+    var views = NotifType.Views.value;
     switch (field) {
-      case NofifSettingsField.Messages:
+      case NotifType.Messages:
         var toggle = !_user.settings.notificationSettings[messages];
         _user.settings.notificationSettings[messages] = toggle;
         _repo.updateNotificationSettings(_user.id, messages: toggle);
         break;
-      case NofifSettingsField.Chats:
+      case NotifType.Chats:
         var toggle = !_user.settings.notificationSettings[chats];
         _user.settings.notificationSettings[chats] = toggle;
         _repo.updateNotificationSettings(_user.id, chats: toggle);
         break;
-      case NofifSettingsField.Requests:
+      case NotifType.Requests:
         var toggle = !_user.settings.notificationSettings[requests];
         _user.settings.notificationSettings[requests] = toggle;
         _repo.updateNotificationSettings(_user.id, requests: toggle);
         break;
-      case NofifSettingsField.Views:
+      case NotifType.Views:
         var toggle = !_user.settings.notificationSettings[views];
         _user.settings.notificationSettings[views] = toggle;
         _repo.updateNotificationSettings(_user.id, views: toggle);
+        break;
+      case NotifType.Unknown:
+        Logger().w('toggleNotificationSettings(): unknown notif type');
         break;
     }
     notifyListeners();

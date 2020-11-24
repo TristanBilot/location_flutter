@@ -8,16 +8,25 @@ enum NotifField {
 }
 
 enum NotifType {
-  unknown,
-  message,
+  Unknown,
+  Messages,
+  Requests,
+  Chats,
+  Views,
 }
 
 class Notif {
   static NotifType fromString(String type) {
     switch (type) {
-      case 'message':
-        return NotifType.message;
+      case 'Messages':
+        return NotifType.Messages;
+      case 'Chats':
+        return NotifType.Chats;
+      case 'Requests':
+        return NotifType.Requests;
+      case 'Views':
+        return NotifType.Views;
     }
-    return NotifType.unknown;
+    return NotifType.Unknown;
   }
 }
