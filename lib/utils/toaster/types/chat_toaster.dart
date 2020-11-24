@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/message_page.dart';
 import 'package:location_project/utils/toaster/toaster_widget.dart';
@@ -11,7 +12,8 @@ class ChatToaster extends Toaster {
   ChatToaster(this.context, this.chat, this.fromID);
 
   Future show() async {
-    final user = await fetchUser(fromID);
+    final user = await UserRepository()
+        .fetchUser(fromID, withInfos: true, withPictures: true);
 
     _onToastTap() {
       Navigator.push(

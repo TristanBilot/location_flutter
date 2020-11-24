@@ -1,8 +1,6 @@
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:location_project/models/user.dart';
-import 'package:location_project/repositories/user/user_mandatory_info_fetcher.dart';
-import 'package:location_project/repositories/user/user_pictures_fetcher.dart';
 import 'package:location_project/themes/dark_theme.dart';
 import 'package:location_project/utils/toaster/toaster_library.dart';
 import 'package:location_project/widgets/cached_circle_user_image.dart';
@@ -15,13 +13,7 @@ enum MessageToastType {
   Message,
 }
 
-abstract class Toaster {
-  Future<User> fetchUser(String id) async {
-    final infos = await UserMandatoryInfoFetcher().fetch(id);
-    final pictures = await UserPicturesInfoFetcher().fetch(id);
-    return User.public()..build(infos: infos)..build(pictures: pictures);
-  }
-}
+abstract class Toaster {}
 
 class ToasterWidget extends StatelessWidget {
   final FToast fToast = FToast();

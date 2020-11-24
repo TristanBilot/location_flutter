@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/message_page.dart';
@@ -12,7 +13,8 @@ class MessageToaster extends Toaster {
   MessageToaster(this.context, this.fromID, this.body);
 
   Future show() async {
-    final user = await fetchUser(fromID);
+    final user = await UserRepository()
+        .fetchUser(fromID, withInfos: true, withPictures: true);
     final chatID = MessagingReposiory.getChatID(UserStore().user.id, user.id);
     final chat = await MessagingReposiory().getChatAsChat(chatID);
 

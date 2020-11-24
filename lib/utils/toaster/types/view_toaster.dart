@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:location_project/use_cases/tab_pages/tab_page_views_page.dart';
+import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/utils/toaster/toaster_widget.dart';
 
 class ViewToaster extends Toaster {
@@ -9,7 +9,8 @@ class ViewToaster extends Toaster {
   ViewToaster(this.context, this.fromID);
 
   Future show() async {
-    final user = await fetchUser(fromID);
+    final user = await UserRepository()
+        .fetchUser(fromID, withInfos: true, withPictures: true);
 
     // _onToastTap() {
     //   Navigator.push(

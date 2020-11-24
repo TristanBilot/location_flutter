@@ -107,12 +107,12 @@ exports.sendMessage = functions.firestore
           // badge: '2',
           sound: 'default',
           body: body,
-          type: 'message',
-          fromID: fromID,
-          priority: '10'
+          priority: '10',
+          click_action: 'FLUTTER_NOTIFICATION_CLICK'
       },
       data: {
-        click_action: 'FLUTTER_NOTIFICATION_CLICK'
+        type: 'message',
+        fromID: fromID,
       }
     };
     /// send the push notif   message
