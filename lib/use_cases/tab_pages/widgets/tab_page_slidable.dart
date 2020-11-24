@@ -33,15 +33,15 @@ class TabPageSlidable extends StatefulWidget {
 class _TabPageSlidableState extends State<TabPageSlidable> {
   Widget get _defaultCloseIcon => IconSlideAction(
         caption: widget.text1 ?? 'Unmatch',
-        color: widget.color1 ?? Colors.red[500],
+        color: widget.color1 ?? Colors.redAccent,
         icon: widget.icon1 ?? Icons.close,
         onTap: widget.action1 ?? () => {},
       );
 
-  Widget get _defaultShareIcon => IconSlideAction(
-        caption: widget.text2 ?? 'Share profile',
-        color: widget.color2 ?? Colors.indigo,
-        icon: widget.icon2 ?? Icons.share,
+  Widget get _defaultBlockIcon => IconSlideAction(
+        caption: widget.text2 ?? 'Block',
+        color: widget.color2 ?? Colors.indigoAccent,
+        icon: widget.icon2 ?? Icons.block,
         onTap: widget.action2 ?? () => {},
       );
 
@@ -55,6 +55,6 @@ class _TabPageSlidableState extends State<TabPageSlidable> {
   @override
   Widget build(BuildContext context) {
     if (widget.isOnlyOneAction) return _defaultSlidable([_defaultCloseIcon]);
-    return _defaultSlidable([_defaultShareIcon, _defaultCloseIcon]);
+    return _defaultSlidable([_defaultBlockIcon, _defaultCloseIcon]);
   }
 }
