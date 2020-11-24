@@ -83,11 +83,6 @@ class _ChatTileState extends State<ChatTile> {
 
   void _onTileTapped(BuildContext thisContext, User user, bool isChatEngaged,
       Message lastMsg) {
-    MessagingReposiory().updateChatLastActivity(
-      widget.chat,
-      lastActivitySeen: true,
-      lastActivitySeenParticipant: Participant.Me,
-    );
     Navigator.push(
       thisContext,
       MaterialPageRoute(

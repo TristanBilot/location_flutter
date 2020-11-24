@@ -79,6 +79,14 @@ class _MessagePageContentState extends State<MessagePageContent> {
     context.read<MessagesCubit>().fetchMessages(chatID);
   }
 
+  void _updateLastActivity() {
+    MessagingReposiory().updateChatLastActivity(
+      widget.chat,
+      lastActivitySeen: true,
+      lastActivitySeenParticipant: Participant.Me,
+    );
+  }
+
   void _sendMessage() {
     final content = _messageEditingController.text.trim();
     if (content.isEmpty) return;
@@ -124,6 +132,7 @@ class _MessagePageContentState extends State<MessagePageContent> {
               return _requestInvitationPlaceholder;
           }
           if (messages.isEmpty) return _noMessagesPlaceholder;
+          _updateLastActivity();
 
           return ListView.builder(
               reverse: true,
