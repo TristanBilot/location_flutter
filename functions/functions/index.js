@@ -2,21 +2,23 @@
 
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-admin.initializeApp()
 const path = require('path');
 const os = require('os');
 const fs = require('fs');
 const gm = require('gm').subClass({ imageMagick: true });
 
-/* prefix used to break infinite loop in the firestore trigger */
-const outputFilePrefix = 'circle_';
-const size = 150;
+admin.initializeApp()
+
+/// ------------------ Picture processing  ------------------ ///
 
 /**
  * When an image is uploaded in the Storage bucket, we want to 
  * resize it and circle it.
  */
 exports.onFileUploaded = functions.storage.object().onFinalize(async (file) => {
+  /* prefix used to break infinite loop in the firestore trigger */
+  const outputFilePrefix = 'circle_';
+  const size = 150;
   const fileBucket = file.bucket; // The Storage bucket that contains the file.
   const filePath = file.name; // File path in the bucket.
   const contentType = file.contentType; // File content type.
@@ -70,7 +72,18 @@ exports.onFileUploaded = functions.storage.object().onFinalize(async (file) => {
   return null;
 });
 
-/// Handle when a new message is created in firestore
+/// ------------------ Messaging push notifs  ------------------ ///
+
+const DeviceTokensKey = 'DeviceTokens';
+const NotificationSettingsKey = 'NotificationSettings';
+const MessagesKey = 'Messages';
+
+/// notif types
+const MessageType = 'messages';
+
+/**
+* Handle when a new message is created in firestore.
+*/
 exports.sendMessage = functions.firestore
 .document('/messages/{chatID}/chats/{msgID}')
 .onCreate((doc, context) => {
@@ -87,15 +100,15 @@ exports.sendMessage = functions.firestore
   /// fetch user from user ID
   admin.firestore().doc('/locations/' + sentToID).get().then((snapshot) => {
     const user = snapshot.data();
-    const deviceTokens = user.DeviceTokens;
-    const notifSettings = user.NotificationSettings;
+    const deviceTokens = user[DeviceTokensKey];
+    const notifSettings = user[NotificationSettingsKey];
 
     if (!deviceTokens || !notifSettings) {
       console.log('error: user device tokens or notif settings null.');
       return;
     }
     console.log(body);
-    const shouldSendMessage = !!notifSettings['Messages'];
+    const shouldSendMessage = !!notifSettings[MessagesKey];
     if (!shouldSendMessage) {
       console.log('Not sent because of disabled notifications settings');
       return;
@@ -110,12 +123,14 @@ exports.sendMessage = functions.firestore
           priority: '10',
           click_action: 'FLUTTER_NOTIFICATION_CLICK'
       },
+      /// to access information in every handler methods in the app, 
+      /// use the `data` element.
       data: {
-        type: 'message',
+        type: MessageType,
         fromID: fromID,
       }
     };
-    /// send the push notif   message
+    /// send the push notif message
     admin.messaging().sendToDevice(deviceTokens, message, {
       mutableContent: true,
       contentAvailable: true,
