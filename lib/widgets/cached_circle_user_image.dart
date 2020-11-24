@@ -22,6 +22,18 @@ class CachedCircleUserImage extends StatelessWidget {
     this.fit,
   });
 
+  Color _shimmerBaseColor(BuildContext context) {
+    bool isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    return isDark
+        ? Theme.of(context).primaryColor
+        : Theme.of(context).backgroundColor;
+  }
+
+  Color _shimmerHighlightColor(BuildContext context) {
+    bool isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    return isDark ? Colors.grey[800] : Colors.grey[300];
+  }
+
   @override
   Widget build(BuildContext context) {
     return CachedNetworkImage(
@@ -43,17 +55,17 @@ class CachedCircleUserImage extends StatelessWidget {
         ),
       ),
       placeholder: (context, url) => Container(
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: Theme.of(context).backgroundColor,
-        ),
         child: Shimmer.fromColors(
-          baseColor: Colors.grey[300],
-          highlightColor: Colors.grey[100],
+          baseColor: _shimmerBaseColor(context),
+          highlightColor: _shimmerHighlightColor(context),
           enabled: true,
           child: Container(
-            height: size,
             width: size,
+            height: size,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Theme.of(context).backgroundColor,
+            ),
           ),
         ),
       ),

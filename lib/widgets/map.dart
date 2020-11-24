@@ -135,7 +135,7 @@ class MapState extends State<Map> with WidgetsBindingObserver {
   }
 
   Future<bool> _waitForBuildMap() async {
-    return Future.delayed(Duration(milliseconds: 500), () => true);
+    return Future.delayed(Duration(milliseconds: 10), () => true);
   }
 
   @override
