@@ -17,6 +17,7 @@ enum NotifType {
 
 class Notif {
   static NotifType fromString(String type) {
+    if (type == null) return NotifType.Unknown;
     switch (type) {
       case 'Messages':
         return NotifType.Messages;

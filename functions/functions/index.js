@@ -81,10 +81,10 @@ const NotificationSettingsKey = 'NotificationSettings';
 const MessageType = 'Messages';
 const ChatType = 'Chats';
 const RequestType = 'Requests';
-const viewType = 'Views';
+const ViewType = 'Views';
 
 /**
-* Handle when a new message is created in firestore.
+* Trigger new messages.
 */
 exports.sendMessage = functions.firestore
 .document('/messages/{chatID}/chats/{msgID}')
@@ -93,17 +93,17 @@ exports.sendMessage = functions.firestore
   const sentToID = msg.SentTo;
   const fromID = msg.SentBy;
   const body = msg.Message;
-  const firstName = msg.SentByFirstName;
+  const title = msg.SentByFirstName;
   const notifType = MessageType;
   const conditionToSendNotifCallback = (userNotifSettings) => {
     return Boolean(userNotifSettings[MessageType]);
   }
-  return _sendPushNotification(sentToID, fromID, firstName, body, notifType, conditionToSendNotifCallback);
+  return _sendPushNotification(sentToID, fromID, title, body, notifType, conditionToSendNotifCallback);
   });
 
 
 /**
-* Handle when a new chat or request is created in firestore.
+* Trigger new chats or requests.
 */
 exports.sendChatOrRequest = functions.firestore
 .document('/messages/{chatID}')
@@ -112,40 +112,37 @@ exports.sendChatOrRequest = functions.firestore
   const sentToID = chat.UserIDs[1]; // requested ID
   const fromID = chat.UserIDs[0]; // requester ID
   const isChat = Boolean(chat.IsChatEngaged); // or request
-  const firstName = chat.UserNames[1];
-  const body = 'Has sent you a request!'; // penser à traduire en checkant le language du user
+  const title = chat.UserNames[1];
+  const body = isChat ? 'New chat 🔥' : 'New request 🔥'; // penser à traduire en checkant le language du user
   const notifType = isChat ? ChatType : RequestType;
   const conditionToSendNotifCallback = (userNotifSettings) => {
     return (isChat && Boolean(userNotifSettings[ChatType])) ||
     (!isChat && Boolean(userNotifSettings[RequestType]));
   }
-  return _sendPushNotification(sentToID, fromID, firstName, body, notifType, conditionToSendNotifCallback);
+  return _sendPushNotification(sentToID, fromID, body, title, notifType, conditionToSendNotifCallback);
   });
 
 /**
-* Handle when a view is inserted
+* Trigger new profile views.
 */
-exports.sendChatOrRequest = functions.firestore
-.document('/messages/{chatID}')
+exports.sendView = functions.firestore
+.document('/locations/{userID}/UserIDsWhoWiewedMe/{fromID}')
 .onCreate((doc, context) => {
-  const chat = doc.data();
-  const sentToID = chat.UserIDs[1]; // requested ID
-  const fromID = chat.UserIDs[0]; // requester ID
-  const isChat = Boolean(chat.IsChatEngaged); // or request
-  const firstName = chat.UserNames[1];
-  const body = 'Has sent you a request!'; // penser à traduire en checkant le language du user
-  const notifType = isChat ? ChatType : RequestType;
+  const sentToID = context.params.userID;
+  const fromID = context.params.fromID;
+  const title = 'Someone viewed your profile!';
+  const body = 'Engage now a conversation 😍'; // penser à traduire en checkant le language du user
+  const notifType = ViewType;
   const conditionToSendNotifCallback = (userNotifSettings) => {
-    return (isChat && Boolean(userNotifSettings[ChatType])) ||
-    (!isChat && Boolean(userNotifSettings[RequestType]));
+    return Boolean(userNotifSettings[ViewType]);
   }
-  return _sendPushNotification(sentToID, fromID, firstName, body, notifType, conditionToSendNotifCallback);
+  return _sendPushNotification(sentToID, fromID, body, title, notifType, conditionToSendNotifCallback);
   });
 
   /**
    * method used generically to send a push notif with user data fetching
    */
-function _sendPushNotification(sentToID, fromID, body, firstName, notifType, conditionToSendNotifCallback) {
+function _sendPushNotification(sentToID, fromID, body, title, notifType, conditionToSendNotifCallback) {
   if (!sentToID) {
     console.log('error: sentToID is null.');
     return;
@@ -169,7 +166,7 @@ function _sendPushNotification(sentToID, fromID, body, firstName, notifType, con
 
     const message = {
       notification: {
-          title: firstName,
+          title: title,
           sound: 'default',
           body: body,
           priority: '10',
