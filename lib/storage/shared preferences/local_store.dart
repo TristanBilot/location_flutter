@@ -49,9 +49,11 @@ class LocalStore {
     await _prefs.setString(ConnectedIDKey, id);
   }
 
-  /// When the user log out, clear the `ConnectedIDKey` to ''
+  /// Need to save the first app launch to when clearing.
   Future<void> clear() async {
+    bool previousIsFirstAppLaunch = getIsFirstAppLaunch();
     await _prefs.clear();
+    await setIsFirstAppLaunch(previousIsFirstAppLaunch);
   }
 
   /// Return whether a user is logged in the app or not.
