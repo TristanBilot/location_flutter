@@ -7,6 +7,7 @@ import 'package:location_project/pages/messaging_tabs_page.dart';
 import 'package:location_project/storage/databases/messaging_database.dart';
 import 'package:location_project/themes/theme_utils.dart';
 import 'package:location_project/use_cases/account/account_page.dart';
+import 'package:location_project/use_cases/swipe_card/swipe_page.dart';
 import 'package:location_project/use_cases/tab_pages/counters/cubit/counters_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif_listener.dart';
 import 'package:location_project/widgets/home_page_status_without_count.dart';
@@ -41,7 +42,7 @@ class HomePageContainer extends StatefulWidget {
 
 class _HomePageContainerState extends State<HomePageContainer>
     with SingleTickerProviderStateMixin, WidgetsBindingObserver {
-  static const NbTabs = 3;
+  static const NbTabs = 4;
   final _initialIndex = 1;
   TabController _tabController;
 
@@ -95,8 +96,12 @@ class _HomePageContainerState extends State<HomePageContainer>
               Tab(
                   icon: HomePageTabBarIcon(
                       Icons.account_circle, _tabController.index == 0)),
+              Tab(
+                icon:
+                    HomePageTabBarIcon(Icons.swipe, _tabController.index == 1),
+              ),
               // Tab 2.
-              Tab(icon: HomePageTabBarImageIcon(_tabController.index == 1)),
+              Tab(icon: HomePageTabBarImageIcon(_tabController.index == 2)),
               // Tab 3.
               Tab(
                   icon: Container(
@@ -106,7 +111,7 @@ class _HomePageContainerState extends State<HomePageContainer>
                         alignment: Alignment.center,
                         children: [
                           HomePageTabBarIcon(
-                              Icons.textsms, _tabController.index == 2),
+                              Icons.textsms, _tabController.index == 3),
                           BlocBuilder<CountersCubit, CountersState>(
                               builder: (context, state) {
                             if (state.isANotificationUnread())
@@ -127,6 +132,7 @@ class _HomePageContainerState extends State<HomePageContainer>
         controller: _tabController,
         children: [
           AccountPage(),
+          SwipePage(),
           MapPage(),
           MessagingTabsPage(),
         ],
