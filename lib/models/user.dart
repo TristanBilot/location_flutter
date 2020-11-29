@@ -2,6 +2,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hive/hive.dart';
 import 'package:location_project/models/user_settings.dart';
 import 'package:location_project/repositories/user/user_blocked_info_fetcher.dart';
+import 'package:location_project/repositories/user/user_likes_info_fetcher.dart';
 import 'package:location_project/repositories/user/user_mandatory_info_fetcher.dart';
 import 'package:location_project/repositories/user/user_pictures_fetcher.dart';
 import 'package:location_project/repositories/user/user_views_info.fetcher.dart';
@@ -34,6 +35,9 @@ enum UserField {
   UserIDsWhoBlockedMe,
   ViewedUserIDs,
   UserIDsWhoWiewedMe,
+  LikedUsers,
+  UnlikedUsers,
+  UsersWhoLikedMe,
 }
 
 @HiveType(typeId: 0)
@@ -61,11 +65,15 @@ class User extends HiveObject {
   UserSettings settings;
   @HiveField(10)
   List<String> deviceTokens;
-  // Properties stored in the UserStore and fetched at start.
+
+  /// Collections
   List<String> blockedUserIDs;
   List<String> userIDsWhoBlockedMe;
   List<View> viewedUserIDs;
   List<View> userIDsWhoWiewedMe;
+  List<String> unlikedUsers;
+  List<String> likedUsers;
+  // List<String> usersWhoLikedMe;
 
   User.public();
 
@@ -105,6 +113,7 @@ class User extends HiveObject {
     UserPicturesInfo pictures,
     UserBlockInfo blocks,
     UserViewsInfo views,
+    UserLikesInfo likes,
   }) {
     if (blocks != null) {
       this.blockedUserIDs = blocks.blockedUserIDs;
@@ -129,6 +138,10 @@ class User extends HiveObject {
     if (pictures != null) {
       this.icon = pictures.icon;
       this.pictureURL = pictures.pictureURL;
+    }
+    if (likes != null) {
+      this.unlikedUsers = likes.unlikedUsers;
+      this.likedUsers = likes.likedUsers;
     }
     return this;
   }

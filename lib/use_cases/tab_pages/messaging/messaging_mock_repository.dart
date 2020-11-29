@@ -42,10 +42,10 @@ class MessagingMockRepository {
     // await MessagingReposiory().deleteChat(chatID);
     final rd = Random().nextBool();
     final entry = Chat.newChatEntry(
-      rd ? id1.id : id2.id,
-      rd ? id2.id : id1.id,
-      rd ? id1.name : id2.name,
-      rd ? id2.name : id1.name,
+      rd ? id1['id'] : id2['id'],
+      rd ? id2['id'] : id1['id'],
+      rd ? id1['name'] : id2['name'],
+      rd ? id2['name'] : id1['name'],
       engaged,
       !engaged,
       false,
@@ -66,12 +66,12 @@ class MessagingMockRepository {
     final sentTo = sentBy == id1 ? id2 : id1;
     final entry = Message(
       message,
-      sentBy.id,
-      sentTo.id,
+      sentBy['id'],
+      sentTo['id'],
       Message.Time,
       false,
       Reaction.NoReaction,
-      sentBy.name,
+      sentBy['name'],
     );
     MessagingReposiory().newMessage(chatID, entry);
     print('message successfully inserted to Firestore.');

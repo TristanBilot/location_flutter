@@ -4,11 +4,11 @@ import 'package:location_project/adapters/stream_adapter.dart';
 import 'package:location_project/conf/conf.dart';
 import 'package:location_project/conf/extensions.dart';
 import 'package:location_project/conf/store.dart';
-import 'package:location_project/generated/l10n.dart';
 import 'package:location_project/helpers/logger.dart';
 import 'package:location_project/models/firestore_user_entry.dart';
 import 'package:location_project/models/user_settings.dart';
 import 'package:location_project/repositories/user/user_blocked_info_fetcher.dart';
+import 'package:location_project/repositories/user/user_likes_info_fetcher.dart';
 import 'package:location_project/repositories/user/user_mandatory_info_fetcher.dart';
 import 'package:location_project/repositories/user/user_pictures_fetcher.dart';
 import 'package:location_project/repositories/user/user_views_info.fetcher.dart';
@@ -16,6 +16,8 @@ import 'package:location_project/storage/databases/user_database.dart';
 import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/storage/memory/location_cache.dart';
 import 'package:location_project/storage/memory/memory_store.dart';
+import 'package:location_project/use_cases/swipe_card/models/like_field.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/models/message.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/view.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif.dart';
 import 'dart:io';
@@ -34,6 +36,7 @@ class UserRepository {
   UserBlockInfoFetcher _blockInfoFetcher;
   UserViewsInfoFetcher _viewsInfoFetcher;
   UserPicturesInfoFetcher _picturesInfoFetcher;
+  UserLikesInfoFetcher _likesInfoFetcher;
 
   UserRepository() {
     _geo = Geoflutterfire();
@@ -43,6 +46,7 @@ class UserRepository {
     _blockInfoFetcher = UserBlockInfoFetcher();
     _viewsInfoFetcher = UserViewsInfoFetcher();
     _picturesInfoFetcher = UserPicturesInfoFetcher();
+    _likesInfoFetcher = UserLikesInfoFetcher();
   }
 
   /// This method should only be used for the first log in
@@ -173,6 +177,7 @@ class UserRepository {
     bool withPictures = true,
     bool withInfos = true,
     bool withViews = true,
+    bool withLikes = true,
   }) async {
     if (useCache && useDatabase)
       Logger().e(
@@ -185,7 +190,8 @@ class UserRepository {
             withBlocks: withBlocks,
             withPictures: withPictures,
             withInfos: withInfos,
-            withViews: withViews);
+            withViews: withViews,
+            withLikes: withLikes);
       }
       return UserDatabase().getUser(id);
     }
@@ -197,7 +203,8 @@ class UserRepository {
             withBlocks: withBlocks,
             withPictures: withPictures,
             withInfos: withInfos,
-            withViews: withViews);
+            withViews: withViews,
+            withLikes: withLikes);
       }
       return MemoryStore().getUser(id);
     }
@@ -206,7 +213,8 @@ class UserRepository {
         withBlocks: withBlocks,
         withInfos: withInfos,
         withPictures: withPictures,
-        withViews: withViews);
+        withViews: withViews,
+        withLikes: withLikes);
 
     // Stores the user fetched from firestore to the UserDatabase cache.
     UserDatabase().putUser(user);
@@ -220,6 +228,7 @@ class UserRepository {
     bool withPictures,
     bool withInfos,
     bool withViews,
+    bool withLikes,
   }) async {
     User user = User.public();
 
@@ -227,6 +236,7 @@ class UserRepository {
     UserPicturesInfo userPictures;
     UserBlockInfo userBlocks;
     UserViewsInfo userViews;
+    UserLikesInfo userLikes;
 
     if (withInfos) {
       userInfos = snapshot != null
@@ -246,11 +256,16 @@ class UserRepository {
       userViews = await _viewsInfoFetcher.fetch(id);
       user.build(views: userViews);
     }
+    if (withLikes) {
+      userLikes = await _likesInfoFetcher.fetch(id);
+      user.build(likes: userLikes);
+    }
     Logger().logUserInfo(id,
         blocks: userBlocks,
         views: userViews,
         infos: userInfos,
-        pictures: userPictures);
+        pictures: userPictures,
+        likes: userLikes);
     return user;
   }
 
@@ -380,5 +395,14 @@ class UserRepository {
       value = views;
     }
     _firestore.collection(RootKey).doc(id).update({key: value});
+  }
+
+  Future<void> addLikeField(String id, UserField field, String likeID) async {
+    await _firestore
+        .collection(RootKey)
+        .doc(id)
+        .collection(field.value)
+        .doc(likeID)
+        .set({LikeField.Time.value: Message.Time});
   }
 }

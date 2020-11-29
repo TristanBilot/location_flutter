@@ -2,6 +2,7 @@ import 'package:location_project/models/user.dart';
 import 'package:location_project/models/user_settings.dart';
 import 'package:location_project/use_cases/account/account_language_page.dart';
 import 'package:location_project/models/gender.dart';
+import 'package:location_project/use_cases/swipe_card/models/like_field.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/message.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/reaction.dart';
@@ -55,6 +56,11 @@ extension NotifFieldExtension on NotifField {
 }
 
 extension NotifTypeExtension2 on NotifType {
+  String get value =>
+      this.toString().substring(this.toString().indexOf('.') + 1);
+}
+
+extension LikeFieldExtension on LikeField {
   String get value =>
       this.toString().substring(this.toString().indexOf('.') + 1);
 }

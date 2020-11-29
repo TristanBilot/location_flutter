@@ -6,6 +6,7 @@ import 'package:location_project/models/gender.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/models/user_settings.dart';
 import 'package:location_project/repositories/user_repository.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/models/message.dart';
 import 'image_repository.dart';
 
 class UserMockRepository {
@@ -18,16 +19,45 @@ class UserMockRepository {
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
   ImageRepository _imageRepo = ImageRepository();
 
-  /// Insert a dataset of users to Firestore with a mock Storage
-  /// image stored in asset.
+  final id1 = {
+    'id': 'bilot.tristan@hotmail.fr',
+    'name': 'Tristan',
+    'lastName': 'Bilot'
+  };
+  final id2 = {
+    'id': 'damien.duprat@hotmail.fr',
+    'name': 'Damien',
+    'lastName': 'Duprat'
+  };
+  final id3 = {
+    'id': 'alexandre.roume@hotmail.fr',
+    'name': 'Alexandre',
+    'lastName': 'Duprat'
+  };
+  final id4 = {
+    'id': 'bilot.tristan.carrieres@hotmail.fr',
+    'name': 'Tristan',
+    'lastName': 'Bilot'
+  };
+  final id5 = {
+    'id': 'damien.duprat.carrieres@hotmail.fr',
+    'name': 'Damien',
+    'lastName': 'Duprat'
+  };
+  final id6 = {
+    'id': 'alexandre.roume.carrieres@hotmail.fr',
+    'name': 'Alexandre',
+    'lastName': 'Duprat'
+  };
+
   Future<void> putParisDataset() async {
     GeoFirePoint l0 = _geo.point(latitude: 48.825194, longitude: 2.34742);
     GeoFirePoint l1 = _geo.point(latitude: 48.82471, longitude: 2.348482);
     GeoFirePoint l2 = _geo.point(latitude: 48.8247, longitude: 2.3484);
 
-    _insertUserMock('bilot.tristan@hotmail.fr', 'Tristan', 'Bilot', l0);
-    _insertUserMock('damien.duprat@hotmail.fr', 'Damien', 'Duprat', l1);
-    _insertUserMock('alexandre.roume@hotmail.fr', 'Alexandre', 'Roume', l2);
+    _insertUserMock(id1, l0);
+    _insertUserMock(id2, l1);
+    _insertUserMock(id3, l2);
   }
 
   Future<void> putCarrieresDataset() async {
@@ -35,21 +65,17 @@ class UserMockRepository {
     GeoFirePoint l1 = _geo.point(latitude: 48.9162, longitude: 2.179672);
     GeoFirePoint l2 = _geo.point(latitude: 48.9163, longitude: 2.179678);
 
-    _insertUserMock(
-        'bilot.tristan.carrieres@hotmail.fr', 'Tristan', 'Bilot', l0);
-    _insertUserMock(
-        'damien.duprat.carrieres@hotmail.fr', 'Damien', 'Duprat', l1);
-    _insertUserMock(
-        'alexandre.roume.carrieres@hotmail.fr', 'Alexandre', 'Roume', l2);
+    _insertUserMock(id4, l0);
+    _insertUserMock(id5, l1);
+    _insertUserMock(id6, l2);
   }
 
   /// Insert a mock user in the Firestore, with an image in the storage.
   Future<void> _insertUserMock(
-    String id,
-    String firstName,
-    String lastName,
+    dynamic user,
     GeoFirePoint geoPoint,
   ) async {
+    String id = user['id'];
     await UserRepository().deleteCollection(id, UserField.BlockedUserIDs);
     await UserRepository().deleteCollection(id, UserField.UserIDsWhoBlockedMe);
     await UserRepository().deleteCollection(id, UserField.ViewedUserIDs);
@@ -60,8 +86,8 @@ class UserMockRepository {
         .collection(UserRepository.RootKey)
         .doc(id)
         .set(FirestoreUserEntry(
-          firstName,
-          lastName,
+          user['name'],
+          user['lastName'],
           GenderMock,
           AgeMock,
           geoPoint,
@@ -69,6 +95,10 @@ class UserMockRepository {
           [],
           UserSettings.DefaultNotificationSettings,
         ).toFirestoreObject());
+    await UserRepository().addLikeField(
+        id, UserField.LikedUsers, id == id1['id'] ? id2['id'] : id1['id']);
+    await UserRepository().addLikeField(
+        id, UserField.UnlikedUsers, id == id2['id'] ? id3['id'] : id2['id']);
     // final ext = Store.defaultProfilePictureExtension;
     // final assetImage = await ImageRepository()
     //     .getImageFileFromAssets('$id$ext', additionalPath: MockAssetPath);
