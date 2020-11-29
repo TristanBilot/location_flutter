@@ -10,7 +10,8 @@ import 'package:location_project/storage/databases/messaging_database.dart';
 import 'package:location_project/themes/theme_utils.dart';
 import 'package:location_project/use_cases/account/account_page.dart';
 import 'package:location_project/use_cases/map/repositories/area_fetching_repository.dart';
-import 'package:location_project/use_cases/swipe_card/cubit/swipe_cubit.dart';
+import 'package:location_project/use_cases/swipe_card/buttons%20cubit/swipe_buttons_cubit.dart';
+import 'package:location_project/use_cases/swipe_card/swipe%20cubit/swipe_cubit.dart';
 import 'package:location_project/use_cases/swipe_card/swipe_page.dart';
 import 'package:location_project/use_cases/tab_pages/counters/cubit/counters_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif_listener.dart';
@@ -38,6 +39,7 @@ class _HomePageState extends State<HomePage> {
         BlocProvider(create: (context) => AreaCubit(AreaFetchingRepository())),
         BlocProvider(create: (context) => BlockingCubit()),
         BlocProvider(create: (context) => NavigationCubit()),
+        BlocProvider(create: (context) => SwipeButtonsCubit()),
       ],
       child: HomePageContainer(),
     );

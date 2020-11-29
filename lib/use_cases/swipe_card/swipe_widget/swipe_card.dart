@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:location_project/conf/routes.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/storage/distant/user_store.dart';
-import 'package:location_project/use_cases/account/account_page.dart';
 import 'package:location_project/use_cases/start_path/widgets/basic_button.dart';
+import 'package:location_project/use_cases/swipe_card/buttons%20cubit/swipe_buttons_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/navigation/cubit/navigation_cubit.dart';
 import 'package:location_project/widgets/cached_circle_user_image.dart';
 import 'package:location_project/widgets/textSF.dart';
 import 'swipe_card_section.dart';
 import 'dart:math';
+
+enum SwipeButtonsCurrentState {
+  Right,
+  Left,
+  None,
+}
 
 List<Alignment> cardsAlign = [
   Alignment(0.0, 1.0),
@@ -17,6 +22,8 @@ List<Alignment> cardsAlign = [
   Alignment(0.0, 0.0)
 ];
 List<Size> cardsSize = List(3);
+
+SwipeButtonsCurrentState buttonsState = SwipeButtonsCurrentState.None;
 
 class SwipeCard extends StatefulWidget {
   static const MaxHeight = 0.95;
@@ -69,16 +76,26 @@ class _SwipeCardState extends State<SwipeCard>
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-        child: Stack(
-      children: [
-        emptyUsersPlaceholder(),
-        backCard(),
-        middleCard(),
-        frontCard(),
-        gestureDetector(),
-      ],
-    ));
+    // buttonsState = SwipeButtonsCurrentState.None;
+    return BlocListener<SwipeButtonsCubit, SwipeButtonsState>(
+      listener: (context, state) {
+        if (state is SwipeButtonsLikeState)
+          buttonsState = SwipeButtonsCurrentState.Right;
+        else if (state is SwipeButtonsUnlikeState)
+          buttonsState = SwipeButtonsCurrentState.Left;
+        animateCards();
+      },
+      child: Expanded(
+          child: Stack(
+        children: [
+          emptyUsersPlaceholder(),
+          backCard(),
+          middleCard(),
+          frontCard(),
+          gestureDetector(),
+        ],
+      )),
+    );
   }
 
   Widget emptyUsersPlaceholder() {
@@ -209,6 +226,7 @@ class _SwipeCardState extends State<SwipeCard>
 
       frontCardAlign = defaultFrontCardAlign;
       frontCardRot = 0.0;
+      buttonsState = SwipeButtonsCurrentState.None;
     });
   }
 
@@ -248,13 +266,22 @@ class CardsAnimation {
 
   static Animation<Alignment> frontCardDisappearAlignmentAnim(
       AnimationController parent, Alignment beginAlign) {
-    return AlignmentTween(
+    final alignment = AlignmentTween(
             begin: beginAlign,
-            end: Alignment(
-                beginAlign.x > 0 ? beginAlign.x + 30.0 : beginAlign.x - 30.0,
+            end: Alignment(_getLeftOrRightAlignment(beginAlign),
                 0.0) // Has swiped to the left or right?
             )
         .animate(CurvedAnimation(
             parent: parent, curve: Interval(0.0, 0.5, curve: Curves.easeIn)));
+    return alignment;
+  }
+
+  static double _getLeftOrRightAlignment(Alignment beginAlign) {
+    final toRight = beginAlign.x + 30.0;
+    final toLeft = beginAlign.x - 30.0;
+    if (buttonsState == SwipeButtonsCurrentState.Left)
+      return toLeft;
+    else if (buttonsState == SwipeButtonsCurrentState.Right) return toRight;
+    return beginAlign.x > 0 ? toRight : toLeft;
   }
 }
