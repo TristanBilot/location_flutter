@@ -39,7 +39,7 @@ class _TabPageViewTileState extends State<TabPageViewTile> {
   _onTileTapped(BuildContext context, User user) {
     UserRepository().updateView(
         UserStore().user.id, UserField.UserIDsWhoWiewedMe, widget.view, true);
-    UserMapCard(context, user, () async => {}).show(addViewToStore: false);
+    UserMapCard(context, user).show(addViewToStore: false);
   }
 
   _onRemoveViewTap(String viewerID) {

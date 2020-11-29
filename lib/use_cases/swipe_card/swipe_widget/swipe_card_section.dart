@@ -14,13 +14,8 @@ class SwipeCardSection extends StatelessWidget {
           SizedBox.expand(
             child: ClipRRect(
               // borderRadius: BorderRadius.circular(20),
-              child: user == null
-                  ? Image.asset(
-                      'assets/mock_images/damien.duprat@hotmail.fr.png', //
-                      fit: BoxFit.cover)
-                  : CachedNetworkImage(
-                      imageUrl: user == null ? '' : user.pictureURL,
-                      fit: BoxFit.cover),
+              child: CachedNetworkImage(
+                  imageUrl: user.pictureURL, fit: BoxFit.cover),
             ),
           ),
           SizedBox.expand(

@@ -108,26 +108,12 @@ class UserRepository {
   /// blocked him.
   /// The user store is updated before refreshing the area to
   /// not diplay this user.
-  Future<void> listenToUsersWhoBlockMeEvents(
-      String id, Function fetchAreaFromMap) async {
-    _firestore
+  Stream<QuerySnapshot> getUserWhoBlockedMeStream(String id) {
+    return _firestore
         .collection(RootKey)
         .doc(id)
         .collection(UserField.UserIDsWhoBlockedMe.value)
-        .snapshots()
-        .listen((event) {
-      if (event.docChanges.isEmpty) return;
-      final existingUsers = UserStore().user.userIDsWhoBlockedMe.toSet();
-      final changes = event.docChanges.map((e) => e.doc.id).toList();
-      for (var change in changes) {
-        if (existingUsers.contains(change))
-          existingUsers.remove(change);
-        else
-          existingUsers.add(change);
-      }
-      UserStore().updateLocalUsersWhoBlockMe(existingUsers.toList());
-      fetchAreaFromMap();
-    });
+        .snapshots();
   }
 
   /// Returns a snapshot of documents in the root of the user Field.

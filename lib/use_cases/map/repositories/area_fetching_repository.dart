@@ -10,8 +10,8 @@ import 'package:location_project/storage/memory/location_cache.dart';
 import 'package:location_project/storage/memory/memory_store.dart';
 import 'package:location_project/conf/extensions.dart';
 import 'dart:async';
-import 'image_repository.dart';
-import '../models/user.dart';
+import '../../../repositories/image_repository.dart';
+import '../../../models/user.dart';
 
 class AreaFetchingRepository {
   Geoflutterfire _geo;

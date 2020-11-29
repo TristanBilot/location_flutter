@@ -3,7 +3,7 @@ import 'package:location_project/controllers/location_controller.dart';
 import 'package:location_project/pages/location_disabled_page.dart';
 import 'package:location_project/storage/memory/location_cache.dart';
 import 'package:location_project/storage/memory/memory_store.dart';
-import 'package:location_project/widgets/map.dart';
+import 'package:location_project/use_cases/map/map.dart';
 
 class MapPage extends StatefulWidget {
   MapPage({Key key}) : super(key: key);

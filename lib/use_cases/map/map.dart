@@ -2,19 +2,22 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:location_project/conf/conf.dart';
 import 'package:location_project/conf/store.dart';
 import 'package:location_project/controllers/location_controller.dart';
 import 'package:location_project/models/user.dart';
-import 'package:location_project/repositories/area_fetching_repository.dart';
+import 'package:location_project/use_cases/blocking/cubit/blocking_cubit.dart';
+import 'package:location_project/use_cases/map/cubit/area_cubit.dart';
+import 'package:location_project/use_cases/map/repositories/area_fetching_repository.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/storage/memory/location_cache.dart';
 import 'package:location_project/widgets/user_map_card.dart';
 
-import 'user_marker.dart';
+import '../../widgets/user_marker.dart';
 
 class Map extends StatefulWidget {
   @override
@@ -24,14 +27,14 @@ class Map extends StatefulWidget {
 class MapState extends State<Map> with WidgetsBindingObserver {
   Set<UserMarker> _markers;
   Set<Circle> _circles;
+  List<User> _users;
 
   Completer<GoogleMapController> _controller;
-  AreaFetchingRepository _areaFetcher;
 
   MapState() {
     _markers = {};
     _controller = Completer();
-    _areaFetcher = AreaFetchingRepository();
+    _users = List();
   }
 
   String _darkMapStyle;
@@ -42,16 +45,24 @@ class MapState extends State<Map> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     LocationController().handleLocationIfNeeded();
-    _handleBlockEvents();
 
     _loadMapStyles().then((_) => _setMapStyle());
   }
 
-  /// Used to handle when a user block the logged user and
-  /// then refresh the page to not see the user on the map
-  void _handleBlockEvents() {
-    UserRepository().listenToUsersWhoBlockMeEvents(
-        UserStore().user.id, _fetchUsersAroundMe);
+  _updateUserMarkers() {
+    context.read<AreaCubit>().fetchArea((users) {
+      setStateIfMounted(() {
+        _markers.clear();
+        users.forEach((user) {
+          if (!UserStore().user.userIDsWhoBlockedMe.contains(user.id))
+            _markers.add(UserMarker(
+                user: user,
+                icon: user.icon,
+                position: LatLng(user.coord[0], user.coord[1]),
+                onTap: () => _onMarkerTap(context, user)));
+        });
+      });
+    });
   }
 
   Future _loadMapStyles() async {
@@ -92,28 +103,8 @@ class MapState extends State<Map> with WidgetsBindingObserver {
     if (mounted) setState(f);
   }
 
-  _onMarkerTap(context, User user) {
-    UserMapCard(context, user, _fetchUsersAroundMe).show();
-  }
-
-  Future _fetchUsersAroundMe() async {
-    // in the case when the user enable location from settings
-    // we need to handle location again
-    final stream = _areaFetcher.fetch();
-    _areaFetcher.listenAreaStream(stream, (users) {
-      setStateIfMounted(() {
-        _markers.clear();
-        // may be faster but need 2 times checkinf for unliked
-        // users in the code, here for first load and in the build()
-        users.forEach((user) {
-          _markers.add(UserMarker(
-              user: user,
-              icon: user.icon,
-              position: LatLng(user.coord[0], user.coord[1]),
-              onTap: () => _onMarkerTap(context, user)));
-        });
-      });
-    });
+  _onMarkerTap(BuildContext context, User user) {
+    UserMapCard(context, user).show();
   }
 
   void update(Function completion) {
@@ -136,45 +127,45 @@ class MapState extends State<Map> with WidgetsBindingObserver {
   }
 
   Future<bool> _waitForBuildMap() async {
-    return Future.delayed(Duration(milliseconds: 10), () => true);
+    return Future.delayed(Duration(milliseconds: 300), () => true);
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _waitForBuildMap(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return Column(children: [
-            Spacer(),
-            Container(
-              width: 50,
-              height: 50,
-              child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                      Theme.of(context).primaryColor)),
-            ),
-            Spacer(),
-          ]);
-        }
-        return Stack(children: [
-          GoogleMap(
-              mapType: MapType.normal,
-              myLocationEnabled: true,
-              markers: _markers,
-              circles: Conf.displayAreaCircle ? _circles : null,
-              initialCameraPosition: CameraPosition(
-                zoom: 18,
-                target: Conf.testMode
-                    ? Store.parisPosition
-                    : LocationCache().location,
-              ),
-              onMapCreated: (GoogleMapController controller) {
-                _controller.complete(controller);
-                _fetchUsersAroundMe();
-              }),
-        ]);
-      },
-    );
+        future: _waitForBuildMap(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return BlocListener<AreaCubit, AreaState>(
+              listener: (context, state) {
+                if (state is AreaFetchedState) {
+                  _users = state.users;
+                  _updateUserMarkers();
+                }
+              },
+              child: GoogleMap(
+                  mapType: MapType.normal,
+                  myLocationEnabled: true,
+                  markers: _markers,
+                  circles: Conf.displayAreaCircle ? _circles : null,
+                  initialCameraPosition: CameraPosition(
+                    zoom: 18,
+                    target: Conf.testMode
+                        ? Store.parisPosition
+                        : LocationCache().location,
+                  ),
+                  onMapCreated: (GoogleMapController controller) {
+                    _controller.complete(controller);
+                    _updateUserMarkers();
+                  }),
+            );
+          }
+          return Text('null');
+        });
+
+    // BlocListener<BlockingCubit, BlockingState>(
+    //     listener: (context, state) {
+    //   _updateUserMarkers(_users);
+    // }),
   }
 }

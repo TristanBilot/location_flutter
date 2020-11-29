@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/controllers/app_badge_controller.dart';
 import 'package:location_project/controllers/location_controller.dart';
-import 'package:location_project/pages/map_page.dart';
+import 'package:location_project/use_cases/blocking/cubit/blocking_cubit.dart';
+import 'package:location_project/use_cases/map/cubit/area_cubit.dart';
+import 'package:location_project/use_cases/map/map_page.dart';
 import 'package:location_project/pages/messaging_tabs_page.dart';
 import 'package:location_project/storage/databases/messaging_database.dart';
 import 'package:location_project/themes/theme_utils.dart';
 import 'package:location_project/use_cases/account/account_page.dart';
+import 'package:location_project/use_cases/map/repositories/area_fetching_repository.dart';
 import 'package:location_project/use_cases/swipe_card/cubit/swipe_cubit.dart';
 import 'package:location_project/use_cases/swipe_card/swipe_page.dart';
 import 'package:location_project/use_cases/tab_pages/counters/cubit/counters_cubit.dart';
@@ -30,7 +33,9 @@ class _HomePageState extends State<HomePage> {
         BlocProvider(
             create: (context) =>
                 CountersCubit(context, MessagingDatabase())..init()),
-        BlocProvider(create: (context) => SwipeCubit()..fetchUsersFeed())
+        BlocProvider(create: (context) => SwipeCubit()..fetchUsersFeed()),
+        BlocProvider(create: (context) => AreaCubit(AreaFetchingRepository())),
+        BlocProvider(create: (context) => BlockingCubit()),
       ],
       child: HomePageContainer(),
     );

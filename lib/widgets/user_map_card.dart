@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/controllers/messaging_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/helpers/logger.dart';
 import 'package:location_project/storage/distant/user_store.dart';
+import 'package:location_project/use_cases/blocking/cubit/blocking_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/message_page.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/message_sender.dart';
@@ -19,12 +21,10 @@ class UserMapCard extends StatefulWidget implements Showable {
 
   final BuildContext context;
   final User user;
-  final Future<void> Function() fetchAreaFunction;
 
   UserMapCard(
     this.context,
     this.user,
-    this.fetchAreaFunction,
   );
 
   void show({bool addViewToStore = true}) {
@@ -125,12 +125,12 @@ class _UserCardState extends State<UserMapCard> {
   }
 
   /// Action when the user blocks another user on the map.
-  Future<void> _blockUser(context) async {
+  Future<void> _blockUser(BuildContext context) async {
     User blockedUser = widget.user;
     UserStore().addBlockedUser(blockedUser.id).then((_) async {
       _blockButtonController.success();
       HapticFeedback.mediumImpact();
-      await widget.fetchAreaFunction();
+      context.read<BlockingCubit>().emitNewUserWhoBlockedMe();
       await Future.delayed(Duration(milliseconds: 200));
       Navigator.of(context).pop();
     });
