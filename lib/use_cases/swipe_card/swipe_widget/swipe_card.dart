@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:location_project/conf/routes.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/storage/distant/user_store.dart';
+import 'package:location_project/use_cases/account/account_page.dart';
 import 'package:location_project/use_cases/start_path/widgets/basic_button.dart';
+import 'package:location_project/use_cases/tab_pages/navigation/cubit/navigation_cubit.dart';
 import 'package:location_project/widgets/cached_circle_user_image.dart';
 import 'package:location_project/widgets/textSF.dart';
 import 'swipe_card_section.dart';
@@ -96,7 +100,8 @@ class _SwipeCardState extends State<SwipeCard>
             align: TextAlign.center,
           ),
           Spacer(),
-          BasicButton('Extend my distance 📍'),
+          BasicButton('Extend my distance 📍',
+              onPressed: () => context.read<NavigationCubit>().navigateTo(0)),
         ],
       ),
     );

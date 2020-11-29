@@ -14,6 +14,7 @@ import 'package:location_project/use_cases/swipe_card/cubit/swipe_cubit.dart';
 import 'package:location_project/use_cases/swipe_card/swipe_page.dart';
 import 'package:location_project/use_cases/tab_pages/counters/cubit/counters_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif_listener.dart';
+import 'package:location_project/use_cases/tab_pages/navigation/cubit/navigation_cubit.dart';
 import 'package:location_project/widgets/home_page_status_without_count.dart';
 import 'package:location_project/widgets/home_page_tab_bar_icon.dart';
 import 'package:location_project/widgets/home_page_tab_bar_image_icon.dart';
@@ -36,6 +37,7 @@ class _HomePageState extends State<HomePage> {
         BlocProvider(create: (context) => SwipeCubit()..fetchUsersFeed()),
         BlocProvider(create: (context) => AreaCubit(AreaFetchingRepository())),
         BlocProvider(create: (context) => BlockingCubit()),
+        BlocProvider(create: (context) => NavigationCubit()),
       ],
       child: HomePageContainer(),
     );
@@ -94,45 +96,51 @@ class _HomePageContainerState extends State<HomePageContainer>
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(48.0),
-        child: AppBar(
-          elevation: 1,
-          backgroundColor: ThemeUtils.getTabColor(context),
-          bottom: TabBar(
-            indicatorColor:
-                Colors.transparent, // Theme.of(context).primaryColor,
-            tabs: [
-              // Tab 1.
-              Tab(
+        child: BlocListener<NavigationCubit, NavigationState>(
+          listener: (context, state) {
+            if (state is NavigateToIndexState)
+              _tabController.animateTo(state.index);
+          },
+          child: AppBar(
+            elevation: 1,
+            backgroundColor: ThemeUtils.getTabColor(context),
+            bottom: TabBar(
+              indicatorColor:
+                  Colors.transparent, // Theme.of(context).primaryColor,
+              tabs: [
+                // Tab 1.
+                Tab(
+                    icon: HomePageTabBarIcon(
+                        Icons.account_circle, _tabController.index == 0)),
+                Tab(
                   icon: HomePageTabBarIcon(
-                      Icons.account_circle, _tabController.index == 0)),
-              Tab(
-                icon:
-                    HomePageTabBarIcon(Icons.swipe, _tabController.index == 1),
-              ),
-              // Tab 2.
-              Tab(icon: HomePageTabBarImageIcon(_tabController.index == 2)),
-              // Tab 3.
-              Tab(
-                  icon: Container(
-                      width: 40, // to fix position of status
-                      height: 30,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          HomePageTabBarIcon(
-                              Icons.textsms, _tabController.index == 3),
-                          BlocBuilder<CountersCubit, CountersState>(
-                              builder: (context, state) {
-                            if (state.isANotificationUnread())
-                              return Align(
-                                  alignment: Alignment.topRight,
-                                  child: HomePageStatusWithoutCount());
-                            return SizedBox();
-                          })
-                        ],
-                      )))
-            ],
-            controller: _tabController,
+                      Icons.swipe, _tabController.index == 1),
+                ),
+                // Tab 2.
+                Tab(icon: HomePageTabBarImageIcon(_tabController.index == 2)),
+                // Tab 3.
+                Tab(
+                    icon: Container(
+                        width: 40, // to fix position of status
+                        height: 30,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            HomePageTabBarIcon(
+                                Icons.textsms, _tabController.index == 3),
+                            BlocBuilder<CountersCubit, CountersState>(
+                                builder: (context, state) {
+                              if (state.isANotificationUnread())
+                                return Align(
+                                    alignment: Alignment.topRight,
+                                    child: HomePageStatusWithoutCount());
+                              return SizedBox();
+                            })
+                          ],
+                        )))
+              ],
+              controller: _tabController,
+            ),
           ),
         ),
       ),
