@@ -99,7 +99,8 @@ class MapState extends State<Map> with WidgetsBindingObserver {
   Future _fetchUsersAroundMe() async {
     // in the case when the user enable location from settings
     // we need to handle location again
-    _areaFetcher.fetch((users) {
+    final stream = _areaFetcher.fetch();
+    _areaFetcher.listenAreaStream(stream, (users) {
       setStateIfMounted(() {
         _markers.clear();
         // may be faster but need 2 times checkinf for unliked

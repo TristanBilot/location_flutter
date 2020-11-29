@@ -16,6 +16,7 @@ class MemoryStore {
   void putUser(User user) => _areaUsersCache[user.id] = user;
   User getUser(String id) => _areaUsersCache[id];
   bool userExists(String id) => _areaUsersCache.containsKey(id);
+  List<User> get users => _areaUsersCache.values.toList();
 
   /*
   * displaying of toast notifications

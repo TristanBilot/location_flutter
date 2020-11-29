@@ -66,6 +66,9 @@ class User extends HiveObject {
   @HiveField(10)
   List<String> deviceTokens;
 
+  // List<int> wantedAgeRange;
+  // final List<String> wantedGenders;
+
   /// Collections
   List<String> blockedUserIDs;
   List<String> userIDsWhoBlockedMe;

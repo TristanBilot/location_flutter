@@ -7,6 +7,7 @@ import 'package:location_project/pages/messaging_tabs_page.dart';
 import 'package:location_project/storage/databases/messaging_database.dart';
 import 'package:location_project/themes/theme_utils.dart';
 import 'package:location_project/use_cases/account/account_page.dart';
+import 'package:location_project/use_cases/swipe_card/cubit/swipe_cubit.dart';
 import 'package:location_project/use_cases/swipe_card/swipe_page.dart';
 import 'package:location_project/use_cases/tab_pages/counters/cubit/counters_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif_listener.dart';
@@ -26,8 +27,13 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     listenToNotifications(context);
 
-    return BlocProvider(
-      create: (context) => CountersCubit(context, MessagingDatabase())..init(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+            create: (context) =>
+                CountersCubit(context, MessagingDatabase())..init()),
+        BlocProvider(create: (context) => SwipeCubit())
+      ],
       child: HomePageContainer(),
     );
   }

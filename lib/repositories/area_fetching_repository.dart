@@ -29,7 +29,7 @@ class AreaFetchingRepository {
   /// Get the current location and fetch all the users
   /// in the defined radius thanks to Geoflutterfire.
   /// It returns the stream of User snapshots.
-  Future<void> fetch(Function completion) async {
+  Stream<List<DocumentSnapshot>> fetch() {
     final ref = _firestore.collection('locations');
 
     final GeoFirePoint center = Conf.testMode
@@ -41,15 +41,16 @@ class AreaFetchingRepository {
             center: center,
             radius: radius / 1000,
             field: UserField.Position.value);
-    return _listenAreaStream(stream, center, completion);
+    // return _listenAreaStream(stream, completion);
+    return stream;
   }
 
   /// Listens to the stream of users around the current location.
   /// For each user around, the picture is fetched and a User object
   /// is created. The completion is used to setState() in the view
   /// to update the list of markers to display to the map.
-  Future<void> _listenAreaStream(Stream<List<DocumentSnapshot>> stream,
-      GeoFirePoint center, Function completion) async {
+  Future<void> listenAreaStream(
+      Stream<List<DocumentSnapshot>> stream, Function completion) async {
     stream.listen((List<DocumentSnapshot> users) async {
       Logger().v('=> ${users.length} users in area.');
       int userCount = 0;
@@ -64,7 +65,10 @@ class AreaFetchingRepository {
           final geoPoint = user.data()[UserField.Position.value]['geopoint'];
 
           User newUser = await UserRepository().fetchUser(id,
-              fromSnapshot: user, useCache: true, withViews: false);
+              fromSnapshot: user,
+              useCache: true,
+              withViews: false,
+              withLikes: false);
           // updates the coords in the cache.
           newUser.coord =
               List<double>.from([geoPoint.latitude, geoPoint.longitude]);

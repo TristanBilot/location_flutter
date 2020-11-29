@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:location_project/use_cases/swipe_card/cubit/swipe_cubit.dart';
 import 'package:location_project/use_cases/swipe_card/swipe_widget/swipe_card.dart';
 
 class SwipePage extends StatefulWidget {
@@ -8,10 +10,24 @@ class SwipePage extends StatefulWidget {
 
 class _SwipePageState extends State<SwipePage> {
   @override
+  void initState() {
+    super.initState();
+    _fetch();
+  }
+
+  void _fetch() {
+    context.read<SwipeCubit>().fetchSwipableUsers();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      SwipeCard(context),
+      BlocBuilder<SwipeCubit, SwipeState>(builder: (context, state) {
+        if (state is SwipableUsersFetched) {
+          return SwipeCard(context);
+        }
+        return Container();
+      }),
       buttonsRow(),
     ]);
   }
