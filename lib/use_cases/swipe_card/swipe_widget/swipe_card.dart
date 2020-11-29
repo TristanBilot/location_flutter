@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:location_project/models/user.dart';
+import 'package:location_project/storage/distant/user_store.dart';
+import 'package:location_project/use_cases/start_path/widgets/basic_button.dart';
+import 'package:location_project/widgets/cached_circle_user_image.dart';
+import 'package:location_project/widgets/textSF.dart';
 import 'swipe_card_section.dart';
 import 'dart:math';
 
@@ -11,10 +15,11 @@ List<Alignment> cardsAlign = [
 List<Size> cardsSize = List(3);
 
 class SwipeCard extends StatefulWidget {
+  static const MaxHeight = 0.95;
   final List<User> users;
 
   SwipeCard(BuildContext context, this.users) {
-    cardsSize[0] = Size(MediaQuery.of(context).size.width * 0.95,
+    cardsSize[0] = Size(MediaQuery.of(context).size.width * MaxHeight,
         MediaQuery.of(context).size.height * 0.65);
     cardsSize[1] = Size(MediaQuery.of(context).size.width * 0.9,
         MediaQuery.of(context).size.height * 0.6);
@@ -73,7 +78,28 @@ class _SwipeCardState extends State<SwipeCard>
   }
 
   Widget emptyUsersPlaceholder() {
-    return Text('There is no more users around you.');
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Spacer(),
+          CachedCircleUserImage(
+            UserStore().user.pictureURL,
+            borderColor: Colors.transparent,
+            size: MediaQuery.of(context).size.width * 0.4,
+          ),
+          SizedBox(height: 30),
+          TextSF(
+            'Waiting for new people around... 🌏',
+            fontSize: 26,
+            fontWeight: FontWeight.w700,
+            align: TextAlign.center,
+          ),
+          Spacer(),
+          BasicButton('Extend my distance 📍'),
+        ],
+      ),
+    );
   }
 
   Widget backCard() {

@@ -64,10 +64,7 @@ class SwipeCubit extends Cubit<SwipeState> {
     users.forEach((e) => MemoryStore().putUser(e));
   }
 
-  List<String> _getUserSublistToFetch(
-    List<String> allUsers,
-    int atIndex,
-  ) {
+  List<String> _getUserSublistToFetch(List<String> allUsers, int atIndex) {
     int endIndex = atIndex +
         (RangeToFetch > allUsers.length - atIndex
             ? allUsers.length - atIndex

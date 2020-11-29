@@ -10,19 +10,13 @@ class SwipePage extends StatefulWidget {
 
 class _SwipePageState extends State<SwipePage> {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Column(children: [
+    return Column(mainAxisAlignment: MainAxisAlignment.end, children: [
       BlocBuilder<SwipeCubit, SwipeState>(builder: (context, state) {
         if (state is SwipableUsersFetched) {
-          final users = state.users;
-          return SwipeCard(context, users);
+          return SwipeCard(context, state.users);
         }
-        return Container();
+        return SizedBox(height: SwipeCard.MaxHeight);
       }),
       buttonsRow(),
     ]);
@@ -34,7 +28,7 @@ class _SwipePageState extends State<SwipePage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
+        children: [
           FloatingActionButton(
             mini: true,
             onPressed: () {},
