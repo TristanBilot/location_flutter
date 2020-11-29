@@ -28,8 +28,8 @@ class SwipeCard extends StatefulWidget {
 
 class _SwipeCardState extends State<SwipeCard>
     with SingleTickerProviderStateMixin {
-  int cardsCounter = 0;
   int totalCardsCounter = 0;
+  int swappedCardCounter = 0;
 
   List<SwipeCardSection> cards = List();
   AnimationController _controller;
@@ -43,10 +43,10 @@ class _SwipeCardState extends State<SwipeCard>
     super.initState();
     // Init the animation controller
     // Init cards
-    for (cardsCounter = 0; cardsCounter < 3; cardsCounter++) {
-      cards.add(
-          SwipeCardSection(cardsCounter, widget.users[totalCardsCounter++]));
-    }
+    widget.users.forEach((user) {
+      cards.add(SwipeCardSection(user));
+      totalCardsCounter++;
+    });
 
     frontCardAlign = cardsAlign[2];
 
@@ -63,49 +63,17 @@ class _SwipeCardState extends State<SwipeCard>
     return Expanded(
         child: Stack(
       children: [
+        emptyUsersPlaceholder(),
         backCard(),
         middleCard(),
         frontCard(),
-
-        // Prevent swiping if the cards are animating
-        _controller.status != AnimationStatus.forward
-            ? SizedBox.expand(
-                child: GestureDetector(
-                // While dragging the first card
-                onPanUpdate: (DragUpdateDetails details) {
-                  // Add what the user swiped in the last frame to the alignment of the card
-                  setState(() {
-                    // 20 is the "speed" at which moves the card
-                    frontCardAlign = Alignment(
-                        frontCardAlign.x +
-                            20 *
-                                details.delta.dx /
-                                MediaQuery.of(context).size.width,
-                        frontCardAlign.y +
-                            40 *
-                                details.delta.dy /
-                                MediaQuery.of(context).size.height);
-
-                    frontCardRot = frontCardAlign.x; // * rotation speed;
-                  });
-                },
-                // When releasing the first card
-                onPanEnd: (_) {
-                  // If the front card was swiped far enough to count as swiped
-                  if (frontCardAlign.x > 3.0 || frontCardAlign.x < -3.0) {
-                    animateCards();
-                  } else {
-                    // Return to the initial rotation and alignment
-                    setState(() {
-                      frontCardAlign = defaultFrontCardAlign;
-                      frontCardRot = 0.0;
-                    });
-                  }
-                },
-              ))
-            : Container(),
+        gestureDetector(),
       ],
     ));
+  }
+
+  Widget emptyUsersPlaceholder() {
+    return Text('There is no more users around you.');
   }
 
   Widget backCard() {
@@ -147,18 +115,66 @@ class _SwipeCardState extends State<SwipeCard>
         ));
   }
 
+  Widget gestureDetector() {
+    // Prevent swiping if the cards are animating
+    return _controller.status != AnimationStatus.forward
+        ? SizedBox.expand(
+            child: GestureDetector(
+            // While dragging the first card
+            onPanUpdate: (DragUpdateDetails details) {
+              // Add what the user swiped in the last frame to the alignment of the card
+              setState(() {
+                // 20 is the "speed" at which moves the card
+                frontCardAlign = Alignment(
+                    frontCardAlign.x +
+                        20 *
+                            details.delta.dx /
+                            MediaQuery.of(context).size.width,
+                    frontCardAlign.y +
+                        40 *
+                            details.delta.dy /
+                            MediaQuery.of(context).size.height);
+
+                frontCardRot = frontCardAlign.x; // * rotation speed;
+              });
+            },
+            // When releasing the first card
+            onPanEnd: (_) {
+              // If the front card was swiped far enough to count as swiped
+              if (frontCardAlign.x > 3.0 || frontCardAlign.x < -3.0) {
+                animateCards();
+              } else {
+                // Return to the initial rotation and alignment
+                setState(() {
+                  frontCardAlign = defaultFrontCardAlign;
+                  frontCardRot = 0.0;
+                });
+              }
+            },
+          ))
+        : Container();
+  }
+
   void changeCardsOrder() {
     setState(() {
       // Swap cards (back card becomes the middle card; middle card becomes the front card, front card becomes a  bottom card)
-      var temp = cards[0];
-      cards[0] = cards[1];
-      cards[1] = cards[2];
-      cards[2] = temp;
+      int remainingUsers = widget.users.length - swappedCardCounter;
+      if (remainingUsers >= 3) {
+        var temp = cards[0];
+        cards[0] = cards[1];
+        cards[1] = cards[2];
+        cards[2] = temp;
 
-      cards[2] =
-          SwipeCardSection(cardsCounter, widget.users[totalCardsCounter]);
-      cardsCounter++;
-      totalCardsCounter++;
+        cards[2] = totalCardsCounter >= widget.users.length
+            ? null
+            : SwipeCardSection(widget.users[totalCardsCounter++]);
+      } else if (remainingUsers == 2) {
+        cards[0] = cards[1];
+        cards[1] = cards[2];
+      } else if (remainingUsers == 1) {
+        cards[0] = cards[1];
+      }
+      swappedCardCounter++;
 
       frontCardAlign = defaultFrontCardAlign;
       frontCardRot = 0.0;

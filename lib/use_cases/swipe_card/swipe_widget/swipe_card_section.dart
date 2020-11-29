@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:location_project/models/user.dart';
 
 class SwipeCardSection extends StatelessWidget {
-  final int cardNum;
   final User user;
-  SwipeCardSection(this.cardNum, this.user);
+  SwipeCardSection(this.user);
 
   @override
   Widget build(BuildContext context) {
