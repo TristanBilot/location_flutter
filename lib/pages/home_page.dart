@@ -52,7 +52,7 @@ class HomePageContainer extends StatefulWidget {
 class _HomePageContainerState extends State<HomePageContainer>
     with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   static const NbTabs = 4;
-  final _initialIndex = 1;
+  final _initialIndex = 2;
   TabController _tabController;
 
   @override

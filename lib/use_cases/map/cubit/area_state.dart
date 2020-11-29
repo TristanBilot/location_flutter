@@ -8,11 +8,3 @@ abstract class AreaState extends Equatable {
 }
 
 class AreaInitial extends AreaState {}
-
-class AreaFetchedState extends AreaState {
-  const AreaFetchedState(this.users);
-  final List<User> users;
-
-  @override
-  List<Object> get props => [];
-}

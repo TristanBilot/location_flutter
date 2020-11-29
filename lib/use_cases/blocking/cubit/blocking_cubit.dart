@@ -22,11 +22,11 @@ class BlockingCubit extends Cubit<BlockingState> {
           existingUsers.add(change);
       }
       UserStore().updateLocalUsersWhoBlockMe(existingUsers.toList());
-      emit(BlockingUsersFetched());
+      emit(BlockingUsersFetchedState());
     });
   }
 
   void emitNewUserWhoBlockedMe() {
-    emit(BlockingUsersFetched());
+    emit(BlockingUsersFetchedState());
   }
 }

@@ -9,7 +9,7 @@ abstract class BlockingState extends Equatable {
 
 class BlockingInitial extends BlockingState {}
 
-class BlockingUsersFetched extends BlockingState {
+class BlockingUsersFetchedState extends BlockingState {
   @override
   List<Object> get props => [];
 }

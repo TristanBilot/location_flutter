@@ -8,11 +8,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location_project/conf/conf.dart';
 import 'package:location_project/conf/store.dart';
 import 'package:location_project/controllers/location_controller.dart';
-import 'package:location_project/models/user.dart';
 import 'package:location_project/use_cases/blocking/cubit/blocking_cubit.dart';
 import 'package:location_project/use_cases/map/cubit/area_cubit.dart';
 import 'package:location_project/use_cases/map/repositories/area_fetching_repository.dart';
-import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/storage/memory/location_cache.dart';
 import 'package:location_project/widgets/user_map_card.dart';
@@ -27,14 +25,11 @@ class Map extends StatefulWidget {
 class MapState extends State<Map> with WidgetsBindingObserver {
   Set<UserMarker> _markers;
   Set<Circle> _circles;
-  List<User> _users;
-
   Completer<GoogleMapController> _controller;
 
   MapState() {
     _markers = {};
     _controller = Completer();
-    _users = List();
   }
 
   String _darkMapStyle;
@@ -49,6 +44,15 @@ class MapState extends State<Map> with WidgetsBindingObserver {
     _loadMapStyles().then((_) => _setMapStyle());
   }
 
+  @override
+  void didChangePlatformBrightness() => setState(() => _setMapStyle());
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
   _updateUserMarkers() {
     context.read<AreaCubit>().fetchArea((users) {
       setStateIfMounted(() {
@@ -59,11 +63,29 @@ class MapState extends State<Map> with WidgetsBindingObserver {
                 user: user,
                 icon: user.icon,
                 position: LatLng(user.coord[0], user.coord[1]),
-                onTap: () => _onMarkerTap(context, user)));
+                onTap: () => UserMapCard(context, user).show()));
         });
       });
     });
   }
+
+  Set<UserMarker> _markersWithoutUsersBlockingMe() {
+    return _markers
+        .where((e) => !UserStore().user.userIDsWhoBlockedMe.contains(e.user.id))
+        .toSet();
+  }
+
+  Widget get _placeholder => Column(children: [
+        Spacer(),
+        Container(
+          width: 50,
+          height: 50,
+          child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(
+                  Theme.of(context).primaryColor)),
+        ),
+        Spacer(),
+      ]);
 
   Future _loadMapStyles() async {
     _darkMapStyle = await rootBundle.loadString('assets/map_styles/dark.json');
@@ -96,39 +118,12 @@ class MapState extends State<Map> with WidgetsBindingObserver {
     ]);
   }
 
-  /*
-  * mandatory to use in _fetchUsersAroundMe() to avoid retaining.
-  */
   void setStateIfMounted(Function f) {
     if (mounted) setState(f);
   }
 
-  _onMarkerTap(BuildContext context, User user) {
-    UserMapCard(context, user).show();
-  }
-
-  void update(Function completion) {
-    setState(() {
-      completion();
-    });
-  }
-
-  @override
-  void didChangePlatformBrightness() {
-    setState(() {
-      _setMapStyle();
-    });
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  Future<bool> _waitForBuildMap() async {
-    return Future.delayed(Duration(milliseconds: 300), () => true);
-  }
+  Future<bool> _waitForBuildMap() async =>
+      Future.delayed(Duration(milliseconds: 10), () => true);
 
   @override
   Widget build(BuildContext context) {
@@ -136,17 +131,12 @@ class MapState extends State<Map> with WidgetsBindingObserver {
         future: _waitForBuildMap(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return BlocListener<AreaCubit, AreaState>(
-              listener: (context, state) {
-                if (state is AreaFetchedState) {
-                  _users = state.users;
-                  _updateUserMarkers();
-                }
-              },
+            return BlocListener<BlockingCubit, BlockingState>(
+              listener: (context, state) => setStateIfMounted(() => {}),
               child: GoogleMap(
                   mapType: MapType.normal,
                   myLocationEnabled: true,
-                  markers: _markers,
+                  markers: _markersWithoutUsersBlockingMe(),
                   circles: Conf.displayAreaCircle ? _circles : null,
                   initialCameraPosition: CameraPosition(
                     zoom: 18,
@@ -160,12 +150,7 @@ class MapState extends State<Map> with WidgetsBindingObserver {
                   }),
             );
           }
-          return Text('null');
+          return _placeholder;
         });
-
-    // BlocListener<BlockingCubit, BlockingState>(
-    //     listener: (context, state) {
-    //   _updateUserMarkers(_users);
-    // }),
   }
 }
