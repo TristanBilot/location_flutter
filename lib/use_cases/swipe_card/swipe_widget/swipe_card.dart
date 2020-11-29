@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:location_project/use_cases/swipe_card/cubit/swipe_cubit.dart';
 import 'swipe_card_section.dart';
 import 'dart:math';
 
@@ -56,52 +58,57 @@ class _SwipeCardState extends State<SwipeCard>
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-        child: Stack(
-      children: <Widget>[
-        backCard(),
-        middleCard(),
-        frontCard(),
+    return BlocBuilder<SwipeCubit, SwipeState>(builder: (context, state) {
+      if (state is SwipableUsersFetched) {
+        return Expanded(
+            child: Stack(
+          children: [
+            backCard(),
+            middleCard(),
+            frontCard(),
 
-        // Prevent swiping if the cards are animating
-        _controller.status != AnimationStatus.forward
-            ? SizedBox.expand(
-                child: GestureDetector(
-                // While dragging the first card
-                onPanUpdate: (DragUpdateDetails details) {
-                  // Add what the user swiped in the last frame to the alignment of the card
-                  setState(() {
-                    // 20 is the "speed" at which moves the card
-                    frontCardAlign = Alignment(
-                        frontCardAlign.x +
-                            20 *
-                                details.delta.dx /
-                                MediaQuery.of(context).size.width,
-                        frontCardAlign.y +
-                            40 *
-                                details.delta.dy /
-                                MediaQuery.of(context).size.height);
+            // Prevent swiping if the cards are animating
+            _controller.status != AnimationStatus.forward
+                ? SizedBox.expand(
+                    child: GestureDetector(
+                    // While dragging the first card
+                    onPanUpdate: (DragUpdateDetails details) {
+                      // Add what the user swiped in the last frame to the alignment of the card
+                      setState(() {
+                        // 20 is the "speed" at which moves the card
+                        frontCardAlign = Alignment(
+                            frontCardAlign.x +
+                                20 *
+                                    details.delta.dx /
+                                    MediaQuery.of(context).size.width,
+                            frontCardAlign.y +
+                                40 *
+                                    details.delta.dy /
+                                    MediaQuery.of(context).size.height);
 
-                    frontCardRot = frontCardAlign.x; // * rotation speed;
-                  });
-                },
-                // When releasing the first card
-                onPanEnd: (_) {
-                  // If the front card was swiped far enough to count as swiped
-                  if (frontCardAlign.x > 3.0 || frontCardAlign.x < -3.0) {
-                    animateCards();
-                  } else {
-                    // Return to the initial rotation and alignment
-                    setState(() {
-                      frontCardAlign = defaultFrontCardAlign;
-                      frontCardRot = 0.0;
-                    });
-                  }
-                },
-              ))
-            : Container(),
-      ],
-    ));
+                        frontCardRot = frontCardAlign.x; // * rotation speed;
+                      });
+                    },
+                    // When releasing the first card
+                    onPanEnd: (_) {
+                      // If the front card was swiped far enough to count as swiped
+                      if (frontCardAlign.x > 3.0 || frontCardAlign.x < -3.0) {
+                        animateCards();
+                      } else {
+                        // Return to the initial rotation and alignment
+                        setState(() {
+                          frontCardAlign = defaultFrontCardAlign;
+                          frontCardRot = 0.0;
+                        });
+                      }
+                    },
+                  ))
+                : Container(),
+          ],
+        ));
+      }
+      return Container();
+    });
   }
 
   Widget backCard() {

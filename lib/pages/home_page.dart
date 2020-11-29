@@ -16,8 +16,6 @@ import 'package:location_project/widgets/home_page_tab_bar_icon.dart';
 import 'package:location_project/widgets/home_page_tab_bar_image_icon.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key key}) : super(key: key);
-
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -32,7 +30,7 @@ class _HomePageState extends State<HomePage> {
         BlocProvider(
             create: (context) =>
                 CountersCubit(context, MessagingDatabase())..init()),
-        BlocProvider(create: (context) => SwipeCubit())
+        BlocProvider(create: (context) => SwipeCubit()..fetchUsersFeed())
       ],
       child: HomePageContainer(),
     );
