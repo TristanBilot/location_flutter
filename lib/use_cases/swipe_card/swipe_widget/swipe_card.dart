@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:location_project/use_cases/swipe_card/cubit/swipe_cubit.dart';
+import 'package:location_project/models/user.dart';
 import 'swipe_card_section.dart';
 import 'dart:math';
 
@@ -12,7 +11,9 @@ List<Alignment> cardsAlign = [
 List<Size> cardsSize = List(3);
 
 class SwipeCard extends StatefulWidget {
-  SwipeCard(BuildContext context) {
+  final List<User> users;
+
+  SwipeCard(BuildContext context, this.users) {
     cardsSize[0] = Size(MediaQuery.of(context).size.width * 0.95,
         MediaQuery.of(context).size.height * 0.65);
     cardsSize[1] = Size(MediaQuery.of(context).size.width * 0.9,
@@ -28,6 +29,7 @@ class SwipeCard extends StatefulWidget {
 class _SwipeCardState extends State<SwipeCard>
     with SingleTickerProviderStateMixin {
   int cardsCounter = 0;
+  int totalCardsCounter = 0;
 
   List<SwipeCardSection> cards = List();
   AnimationController _controller;
@@ -39,15 +41,15 @@ class _SwipeCardState extends State<SwipeCard>
   @override
   void initState() {
     super.initState();
-
+    // Init the animation controller
     // Init cards
     for (cardsCounter = 0; cardsCounter < 3; cardsCounter++) {
-      cards.add(SwipeCardSection(cardsCounter));
+      cards.add(
+          SwipeCardSection(cardsCounter, widget.users[totalCardsCounter++]));
     }
 
     frontCardAlign = cardsAlign[2];
 
-    // Init the animation controller
     _controller =
         AnimationController(duration: Duration(milliseconds: 700), vsync: this);
     _controller.addListener(() => setState(() {}));
@@ -58,57 +60,52 @@ class _SwipeCardState extends State<SwipeCard>
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SwipeCubit, SwipeState>(builder: (context, state) {
-      if (state is SwipableUsersFetched) {
-        return Expanded(
-            child: Stack(
-          children: [
-            backCard(),
-            middleCard(),
-            frontCard(),
+    return Expanded(
+        child: Stack(
+      children: [
+        backCard(),
+        middleCard(),
+        frontCard(),
 
-            // Prevent swiping if the cards are animating
-            _controller.status != AnimationStatus.forward
-                ? SizedBox.expand(
-                    child: GestureDetector(
-                    // While dragging the first card
-                    onPanUpdate: (DragUpdateDetails details) {
-                      // Add what the user swiped in the last frame to the alignment of the card
-                      setState(() {
-                        // 20 is the "speed" at which moves the card
-                        frontCardAlign = Alignment(
-                            frontCardAlign.x +
-                                20 *
-                                    details.delta.dx /
-                                    MediaQuery.of(context).size.width,
-                            frontCardAlign.y +
-                                40 *
-                                    details.delta.dy /
-                                    MediaQuery.of(context).size.height);
+        // Prevent swiping if the cards are animating
+        _controller.status != AnimationStatus.forward
+            ? SizedBox.expand(
+                child: GestureDetector(
+                // While dragging the first card
+                onPanUpdate: (DragUpdateDetails details) {
+                  // Add what the user swiped in the last frame to the alignment of the card
+                  setState(() {
+                    // 20 is the "speed" at which moves the card
+                    frontCardAlign = Alignment(
+                        frontCardAlign.x +
+                            20 *
+                                details.delta.dx /
+                                MediaQuery.of(context).size.width,
+                        frontCardAlign.y +
+                            40 *
+                                details.delta.dy /
+                                MediaQuery.of(context).size.height);
 
-                        frontCardRot = frontCardAlign.x; // * rotation speed;
-                      });
-                    },
-                    // When releasing the first card
-                    onPanEnd: (_) {
-                      // If the front card was swiped far enough to count as swiped
-                      if (frontCardAlign.x > 3.0 || frontCardAlign.x < -3.0) {
-                        animateCards();
-                      } else {
-                        // Return to the initial rotation and alignment
-                        setState(() {
-                          frontCardAlign = defaultFrontCardAlign;
-                          frontCardRot = 0.0;
-                        });
-                      }
-                    },
-                  ))
-                : Container(),
-          ],
-        ));
-      }
-      return Container();
-    });
+                    frontCardRot = frontCardAlign.x; // * rotation speed;
+                  });
+                },
+                // When releasing the first card
+                onPanEnd: (_) {
+                  // If the front card was swiped far enough to count as swiped
+                  if (frontCardAlign.x > 3.0 || frontCardAlign.x < -3.0) {
+                    animateCards();
+                  } else {
+                    // Return to the initial rotation and alignment
+                    setState(() {
+                      frontCardAlign = defaultFrontCardAlign;
+                      frontCardRot = 0.0;
+                    });
+                  }
+                },
+              ))
+            : Container(),
+      ],
+    ));
   }
 
   Widget backCard() {
@@ -158,8 +155,10 @@ class _SwipeCardState extends State<SwipeCard>
       cards[1] = cards[2];
       cards[2] = temp;
 
-      cards[2] = SwipeCardSection(cardsCounter);
+      cards[2] =
+          SwipeCardSection(cardsCounter, widget.users[totalCardsCounter]);
       cardsCounter++;
+      totalCardsCounter++;
 
       frontCardAlign = defaultFrontCardAlign;
       frontCardRot = 0.0;

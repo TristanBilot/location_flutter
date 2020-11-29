@@ -1,8 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:location_project/models/user.dart';
 
 class SwipeCardSection extends StatelessWidget {
   final int cardNum;
-  SwipeCardSection(this.cardNum);
+  final User user;
+  SwipeCardSection(this.cardNum, this.user);
 
   @override
   Widget build(BuildContext context) {
@@ -12,9 +15,13 @@ class SwipeCardSection extends StatelessWidget {
           SizedBox.expand(
             child: ClipRRect(
               // borderRadius: BorderRadius.circular(20),
-              child: Image.asset(
-                  'assets/mock_images/damien.duprat@hotmail.fr.png',
-                  fit: BoxFit.cover),
+              child: user == null
+                  ? Image.asset(
+                      'assets/mock_images/damien.duprat@hotmail.fr.png', //
+                      fit: BoxFit.cover)
+                  : CachedNetworkImage(
+                      imageUrl: user == null ? '' : user.pictureURL,
+                      fit: BoxFit.cover),
             ),
           ),
           SizedBox.expand(
@@ -34,7 +41,10 @@ class SwipeCardSection extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text('Card number $cardNum',
+                    Text(
+                        user == null
+                            ? 'mock'
+                            : '${user.firstName}, ${user.age}',
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 20.0,

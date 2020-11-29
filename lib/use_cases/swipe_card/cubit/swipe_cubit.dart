@@ -37,6 +37,7 @@ class SwipeCubit extends Cubit<SwipeState> {
     });
   }
 
+// TODO: ATTENTION A MODIFIER CAR FAUX
   void _fetchUsersData() {
     List<String> allUsers = []
       ..addAll(_likedUsers)
