@@ -8,6 +8,7 @@ import 'package:location_project/helpers/logger.dart';
 import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/use_cases/blocking/cubit/blocking_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/request_sender.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/message_page.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/message_sender.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
@@ -108,19 +109,8 @@ class _UserCardState extends State<UserMapCard> {
   /// A chat is pending state is created and a notification is sent
   /// to the requested.
   Future<void> _sendHelloNotif() async {
-    User requester = UserStore().user;
     User requested = widget.user;
-    final entry = Chat.newChatEntry(
-      requester.id,
-      requested.id,
-      requester.firstName,
-      requested.firstName,
-      true,
-      false,
-      false,
-    );
-    MessagingReposiory().newChat(entry.chatID, entry);
-
+    await RequestSender().sendRequestTo(requested);
     // await MessagingController().sendAndRetrieveMessage();
   }
 

@@ -180,4 +180,20 @@ class UserStore extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  Future<void> addLike(String likedID) async {
+    _user.likedUsers.add(likedID);
+    await UserRepository()
+        .addLikeField(_user.id, UserField.LikedUsers, likedID);
+    await UserRepository()
+        .addLikeField(likedID, UserField.UsersWhoLikedMe, _user.id);
+    notifyListeners();
+  }
+
+  Future<void> addUnlike(String unlikedID) async {
+    _user.unlikedUsers.add(unlikedID);
+    await UserRepository()
+        .addLikeField(_user.id, UserField.UnlikedUsers, unlikedID);
+    notifyListeners();
+  }
 }

@@ -4,6 +4,7 @@ import 'package:location_project/models/user.dart';
 import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/use_cases/start_path/widgets/basic_button.dart';
 import 'package:location_project/use_cases/swipe_card/buttons%20cubit/swipe_buttons_cubit.dart';
+import 'package:location_project/use_cases/swipe_card/store/swipe_cards_store.dart';
 import 'package:location_project/use_cases/tab_pages/navigation/cubit/navigation_cubit.dart';
 import 'package:location_project/widgets/cached_circle_user_image.dart';
 import 'package:location_project/widgets/textSF.dart';
@@ -44,9 +45,6 @@ class SwipeCard extends StatefulWidget {
 
 class _SwipeCardState extends State<SwipeCard>
     with SingleTickerProviderStateMixin {
-  int totalCardsCounter = 0;
-  int swappedCardCounter = 0;
-
   List<SwipeCardSection> cards = List();
   AnimationController _controller;
 
@@ -61,7 +59,8 @@ class _SwipeCardState extends State<SwipeCard>
     // Init cards
     widget.users.forEach((user) {
       cards.add(SwipeCardSection(user));
-      totalCardsCounter++;
+      SwipeCardsStore().totalCardsCount++;
+      SwipeCardsStore().users.add(user);
     });
 
     frontCardAlign = cardsAlign[2];
@@ -206,23 +205,25 @@ class _SwipeCardState extends State<SwipeCard>
   void changeCardsOrder() {
     setState(() {
       // Swap cards (back card becomes the middle card; middle card becomes the front card, front card becomes a  bottom card)
-      int remainingUsers = widget.users.length - swappedCardCounter;
+      int remainingUsers =
+          widget.users.length - SwipeCardsStore().swappedCardCount;
       if (remainingUsers >= 3) {
         var temp = cards[0];
         cards[0] = cards[1];
         cards[1] = cards[2];
         cards[2] = temp;
 
-        cards[2] = totalCardsCounter >= widget.users.length
+        cards[2] = SwipeCardsStore().totalCardsCount >= widget.users.length
             ? null
-            : SwipeCardSection(widget.users[totalCardsCounter++]);
+            : SwipeCardSection(
+                widget.users[SwipeCardsStore().totalCardsCount++]);
       } else if (remainingUsers == 2) {
         cards[0] = cards[1];
         cards[1] = cards[2];
       } else if (remainingUsers == 1) {
         cards[0] = cards[1];
       }
-      swappedCardCounter++;
+      SwipeCardsStore().swappedCardCount++;
 
       frontCardAlign = defaultFrontCardAlign;
       frontCardRot = 0.0;

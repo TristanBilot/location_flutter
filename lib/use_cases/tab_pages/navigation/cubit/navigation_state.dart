@@ -14,5 +14,5 @@ class NavigateToIndexState extends NavigationState {
   const NavigateToIndexState(this.index);
 
   @override
-  List<Object> get props => [index];
+  List<Object> get props => [Random().nextDouble() * 1000];
 }
