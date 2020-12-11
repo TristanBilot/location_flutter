@@ -117,6 +117,7 @@ class _SwipeCardState extends State<SwipeCard>
           Spacer(),
           BasicButton('Extend my distance 📍',
               onPressed: () => context.read<NavigationCubit>().navigateTo(0)),
+          Spacer(),
         ],
       ),
     );
@@ -231,10 +232,13 @@ class _SwipeCardState extends State<SwipeCard>
   }
 
   void handleLeftRightAction() {
-    if (buttonsState == SwipeButtonsCurrentState.Left)
-      context.read<SwipeButtonsCubit>().unlike();
-    else if (buttonsState == SwipeButtonsCurrentState.Right)
-      context.read<SwipeButtonsCubit>().like();
+    if (buttonsState == SwipeButtonsCurrentState.Left) {
+      final unlikedUser = SwipeCardsStore().currentlyDisplayedUser;
+      context.read<SwipeButtonsCubit>().unlike(unlikedUser);
+    } else if (buttonsState == SwipeButtonsCurrentState.Right) {
+      final likedUser = SwipeCardsStore().currentlyDisplayedUser;
+      context.read<SwipeButtonsCubit>().like(likedUser);
+    }
     buttonsState = SwipeButtonsCurrentState.None;
   }
 

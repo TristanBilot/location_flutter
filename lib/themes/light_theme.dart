@@ -7,6 +7,11 @@ const AppGradient = LinearGradient(
   begin: Alignment.topRight,
   end: Alignment.bottomLeft,
 );
+const GreenGradient = LinearGradient(
+  colors: [Color(0xFF96E4DF), Color(0xFF4DCCC6)],
+  begin: Alignment.topRight,
+  end: Alignment.bottomLeft,
+);
 
 const PrimaryColor = const Color(0xFFFF4081);
 const PrimaryColorLight = const Color(0xFFFF79b0);

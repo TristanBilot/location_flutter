@@ -1,11 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/helpers/distance_adapter.dart';
 import 'package:location_project/helpers/string_formatter.dart';
+import 'package:location_project/themes/light_theme.dart';
+import 'package:location_project/use_cases/swipe_card/buttons%20cubit/swipe_buttons_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/message_page.dart';
 import 'package:location_project/use_cases/start_path/widgets/basic_button.dart';
 import 'package:location_project/widgets/cached_circle_user_image.dart';
+import 'package:location_project/widgets/gradient_icon.dart';
 import 'package:location_project/widgets/say_hello_button.dart';
 import 'package:location_project/widgets/scrollable_textview.dart';
 import 'package:location_project/widgets/textSF.dart';
@@ -16,7 +20,8 @@ import '../models/user.dart';
 class UserMapCardContent extends StatefulWidget {
   final User user;
   final Function onSendTap;
-  final Function onSayHiTap;
+  final Function onLikeTap;
+  final Function onUnlikeTap;
   final Function onBlockTap;
   final TextEditingController messageEditingController;
   final RoundedLoadingButtonController blockButtonController;
@@ -25,7 +30,8 @@ class UserMapCardContent extends StatefulWidget {
   UserMapCardContent({
     @required this.user,
     @required this.onSendTap,
-    @required this.onSayHiTap,
+    @required this.onLikeTap,
+    @required this.onUnlikeTap,
     @required this.onBlockTap,
     @required this.messageEditingController,
     @required this.blockButtonController,
@@ -126,15 +132,32 @@ class _UserMapCardContentState extends State<UserMapCardContent> {
                                     height: 15,
                                   ),
                                   Container(
-                                    height: SayHelloButton.Height,
-                                    child: SayHelloButton(
-                                      onPressed: widget.onSayHiTap,
-                                      userName: widget.user.firstName,
+                                    // height: SayHelloButton.Height,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        FloatingActionButton(
+                                          onPressed: widget.onLikeTap,
+                                          backgroundColor: Colors.white,
+                                          child: GradientIcon(
+                                              Icons.close, 30, AppGradient),
+                                        ),
+                                        SizedBox(width: 20),
+                                        FloatingActionButton(
+                                          onPressed: widget.onLikeTap,
+                                          backgroundColor: Colors.white,
+                                          child: GradientIcon(Icons.favorite,
+                                              30, GreenGradient),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
                               ),
-                        Spacer(),
+                        // Spacer(),
                       ],
                     ),
                     Positioned(

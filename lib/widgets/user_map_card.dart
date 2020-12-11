@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/helpers/logger.dart';
 import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/use_cases/blocking/cubit/blocking_cubit.dart';
+import 'package:location_project/use_cases/swipe_card/buttons%20cubit/swipe_buttons_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/request_sender.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/message_page.dart';
@@ -18,7 +19,7 @@ import 'package:rounded_loading_button/rounded_loading_button.dart';
 import '../models/user.dart';
 
 class UserMapCard extends StatefulWidget implements Showable {
-  static const double UserMapCardHeight = 390;
+  static const double UserMapCardHeight = 430;
 
   final BuildContext context;
   final User user;
@@ -105,13 +106,14 @@ class _UserCardState extends State<UserMapCard> {
     );
   }
 
-  /// Action when a user requests to talk with another person.
-  /// A chat is pending state is created and a notification is sent
-  /// to the requested.
-  Future<void> _sendHelloNotif() async {
-    User requested = widget.user;
-    await RequestSender().sendRequestTo(requested);
-    // await MessagingController().sendAndRetrieveMessage();
+  _onLikeTap() {
+    User liked = widget.user;
+    context.read<SwipeButtonsCubit>().like(liked);
+  }
+
+  _onUnlikeTap() {
+    User unliked = widget.user;
+    context.read<SwipeButtonsCubit>().unlike(unliked);
   }
 
   /// Action when the user blocks another user on the map.
@@ -161,7 +163,8 @@ class _UserCardState extends State<UserMapCard> {
                   return UserMapCardContent(
                     user: widget.user,
                     onSendTap: _sendMessage,
-                    onSayHiTap: _sendHelloNotif,
+                    onLikeTap: _onLikeTap,
+                    onUnlikeTap: _onUnlikeTap,
                     onBlockTap: () => _blockUser(context),
                     messageEditingController: _messageEditingController,
                     blockButtonController: _blockButtonController,
