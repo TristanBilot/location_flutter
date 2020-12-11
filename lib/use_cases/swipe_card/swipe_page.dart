@@ -38,13 +38,13 @@ class _SwipePageState extends State<SwipePage> {
           ),
           Padding(padding: EdgeInsets.only(right: 8.0)),
           FloatingActionButton(
-            onPressed: () => context.read<SwipeButtonsCubit>().unlike(),
+            onPressed: () => context.read<SwipeButtonsCubit>().emitUnlike(),
             backgroundColor: Colors.white,
             child: Icon(Icons.close, color: Colors.red),
           ),
           Padding(padding: EdgeInsets.only(right: 8.0)),
           FloatingActionButton(
-            onPressed: () => context.read<SwipeButtonsCubit>().like(),
+            onPressed: () => context.read<SwipeButtonsCubit>().emitLike(),
             backgroundColor: Colors.white,
             child: Icon(Icons.favorite, color: Colors.green),
           ),

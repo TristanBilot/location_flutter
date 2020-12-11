@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:location_project/helpers/logger.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/storage/shared preferences/local_store.dart';
-import 'package:location_project/models/user_settings.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/use_cases/account/account_language_page.dart';
 import 'package:location_project/models/gender.dart';

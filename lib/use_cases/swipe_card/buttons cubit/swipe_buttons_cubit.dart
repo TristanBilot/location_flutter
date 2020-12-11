@@ -15,12 +15,18 @@ class SwipeButtonsCubit extends Cubit<SwipeButtonsState> {
     final likedUser = SwipeCardsStore().currentlyDisplayedUser;
     await UserStore().addLike(likedUser.id);
     RequestSender().sendRequestTo(likedUser);
-    emit(SwipeButtonsLikeState());
   }
 
   Future<void> unlike() async {
     final unlikedUser = SwipeCardsStore().currentlyDisplayedUser;
     await UserStore().addUnlike(unlikedUser.id);
+  }
+
+  void emitLike() {
+    emit(SwipeButtonsLikeState());
+  }
+
+  void emitUnlike() {
     emit(SwipeButtonsUnlikeState());
   }
 }

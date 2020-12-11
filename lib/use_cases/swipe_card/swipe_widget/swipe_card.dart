@@ -75,7 +75,6 @@ class _SwipeCardState extends State<SwipeCard>
 
   @override
   Widget build(BuildContext context) {
-    // buttonsState = SwipeButtonsCurrentState.None;
     return BlocListener<SwipeButtonsCubit, SwipeButtonsState>(
       listener: (context, state) {
         if (state is SwipeButtonsLikeState)
@@ -227,8 +226,16 @@ class _SwipeCardState extends State<SwipeCard>
 
       frontCardAlign = defaultFrontCardAlign;
       frontCardRot = 0.0;
-      buttonsState = SwipeButtonsCurrentState.None;
+      handleLeftRightAction();
     });
+  }
+
+  void handleLeftRightAction() {
+    if (buttonsState == SwipeButtonsCurrentState.Left)
+      context.read<SwipeButtonsCubit>().unlike();
+    else if (buttonsState == SwipeButtonsCurrentState.Right)
+      context.read<SwipeButtonsCubit>().like();
+    buttonsState = SwipeButtonsCurrentState.None;
   }
 
   void animateCards() {
@@ -280,9 +287,16 @@ class CardsAnimation {
   static double _getLeftOrRightAlignment(Alignment beginAlign) {
     final toRight = beginAlign.x + 30.0;
     final toLeft = beginAlign.x - 30.0;
+
     if (buttonsState == SwipeButtonsCurrentState.Left)
       return toLeft;
-    else if (buttonsState == SwipeButtonsCurrentState.Right) return toRight;
-    return beginAlign.x > 0 ? toRight : toLeft;
+    else if (buttonsState == SwipeButtonsCurrentState.Right)
+      return toRight;
+    else {
+      buttonsState = beginAlign.x > 0
+          ? SwipeButtonsCurrentState.Right
+          : SwipeButtonsCurrentState.Left;
+      return beginAlign.x > 0 ? toRight : toLeft;
+    }
   }
 }
