@@ -60,6 +60,7 @@ class _HomePageContainerState extends State<HomePageContainer>
     SwipePage(),
     MapPage(),
     MessagingTabsPage(),
+    MessagingTabsPage(),
   ];
 
   @override
@@ -130,7 +131,10 @@ class _HomePageContainerState extends State<HomePageContainer>
                         })
                       ],
                     )),
-                label: '')
+                label: ''),
+            BottomNavigationBarItem(
+                icon: HomePageTabBarIcon(Icons.favorite, _tabIndex == 4),
+                label: ''),
           ],
           onTap: (index) {
             setState(() => _tabIndex = index);

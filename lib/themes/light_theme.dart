@@ -2,13 +2,21 @@ import 'package:flutter/material.dart';
 
 const LogoOrangeColor = Color(0xFFF75882); // Color.fromRGBO(241, 160, 45, 1);
 const LogoPinkColor = Color(0xFFFAA767); // Color.fromRGBO(238, 88, 127, 1);
+
 const AppGradient = LinearGradient(
   colors: [LogoOrangeColor, LogoPinkColor],
   begin: Alignment.topRight,
   end: Alignment.bottomLeft,
 );
+
 const GreenGradient = LinearGradient(
   colors: [Color(0xFF96E4DF), Color(0xFF4DCCC6)],
+  begin: Alignment.topRight,
+  end: Alignment.bottomLeft,
+);
+
+const GoldGradient = LinearGradient(
+  colors: [Color(0xFFF9D976), Color(0xFFF39F86)],
   begin: Alignment.topRight,
   end: Alignment.bottomLeft,
 );

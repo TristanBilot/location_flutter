@@ -139,18 +139,39 @@ class _UserMapCardContentState extends State<UserMapCardContent> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: [
-                                        FloatingActionButton(
-                                          onPressed: widget.onLikeTap,
-                                          backgroundColor: Colors.white,
-                                          child: GradientIcon(
-                                              Icons.close, 30, AppGradient),
+                                        Container(
+                                          height: 40,
+                                          child: FittedBox(
+                                            child: FloatingActionButton(
+                                              onPressed: widget.onLikeTap,
+                                              backgroundColor: Colors.white,
+                                              child: GradientIcon(
+                                                  Icons.close, 32, AppGradient),
+                                            ),
+                                          ),
                                         ),
                                         SizedBox(width: 20),
                                         FloatingActionButton(
-                                          onPressed: widget.onLikeTap,
+                                          onPressed: null, //  TODO
                                           backgroundColor: Colors.white,
-                                          child: GradientIcon(Icons.favorite,
-                                              30, GreenGradient),
+                                          child: GradientIcon(
+                                              Icons.notifications_active,
+                                              30,
+                                              GoldGradient),
+                                        ),
+                                        SizedBox(width: 20),
+                                        Container(
+                                          height: 40,
+                                          child: FittedBox(
+                                            child: FloatingActionButton(
+                                              onPressed: widget.onLikeTap,
+                                              backgroundColor: Colors.white,
+                                              child: GradientIcon(
+                                                  Icons.favorite,
+                                                  32,
+                                                  GreenGradient),
+                                            ),
+                                          ),
                                         ),
                                       ],
                                     ),

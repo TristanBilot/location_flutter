@@ -100,75 +100,87 @@ class _TabPageRequestsPageState extends State<TabPageChatsRequestsPage>
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        FocusScopeNode currentFocus = FocusScope.of(context);
-        if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
-      },
-      child: Column(
-        children: [
-          SizedBox(height: 3),
-          Flexible(
-            child: BlocBuilder<ChatCubit, ChatState>(
-              builder: (context, state) {
-                if (state is ChatFetchedState) {
-                  List<Chat> chats = _filter.filter(
-                      state.chats, _messageEditingController.text);
-                  if (widget.type == TabPageType.Discussions)
-                    MessagingDatabase().put(nbChats: chats.length);
-                  else
-                    MessagingDatabase().put(nbRequests: chats.length);
+    return CupertinoPageScaffold(
+      child: NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return [
+              CupertinoSliverNavigationBar(
+                largeTitle: Text('Settings'),
+              )
+            ];
+          },
+          body: GestureDetector(
+            onTap: () {
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
+            },
+            child: Column(
+              children: [
+                SizedBox(height: 3),
+                Flexible(
+                  child: BlocBuilder<ChatCubit, ChatState>(
+                    builder: (context, state) {
+                      if (state is ChatFetchedState) {
+                        List<Chat> chats = _filter.filter(
+                            state.chats, _messageEditingController.text);
+                        if (widget.type == TabPageType.Discussions)
+                          MessagingDatabase().put(nbChats: chats.length);
+                        else
+                          MessagingDatabase().put(nbRequests: chats.length);
 
-                  return chats.length != 0
-                      ? CustomScrollView(
-                          controller: _scrollController,
-                          physics: const BouncingScrollPhysics(
-                            parent: AlwaysScrollableScrollPhysics(),
-                          ),
-                          slivers: [
-                            CupertinoSliverRefreshControl(
-                                onRefresh: _onRefresh),
-                            SliverList(
-                                delegate: SliverChildBuilderDelegate(
-                              (context, index) {
-                                bool isFirstIndex = index == 0;
-                                bool shouldDisplaySearchBar = chats.length >=
-                                    NumberOfChatsToDisplaySearchBar;
-                                bool isLimitBetweenRequestedAndRequests =
-                                    index ==
-                                        chats.indexWhere((chat) =>
-                                            chat.requesterID ==
-                                            UserStore().user.id);
+                        return chats.length != 0
+                            ? CustomScrollView(
+                                controller: _scrollController,
+                                physics: const BouncingScrollPhysics(
+                                  parent: AlwaysScrollableScrollPhysics(),
+                                ),
+                                slivers: [
+                                  CupertinoSliverRefreshControl(
+                                      onRefresh: _onRefresh),
+                                  SliverList(
+                                      delegate: SliverChildBuilderDelegate(
+                                    (context, index) {
+                                      bool isFirstIndex = index == 0;
+                                      bool shouldDisplaySearchBar =
+                                          chats.length >=
+                                              NumberOfChatsToDisplaySearchBar;
+                                      bool isLimitBetweenRequestedAndRequests =
+                                          index ==
+                                              chats.indexWhere((chat) =>
+                                                  chat.requesterID ==
+                                                  UserStore().user.id);
 
-                                return Builder(
-                                  builder: (context) => ChatTile(
-                                    tabPageType: widget.type,
-                                    chat: chats[index],
-                                    shouldRefreshCache: _shouldRefreshCache,
-                                    isFirstIndex: isFirstIndex,
-                                    isLimitBetweenRequestedAndRequests:
-                                        isLimitBetweenRequestedAndRequests,
-                                    shouldDisplaySearchBar:
-                                        shouldDisplaySearchBar,
-                                    messageEditingController:
-                                        _messageEditingController,
-                                    setStateDelegate: this,
-                                  ),
-                                );
-                              },
-                              childCount: chats.length,
-                            )),
-                          ],
-                        )
-                      : placeholder;
-                }
-                // TODO: handle other states
-                return Center(child: CupertinoActivityIndicator());
-              },
+                                      return Builder(
+                                        builder: (context) => ChatTile(
+                                          tabPageType: widget.type,
+                                          chat: chats[index],
+                                          shouldRefreshCache:
+                                              _shouldRefreshCache,
+                                          isFirstIndex: isFirstIndex,
+                                          isLimitBetweenRequestedAndRequests:
+                                              isLimitBetweenRequestedAndRequests,
+                                          shouldDisplaySearchBar:
+                                              shouldDisplaySearchBar,
+                                          messageEditingController:
+                                              _messageEditingController,
+                                          setStateDelegate: this,
+                                        ),
+                                      );
+                                    },
+                                    childCount: chats.length,
+                                  )),
+                                ],
+                              )
+                            : placeholder;
+                      }
+                      // TODO: handle other states
+                      return Center(child: CupertinoActivityIndicator());
+                    },
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
+          )),
     );
   }
 }
