@@ -23,7 +23,7 @@ import 'package:location_project/widgets/textSF.dart';
 import 'package:location_project/models/gender.dart';
 
 class AccountPage extends StatefulWidget {
-  static const curveContainerHeight = 100.0;
+  static const curveContainerHeight = 150.0;
   static const userImageSize = 150.0;
   static const picAnimDuration = 100;
 
@@ -101,13 +101,6 @@ class _AccountPageState extends State<AccountPage>
     });
   }
 
-  Color _getCurveContainerBackground() {
-    bool isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
-    return isDark
-        ? Color.fromRGBO(40, 40, 40, 1)
-        : Color.fromRGBO(240, 240, 240, 1);
-  }
-
   Color _getHeaderBackground() {
     bool isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
     return isDark ? Color.fromRGBO(66, 66, 66, 1) : Colors.white;
@@ -149,10 +142,9 @@ class _AccountPageState extends State<AccountPage>
                     height: AccountPage.curveContainerHeight,
                     decoration: BoxDecoration(
                       gradient: AppGradient,
-                      // color: _getCurveContainerBackground(),
                       borderRadius: BorderRadius.vertical(
                         bottom: Radius.elliptical(
-                            MediaQuery.of(context).size.width, 160.0),
+                            MediaQuery.of(context).size.width, 100.0),
                       ),
                     ),
                   ),

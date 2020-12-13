@@ -95,11 +95,11 @@ class _HomePageContainerState extends State<HomePageContainer>
     return Scaffold(
       body: _pages[_tabIndex],
       bottomNavigationBar: BlocListener<NavigationCubit, NavigationState>(
-          listener: (context, state) {
-            if (state is NavigateToIndexState)
-              setState(() => _tabIndex = state.index);
-          },
-          child: BottomNavigationBar(
+        listener: (context, state) {
+          if (state is NavigateToIndexState)
+            setState(() => _tabIndex = state.index);
+        },
+        child: BottomNavigationBar(
           backgroundColor: Colors.white,
           currentIndex: _tabIndex,
           type: BottomNavigationBarType.shifting,
@@ -140,4 +140,3 @@ class _HomePageContainerState extends State<HomePageContainer>
     );
   }
 }
-s
