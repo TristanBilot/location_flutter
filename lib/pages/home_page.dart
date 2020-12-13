@@ -7,7 +7,6 @@ import 'package:location_project/use_cases/map/cubit/area_cubit.dart';
 import 'package:location_project/use_cases/map/map_page.dart';
 import 'package:location_project/pages/messaging_tabs_page.dart';
 import 'package:location_project/storage/databases/messaging_database.dart';
-import 'package:location_project/themes/theme_utils.dart';
 import 'package:location_project/use_cases/account/account_page.dart';
 import 'package:location_project/use_cases/map/repositories/area_fetching_repository.dart';
 import 'package:location_project/use_cases/swipe_card/buttons%20cubit/swipe_buttons_cubit.dart';
@@ -55,22 +54,20 @@ class HomePageContainer extends StatefulWidget {
 
 class _HomePageContainerState extends State<HomePageContainer>
     with SingleTickerProviderStateMixin, WidgetsBindingObserver {
-  static const NbTabs = 4;
-  final _initialIndex = 2;
-  TabController _tabController;
+  int _tabIndex = 0;
+  final _pages = [
+    AccountPage(),
+    SwipePage(),
+    MapPage(),
+    MessagingTabsPage(),
+  ];
 
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addObserver(this);
-
-    _tabController =
-        TabController(vsync: this, length: NbTabs, initialIndex: _initialIndex);
-    _tabController.addListener(_handleTabSelection);
   }
-
-  void _handleTabSelection() => setState(() {});
 
   @override
   void dispose() {
@@ -85,7 +82,7 @@ class _HomePageContainerState extends State<HomePageContainer>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      LocationController().handleLocationIfNeeded().then((value) {
+      LocationController().handleLocationIfNeeded().then((_) {
         setState(() {});
         print('come back to foreground');
         AppBadgeController().updateAppBadge();
@@ -96,67 +93,51 @@ class _HomePageContainerState extends State<HomePageContainer>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(48.0),
-        child: BlocListener<NavigationCubit, NavigationState>(
+      body: _pages[_tabIndex],
+      bottomNavigationBar: BlocListener<NavigationCubit, NavigationState>(
           listener: (context, state) {
             if (state is NavigateToIndexState)
-              _tabController.animateTo(state.index);
+              setState(() => _tabIndex = state.index);
           },
-          child: AppBar(
-            elevation: 1,
-            backgroundColor: ThemeUtils.getTabColor(context),
-            bottom: TabBar(
-              indicatorColor:
-                  Colors.transparent, // Theme.of(context).primaryColor,
-              tabs: [
-                // Tab 1.
-                Tab(
-                    icon: HomePageTabBarIcon(
-                        Icons.account_circle, _tabController.index == 0)),
-                Tab(
-                  icon: HomePageTabBarIcon(
-                      Icons.swipe, _tabController.index == 1),
-                ),
-                // Tab 2.
-                Tab(icon: HomePageTabBarImageIcon(_tabController.index == 2)),
-                // Tab 3.
-                Tab(
-                    icon: Container(
-                        width: 40, // to fix position of status
-                        height: 30,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            HomePageTabBarIcon(
-                                Icons.textsms, _tabController.index == 3),
-                            BlocBuilder<CountersCubit, CountersState>(
-                                builder: (context, state) {
-                              if (state.isANotificationUnread())
-                                return Align(
-                                    alignment: Alignment.topRight,
-                                    child: HomePageStatusWithoutCount());
-                              return SizedBox();
-                            })
-                          ],
-                        )))
-              ],
-              controller: _tabController,
-            ),
-          ),
+          child: BottomNavigationBar(
+          backgroundColor: Colors.white,
+          currentIndex: _tabIndex,
+          type: BottomNavigationBarType.shifting,
+          items: [
+            BottomNavigationBarItem(
+                icon: HomePageTabBarIcon(Icons.account_circle, _tabIndex == 0),
+                label: ''),
+            BottomNavigationBarItem(
+                icon: HomePageTabBarIcon(Icons.swipe, _tabIndex == 1),
+                label: ''),
+            BottomNavigationBarItem(
+                icon: HomePageTabBarImageIcon(_tabIndex == 2), label: ''),
+            BottomNavigationBarItem(
+                icon: Container(
+                    width: 40, // to fix position of status
+                    height: 30,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        HomePageTabBarIcon(Icons.textsms, _tabIndex == 3),
+                        BlocBuilder<CountersCubit, CountersState>(
+                            builder: (context, state) {
+                          if (state.isANotificationUnread())
+                            return Align(
+                                alignment: Alignment.topRight,
+                                child: HomePageStatusWithoutCount());
+                          return SizedBox();
+                        })
+                      ],
+                    )),
+                label: '')
+          ],
+          onTap: (index) {
+            setState(() => _tabIndex = index);
+          },
         ),
       ),
-      body: TabBarView(
-        physics: NeverScrollableScrollPhysics(),
-        controller: _tabController,
-        children: [
-          AccountPage(),
-          SwipePage(),
-          MapPage(),
-          MessagingTabsPage(),
-        ],
-      ),
-      // PositionedAppIcon(_tabController, _initialIndex)
     );
   }
 }
+s

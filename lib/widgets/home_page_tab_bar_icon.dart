@@ -17,17 +17,15 @@ class HomePageTabBarIcon extends StatefulWidget {
 class _HomePageTabBarIconState extends State<HomePageTabBarIcon> {
   @override
   Widget build(BuildContext context) {
-    return Tab(
-      icon: GradientIcon(
-        widget.icon,
-        HomePageTabBarIcon.IconSize,
-        widget.activated
-            ? AppGradient
-            : LinearGradient(colors: [
-                HomePageTabBarIcon.UnactivatedColor,
-                HomePageTabBarIcon.UnactivatedColor
-              ]),
-      ),
+    return GradientIcon(
+      widget.icon,
+      HomePageTabBarIcon.IconSize,
+      widget.activated
+          ? AppGradient
+          : LinearGradient(colors: [
+              HomePageTabBarIcon.UnactivatedColor,
+              HomePageTabBarIcon.UnactivatedColor
+            ]),
     );
   }
 }

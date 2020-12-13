@@ -8,6 +8,7 @@ import 'package:location_project/repositories/image_repository.dart';
 import 'package:location_project/repositories/user_mock_repository.dart';
 import 'package:location_project/storage/memory/memory_store.dart';
 import 'package:location_project/storage/distant/user_store.dart';
+import 'package:location_project/themes/light_theme.dart';
 import 'package:location_project/use_cases/account/widgets/account_list_tile.dart';
 import 'package:location_project/use_cases/account/widgets/account_log_out_list_tile.dart';
 import 'package:location_project/use_cases/account/widgets/account_section_title.dart';
@@ -147,7 +148,8 @@ class _AccountPageState extends State<AccountPage>
                   Container(
                     height: AccountPage.curveContainerHeight,
                     decoration: BoxDecoration(
-                      color: _getCurveContainerBackground(),
+                      gradient: AppGradient,
+                      // color: _getCurveContainerBackground(),
                       borderRadius: BorderRadius.vertical(
                         bottom: Radius.elliptical(
                             MediaQuery.of(context).size.width, 160.0),
