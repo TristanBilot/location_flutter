@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:location_project/conf/routes.dart';
+import 'package:location_project/conf/store.dart';
 import 'package:location_project/storage/memory/start_path_store.dart';
 import 'package:location_project/use_cases/start_path/gender_circle_icon_factory.dart';
 import 'package:location_project/use_cases/start_path/start_path_step1/start_path_step1.dart';
@@ -79,10 +80,9 @@ class StartPathStep2State extends State<StartPathStep2>
                 Spacer(),
                 RangeSlider(
                   values: _sliderRangeValues,
-                  min: 0,
-                  max: 70,
+                  min: Store.minAgeRange,
+                  max: Store.maxAgeRange,
                   onChanged: (values) => setState(() {
-                    if (values.start < 18 || values.end < 18) return;
                     if (values.end - values.start < 5) return;
                     _sliderRangeValues = values;
                   }),

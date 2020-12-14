@@ -26,7 +26,6 @@ import 'package:location_project/widgets/user_card.dart';
 import 'package:provider/provider.dart';
 
 class ChatTile extends StatefulWidget {
-  // final BuildContext context;
   final Chat chat;
   final bool shouldRefreshCache;
   final TabPageType tabPageType;

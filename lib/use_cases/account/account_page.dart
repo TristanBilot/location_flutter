@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:location_project/conf/routes.dart';
+import 'package:location_project/conf/store.dart';
 import 'package:location_project/repositories/auth_repository.dart';
 import 'package:location_project/repositories/image_repository.dart';
 import 'package:location_project/repositories/user_mock_repository.dart';
@@ -193,7 +194,8 @@ class _AccountPageState extends State<AccountPage>
                       AccountListTile(
                         title: 'Gender',
                         bottom: Padding(
-                          padding: const EdgeInsets.only(left: 20),
+                          padding: const EdgeInsets.only(
+                              left: AccountListTile.SidePadding),
                           child: Row(children: [
                             SelectableSmallCard(Gender.Female, this,
                                 _selectedGenders.contains(Gender.Female)),
@@ -208,15 +210,18 @@ class _AccountPageState extends State<AccountPage>
                         withDivider: false,
                         title: 'Age range',
                         trailing: TextSF(
-                            '${_wantedAgeValues[0].round()}-${_wantedAgeValues[1].round()} years old'),
+                          '${_wantedAgeValues[0].round()} - ${_wantedAgeValues[1].round()}${_wantedAgeValues[1].round() == Store.maxAgeRange ? "+" : ""} ',
+                          color: Colors.black54,
+                        ),
                         bottom: Container(
                           width: MediaQuery.of(context).size.width -
                               2 * AccountListTile.SidePadding,
                           child: CupertinoRangeSlider(
+                            activeColor: LogoOrangeColor,
                             minValue: _wantedAgeValues[0],
                             maxValue: _wantedAgeValues[1],
-                            min: 18,
-                            max: 70,
+                            min: Store.minAgeRange,
+                            max: Store.maxAgeRange,
                             onMinChanged: (value) =>
                                 _handleWantedAgeModify(0, value),
                             onMaxChanged: (value) =>

@@ -15,4 +15,7 @@ class Store {
   static final defaultProfilePictureExtension = '.png';
   static final defaultProfilePictureName = '?';
   static final fireStoreUserIconPath = 'photos/';
+
+  static final double minAgeRange = 18;
+  static final double maxAgeRange = 60;
 }

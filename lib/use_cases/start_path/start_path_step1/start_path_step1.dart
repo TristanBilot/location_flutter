@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:location_project/conf/routes.dart';
+import 'package:location_project/conf/store.dart';
 import 'package:location_project/storage/memory/start_path_store.dart';
 import 'package:location_project/use_cases/start_path/gender_circle_icon_factory.dart';
 import 'package:location_project/use_cases/start_path/widgets/basic_button.dart';
@@ -90,11 +91,10 @@ class StartPathStep1State extends State<StartPathStep1>
                 Spacer(),
                 Slider(
                   value: _sliderValue,
-                  min: 0,
-                  max: 70,
+                  min: Store.minAgeRange,
+                  max: Store.maxAgeRange,
                   label: _sliderValue.round().toString(),
                   onChanged: (value) => setState(() {
-                    if (value < 18) return;
                     _sliderValue = value;
                   }),
                 ),
