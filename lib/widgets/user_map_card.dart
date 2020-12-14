@@ -106,9 +106,12 @@ class _UserCardState extends State<UserMapCard> {
     );
   }
 
-  _onLikeTap() {
+  _onLikeTap() async {
     User liked = widget.user;
-    context.read<SwipeButtonsCubit>().like(liked);
+    // en attendant car ça ne marche pas (erreur provider)
+    await UserStore().addLike(liked.id);
+    RequestSender().sendRequestTo(liked);
+    // context.read<SwipeButtonsCubit>().like(liked);
   }
 
   _onUnlikeTap() {

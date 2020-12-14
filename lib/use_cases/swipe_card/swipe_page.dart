@@ -9,6 +9,7 @@ import 'package:location_project/use_cases/swipe_card/buttons%20cubit/swipe_butt
 import 'package:location_project/use_cases/swipe_card/swipe%20cubit/swipe_cubit.dart';
 import 'package:location_project/use_cases/swipe_card/swipe_widget/swipe_card.dart';
 import 'package:location_project/use_cases/swipe_card/swipe_widget/wave_clipper.dart';
+import 'package:location_project/widgets/gradient_icon.dart';
 
 class SwipePage extends StatefulWidget {
   @override
@@ -77,13 +78,13 @@ class _SwipePageState extends State<SwipePage> {
           FloatingActionButton(
             onPressed: () => context.read<SwipeButtonsCubit>().emitUnlike(),
             backgroundColor: Colors.white,
-            child: Icon(Icons.close, color: Colors.red),
+            child: GradientIcon(Icons.close, 26, AppGradient),
           ),
           Padding(padding: EdgeInsets.only(right: 8.0)),
           FloatingActionButton(
             onPressed: () => context.read<SwipeButtonsCubit>().emitLike(),
             backgroundColor: Colors.white,
-            child: Icon(Icons.favorite, color: Colors.green),
+            child: GradientIcon(Icons.favorite, 26, GreenGradient),
           ),
           Padding(padding: EdgeInsets.only(right: 8.0)),
           FloatingActionButton(

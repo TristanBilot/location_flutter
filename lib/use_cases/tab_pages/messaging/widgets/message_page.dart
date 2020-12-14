@@ -123,14 +123,7 @@ class _MessagePageContentState extends State<MessagePageContent> {
   Widget get _messagesOrPlaceholderWidget =>
       BlocBuilder<MessagesCubit, MessagesState>(builder: (context, state) {
         if (state is MessagesFetchedState) {
-          final userID = UserStore().user.id;
           final messages = state.messages;
-          if (!widget.chat.isChatEngaged) {
-            if (userID == widget.chat.requesterID)
-              return _requestWaitingPlaceholder;
-            if (userID == widget.chat.requestedID)
-              return _requestInvitationPlaceholder;
-          }
           if (messages.isEmpty) return _noMessagesPlaceholder;
           _updateLastActivity();
 
@@ -179,99 +172,97 @@ class _MessagePageContentState extends State<MessagePageContent> {
   /// Placeholder displayed when the requester user has sent
   /// a request to the other participant and the requests
   /// is in a pending state.
-  Widget get _requestWaitingPlaceholder => Center(
-        child: Column(
-          children: [
-            Spacer(),
-            Container(
-              width: PlaceholderImageSize,
-              height: PlaceholderImageSize,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage("assets/pending.png"),
-                    colorFilter:
-                        ColorFilter.mode(Colors.white54, BlendMode.modulate),
-                    fit: BoxFit.cover),
-                // color: Colors.teal[900],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(30),
-              child: TextSF(
-                'A request had been sent to ${widget.user.firstName}!',
-                fontSize: PlaceholderFontSize,
-                align: TextAlign.center,
-              ),
-            ),
-            Spacer(),
-          ],
-        ),
-      );
+  // Widget get _requestWaitingPlaceholder => Center(
+  //       child: Column(
+  //         children: [
+  //           Spacer(),
+  //           Container(
+  //             width: PlaceholderImageSize,
+  //             height: PlaceholderImageSize,
+  //             decoration: BoxDecoration(
+  //               image: DecorationImage(
+  //                   image: AssetImage("assets/pending.png"),
+  //                   colorFilter:
+  //                       ColorFilter.mode(Colors.white54, BlendMode.modulate),
+  //                   fit: BoxFit.cover),
+  //               // color: Colors.teal[900],
+  //             ),
+  //           ),
+  //           Padding(
+  //             padding: EdgeInsets.all(30),
+  //             child: TextSF(
+  //               'A request had been sent to ${widget.user.firstName}!',
+  //               fontSize: PlaceholderFontSize,
+  //               align: TextAlign.center,
+  //             ),
+  //           ),
+  //           Spacer(),
+  //         ],
+  //       ),
+  //     );
 
   /// Placeholder displayed when the requested user receives
   /// a request and should choose to accept or not.
-  Widget get _requestInvitationPlaceholder => Center(
-        child: Column(
-          children: [
-            Spacer(),
-            CachedCircleUserImage(
-              widget.user.pictureURL,
-              size: PlaceholderImageSize,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 20, bottom: 40),
-              child: TextSF(
-                '${widget.user.firstName} wants to talk with you.',
-                fontSize: PlaceholderFontSize,
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                BasicButton('DENY', onPressed: _onRequestDenied),
-                SizedBox(width: 20),
-                BasicButton('ACCEPT', onPressed: _onRequestAccepted),
-              ],
-            ),
-            Spacer(),
-          ],
-        ),
-      );
+  // Widget get _requestInvitationPlaceholder => Center(
+  //       child: Column(
+  //         children: [
+  //           Spacer(),
+  //           CachedCircleUserImage(
+  //             widget.user.pictureURL,
+  //             size: PlaceholderImageSize,
+  //           ),
+  //           Padding(
+  //             padding: const EdgeInsets.only(top: 20, bottom: 40),
+  //             child: TextSF(
+  //               '${widget.user.firstName} wants to talk with you.',
+  //               fontSize: PlaceholderFontSize,
+  //             ),
+  //           ),
+  //           Row(
+  //             mainAxisAlignment: MainAxisAlignment.center,
+  //             children: [
+  //               BasicButton('DENY', onPressed: _onRequestDenied),
+  //               SizedBox(width: 20),
+  //               BasicButton('ACCEPT', onPressed: _onRequestAccepted),
+  //             ],
+  //           ),
+  //           Spacer(),
+  //         ],
+  //       ),
+  // //     );
 
-  /// When a requested user denies a request, delete the chat
-  /// in the firestore and in the database cache. Then, redireft to
-  /// chats page.
-  void _onRequestDenied() {
-    MessagingReposiory().deleteChat(widget.chat.chatID);
-    UserDatabase()
-        .deleteUser(widget.chat.requesterID)
-        .then((value) => Navigator.of(context).pop());
-  }
+  // /// When a requested user denies a request, delete the chat
+  // /// in the firestore and in the database cache. Then, redireft to
+  // /// chats page.
+  // void _onRequestDenied() {
+  //   MessagingReposiory().deleteChat(widget.chat.chatID);
+  //   UserDatabase()
+  //       .deleteUser(widget.chat.requesterID)
+  //       .then((value) => Navigator.of(context).pop());
+  // }
 
-  /// When a requested user accepts a request, update the chat to
-  /// engaged = true to tell that the conversation is engaged between
-  /// the two participants. Also update the last activity time to be
-  /// at the top of messages and set seen to true for the moment.
-  Future<void> _onRequestAccepted() async {
-    MemoryStore()
-        .setDisplayToastValues(false, true, true, false, widget.user.id);
-    await MessagingReposiory().updateChatEngaged(widget.chat.chatID, true);
-    await MessagingReposiory().updateChatLastActivity(
-      widget.chat,
-      lastActivityTime: Message.Time,
-      lastActivitySeen: false,
-      lastActivitySeenParticipant: Participant.Me,
-    );
-    await MessagingReposiory().updateChatLastActivity(
-      widget.chat,
-      lastActivityTime: Message.Time,
-      lastActivitySeen: false,
-      lastActivitySeenParticipant: Participant.Other,
-    );
-    setState(() => widget.chat.isChatEngaged = true);
-  }
-
-  bool get _conditionToDisplayTextField => widget.chat.isChatEngaged;
+  // /// When a requested user accepts a request, update the chat to
+  // /// engaged = true to tell that the conversation is engaged between
+  // /// the two participants. Also update the last activity time to be
+  // /// at the top of messages and set seen to true for the moment.
+  // Future<void> _onRequestAccepted() async {
+  //   MemoryStore()
+  //       .setDisplayToastValues(false, true, true, false, widget.user.id);
+  //   await MessagingReposiory().updateChatEngaged(widget.chat.chatID, true);
+  //   await MessagingReposiory().updateChatLastActivity(
+  //     widget.chat,
+  //     lastActivityTime: Message.Time,
+  //     lastActivitySeen: false,
+  //     lastActivitySeenParticipant: Participant.Me,
+  //   );
+  //   await MessagingReposiory().updateChatLastActivity(
+  //     widget.chat,
+  //     lastActivityTime: Message.Time,
+  //     lastActivitySeen: false,
+  //     lastActivitySeenParticipant: Participant.Other,
+  //   );
+  //   setState(() => widget.chat.isChatEngaged = true);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -309,21 +300,19 @@ class _MessagePageContentState extends State<MessagePageContent> {
               Expanded(
                 child: _messagesOrPlaceholderWidget,
               ),
-              _conditionToDisplayTextField
-                  ? Container(
-                      width: MediaQuery.of(context).size.width,
-                      child: Container(
-                        height: 80,
-                        padding: EdgeInsets.fromLTRB(10, 15, 10, 30),
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        child: MessagingTextField(
-                          onPressed: _sendMessage,
-                          onChanged: (text) => setState(() => {}),
-                          controller: _messageEditingController,
-                        ),
-                      ),
-                    )
-                  : SizedBox(),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                child: Container(
+                  height: 80,
+                  padding: EdgeInsets.fromLTRB(10, 15, 10, 30),
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  child: MessagingTextField(
+                    onPressed: _sendMessage,
+                    onChanged: (text) => setState(() => {}),
+                    controller: _messageEditingController,
+                  ),
+                ),
+              )
             ],
           ),
         ),

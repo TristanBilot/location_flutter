@@ -4,7 +4,6 @@ import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/themes/theme_utils.dart';
 import 'package:location_project/use_cases/tab_pages/counters/cubit/counters_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_cubit.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/messages/cubit/messages_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/views/cubit/view_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/tab_page_chats_requests_page.dart';

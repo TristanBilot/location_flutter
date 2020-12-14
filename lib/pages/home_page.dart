@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/controllers/app_badge_controller.dart';
 import 'package:location_project/controllers/location_controller.dart';
+import 'package:location_project/pages/messaging_page.dart';
+import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/use_cases/blocking/cubit/blocking_cubit.dart';
 import 'package:location_project/use_cases/map/cubit/area_cubit.dart';
 import 'package:location_project/use_cases/map/map_page.dart';
@@ -13,7 +15,10 @@ import 'package:location_project/use_cases/swipe_card/buttons%20cubit/swipe_butt
 import 'package:location_project/use_cases/swipe_card/swipe%20cubit/swipe_cubit.dart';
 import 'package:location_project/use_cases/swipe_card/swipe_page.dart';
 import 'package:location_project/use_cases/tab_pages/counters/cubit/counters_cubit.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_cubit.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif_listener.dart';
+import 'package:location_project/use_cases/tab_pages/messaging/views/cubit/view_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/navigation/cubit/navigation_cubit.dart';
 import 'package:location_project/widgets/home_page_status_without_count.dart';
 import 'package:location_project/widgets/home_page_tab_bar_icon.dart';
@@ -39,6 +44,8 @@ class _HomePageState extends State<HomePage> {
         BlocProvider(create: (context) => BlockingCubit()),
         BlocProvider(create: (context) => NavigationCubit()),
         BlocProvider(create: (context) => SwipeButtonsCubit()),
+        BlocProvider(create: (context) => ChatCubit(MessagingReposiory())),
+        BlocProvider(create: (context) => ViewCubit(UserRepository())),
       ],
       child: HomePageContainer(),
     );
@@ -59,7 +66,7 @@ class _HomePageContainerState extends State<HomePageContainer>
     AccountPage(),
     SwipePage(),
     MapPage(),
-    MessagingTabsPage(),
+    MessagingPage(),
     MessagingTabsPage(),
   ];
 

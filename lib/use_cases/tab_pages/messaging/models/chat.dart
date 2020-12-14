@@ -29,7 +29,7 @@ class Chat implements FirestoreEntry {
   final int lastActivityTime;
   final bool requesterLastActivitySeen;
   final bool requestedLastActivitySeen;
-  bool isChatEngaged;
+  final bool isChatEngaged;
   final String requesterID; // userIDs[0]
   final String requestedID; // userIDs[1]
 
