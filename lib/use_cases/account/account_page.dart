@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:location_project/conf/routes.dart';
@@ -40,6 +42,7 @@ class _AccountPageState extends State<AccountPage>
   double _picSize = AccountPage.userImageSize;
 
   AuthRepository _authRepo;
+  Timer _sliderTimer;
 
   @override
   void initState() {
@@ -80,11 +83,12 @@ class _AccountPageState extends State<AccountPage>
   }
 
   void _handleWantedAgeModify(int index, double value) {
-    setState(() {
-      _wantedAgeValues[index] = value;
-      UserStore()
-          .setWantedAgeRange(_wantedAgeValues.map((e) => e.round()).toList());
-    });
+    setState(() => _wantedAgeValues[index] = value);
+    if (_sliderTimer != null) _sliderTimer.cancel();
+    _sliderTimer = Timer(
+        Duration(milliseconds: 500),
+        () => UserStore().setWantedAgeRange(
+            _wantedAgeValues.map((e) => e.round()).toList()));
   }
 
   Color _getHeaderBackground() {
