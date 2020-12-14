@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:location_project/conf/routes.dart';
@@ -13,10 +11,8 @@ import 'package:location_project/themes/theme_utils.dart';
 import 'package:location_project/use_cases/account/widgets/account_list_tile.dart';
 import 'package:location_project/use_cases/account/widgets/account_log_out_list_tile.dart';
 import 'package:location_project/use_cases/account/widgets/account_section_title.dart';
-import 'package:location_project/use_cases/start_path/gender_circle_icon_factory.dart';
-import 'package:location_project/use_cases/start_path/start_path_step2/start_path_step2.dart';
-import 'package:location_project/use_cases/start_path/widgets/equally_spaced_row.dart';
-import 'package:location_project/use_cases/start_path/widgets/gender_circle_icon.dart';
+import 'package:location_project/use_cases/account/widgets/selectable_small_card.dart';
+import 'package:location_project/use_cases/account/widgets/selectable_small_card_delegate.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_mock_repository.dart';
 import 'package:location_project/widgets/cached_circle_user_image.dart';
 import 'package:location_project/widgets/cupertino_range_slider.dart';
@@ -33,10 +29,8 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage>
-    with GenderMultiIconController {
-  List<GenderCircleIcon> _circleIcons;
-  HashSet<Gender> _selectedGenders;
-
+    with SelectableSmallCardDelegate {
+  Set<Gender> _selectedGenders;
   bool _isShowMyProfile;
   bool _isShowMyDistance;
   List<double> _wantedAgeValues;
@@ -51,8 +45,7 @@ class _AccountPageState extends State<AccountPage>
     _init();
     super.initState();
 
-    _circleIcons = GenderCircleIconFactory().makeGenderIcons(null, this);
-    _selectedGenders = HashSet();
+    _selectedGenders = Set();
     _authRepo = AuthRepository();
     _loadUserData();
   }
@@ -61,13 +54,12 @@ class _AccountPageState extends State<AccountPage>
     MemoryStore().setDisplayToastValues(true, true, true, true, '');
   }
 
-  @override
-  void iconDidSelected(Gender gender, bool isSelected) {
+  void toggle(Gender enumType, bool isSelected) {
     setState(() {
       if (isSelected)
-        _selectedGenders.add(gender);
+        _selectedGenders.add(enumType);
       else
-        _selectedGenders.remove(gender);
+        _selectedGenders.remove(enumType);
       UserStore().setWantedGenders(_selectedGenders.toList());
     });
   }
@@ -83,15 +75,7 @@ class _AccountPageState extends State<AccountPage>
         .toList();
     _name = UserStore().user.firstName;
     _age = UserStore().user.age;
-    /* need to load after build() are the icons are not created yet */
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _circleIcons.forEach((icon) {
-        if (UserStore().user.settings.wantedGenders.contains(icon.gender)) {
-          icon.state.setState(() => icon.state.isSelected = true);
-          _selectedGenders.add(icon.gender);
-        }
-      });
-    });
+    _selectedGenders = UserStore().user.settings.wantedGenders.toSet();
   }
 
   void _handleWantedAgeModify(int index, double value) {
@@ -208,7 +192,17 @@ class _AccountPageState extends State<AccountPage>
                       AccountSectionTitle('I\'m looking for'),
                       AccountListTile(
                         title: 'Gender',
-                        bottom: EquallySpacedRow(_circleIcons),
+                        bottom: Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: Row(children: [
+                            SelectableSmallCard(Gender.Female, this,
+                                _selectedGenders.contains(Gender.Female)),
+                            SelectableSmallCard(Gender.Male, this,
+                                _selectedGenders.contains(Gender.Male)),
+                            SelectableSmallCard(Gender.Other, this,
+                                _selectedGenders.contains(Gender.Other)),
+                          ]),
+                        ),
                       ),
                       AccountListTile(
                         withDivider: false,

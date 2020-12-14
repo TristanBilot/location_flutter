@@ -15,7 +15,7 @@ class ThemeUtils {
     return isDark ? DarkTheme.BackgroundDarkColor : ListBackgroundColor;
   }
 
-  static Color getBigTitleColor(BuildContext context) {
+  static Color getBlackIfLightAndWhiteIfDark(BuildContext context) {
     bool isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
     return isDark ? Colors.white : Colors.black;
   }

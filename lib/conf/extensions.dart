@@ -1,5 +1,4 @@
 import 'package:location_project/models/user.dart';
-import 'package:location_project/models/user_settings.dart';
 import 'package:location_project/use_cases/account/account_language_page.dart';
 import 'package:location_project/models/gender.dart';
 import 'package:location_project/use_cases/swipe_card/models/like_field.dart';

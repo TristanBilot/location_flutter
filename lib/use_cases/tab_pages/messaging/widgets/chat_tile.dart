@@ -7,11 +7,8 @@ import 'package:location_project/repositories/user/user_mandatory_info_fetcher.d
 import 'package:location_project/repositories/user/user_pictures_fetcher.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/storage/distant/user_store.dart';
-import 'package:location_project/themes/light_theme.dart';
-import 'package:location_project/use_cases/start_path/basic_alert.dart';
 import 'package:location_project/use_cases/start_path/basic_alert_button.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_cubit.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_deleting_state.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
 import 'package:location_project/use_cases/tab_pages/tab_page_chats_requests_page.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/cached_circle_user_image_with_active_status.dart';
