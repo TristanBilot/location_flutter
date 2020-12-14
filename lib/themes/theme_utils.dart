@@ -19,4 +19,12 @@ class ThemeUtils {
     bool isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
     return isDark ? Colors.white : Colors.black;
   }
+
+  static getResponsiveGradient(BuildContext context) {
+    bool isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    if (isDark)
+      return LinearGradient(
+          colors: [DarkTheme.BackgroundDarkColor, DarkTheme.PrimaryDarkColor]);
+    return AppGradient;
+  }
 }

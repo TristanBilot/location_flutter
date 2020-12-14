@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:location_project/themes/light_theme.dart';
 import 'package:location_project/widgets/textSF.dart';
 
 class BasicButton extends StatefulWidget {
@@ -35,11 +36,15 @@ class _BasicButtonState extends State<BasicButton> {
       child: Container(
         width: widget.width,
         decoration: BoxDecoration(
-            borderRadius:
-                BorderRadius.all(Radius.circular(BasicButton.CornerRadius)),
-            color: widget.enabled
-                ? Theme.of(context).primaryColor
-                : Colors.black12),
+          borderRadius:
+              BorderRadius.all(Radius.circular(BasicButton.CornerRadius)),
+          // color: widget.enabled
+          //     ? Theme.of(context).primaryColor
+          //     : Colors.black12),
+          gradient: widget.enabled
+              ? AppGradient
+              : LinearGradient(colors: [Colors.black12, Colors.black12]),
+        ),
         child: Padding(
           padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
           child: TextSF(

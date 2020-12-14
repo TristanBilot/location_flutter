@@ -50,4 +50,12 @@ class MemoryStore {
     _displayMessageToast = displayMessageToast;
     _userChattingWithNow = userChattingWithMeNow;
   }
+
+  /*
+  * Swipe page animation display
+  */
+  bool _isCurvedAnimationDisplayed = false;
+  get isCurvedAnimationDisplayed => _isCurvedAnimationDisplayed;
+  void setCurvedAnimationDisplayed(bool value) =>
+      _isCurvedAnimationDisplayed = value;
 }

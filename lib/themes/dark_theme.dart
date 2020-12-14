@@ -5,6 +5,7 @@ class DarkTheme {
   static final ThemeData defaultTheme = _buildTheme();
   static const PrimaryDarkColor = Color.fromRGBO(33, 33, 33, 1);
   static const BackgroundDarkColor = Color.fromRGBO(48, 48, 48, 1);
+  static const BackgroundLightColor = Color.fromRGBO(66, 66, 66, 1);
 
   static ThemeData _buildTheme() {
     final ThemeData base = ThemeData.dark();

@@ -9,6 +9,7 @@ import 'package:location_project/repositories/image_repository.dart';
 import 'package:location_project/repositories/user_mock_repository.dart';
 import 'package:location_project/storage/memory/memory_store.dart';
 import 'package:location_project/storage/distant/user_store.dart';
+import 'package:location_project/themes/dark_theme.dart';
 import 'package:location_project/themes/light_theme.dart';
 import 'package:location_project/themes/theme_utils.dart';
 import 'package:location_project/use_cases/account/widgets/account_list_tile.dart';
@@ -93,7 +94,7 @@ class _AccountPageState extends State<AccountPage>
 
   Color _getHeaderBackground() {
     bool isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
-    return isDark ? Color.fromRGBO(66, 66, 66, 1) : Colors.white;
+    return isDark ? DarkTheme.BackgroundLightColor : Colors.white;
   }
 
   _onPicturePress() async {
@@ -132,7 +133,7 @@ class _AccountPageState extends State<AccountPage>
                   Container(
                     height: AccountPage.curveContainerHeight,
                     decoration: BoxDecoration(
-                      gradient: AppGradient,
+                      gradient: ThemeUtils.getResponsiveGradient(context),
                       borderRadius: BorderRadius.vertical(
                         bottom: Radius.elliptical(
                             MediaQuery.of(context).size.width, 100.0),
