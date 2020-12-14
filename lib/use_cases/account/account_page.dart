@@ -9,6 +9,7 @@ import 'package:location_project/repositories/user_mock_repository.dart';
 import 'package:location_project/storage/memory/memory_store.dart';
 import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/themes/light_theme.dart';
+import 'package:location_project/themes/theme_utils.dart';
 import 'package:location_project/use_cases/account/widgets/account_list_tile.dart';
 import 'package:location_project/use_cases/account/widgets/account_log_out_list_tile.dart';
 import 'package:location_project/use_cases/account/widgets/account_section_title.dart';
@@ -127,6 +128,7 @@ class _AccountPageState extends State<AccountPage>
   Widget build(BuildContext context) {
     return Scaffold(
       body: Material(
+        color: ThemeUtils.getListBackgroundColor(context),
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [

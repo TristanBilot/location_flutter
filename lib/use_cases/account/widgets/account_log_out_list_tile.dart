@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:location_project/themes/light_theme.dart';
+import 'package:location_project/themes/theme_utils.dart';
 import 'package:location_project/widgets/textSF.dart';
 
 class AccountLogOutListTile extends StatelessWidget {
@@ -13,6 +15,7 @@ class AccountLogOutListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: ThemeUtils.getListBackgroundColor(context),
       width: MediaQuery.of(context).size.width,
       padding: EdgeInsets.only(
         top: AccountLogOutListTile.Padding,

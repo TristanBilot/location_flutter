@@ -14,6 +14,7 @@ class DarkTheme {
         bodyText2: base.textTheme.headline6.copyWith(color: Colors.white),
         headline5: base.textTheme.headline6.copyWith(color: TextColor),
       ),
+      canvasColor: BackgroundDarkColor,
       /* disable the Android splash effect */
       highlightColor: Colors.transparent,
       splashColor: Colors.transparent,

@@ -29,8 +29,10 @@ const SecondaryColor = const Color(0xFFc51162);
 const SecondaryColorLight = const Color(0xFFFd558F);
 const SecondaryColorDark = const Color(0xFF8e0038);
 
-const Background = const Color(0xFFfffdf7);
+// const Background = const Color(0xFFfffdf7);
+const Background = const Color(0xFFffffff);
 const TextColor = const Color(0xFF000000);
+const ListBackgroundColor = const Color.fromARGB(255, 240, 240, 240);
 
 class LightTheme {
   static final ThemeData defaultTheme = _buildTheme();
@@ -53,7 +55,7 @@ class LightTheme {
       cardColor: Background,
       textSelectionColor: PrimaryColorLight,
       backgroundColor: Background,
-      canvasColor: Color.fromARGB(255, 240, 240, 240),
+      canvasColor: Colors.white, // used by BottomNavigationBar
       // cardTheme: base.cardTheme.copyWith(
       //   color: Color.fromARGB(255, 240, 240, 240),
       // ),

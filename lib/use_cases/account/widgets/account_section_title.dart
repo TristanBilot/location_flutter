@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:location_project/themes/theme_utils.dart';
 import 'package:location_project/widgets/textSF.dart';
 
 class AccountSectionTitle extends StatelessWidget {
@@ -9,6 +10,7 @@ class AccountSectionTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: ThemeUtils.getListBackgroundColor(context),
       alignment: Alignment.bottomLeft,
       padding: EdgeInsets.fromLTRB(20, 30, 0, 10),
       child: TextSF(

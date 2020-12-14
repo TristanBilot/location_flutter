@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/storage/databases/messaging_database.dart';
 import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/storage/memory/memory_store.dart';
+import 'package:location_project/themes/theme_utils.dart';
 import 'package:location_project/use_cases/tab_pages/filters/chats_filter.dart';
 import 'package:location_project/use_cases/tab_pages/filters/filter.dart';
 import 'package:location_project/use_cases/tab_pages/filters/request_filter.dart';
@@ -105,7 +106,9 @@ class _TabPageRequestsPageState extends State<TabPageChatsRequestsPage>
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return [
               CupertinoSliverNavigationBar(
-                largeTitle: Text('Settings'),
+                largeTitle: Text('Messages',
+                    style:
+                        TextStyle(color: ThemeUtils.getBigTitleColor(context))),
               )
             ];
           },
