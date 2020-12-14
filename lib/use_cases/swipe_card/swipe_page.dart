@@ -16,6 +16,7 @@ class _SwipePageState extends State<SwipePage> {
       BlocBuilder<SwipeCubit, SwipeState>(builder: (context, state) {
         if (state is SwipableUsersFetched) {
           return SwipeCard(context, state.users);
+          // []..addAll(state.users)..addAll(state.users)
         }
         return SizedBox(height: SwipeCard.MaxHeight);
       }),

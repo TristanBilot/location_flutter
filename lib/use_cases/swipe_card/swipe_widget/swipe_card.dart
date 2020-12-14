@@ -59,9 +59,9 @@ class _SwipeCardState extends State<SwipeCard>
     // Init cards
     widget.users.forEach((user) {
       cards.add(SwipeCardSection(user));
-      SwipeCardsStore().totalCardsCount++;
       SwipeCardsStore().users.add(user);
     });
+    SwipeCardsStore().lastUserCardIndex = cards.length > 2 ? 2 : cards.length;
 
     frontCardAlign = cardsAlign[2];
 
@@ -87,9 +87,9 @@ class _SwipeCardState extends State<SwipeCard>
           child: Stack(
         children: [
           emptyUsersPlaceholder(),
-          backCard(),
-          middleCard(),
-          frontCard(),
+          if (cards.length >= 3) backCard(),
+          if (cards.length >= 2) middleCard(),
+          if (cards.length >= 1) frontCard(),
           gestureDetector(),
         ],
       )),
@@ -206,24 +206,30 @@ class _SwipeCardState extends State<SwipeCard>
     setState(() {
       // Swap cards (back card becomes the middle card; middle card becomes the front card, front card becomes a  bottom card)
       int remainingUsers =
-          widget.users.length - SwipeCardsStore().swappedCardCount;
+          cards.length - SwipeCardsStore().swappedCardCount - 1;
       if (remainingUsers >= 3) {
         var temp = cards[0];
         cards[0] = cards[1];
         cards[1] = cards[2];
         cards[2] = temp;
 
-        cards[2] = SwipeCardsStore().totalCardsCount >= widget.users.length
+        cards[2] = SwipeCardsStore().lastUserCardIndex >= widget.users.length
             ? null
             : SwipeCardSection(
-                widget.users[SwipeCardsStore().totalCardsCount++]);
+                widget.users[++SwipeCardsStore().lastUserCardIndex]);
       } else if (remainingUsers == 2) {
         cards[0] = cards[1];
         cards[1] = cards[2];
+        cards[2] = null;
       } else if (remainingUsers == 1) {
         cards[0] = cards[1];
+        cards[1] = null;
+        cards[2] = null;
+      } else {
+        cards[0] = null;
+        cards[1] = null;
+        cards[2] = null;
       }
-      SwipeCardsStore().swappedCardCount++;
 
       frontCardAlign = defaultFrontCardAlign;
       frontCardRot = 0.0;
@@ -239,6 +245,7 @@ class _SwipeCardState extends State<SwipeCard>
       final likedUser = SwipeCardsStore().currentlyDisplayedUser;
       context.read<SwipeButtonsCubit>().like(likedUser);
     }
+    SwipeCardsStore().swappedCardCount++;
     buttonsState = SwipeButtonsCurrentState.None;
   }
 

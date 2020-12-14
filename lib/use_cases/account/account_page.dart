@@ -215,7 +215,10 @@ class _AccountPageState extends State<AccountPage>
                         title: 'Age range',
                         trailing: TextSF(
                           '${_wantedAgeValues[0].round()} - ${_wantedAgeValues[1].round()}${_wantedAgeValues[1].round() == Store.maxAgeRange ? "+" : ""} ',
-                          color: Colors.black54,
+                          color: MediaQuery.of(context).platformBrightness ==
+                                  Brightness.light
+                              ? Colors.black54
+                              : Colors.white,
                         ),
                         bottom: Container(
                           width: MediaQuery.of(context).size.width -

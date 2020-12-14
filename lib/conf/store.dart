@@ -17,5 +17,5 @@ class Store {
   static final fireStoreUserIconPath = 'photos/';
 
   static final double minAgeRange = 18;
-  static final double maxAgeRange = 60;
+  static final double maxAgeRange = 55;
 }

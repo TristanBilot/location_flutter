@@ -5,7 +5,7 @@ class SwipeCardsStore {
   static final SwipeCardsStore _instance = SwipeCardsStore._internal();
   factory SwipeCardsStore() => _instance;
 
-  int totalCardsCount = 0;
+  int lastUserCardIndex = 0;
   int swappedCardCount = 0;
   List<User> users = List();
 
