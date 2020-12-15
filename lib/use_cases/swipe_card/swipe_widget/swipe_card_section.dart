@@ -5,11 +5,13 @@ import 'package:location_project/models/user.dart';
 import 'package:location_project/themes/dark_theme.dart';
 import 'package:location_project/themes/light_theme.dart';
 import 'package:location_project/use_cases/swipe_card/buttons%20cubit/swipe_buttons_cubit.dart';
+import 'package:location_project/use_cases/swipe_card/swipe_page.dart';
 import 'package:location_project/widgets/gradient_icon.dart';
 
 class SwipeCardSection extends StatelessWidget {
   final User user;
-  SwipeCardSection(this.user);
+  final SwipePageDelegate delegate;
+  SwipeCardSection(this.user, this.delegate);
 
   final double _cardBorderRadius = 15.0;
   final double _descriptionContainerHeight = 110.0;
@@ -46,14 +48,20 @@ class SwipeCardSection extends StatelessWidget {
           Padding(padding: EdgeInsets.only(right: 8.0)),
           FloatingActionButton(
             heroTag: null,
-            onPressed: () => context.read<SwipeButtonsCubit>().emitUnlike(),
+            onPressed: () {
+              delegate.swipe(left: true);
+              context.read<SwipeButtonsCubit>().unlike(user);
+            },
             backgroundColor: color,
             child: GradientIcon(Icons.close, 26, GreyGradient),
           ),
           Padding(padding: EdgeInsets.only(right: 8.0)),
           FloatingActionButton(
             heroTag: null,
-            onPressed: () => context.read<SwipeButtonsCubit>().emitLike(),
+            onPressed: () {
+              delegate.swipe(left: false);
+              context.read<SwipeButtonsCubit>().like(user, context);
+            },
             backgroundColor: color,
             child: GradientIcon(Icons.favorite, 26, AppGradient),
           ),

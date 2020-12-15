@@ -21,8 +21,8 @@ class SwipeButtonsCubit extends Cubit<SwipeButtonsState> {
     // Match
     if (MemoryStore().containsUserWhoLikedMe(likedUser.id)) {
       final id = UserStore().user.id;
-      await UserStore().addLike(likedUser.id);
-      await UserRepository().deleteCollectionSnapshot(
+      UserStore().addLike(likedUser.id);
+      UserRepository().deleteCollectionSnapshot(
           id, UserField.UsersWhoLikedMe, likedUser.id);
       await RequestSender().sendRequestTo(likedUser);
       final chat = await MessagingReposiory()
@@ -32,17 +32,13 @@ class SwipeButtonsCubit extends Cubit<SwipeButtonsState> {
     } else {
       print('--- Like but no Match');
       // Not a match (yet)
-      await UserStore().addLike(likedUser.id);
+      UserStore().addLike(likedUser.id);
     }
   }
 
   Future<void> unlike(User unlikedUser) async {
     await UserStore().addUnlike(unlikedUser.id);
   }
-
-  void emitLike() => emit(SwipeButtonsLikeState());
-
-  void emitUnlike() => emit(SwipeButtonsUnlikeState());
 
   void _showNewMatchDialog(BuildContext context, User matchedUser, Chat chat) {
     showDialog(

@@ -8,14 +8,3 @@ abstract class SwipeButtonsState extends Equatable {
 }
 
 class SwipeButtonsInitial extends SwipeButtonsState {}
-
-class SwipeButtonsLikeState extends SwipeButtonsState {
-  // all states should be distinct
-  @override
-  List<Object> get props => [Random().nextDouble() * 1000];
-}
-
-class SwipeButtonsUnlikeState extends SwipeButtonsState {
-  @override
-  List<Object> get props => [Random().nextDouble() * 1000];
-}
