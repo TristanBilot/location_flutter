@@ -108,7 +108,6 @@ class _HomePageContainerState extends State<HomePageContainer>
             setState(() => _tabIndex = state.index);
         },
         child: BottomNavigationBar(
-          backgroundColor: Colors.red,
           currentIndex: _tabIndex,
           type: BottomNavigationBarType.shifting,
           items: [

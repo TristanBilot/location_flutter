@@ -25,8 +25,6 @@ class IconPicker {
     return await ImageCropper.cropImage(
         sourcePath: imagePath,
         cropStyle: CropStyle.circle,
-        maxWidth: 150,
-        maxHeight: 150,
         aspectRatioPresets: [
           CropAspectRatioPreset.square,
           CropAspectRatioPreset.ratio3x2,
