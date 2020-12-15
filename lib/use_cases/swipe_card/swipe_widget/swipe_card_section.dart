@@ -37,6 +37,7 @@ class SwipeCardSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           FloatingActionButton(
+            heroTag: null,
             mini: true,
             onPressed: () {},
             backgroundColor: color,
@@ -44,18 +45,21 @@ class SwipeCardSection extends StatelessWidget {
           ),
           Padding(padding: EdgeInsets.only(right: 8.0)),
           FloatingActionButton(
+            heroTag: null,
             onPressed: () => context.read<SwipeButtonsCubit>().emitUnlike(),
             backgroundColor: color,
             child: GradientIcon(Icons.close, 26, GreyGradient),
           ),
           Padding(padding: EdgeInsets.only(right: 8.0)),
           FloatingActionButton(
+            heroTag: null,
             onPressed: () => context.read<SwipeButtonsCubit>().emitLike(),
             backgroundColor: color,
             child: GradientIcon(Icons.favorite, 26, AppGradient),
           ),
           Padding(padding: EdgeInsets.only(right: 8.0)),
           FloatingActionButton(
+            heroTag: null,
             mini: true,
             onPressed: () {},
             backgroundColor: color,
