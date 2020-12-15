@@ -95,7 +95,7 @@ class SwipeCardSection extends StatelessWidget {
                     topLeft: Radius.circular(_cardBorderRadius),
                     topRight: Radius.circular(_cardBorderRadius)),
                 child: CachedNetworkImage(
-                    imageUrl: user.pictureURL, fit: BoxFit.cover),
+                    imageUrl: user.mainPictureURL, fit: BoxFit.cover),
               ),
             ),
           ),

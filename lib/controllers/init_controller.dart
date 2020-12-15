@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:location_project/controllers/device_id_controller.dart';
 import 'package:location_project/controllers/location_controller.dart';
+import 'package:location_project/repositories/auth_repository.dart';
+import 'package:location_project/repositories/user_mock_repository.dart';
 import 'package:location_project/storage/shared preferences/local_store.dart';
 import 'package:location_project/storage/databases/user_database.dart';
 import 'package:location_project/storage/databases/messaging_database.dart';
@@ -25,6 +27,8 @@ class InitController {
         await UserStore().initAsynchronously();
     }
     initAtFirstAppLaunch();
+    // UserMockRepository().putParisDataset();
+    // UserMockRepository().putCarrieresDataset();
   }
 
   Future initAfterLogin(String loggedID) async {
@@ -35,9 +39,9 @@ class InitController {
     await UserStore().initAsynchronously();
   }
 
-  Future initAfterStartPath(String newUserID) async {
-    await LocalStore().rememberLoggedUser(newUserID);
-    await UserStore().initAsynchronously();
+  Future initAfterStartPath(User newUser) async {
+    await LocalStore().rememberLoggedUser(newUser.id);
+    await UserStore().initAsynchronously(fromUser: newUser);
   }
 
   Future initAtFirstAppLaunch() async {

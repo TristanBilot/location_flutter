@@ -64,7 +64,7 @@ class ToasterWidget extends StatelessWidget {
           child: Row(
             children: [
               // SizedBox(width: 20),
-              CachedCircleUserImage(user.pictureURL,
+              CachedCircleUserImage(user.mainPictureURL,
                   size: 40, borderColor: Colors.transparent),
               SizedBox(width: 20),
               Flexible(

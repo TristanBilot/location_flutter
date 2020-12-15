@@ -77,7 +77,7 @@ class _ChatTileState extends State<ChatTile> {
 
     final lastMsgStream = futureLastMSg();
     final userInfoStream = futureUser();
-    final userPictures = UserPicturesInfoFetcher().fetch(remainingID);
+    final userPictures = UserIconInfoFetcher().fetch(remainingID);
     return Future.wait([lastMsgStream, userInfoStream, userPictures]);
   }
 
@@ -248,7 +248,7 @@ class _ChatTileState extends State<ChatTile> {
         if (snapshot.hasData) {
           final lastMsgStream = snapshot.data[0] as Stream<List<Message>>;
           final userInfoStream = snapshot.data[1] as Stream<UserMandatoryInfo>;
-          final userPictures = snapshot.data[2] as UserPicturesInfo;
+          final userPictures = snapshot.data[2] as UserIconInfo;
 
           return StreamBuilder(
             stream: userInfoStream,
@@ -302,7 +302,7 @@ class _ChatTileState extends State<ChatTile> {
                                         trailing: Icon(Icons.chevron_right),
                                         leading:
                                             CachedCircleUserImageWithActiveStatus(
-                                          pictureURL: user.pictureURL,
+                                          pictureURL: user.mainPictureURL,
                                           isActive: user.settings.connected,
                                           borderColor: Colors.transparent,
                                           onTapped: () =>

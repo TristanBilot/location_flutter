@@ -71,7 +71,7 @@ class _AccountBlockedUsersPageState extends State<AccountBlockedUsersPage> {
                         onPressed: () => _onUnblockTap(blockedUser.id),
                       ),
                       leading: CachedCircleUserImage(
-                        blockedUser.pictureURL,
+                        blockedUser.mainPictureURL,
                         size: 45,
                         withBorder: false,
                       ),

@@ -35,7 +35,7 @@ class UserRepository {
   UserMandatoryInfoFetcher _mandatoryInfoFetcher;
   UserBlockInfoFetcher _blockInfoFetcher;
   UserViewsInfoFetcher _viewsInfoFetcher;
-  UserPicturesInfoFetcher _picturesInfoFetcher;
+  UserIconInfoFetcher _picturesInfoFetcher;
   UserLikesInfoFetcher _likesInfoFetcher;
 
   UserRepository() {
@@ -45,7 +45,7 @@ class UserRepository {
     _mandatoryInfoFetcher = UserMandatoryInfoFetcher();
     _blockInfoFetcher = UserBlockInfoFetcher();
     _viewsInfoFetcher = UserViewsInfoFetcher();
-    _picturesInfoFetcher = UserPicturesInfoFetcher();
+    _picturesInfoFetcher = UserIconInfoFetcher();
     _likesInfoFetcher = UserLikesInfoFetcher();
   }
 
@@ -67,8 +67,9 @@ class UserRepository {
           UserSettings.DefaultUserSettings,
           user.deviceTokens,
           UserSettings.DefaultNotificationSettings,
+          user.pictureURLs,
         ).toFirestoreObject());
-    File userPicture = await _imageRepo.urlToFile(user.pictureURL);
+    File userPicture = await _imageRepo.urlToFile(user.mainPictureURL);
     return await _imageRepo.uploadFile(
         userPicture, user.id + Store.defaultProfilePictureExtension);
   }
@@ -219,7 +220,7 @@ class UserRepository {
     User user = User.public();
 
     UserMandatoryInfo userInfos;
-    UserPicturesInfo userPictures;
+    UserIconInfo userPictures;
     UserBlockInfo userBlocks;
     UserViewsInfo userViews;
     UserLikesInfo userLikes;

@@ -22,7 +22,7 @@ class UserAdapter extends TypeAdapter<User> {
       ..firstName = fields[2] as String
       ..lastName = fields[3] as String
       ..coord = (fields[4] as List)?.cast<double>()
-      ..pictureURL = fields[5] as String
+      ..pictureURLs = (fields[5] as List)?.cast<String>()
       ..distance = fields[6] as int
       ..age = fields[7] as int
       ..gender = fields[8] as Gender
@@ -45,7 +45,7 @@ class UserAdapter extends TypeAdapter<User> {
       ..writeByte(4)
       ..write(obj.coord)
       ..writeByte(5)
-      ..write(obj.pictureURL)
+      ..write(obj.pictureURLs)
       ..writeByte(6)
       ..write(obj.distance)
       ..writeByte(7)

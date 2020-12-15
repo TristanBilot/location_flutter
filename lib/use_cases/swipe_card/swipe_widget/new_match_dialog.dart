@@ -54,7 +54,7 @@ class _NewMatchDialogState extends State<NewMatchDialog> {
                             bottom: 0,
                             left: 0,
                             child: CachedCircleUserImage(
-                              UserStore().user.pictureURL,
+                              UserStore().user.mainPictureURL,
                               size: _littlePictureSize,
                               borderColor: Colors.transparent,
                             ),
@@ -63,7 +63,7 @@ class _NewMatchDialogState extends State<NewMatchDialog> {
                             bottom: _bigImageOffset,
                             left: _bigImageOffset,
                             child: CachedCircleUserImage(
-                              widget.user.pictureURL,
+                              widget.user.mainPictureURL,
                               size: _bigPictureSize,
                               borderColor: _backgroundColor,
                               borderWidth: 4,

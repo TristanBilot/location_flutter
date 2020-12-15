@@ -21,6 +21,7 @@ enum UserField {
   Age,
   Gender,
   DeviceTokens,
+  PictureURLs,
 
   // Settings
   WantedGenders,
@@ -54,7 +55,7 @@ class User extends HiveObject {
   List<double> coord; // [0]: latitude [1]: longitude
   BitmapDescriptor icon;
   @HiveField(5)
-  String pictureURL;
+  List<String> pictureURLs;
   @HiveField(6)
   int distance;
   @HiveField(7)
@@ -86,7 +87,7 @@ class User extends HiveObject {
     this.lastName,
     this.coord,
     this.icon,
-    this.pictureURL,
+    this.pictureURLs,
     this.distance,
     this.age,
     this.gender,
@@ -111,9 +112,11 @@ class User extends HiveObject {
   bool get isViewNotifEnable =>
       settings.notificationSettings[NotifType.Views.value];
 
+  String get mainPictureURL => pictureURLs.first;
+
   User build({
     UserMandatoryInfo infos,
-    UserPicturesInfo pictures,
+    UserIconInfo pictures,
     UserBlockInfo blocks,
     UserViewsInfo views,
     UserLikesInfo likes,
@@ -133,6 +136,7 @@ class User extends HiveObject {
       this.gender = infos.gender;
       this.settings = infos.settings;
       this.deviceTokens = infos.deviceTokens;
+      this.pictureURLs = infos.pictureURLs;
     }
     if (views != null) {
       this.viewedUserIDs = views.viewedUserIDs;
@@ -140,7 +144,6 @@ class User extends HiveObject {
     }
     if (pictures != null) {
       this.icon = pictures.icon;
-      this.pictureURL = pictures.pictureURL;
     }
     if (likes != null) {
       this.unlikedUsers = likes.unlikedUsers;

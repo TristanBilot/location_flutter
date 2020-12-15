@@ -75,7 +75,7 @@ class _UserMapCardContentState extends State<UserMapCardContent> {
                         Padding(
                           padding: const EdgeInsets.only(top: 10.0),
                           child: CachedCircleUserImage(
-                            widget.user.pictureURL,
+                            widget.user.mainPictureURL,
                             size: PictureSize,
                           ),
                         ),

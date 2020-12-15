@@ -105,13 +105,12 @@ class _AccountPageState extends State<AccountPage>
     setState(() => _picSize = AccountPage.userImageSize);
     await Future.delayed(Duration(milliseconds: AccountPage.picAnimDuration));
 
-    final success =
-        await ImageRepository().pickImageAndUpload(UserStore().user.id);
-    if (success) {
-      final newURL =
-          await ImageRepository().getPictureDownloadURL(UserStore().user.id);
-      setState(() => UserStore().user.pictureURL = newURL);
-    }
+    // final pictureURL =
+    //     await ImageRepository().pickImageAndUpload(UserStore().user.id);
+    // if (pictureURL != null) {
+    //   setState(
+    //       () => UserStore().user.pictureURL = pictureURL); // modifier par liste
+    // }
   }
 
   @override
@@ -152,7 +151,7 @@ class _AccountPageState extends State<AccountPage>
                           alignment: Alignment.topRight,
                           children: [
                             CachedCircleUserImage(
-                              UserStore().user.pictureURL,
+                              UserStore().user.mainPictureURL,
                               size: AccountPage.userImageSize,
                             ),
                             Padding(

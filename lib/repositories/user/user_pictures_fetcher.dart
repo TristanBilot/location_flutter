@@ -4,33 +4,29 @@ import 'package:location_project/repositories/image_repository.dart';
 import 'package:location_project/repositories/user/time_measurable.dart';
 import 'package:location_project/storage/memory/memory_store.dart';
 
-class UserPicturesInfo implements TimeMeasurable {
+class UserIconInfo implements TimeMeasurable {
   int timeToFetch;
   BitmapDescriptor icon;
-  String pictureURL;
 
-  UserPicturesInfo(this.timeToFetch, this.icon, this.pictureURL);
+  UserIconInfo(this.timeToFetch, this.icon);
 }
 
-class UserPicturesInfoFetcher {
+class UserIconInfoFetcher {
   final _imageRepo = ImageRepository();
 
-  Future<UserPicturesInfo> fetch(
+  Future<UserIconInfo> fetch(
     String id, {
     bool shouldTryFromCache = true,
   }) async {
     Stopwatch stopwatch = Stopwatch()..start();
     BitmapDescriptor icon;
-    dynamic pictureURL;
     if (shouldTryFromCache && MemoryStore().userExists(id)) {
       User cachedUser = MemoryStore().getUser(id);
       icon = cachedUser.icon;
-      pictureURL = cachedUser.pictureURL;
     } else {
       icon = await _imageRepo.fetchUserIcon(id);
-      pictureURL = await _imageRepo.getPictureDownloadURL(id);
     }
     final timeToFetch = stopwatch.elapsed.inMilliseconds;
-    return UserPicturesInfo(timeToFetch, icon, pictureURL);
+    return UserIconInfo(timeToFetch, icon);
   }
 }

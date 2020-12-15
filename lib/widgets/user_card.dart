@@ -80,7 +80,7 @@ class _UserCardContentState extends State<UserCardContent> {
                     children: [
                       SizedBox(height: 80),
                       CachedCircleUserImage(
-                        widget.user.pictureURL,
+                        widget.user.mainPictureURL,
                         size: 200,
                       ),
                       Padding(

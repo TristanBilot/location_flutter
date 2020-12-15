@@ -9,6 +9,7 @@ import 'package:location_project/use_cases/account/account_blocked_users_page.da
 import 'package:location_project/use_cases/account/account_language_page.dart';
 import 'package:location_project/use_cases/account/account_notifications.dart';
 import 'package:location_project/use_cases/account/account_page.dart';
+import 'package:location_project/use_cases/start_path/start_path_step0/start_path_step0.dart';
 import 'package:location_project/use_cases/start_path/start_path_step1/start_path_step1.dart';
 import 'package:location_project/use_cases/start_path/start_path_step2/start_path_step2.dart';
 import 'package:location_project/use_cases/start_path/start_path_step3/start_path_step3.dart';
@@ -74,6 +75,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
         Routes.languages.value: (context) => AccountLanguagePage(),
         Routes.blockedUsers.value: (context) => AccountBlockedUsersPage(),
         Routes.notifications.value: (context) => AccountNotificationsPage(),
+        Routes.startPathStep0.value: (context) => StartPathStep0(),
         Routes.startPathStep1.value: (context) => StartPathStep1(),
         Routes.startPathStep2.value: (context) => StartPathStep2(),
         Routes.startPathStep3.value: (context) => StartPathStep3(),

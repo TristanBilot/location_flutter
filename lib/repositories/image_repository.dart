@@ -37,7 +37,7 @@ class ImageRepository {
     String id, {
     bool withCircleImage = false,
   }) async {
-    return new Future.sync(() {
+    return Future.sync(() {
       /* prefix used to determine if we should fetch a circular resized image */
       final prefix = withCircleImage ? ImageRepository.OutputFilePrefix : '';
       final ext = Store.defaultProfilePictureExtension;
@@ -58,17 +58,20 @@ class ImageRepository {
     });
   }
 
-  Future<bool> pickImageAndUpload(String id) async {
-    final File pickedIcon = await IconPicker().pickImageFromGalery();
-    if (pickedIcon == null) return false;
-    await uploadFile(pickedIcon, id + Store.defaultProfilePictureExtension);
-    return true;
+  /// Returns the picture url uploaded
+  Future<String> pickImageAndUpload(String id) async {
+    final File pickedImage = await IconPicker().pickImageFromGalery();
+    if (pickedImage == null) return null;
+    return await uploadFile(
+        pickedImage, id + Store.defaultProfilePictureExtension);
   }
 
-  Future<void> uploadFile(File file, String name) async {
+  /// Returns the picture url uploaded
+  Future<String> uploadFile(File file, String name) async {
     final ref = _getFirestoreImageReference(name);
     final StorageUploadTask uploadTask = ref.putFile(file);
-    await uploadTask.onComplete;
+    final snapshot = await uploadTask.onComplete;
+    return await snapshot.ref.getDownloadURL();
   }
 
   Future<File> urlToFile(String imageUrl) async {

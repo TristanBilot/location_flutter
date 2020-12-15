@@ -28,10 +28,11 @@ class StartPathStep4State extends State<StartPathStep4> {
   }
 
   Future _createUser() async {
-    final user = StartPathStore().user;
-    if (!StartPathStore().ignoreUserCreation)
-      _acountCreationController.createUser(user);
-    await InitController().initAfterStartPath(user.id);
+    if (!StartPathStore().ignoreUserCreation) {
+      await StartPathStore().uploadPictures();
+      await _acountCreationController.createUser(StartPathStore().user);
+    }
+    InitController().initAfterStartPath(StartPathStore().user);
   }
 
   Future _requestNotifications() async {

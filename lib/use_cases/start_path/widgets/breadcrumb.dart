@@ -28,9 +28,8 @@ class BreadcrumbState extends State<Breadcrumb> {
                 '.',
                 style: TextSF.TextSFTitleStyle.copyWith(
                     fontSize: 45,
-                    color: i == (widget.index - 1)
-                        ? selectedColor
-                        : unselectedColor),
+                    color:
+                        i == (widget.index) ? selectedColor : unselectedColor),
               ))
           .toList(),
     );

@@ -25,7 +25,7 @@ class _MatchImageState extends State<MatchImage> {
         UserRepository().fetchUserInfoStream(widget.id);
 
     final userInfoStream = futureUser();
-    final userPictures = UserPicturesInfoFetcher().fetch(widget.id);
+    final userPictures = UserIconInfoFetcher().fetch(widget.id);
     return Future.wait([userInfoStream, userPictures]);
   }
 
@@ -51,7 +51,7 @@ class _MatchImageState extends State<MatchImage> {
             if (snapshot.hasData) {
               final userInfoStream =
                   snapshot.data[0] as Stream<UserMandatoryInfo>;
-              final userPictures = snapshot.data[1] as UserPicturesInfo;
+              final userPictures = snapshot.data[1] as UserIconInfo;
 
               return StreamBuilder(
                   stream: userInfoStream,
@@ -66,7 +66,7 @@ class _MatchImageState extends State<MatchImage> {
                         child: Column(
                           children: [
                             CachedCircleUserImageWithActiveStatus(
-                              pictureURL: user.pictureURL,
+                              pictureURL: user.mainPictureURL,
                               isActive: user.settings.connected,
                               statusSize: 12,
                               statusAlignment: Alignment.bottomRight,

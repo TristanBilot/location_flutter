@@ -5,6 +5,7 @@ enum Routes {
   languages,
   blockedUsers,
   notifications,
+  startPathStep0,
   startPathStep1,
   startPathStep2,
   startPathStep3,

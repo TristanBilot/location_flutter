@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:location_project/conf/routes.dart';
 import 'package:location_project/controllers/init_controller.dart';
 import 'package:location_project/repositories/login_controller.dart';
 import 'package:location_project/use_cases/start_path/widgets/basic_button.dart';
@@ -42,6 +43,9 @@ class _LoginPageState extends State<LoginPage> {
               // BasicButton('Route to map', onPressed: () {
               //   Navigator.pushReplacementNamed(context, Routes.map.value);
               // }),
+              BasicButton('Start path',
+                  onPressed: () => Navigator.pushReplacementNamed(
+                      context, Routes.startPathStep0.value)),
               BasicButton('Log as Tristan',
                   onPressed: () => _loginController
                       .logInFromEmail('bilot.tristan.carrieres@hotmail.fr')),

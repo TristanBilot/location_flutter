@@ -36,13 +36,13 @@ class UserStore extends ChangeNotifier {
   /// All the data of the user are fetched at the start
   /// to be loaded in the local store and thus need less
   /// to call the distant firestore.
-  Future<void> initAsynchronously() async {
-    if (!_localRepo.isUserLoggedIn()) {
+  Future<void> initAsynchronously({User fromUser}) async {
+    if (!_localRepo.isUserLoggedIn() && fromUser == null) {
       print('User not connected. Store not initialized.');
       return;
     }
     final id = _localRepo.getLoggedUserID();
-    _user = await _repo.fetchUser(id);
+    _user = fromUser ?? await _repo.fetchUser(id);
     _language = _localRepo.getAppLanguage();
     setConnectedStatus(true);
   }

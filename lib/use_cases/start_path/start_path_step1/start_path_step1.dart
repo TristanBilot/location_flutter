@@ -21,7 +21,7 @@ mixin GenderIconController {
 
 class StartPathStep1 extends StatefulWidget {
   static final allPadding = 30.0;
-  static final nbOfSections = 4;
+  static final nbOfSections = 5;
 
   @override
   StartPathStep1State createState() => StartPathStep1State();

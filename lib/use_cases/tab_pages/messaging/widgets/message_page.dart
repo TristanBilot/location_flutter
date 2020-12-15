@@ -180,7 +180,7 @@ class _MessagePageContentState extends State<MessagePageContent> {
           children: [
             Spacer(),
             CachedCircleUserImage(
-              widget.user.pictureURL,
+              widget.user.mainPictureURL,
               size: PlaceholderImageSize,
             ),
             Padding(padding: EdgeInsets.all(30)),
@@ -307,7 +307,7 @@ class _MessagePageContentState extends State<MessagePageContent> {
           ),
           elevation: 6,
           title: CachedCircleUserImageWithActiveStatus(
-              pictureURL: widget.user.pictureURL,
+              pictureURL: widget.user.mainPictureURL,
               isActive: widget.user.settings.connected,
               borderColor: Colors.white,
               size: 55,

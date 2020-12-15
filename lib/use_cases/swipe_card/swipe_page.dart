@@ -81,8 +81,9 @@ class _SwipePageState extends State<SwipePage>
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Spacer(),
+          Spacer(),
           CachedCircleUserImage(
-            UserStore().user.pictureURL,
+            UserStore().user.mainPictureURL,
             borderColor: Colors.transparent,
             size: MediaQuery.of(context).size.width * 0.4,
           ),
@@ -93,7 +94,7 @@ class _SwipePageState extends State<SwipePage>
             fontWeight: FontWeight.w700,
             align: TextAlign.center,
           ),
-          Spacer(),
+          SizedBox(height: 60),
           BasicButton('EXTEND DISTANCE 📍',
               fontsSize: 18,
               onPressed: () => context.read<NavigationCubit>().navigateTo(0)),

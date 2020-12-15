@@ -111,7 +111,7 @@ class AuthRepository {
         0
       ]), // FIXME UPDATE LOCATION FOR THE LOGGED USER LocationCache().location
       icon,
-      data['picture']['data']['url'],
+      (data['picture']['data']['url'] as List)?.cast<String>(),
       0,
       null,
       null,
