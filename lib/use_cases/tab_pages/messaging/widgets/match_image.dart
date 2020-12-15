@@ -76,7 +76,7 @@ class _MatchImageState extends State<MatchImage> {
                             SizedBox(height: 5),
                             TextSF(
                               user.firstName,
-                              fontSize: 14,
+                              fontSize: 12,
                               fontWeight: FontWeight.w700,
                               overflow: TextOverflow.ellipsis,
                             ),

@@ -92,6 +92,31 @@ class _MessagePageContentState extends State<MessagePageContent> {
     if (content.isEmpty) return;
     MessageSender().send(content, widget.chat);
     setState(() => _messageEditingController.text = '');
+
+    // Handle the first message sent, to engage the chat
+    if (!widget.chat.isChatEngaged) {
+      _engageChat();
+    }
+  }
+
+  Future<void> _engageChat() async {
+    MemoryStore()
+        .setDisplayToastValues(false, true, true, false, widget.user.id);
+    await MessagingReposiory().updateChatEngaged(widget.chat.chatID, true);
+    // change requester status
+    await MessagingReposiory().updateChatLastActivity(
+      widget.chat,
+      lastActivityTime: Message.Time,
+      lastActivitySeen: false,
+      lastActivitySeenParticipant: Participant.Me,
+    );
+    // change requested status
+    await MessagingReposiory().updateChatLastActivity(
+      widget.chat,
+      lastActivityTime: Message.Time,
+      lastActivitySeen: false,
+      lastActivitySeenParticipant: Participant.Other,
+    );
   }
 
   void _handleLastMsgView(bool isLastMsg, Message msg) {

@@ -81,13 +81,7 @@ class _MessagingPageState extends State<MessagingPage> {
       height: MatchImage.ImageSize + 30,
       child: ListView(
         scrollDirection: Axis.horizontal,
-        children: ([]
-              ..addAll(requests)
-              ..addAll(requests)
-              ..addAll(requests)
-              ..addAll(requests)
-              ..toList())
-            .map((chat) {
+        children: requests.map((chat) {
           final remainingID = (chat.userIDs..remove(id)).first;
           return Padding(
             padding: const EdgeInsets.only(left: 10),

@@ -243,7 +243,7 @@ class _SwipeCardState extends State<SwipeCard>
       context.read<SwipeButtonsCubit>().unlike(unlikedUser);
     } else if (buttonsState == SwipeButtonsCurrentState.Right) {
       final likedUser = SwipeCardsStore().currentlyDisplayedUser;
-      context.read<SwipeButtonsCubit>().like(likedUser);
+      context.read<SwipeButtonsCubit>().like(likedUser, context);
     }
     SwipeCardsStore().swappedCardCount++;
     buttonsState = SwipeButtonsCurrentState.None;

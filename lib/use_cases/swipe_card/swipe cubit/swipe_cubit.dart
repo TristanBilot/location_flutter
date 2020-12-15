@@ -33,6 +33,7 @@ class SwipeCubit extends Cubit<SwipeState> {
     );
     stream.listen((userIDs) {
       _usersWhoLikedMe = userIDs;
+      MemoryStore().putUsersWhoLikedMe(userIDs.toSet());
       _fetchUsersData();
     });
   }

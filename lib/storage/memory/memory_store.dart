@@ -19,6 +19,14 @@ class MemoryStore {
   List<User> get users => _areaUsersCache.values.toList();
   bool containsUser(String id) => _areaUsersCache.containsKey(id);
 
+  /* 
+  * functions used to cache the users who liked me (from stream)
+  */
+  Set<String> _usersWhoLikedMeCache = Set();
+  void putUsersWhoLikedMe(Set<String> idSet) => _usersWhoLikedMeCache = idSet;
+  Set<String> get getUsersWhoLikedMe => _usersWhoLikedMeCache;
+  bool containsUserWhoLikedMe(String id) => _usersWhoLikedMeCache.contains(id);
+
   /*
   * displaying of toast notifications
   */
