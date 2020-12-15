@@ -27,16 +27,16 @@ List<Size> cardsSize = List(3);
 SwipeButtonsCurrentState buttonsState = SwipeButtonsCurrentState.None;
 
 class SwipeCard extends StatefulWidget {
-  static const MaxHeight = 0.6;
+  static const MaxHeight = 0.68;
   final List<User> users;
 
   SwipeCard(BuildContext context, this.users) {
     cardsSize[0] = Size(MediaQuery.of(context).size.width * 0.95,
         MediaQuery.of(context).size.height * MaxHeight);
     cardsSize[1] = Size(MediaQuery.of(context).size.width * 0.9,
-        MediaQuery.of(context).size.height * 0.55);
+        MediaQuery.of(context).size.height * 0.63);
     cardsSize[2] = Size(MediaQuery.of(context).size.width * 0.85,
-        MediaQuery.of(context).size.height * 0.5);
+        MediaQuery.of(context).size.height * 0.58);
   }
 
   @override

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/helpers/distance_adapter.dart';
 import 'package:location_project/helpers/string_formatter.dart';
+import 'package:location_project/themes/dark_theme.dart';
 import 'package:location_project/themes/light_theme.dart';
 import 'package:location_project/use_cases/swipe_card/buttons%20cubit/swipe_buttons_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
@@ -144,16 +145,28 @@ class _UserMapCardContentState extends State<UserMapCardContent> {
                                           child: FittedBox(
                                             child: FloatingActionButton(
                                               onPressed: widget.onLikeTap,
-                                              backgroundColor: Colors.white,
-                                              child: GradientIcon(
-                                                  Icons.close, 32, AppGradient),
+                                              backgroundColor: MediaQuery.of(
+                                                              context)
+                                                          .platformBrightness ==
+                                                      Brightness.dark
+                                                  ? DarkTheme.PrimaryDarkColor
+                                                  : Theme.of(context)
+                                                      .backgroundColor,
+                                              child: GradientIcon(Icons.close,
+                                                  32, GreyGradient),
                                             ),
                                           ),
                                         ),
                                         SizedBox(width: 20),
                                         FloatingActionButton(
                                           onPressed: null, //  TODO
-                                          backgroundColor: Colors.white,
+                                          backgroundColor:
+                                              MediaQuery.of(context)
+                                                          .platformBrightness ==
+                                                      Brightness.dark
+                                                  ? DarkTheme.PrimaryDarkColor
+                                                  : Theme.of(context)
+                                                      .backgroundColor,
                                           child: GradientIcon(
                                               Icons.notifications_active,
                                               30,
@@ -165,11 +178,17 @@ class _UserMapCardContentState extends State<UserMapCardContent> {
                                           child: FittedBox(
                                             child: FloatingActionButton(
                                               onPressed: widget.onLikeTap,
-                                              backgroundColor: Colors.white,
+                                              backgroundColor: MediaQuery.of(
+                                                              context)
+                                                          .platformBrightness ==
+                                                      Brightness.dark
+                                                  ? DarkTheme.PrimaryDarkColor
+                                                  : Theme.of(context)
+                                                      .backgroundColor,
                                               child: GradientIcon(
                                                   Icons.favorite,
                                                   32,
-                                                  GreenGradient),
+                                                  AppGradient),
                                             ),
                                           ),
                                         ),

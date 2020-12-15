@@ -55,46 +55,9 @@ class _SwipePageState extends State<SwipePage> {
             }
             return SizedBox(height: SwipeCard.MaxHeight);
           }),
-          buttonsRow(),
+          SizedBox(height: 10)
         ]),
       ],
-    );
-  }
-
-  Widget buttonsRow() {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 15),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          FloatingActionButton(
-            mini: true,
-            onPressed: () {},
-            backgroundColor: Colors.white,
-            child: Icon(Icons.loop, color: Colors.yellow),
-          ),
-          Padding(padding: EdgeInsets.only(right: 8.0)),
-          FloatingActionButton(
-            onPressed: () => context.read<SwipeButtonsCubit>().emitUnlike(),
-            backgroundColor: Colors.white,
-            child: GradientIcon(Icons.close, 26, AppGradient),
-          ),
-          Padding(padding: EdgeInsets.only(right: 8.0)),
-          FloatingActionButton(
-            onPressed: () => context.read<SwipeButtonsCubit>().emitLike(),
-            backgroundColor: Colors.white,
-            child: GradientIcon(Icons.favorite, 26, GreenGradient),
-          ),
-          Padding(padding: EdgeInsets.only(right: 8.0)),
-          FloatingActionButton(
-            mini: true,
-            onPressed: () {},
-            backgroundColor: Colors.white,
-            child: Icon(Icons.star, color: Colors.blue),
-          ),
-        ],
-      ),
     );
   }
 }

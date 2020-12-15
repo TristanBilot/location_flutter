@@ -21,6 +21,12 @@ const GoldGradient = LinearGradient(
   end: Alignment.bottomLeft,
 );
 
+const GreyGradient = LinearGradient(
+  colors: [Color(0xFF9FA4C4), Color(0xFFB3CDD1)],
+  begin: Alignment.topRight,
+  end: Alignment.bottomLeft,
+);
+
 const PrimaryColor = const Color(0xFFFF4081);
 const PrimaryColorLight = const Color(0xFFFF79b0);
 const PrimaryColorDark = const Color(0xFFc60055);

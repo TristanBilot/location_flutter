@@ -1,14 +1,18 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/themes/dark_theme.dart';
+import 'package:location_project/themes/light_theme.dart';
+import 'package:location_project/use_cases/swipe_card/buttons%20cubit/swipe_buttons_cubit.dart';
+import 'package:location_project/widgets/gradient_icon.dart';
 
 class SwipeCardSection extends StatelessWidget {
   final User user;
   SwipeCardSection(this.user);
 
   final double _cardBorderRadius = 15.0;
-  final double _descriptionContainerHeight = 80.0;
+  final double _descriptionContainerHeight = 110.0;
 
   Color _getCardShadowColor(BuildContext context) {
     return MediaQuery.of(context).platformBrightness == Brightness.dark
@@ -20,6 +24,46 @@ class SwipeCardSection extends StatelessWidget {
     return MediaQuery.of(context).platformBrightness == Brightness.dark
         ? DarkTheme.PrimaryDarkColor
         : Colors.white;
+  }
+
+  Widget _buttonsRow(BuildContext context) {
+    final color = MediaQuery.of(context).platformBrightness == Brightness.dark
+        ? DarkTheme.BackgroundDarkColor
+        : Theme.of(context).backgroundColor;
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 15),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          FloatingActionButton(
+            mini: true,
+            onPressed: () {},
+            backgroundColor: color,
+            child: Icon(Icons.loop, color: Colors.yellow),
+          ),
+          Padding(padding: EdgeInsets.only(right: 8.0)),
+          FloatingActionButton(
+            onPressed: () => context.read<SwipeButtonsCubit>().emitUnlike(),
+            backgroundColor: color,
+            child: GradientIcon(Icons.close, 26, GreyGradient),
+          ),
+          Padding(padding: EdgeInsets.only(right: 8.0)),
+          FloatingActionButton(
+            onPressed: () => context.read<SwipeButtonsCubit>().emitLike(),
+            backgroundColor: color,
+            child: GradientIcon(Icons.favorite, 26, AppGradient),
+          ),
+          Padding(padding: EdgeInsets.only(right: 8.0)),
+          FloatingActionButton(
+            mini: true,
+            onPressed: () {},
+            backgroundColor: color,
+            child: Icon(Icons.star, color: Colors.blue),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -51,6 +95,10 @@ class SwipeCardSection extends StatelessWidget {
                   bottomLeft: Radius.circular(_cardBorderRadius),
                   bottomRight: Radius.circular(_cardBorderRadius)),
             ),
+          ),
+          Positioned(
+            bottom: 67,
+            child: _buttonsRow(context),
           ),
           Align(
             alignment: Alignment.bottomLeft,
