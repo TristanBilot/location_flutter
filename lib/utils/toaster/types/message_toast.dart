@@ -13,8 +13,7 @@ class MessageToaster extends Toaster {
   MessageToaster(this.context, this.fromID, this.body);
 
   Future show() async {
-    final user = await UserRepository()
-        .fetchUser(fromID, withInfos: true, withPictures: true);
+    final user = await UserRepository().fetchUser(fromID, withInfos: true);
     final chatID = MessagingReposiory.getChatID(UserStore().user.id, user.id);
     final chat = await MessagingReposiory().getChatAsChat(chatID);
 

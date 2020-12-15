@@ -27,8 +27,13 @@ class _AccountBlockedUsersPageState extends State<AccountBlockedUsersPage> {
     final id = UserStore().user.id;
     final blockIDs = await UserRepository()
         .getCollectionSnapshot(id, UserField.BlockedUserIDs);
-    final blockedUsers = blockIDs.docs.map((doc) =>
-        UserRepository().fetchUser(doc.id, useCache: true, withViews: false));
+    final blockedUsers = blockIDs.docs.map((doc) => UserRepository().fetchUser(
+          doc.id,
+          useCache: true,
+          withBlocks: true,
+          withInfos: true,
+          withLikes: true,
+        ));
     return Future.wait(blockedUsers);
   }
 

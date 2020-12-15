@@ -57,8 +57,7 @@ class SwipeCubit extends Cubit<SwipeState> {
       if (MemoryStore().containsUser(id))
         fetchedUsers.add(getAsync(id));
       else
-        fetchedUsers.add(UserRepository().fetchUser(id,
-            withBlocks: false, withLikes: false, withViews: false));
+        fetchedUsers.add(UserRepository().fetchUser(id, withInfos: true));
     }
     final users = await Future.wait(fetchedUsers);
     emit(SwipableUsersFetched(users));

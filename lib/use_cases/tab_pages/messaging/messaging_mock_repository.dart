@@ -38,7 +38,7 @@ class MessagingMockRepository {
     dynamic id2,
     bool engaged,
   ) async {
-    final chatID = MessagingReposiory.getChatID(id1, id2);
+    final chatID = MessagingReposiory.getChatID(id1['id'], id2['id']);
     // await MessagingReposiory().deleteChat(chatID);
     final rd = Random().nextBool();
     final entry = Chat.newChatEntry(

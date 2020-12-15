@@ -32,8 +32,13 @@ class _TabPageViewTileState extends State<TabPageViewTile> {
     final id = widget.view.id;
     bool useDatabase =
         !widget.shouldRefreshCache && UserDatabase().keyExists(id);
-    return await UserRepository()
-        .fetchUser(id, useDatabase: useDatabase, withBlocks: false);
+    return await UserRepository().fetchUser(
+      id,
+      useDatabase: useDatabase,
+      withInfos: true,
+      withViews: true,
+      withLikes: true,
+    );
   }
 
   _onTileTapped(BuildContext context, User user) {

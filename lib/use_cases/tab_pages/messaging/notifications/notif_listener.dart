@@ -52,8 +52,7 @@ Future<dynamic> _onPushNotificationTap(
     return;
   }
   final chatID = MessagingReposiory.getChatID(UserStore().user.id, fromID);
-  final user = await UserRepository()
-      .fetchUser(fromID, withInfos: true, withPictures: true);
+  final user = await UserRepository().fetchUser(fromID, withInfos: true);
   final chat = await MessagingReposiory().getChatAsChat(chatID);
   Navigator.push(
       context,

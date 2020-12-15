@@ -12,8 +12,7 @@ class ChatToaster extends Toaster {
   ChatToaster(this.context, this.chat, this.fromID);
 
   Future show() async {
-    final user = await UserRepository()
-        .fetchUser(fromID, withInfos: true, withPictures: true);
+    final user = await UserRepository().fetchUser(fromID, withInfos: true);
 
     _onToastTap() {
       Navigator.push(

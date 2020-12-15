@@ -64,11 +64,14 @@ class AreaFetchingRepository {
           // fresh position of each user.
           final geoPoint = user.data()[UserField.Position.value]['geopoint'];
 
-          User newUser = await UserRepository().fetchUser(id,
-              fromSnapshot: user,
-              useCache: true,
-              withViews: false,
-              withLikes: false);
+          User newUser = await UserRepository().fetchUser(
+            id,
+            fromSnapshot: user,
+            useCache: true,
+            withBlocks: true,
+            withIcon: true,
+            withInfos: true,
+          );
           // updates the coords in the cache.
           newUser.coord =
               List<double>.from([geoPoint.latitude, geoPoint.longitude]);

@@ -160,11 +160,11 @@ class UserRepository {
     bool useCache = false,
     bool useDatabase = false,
     DocumentSnapshot fromSnapshot,
-    bool withBlocks = true,
-    bool withPictures = true,
-    bool withInfos = true,
-    bool withViews = true,
-    bool withLikes = true,
+    bool withBlocks = false,
+    bool withIcon = false,
+    bool withInfos = false,
+    bool withViews = false,
+    bool withLikes = false,
   }) async {
     if (useCache && useDatabase)
       Logger().e(
@@ -175,7 +175,7 @@ class UserRepository {
         return fetchUser(id,
             fromSnapshot: fromSnapshot,
             withBlocks: withBlocks,
-            withPictures: withPictures,
+            withIcon: withIcon,
             withInfos: withInfos,
             withViews: withViews,
             withLikes: withLikes);
@@ -188,7 +188,7 @@ class UserRepository {
         return fetchUser(id,
             fromSnapshot: fromSnapshot,
             withBlocks: withBlocks,
-            withPictures: withPictures,
+            withIcon: withIcon,
             withInfos: withInfos,
             withViews: withViews,
             withLikes: withLikes);
@@ -199,7 +199,7 @@ class UserRepository {
     User user = await _fetchUserWithSpecificInfos(id,
         withBlocks: withBlocks,
         withInfos: withInfos,
-        withPictures: withPictures,
+        withIcon: withIcon,
         withViews: withViews,
         withLikes: withLikes);
 
@@ -212,7 +212,7 @@ class UserRepository {
     String id, {
     DocumentSnapshot snapshot,
     bool withBlocks,
-    bool withPictures,
+    bool withIcon,
     bool withInfos,
     bool withViews,
     bool withLikes,
@@ -231,7 +231,7 @@ class UserRepository {
           : await _mandatoryInfoFetcher.fetch(id);
       user.build(infos: userInfos);
     }
-    if (withPictures) {
+    if (withIcon) {
       userPictures = await _picturesInfoFetcher.fetch(id);
       user.build(pictures: userPictures);
     }
