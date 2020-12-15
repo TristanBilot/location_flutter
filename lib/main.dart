@@ -4,6 +4,7 @@ import 'package:location_project/controllers/init_controller.dart';
 import 'pages/app.dart';
 
 void main() async {
+  Paint.enableDithering = true;
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await InitController().initFromMain();
