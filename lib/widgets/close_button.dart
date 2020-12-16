@@ -4,10 +4,13 @@ class RoundedCloseButton extends StatefulWidget {
   final Color color;
   final Color iconColor;
   final Function onPressed;
+  final double iconSize;
+
   const RoundedCloseButton({
     this.color,
     this.iconColor,
     this.onPressed,
+    this.iconSize = 22,
   });
 
   @override
@@ -25,7 +28,7 @@ class _RoundedCloseButtonState extends State<RoundedCloseButton> {
     return GestureDetector(
       child: Container(
         child: Icon(Icons.close,
-            size: 22, color: widget.iconColor ?? Colors.white),
+            size: widget.iconSize, color: widget.iconColor ?? Colors.white),
         padding: EdgeInsets.all(5),
         decoration: BoxDecoration(
             boxShadow: [BoxShadow(blurRadius: 4, color: Colors.black45)],

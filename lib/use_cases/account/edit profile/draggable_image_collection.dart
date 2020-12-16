@@ -3,11 +3,13 @@ import 'dart:collection';
 import 'package:drag_and_drop_gridview/devdrag.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/themes/dark_theme.dart';
 import 'package:location_project/widgets/cached_image.dart';
 import 'package:location_project/widgets/close_button.dart';
 
 class DraggableImageCollection extends StatefulWidget {
+  static const AddButtonKey = 'addBtn';
   final List<String> imageURLs;
   final int nbMaxImages;
   const DraggableImageCollection(this.imageURLs, this.nbMaxImages);
@@ -19,6 +21,8 @@ class DraggableImageCollection extends StatefulWidget {
 
 class _DraggableImageCollectionState extends State<DraggableImageCollection> {
   static const int OnLongPressAnimationDuration = 500;
+  static const double ImageBorderRadius = 10;
+
   List<String> imageURLs;
   List<bool> _imageDeleteButtonList;
   HashMap<int, double> _imageAnimationWidthsMap;
@@ -55,6 +59,10 @@ class _DraggableImageCollectionState extends State<DraggableImageCollection> {
     _imageAnimationHeightsMap[index] = height;
   }
 
+  bool _isAddButton(String imageURL) {
+    return imageURL == DraggableImageCollection.AddButtonKey;
+  }
+
   Widget _pictureView(int index) {
     _resetAnimationSizes(index);
     return Stack(alignment: Alignment.bottomRight, children: [
@@ -81,26 +89,44 @@ class _DraggableImageCollectionState extends State<DraggableImageCollection> {
                 decoration: BoxDecoration(
                   boxShadow: [BoxShadow(blurRadius: 8, color: Colors.black38)],
                 ),
-                child: CachedImage(imageURLs[index],
-                    fit: BoxFit.cover, borderRadius: 10),
+                child: _isAddButton(imageURLs[index])
+                    ? _addButton
+                    : CachedImage(imageURLs[index],
+                        fit: BoxFit.cover, borderRadius: ImageBorderRadius),
               ),
             ),
           ));
         }),
       ),
-      if (_imageDeleteButtonList[index]) _closeButton(index)
+      if (_imageDeleteButtonList[index] && !_isAddButton(imageURLs[index]))
+        _closeButton(index)
     ]);
   }
 
   Widget _closeButton(int index) => RoundedCloseButton(
         onPressed: () => _onDeletePictureTap(index),
-        color: MediaQuery.of(context).platformBrightness == Brightness.dark
-            ? DarkTheme.PrimaryDarkColor
-            : Theme.of(context).backgroundColor,
-        iconColor: MediaQuery.of(context).platformBrightness == Brightness.dark
-            ? Colors.white
-            : Theme.of(context).primaryColor,
+        color: _buttonColor,
+        iconColor: _buttonIconColor,
+        iconSize: 18,
       );
+
+  Widget get _addButton => Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(ImageBorderRadius),
+          color: _buttonColor,
+        ),
+        child: Icon(Icons.add, size: 38, color: _buttonIconColor),
+      );
+
+  Color get _buttonColor =>
+      MediaQuery.of(context).platformBrightness == Brightness.dark
+          ? DarkTheme.PrimaryDarkColor
+          : Theme.of(context).backgroundColor;
+
+  Color get _buttonIconColor =>
+      MediaQuery.of(context).platformBrightness == Brightness.dark
+          ? Colors.white
+          : Theme.of(context).primaryColor;
 
   Future<void> _animateOnLongPress(int index) async {
     setState(() {
@@ -123,7 +149,7 @@ class _DraggableImageCollectionState extends State<DraggableImageCollection> {
       itemCount: imageURLs.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
-        childAspectRatio: 3 / 4.5,
+        // childAspectRatio: 3 / 4.5,
       ),
       padding: EdgeInsets.all(10),
       itemBuilder: (context, index) {
@@ -138,12 +164,13 @@ class _DraggableImageCollectionState extends State<DraggableImageCollection> {
         );
       },
       onWillAccept: (oldIndex, newIndex) {
+        imageURLs = [...tmpList];
+
         setState(() {
           _imageDeleteButtonList[oldIndex] = false;
           _animateOnLongPress(oldIndex);
         });
 
-        imageURLs = [...tmpList];
         int indexOfFirstItem = imageURLs.indexOf(imageURLs[oldIndex]);
         int indexOfSecondItem = imageURLs.indexOf(imageURLs[newIndex]);
 
@@ -173,12 +200,14 @@ class _DraggableImageCollectionState extends State<DraggableImageCollection> {
         return true;
       },
       onReorder: (oldIndex, newIndex) {
+        imageURLs = [...tmpList];
+
         /* reset all the delete buttons to displayed = true */
         setState(() {
           for (int i = 0; i < _imageDeleteButtonList.length; i++)
             _imageDeleteButtonList[i] = true;
         });
-        imageURLs = [...tmpList];
+
         int indexOfFirstItem = imageURLs.indexOf(imageURLs[oldIndex]);
         int indexOfSecondItem = imageURLs.indexOf(imageURLs[newIndex]);
 
