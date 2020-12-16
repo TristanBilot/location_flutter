@@ -65,5 +65,7 @@ class InitController {
   Future _openHiveDatabases() async {
     await UserDatabase.initHiveDatabase();
     await MessagingDatabase.initHiveDatabase();
+    await UserDatabase().clear();
+    await MessagingDatabase().clear();
   }
 }

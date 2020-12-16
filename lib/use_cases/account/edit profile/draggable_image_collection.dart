@@ -118,8 +118,7 @@ class _DraggableImageCollectionState extends State<DraggableImageCollection> {
 
   _onAddButtonTap() async {
     final id = UserStore().user.id;
-    int num = imageURLs.length - 1; // not -0 because of add button at the end
-    String pictureURL = await ImageRepository().pickImageAndUpload(id, num);
+    String pictureURL = await ImageRepository().pickImageAndUpload(id);
     if (pictureURL != null) {
       setState(() {
         imageURLs.insert(imageURLs.length - 1, pictureURL);

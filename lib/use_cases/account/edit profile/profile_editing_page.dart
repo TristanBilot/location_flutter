@@ -19,12 +19,19 @@ class ProfileEditingPage extends StatefulWidget {
 class _ProfileEditingPageState extends State<ProfileEditingPage> {
   static const int NbMaxUserPictures = 6;
 
+  final String _mainUserPictureURL;
+
+  _ProfileEditingPageState()
+      : _mainUserPictureURL = UserStore().user.mainPictureURL;
+
   List<String> get _pictureURLsWithAddButton {
     return [
       ...UserStore().user.pictureURLs,
       ...[DraggableImageCollection.AddButtonKey]
     ];
   }
+
+  _checkIfMainPictureChanged() async {}
 
   @override
   Widget build(BuildContext context) {

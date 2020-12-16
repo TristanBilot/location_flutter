@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:location_project/conf/store.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:uuid/uuid.dart';
 import 'dart:math';
 import '../helpers/icon_picker.dart';
 
@@ -64,25 +65,22 @@ class ImageRepository {
   }
 
   /// Pick upload and returns the picture url uploaded
-  Future<String> pickImageAndUpload(String id, int num) async {
+  Future<String> pickImageAndUpload(String id) async {
     final File pickedImage = await IconPicker().pickImageFromGalery();
     if (pickedImage == null) return null;
-    return _uploadNthUserPicture(id, num, pickedImage);
+    return _uploadNthUserPicture(id, pickedImage);
   }
 
   Future<List<String>> uploadAllUserPictures(
       String id, List<File> pictures) async {
-    int num = 0;
     List<String> pictureURLs = List();
-    await Future.forEach(
-        pictures,
-        (p) async =>
-            pictureURLs.add(await _uploadNthUserPicture(id, num++, p)));
+    await Future.forEach(pictures,
+        (p) async => pictureURLs.add(await _uploadNthUserPicture(id, p)));
     return pictureURLs;
   }
 
-  Future<String> _uploadNthUserPicture(String id, int num, File picture) async {
-    String fileName = formatUserPictureFileName(id, num);
+  Future<String> _uploadNthUserPicture(String id, File picture) async {
+    String fileName = formatUserPictureFileName();
     return uploadFile(id, picture, fileName);
   }
 
@@ -95,10 +93,10 @@ class ImageRepository {
   }
 
   Future<File> urlToFile(String imageUrl) async {
-    var rng = new Random();
+    var rng = Random();
     Directory tempDir = await getTemporaryDirectory();
     String tempPath = tempDir.path;
-    File file = new File('$tempPath' +
+    File file = File('$tempPath' +
         (rng.nextInt(100)).toString() +
         Store.defaultProfilePictureExtension);
     http.Response response = await http.get(imageUrl);
@@ -118,9 +116,8 @@ class ImageRepository {
     return file;
   }
 
-  String formatUserPictureFileName(String id, int num) {
-    if (num == 0) return '$id${Store.defaultProfilePictureExtension}';
-    return '${id}_$num${Store.defaultProfilePictureExtension}';
+  String formatUserPictureFileName() {
+    return Uuid().v4() + Store.defaultProfilePictureExtension; // random string
   }
 
   /* ++++++++++ private methods ++++++++++ */
