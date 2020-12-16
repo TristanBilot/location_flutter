@@ -68,6 +68,7 @@ dependencies:
   clipboard: ^0.1.2+8
   shimmer: ^1.1.2
   flutter_app_badger: ^1.1.2
+  drag_and_drop_gridview: ^1.0.8
 
   intl: 0.16.1
   flutter_localizations:

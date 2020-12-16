@@ -12,6 +12,7 @@ import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/themes/dark_theme.dart';
 import 'package:location_project/themes/light_theme.dart';
 import 'package:location_project/themes/theme_utils.dart';
+import 'package:location_project/use_cases/account/edit%20profile/profile_editing_page.dart';
 import 'package:location_project/use_cases/account/widgets/account_list_tile.dart';
 import 'package:location_project/use_cases/account/widgets/account_log_out_list_tile.dart';
 import 'package:location_project/use_cases/account/widgets/account_section_title.dart';
@@ -99,11 +100,11 @@ class _AccountPageState extends State<AccountPage>
 
   _onPicturePress() async {
     // Animation.
-    setState(() => _picSize = AccountPage.userImageSize - 20);
-    await Future.delayed(Duration(milliseconds: AccountPage.picAnimDuration));
-    HapticFeedback.mediumImpact();
-    setState(() => _picSize = AccountPage.userImageSize);
-    await Future.delayed(Duration(milliseconds: AccountPage.picAnimDuration));
+    // setState(() => _picSize = AccountPage.userImageSize - 20);
+    // await Future.delayed(Duration(milliseconds: AccountPage.picAnimDuration));
+    // HapticFeedback.mediumImpact();
+    // setState(() => _picSize = AccountPage.userImageSize);
+    // await Future.delayed(Duration(milliseconds: AccountPage.picAnimDuration));
 
     // final pictureURL =
     //     await ImageRepository().pickImageAndUpload(UserStore().user.id);
@@ -111,6 +112,30 @@ class _AccountPageState extends State<AccountPage>
     //   setState(
     //       () => UserStore().user.pictureURL = pictureURL); // modifier par liste
     // }
+    _pushProfileEditingPageWithAnimation();
+  }
+
+  void _pushProfileEditingPageWithAnimation() {
+    Navigator.of(context).push(PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          ProfileEditingPage(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = Offset(0.0, 1.0);
+        var end = Offset.zero;
+        var curve = Curves.ease;
+
+        var tween = Tween(begin: begin, end: end);
+        var curvedAnimation = CurvedAnimation(
+          parent: animation,
+          curve: curve,
+        );
+
+        return SlideTransition(
+          position: tween.animate(curvedAnimation),
+          child: child,
+        );
+      },
+    ));
   }
 
   @override
