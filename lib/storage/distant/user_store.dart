@@ -13,7 +13,7 @@ import 'package:location_project/use_cases/tab_pages/messaging/notifications/not
 /// Mainly the update of local and distant data
 /// whenever there are modified. It should be
 /// synchronized locally with the Firestore.
-class UserStore extends ChangeNotifier {
+class UserStore {
   /* data get remotely from Firestore */
   User _user;
   User get user => _user;
@@ -65,38 +65,32 @@ class UserStore extends ChangeNotifier {
   Future<void> setLanguage(Language val) async {
     _language = val;
     _localRepo.setLanguage(val);
-    notifyListeners();
   }
 
   Future<void> setWantedAgeRange(List<int> val) async {
     _user.settings.wantedAgeRange = val;
     await _repo.updateUserValue(_user.id, UserField.WantedAgeRange, val);
-    notifyListeners();
   }
 
   Future<void> setWantedGenders(List<Gender> val) async {
     _user.settings.wantedGenders = val;
     List<String> strings = val.map((e) => e.value).toList();
     await _repo.updateUserValue(_user.id, UserField.WantedGenders, strings);
-    notifyListeners();
   }
 
   Future<void> setShowMyProfile(bool val) async {
     _user.settings.showMyprofile = val;
     await _repo.updateUserValue(_user.id, UserField.ShowMyProfile, val);
-    notifyListeners();
   }
 
   Future<void> setShowMyDistance(bool val) async {
     _user.settings.showMyDistance = val;
     await _repo.updateUserValue(_user.id, UserField.ShowMyDistance, val);
-    notifyListeners();
   }
 
   Future<void> setConnectedStatus(bool val) async {
     _user.settings.connected = val;
     await _repo.updateUserValue(_user.id, UserField.Connected, val);
-    notifyListeners();
   }
 
   /// Add a blocked user in the local store and in the firestore
@@ -107,7 +101,6 @@ class UserStore extends ChangeNotifier {
         _user.id, UserField.BlockedUserIDs, blockedID);
     await _repo.addOrReplaceToCollection(
         blockedID, UserField.UserIDsWhoBlockedMe, _user.id);
-    notifyListeners();
   }
 
   /// Delete a blocked user from the local store and from the firestore
@@ -118,7 +111,6 @@ class UserStore extends ChangeNotifier {
         _user.id, UserField.BlockedUserIDs, blockedID);
     await UserRepository().deleteCollectionSnapshot(
         blockedID, UserField.UserIDsWhoBlockedMe, _user.id);
-    notifyListeners();
   }
 
   /// Update locally the people to block on the map when
@@ -140,7 +132,6 @@ class UserStore extends ChangeNotifier {
     _user.viewedUserIDs.add(viewed);
     await _repo.addView(_user.id, UserField.ViewedUserIDs, viewed);
     await _repo.addView(viewedID, UserField.UserIDsWhoWiewedMe, view);
-    notifyListeners();
   }
 
   /// Delete a blocked user in the local store and in the firestore.
@@ -152,7 +143,6 @@ class UserStore extends ChangeNotifier {
         _user.id, UserField.ViewedUserIDs, viewedID);
     await _repo.deleteCollectionSnapshot(
         viewedID, UserField.UserIDsWhoWiewedMe, _user.id);
-    notifyListeners();
   }
 
   Future<void> toggleNotificationSettings(NotifType field) async {
@@ -185,7 +175,6 @@ class UserStore extends ChangeNotifier {
         Logger().w('toggleNotificationSettings(): unknown notif type');
         break;
     }
-    notifyListeners();
   }
 
   Future<void> addLike(String likedID) async {
@@ -194,13 +183,17 @@ class UserStore extends ChangeNotifier {
         .addLikeField(_user.id, UserField.LikedUsers, likedID);
     await UserRepository()
         .addLikeField(likedID, UserField.UsersWhoLikedMe, _user.id);
-    notifyListeners();
   }
 
   Future<void> addUnlike(String unlikedID) async {
     _user.unlikedUsers.add(unlikedID);
     await UserRepository()
         .addLikeField(_user.id, UserField.UnlikedUsers, unlikedID);
-    notifyListeners();
+  }
+
+  Future<void> updatePictureURLs(List<String> pictureURLs) async {
+    _user.pictureURLs = pictureURLs;
+    await UserRepository()
+        .updateUserValue(_user.id, UserField.PictureURLs, pictureURLs);
   }
 }

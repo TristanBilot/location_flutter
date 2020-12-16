@@ -1,8 +1,10 @@
 import 'dart:collection';
+import 'dart:io';
 
 import 'package:drag_and_drop_gridview/devdrag.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:location_project/repositories/image_repository.dart';
 import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/themes/dark_theme.dart';
 import 'package:location_project/widgets/cached_image.dart';
@@ -110,13 +112,28 @@ class _DraggableImageCollectionState extends State<DraggableImageCollection> {
         iconSize: 18,
       );
 
-  Widget get _addButton => Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(ImageBorderRadius),
-          color: _buttonColor,
+  Widget get _addButton => GestureDetector(
+        onTap: _onAddButtonTap,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(ImageBorderRadius),
+            color: _buttonColor,
+          ),
+          child: Icon(Icons.add, size: 38, color: _buttonIconColor),
         ),
-        child: Icon(Icons.add, size: 38, color: _buttonIconColor),
       );
+
+  _onAddButtonTap() async {
+    final id = UserStore().user.id;
+    int num = imageURLs.length - 1; // not -0 because of add button at the end
+    String pictureURL = await ImageRepository().pickImageAndUpload(id, num);
+    if (pictureURL != null) {
+      setState(() {
+        imageURLs.insert(imageURLs.length - 1, pictureURL);
+        UserStore().updatePictureURLs(imageURLs..removeLast());
+      });
+    }
+  }
 
   Color get _buttonColor =>
       MediaQuery.of(context).platformBrightness == Brightness.dark
