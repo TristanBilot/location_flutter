@@ -1,7 +1,10 @@
+import 'dart:collection';
+
 import 'package:drag_and_drop_gridview/devdrag.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:location_project/themes/dark_theme.dart';
+import 'package:location_project/widgets/cached_image.dart';
 import 'package:location_project/widgets/close_button.dart';
 
 class DraggableImageCollection extends StatefulWidget {
@@ -15,8 +18,11 @@ class DraggableImageCollection extends StatefulWidget {
 }
 
 class _DraggableImageCollectionState extends State<DraggableImageCollection> {
+  static const int OnLongPressAnimationDuration = 500;
   List<String> imageURLs;
-  List<bool> imageDeleteButtonList;
+  List<bool> _imageDeleteButtonList;
+  HashMap<int, double> _imageAnimationWidthsMap;
+  HashMap<int, double> _imageAnimationHeightsMap;
 
   int pos;
   List<String> tmpList;
@@ -31,7 +37,9 @@ class _DraggableImageCollectionState extends State<DraggableImageCollection> {
   void initState() {
     tmpList = [...imageURLs];
     _scrollController = ScrollController();
-    imageDeleteButtonList = List();
+    _imageDeleteButtonList = List();
+    _imageAnimationWidthsMap = HashMap();
+    _imageAnimationHeightsMap = HashMap();
     super.initState();
   }
 
@@ -40,6 +48,48 @@ class _DraggableImageCollectionState extends State<DraggableImageCollection> {
       imageURLs.removeAt(index);
       tmpList = [...imageURLs];
     });
+  }
+
+  _resetAnimationSizes(int index) {
+    _imageAnimationWidthsMap[index] = width;
+    _imageAnimationHeightsMap[index] = height;
+  }
+
+  Widget _pictureView(int index) {
+    _resetAnimationSizes(index);
+    return Stack(alignment: Alignment.bottomRight, children: [
+      Padding(
+        padding: EdgeInsets.all(0),
+        child: LayoutBuilder(builder: (context, constraints) {
+          if (variableSet == 0) {
+            height = constraints.maxHeight;
+            width = constraints.maxWidth;
+            variableSet++;
+            _resetAnimationSizes(index);
+          }
+
+          return GridTile(
+              child: AnimatedContainer(
+            duration: Duration(milliseconds: OnLongPressAnimationDuration),
+            width: _imageAnimationWidthsMap[index],
+            height: _imageAnimationHeightsMap[
+                index], // _imageAnimationWidthsMap[index], for square size
+
+            child: Padding(
+              padding: EdgeInsets.all(10),
+              child: Container(
+                decoration: BoxDecoration(
+                  boxShadow: [BoxShadow(blurRadius: 8, color: Colors.black38)],
+                ),
+                child: CachedImage(imageURLs[index],
+                    fit: BoxFit.cover, borderRadius: 10),
+              ),
+            ),
+          ));
+        }),
+      ),
+      if (_imageDeleteButtonList[index]) _closeButton(index)
+    ]);
   }
 
   Widget _closeButton(int index) => RoundedCloseButton(
@@ -52,6 +102,20 @@ class _DraggableImageCollectionState extends State<DraggableImageCollection> {
             : Theme.of(context).primaryColor,
       );
 
+  Future<void> _animateOnLongPress(int index) async {
+    setState(() {
+      _imageAnimationWidthsMap[index] += 20;
+      _imageAnimationHeightsMap[index] += 20;
+    });
+    await Future.delayed(Duration(milliseconds: OnLongPressAnimationDuration));
+    HapticFeedback.lightImpact();
+    setState(() {
+      _imageAnimationWidthsMap[index] -= 20;
+      _imageAnimationHeightsMap[index] -= 20;
+    });
+    await Future.delayed(Duration(milliseconds: OnLongPressAnimationDuration));
+  }
+
   @override
   Widget build(BuildContext context) {
     return DragAndDropGridView(
@@ -63,43 +127,20 @@ class _DraggableImageCollectionState extends State<DraggableImageCollection> {
       ),
       padding: EdgeInsets.all(10),
       itemBuilder: (context, index) {
-        imageDeleteButtonList.add(true);
+        _imageDeleteButtonList.add(true);
         return Opacity(
           opacity: pos != null
               ? pos == index
                   ? 0.6
                   : 1
               : 1,
-          child: Stack(alignment: Alignment.bottomRight, children: [
-            Padding(
-              padding: EdgeInsets.all(5),
-              child: Card(
-                elevation: 4,
-                child: LayoutBuilder(builder: (context, constraints) {
-                  if (variableSet == 0) {
-                    height = constraints.maxHeight;
-                    width = constraints.maxWidth;
-                    variableSet++;
-                  }
-                  return GridTile(
-                    child: Image.network(
-                      imageURLs[index],
-                      fit: BoxFit.cover,
-                      height: height,
-                      width: width,
-                    ),
-                  );
-                }),
-              ),
-            ),
-            if (imageDeleteButtonList[index]) _closeButton(index)
-          ]),
+          child: _pictureView(index),
         );
       },
       onWillAccept: (oldIndex, newIndex) {
-        HapticFeedback.lightImpact();
         setState(() {
-          imageDeleteButtonList[oldIndex] = false;
+          _imageDeleteButtonList[oldIndex] = false;
+          _animateOnLongPress(oldIndex);
         });
 
         imageURLs = [...tmpList];
@@ -132,8 +173,10 @@ class _DraggableImageCollectionState extends State<DraggableImageCollection> {
         return true;
       },
       onReorder: (oldIndex, newIndex) {
+        /* reset all the delete buttons to displayed = true */
         setState(() {
-          imageDeleteButtonList[oldIndex] = true;
+          for (int i = 0; i < _imageDeleteButtonList.length; i++)
+            _imageDeleteButtonList[i] = true;
         });
         imageURLs = [...tmpList];
         int indexOfFirstItem = imageURLs.indexOf(imageURLs[oldIndex]);
