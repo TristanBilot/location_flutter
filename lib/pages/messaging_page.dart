@@ -123,7 +123,7 @@ class _MessagingPageState extends State<MessagingPage> {
                             state.chats, _messageEditingController.text);
                         List<Chat> requests = RequestFilter().filter(
                             state.chats, _messageEditingController.text);
-                        MessagingDatabase().put(nbChats: chats.length);
+                        // MessagingDatabase().put(nbChats: chats.length);
 
                         return chats.length + requests.length != 0
                             ? Column(

@@ -41,30 +41,18 @@ enum UserField {
   UsersWhoLikedMe,
 }
 
-@HiveType(typeId: 0)
 class User extends HiveObject {
-  @HiveField(0)
   String id;
-  @HiveField(1)
   String email;
-  @HiveField(2)
   String firstName;
-  @HiveField(3)
   String lastName;
-  @HiveField(4)
   List<double> coord; // [0]: latitude [1]: longitude
   BitmapDescriptor icon;
-  @HiveField(5)
   List<String> pictureURLs;
-  @HiveField(6)
   int distance;
-  @HiveField(7)
   int age;
-  @HiveField(8)
   Gender gender;
-  @HiveField(9)
   UserSettings settings;
-  @HiveField(10)
   List<String> deviceTokens;
 
   // List<int> wantedAgeRange;
@@ -77,7 +65,6 @@ class User extends HiveObject {
   List<View> userIDsWhoWiewedMe;
   List<String> unlikedUsers;
   List<String> likedUsers;
-  // List<String> usersWhoLikedMe;
 
   User.public();
 

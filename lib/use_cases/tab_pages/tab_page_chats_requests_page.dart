@@ -128,10 +128,10 @@ class _TabPageRequestsPageState extends State<TabPageChatsRequestsPage>
                       if (state is ChatFetchedState) {
                         List<Chat> chats = _filter.filter(
                             state.chats, _messageEditingController.text);
-                        if (widget.type == TabPageType.Discussions)
-                          MessagingDatabase().put(nbChats: chats.length);
-                        else
-                          MessagingDatabase().put(nbRequests: chats.length);
+                        // if (widget.type == TabPageType.Discussions)
+                        //   MessagingDatabase().put(nbChats: chats.length);
+                        // else
+                        //   MessagingDatabase().put(nbRequests: chats.length);
 
                         return chats.length != 0
                             ? CustomScrollView(

@@ -158,7 +158,7 @@ class UserRepository {
   Future<User> fetchUser(
     String id, {
     bool useCache = false,
-    bool useDatabase = false,
+    // bool useDatabase = false,
     DocumentSnapshot fromSnapshot,
     bool withBlocks = false,
     bool withIcon = false,
@@ -166,22 +166,22 @@ class UserRepository {
     bool withViews = false,
     bool withLikes = false,
   }) async {
-    if (useCache && useDatabase)
-      Logger().e(
-          'fetchUser(): useCache and useDatabase should not be used together');
-    if (useDatabase) {
-      if (!UserDatabase().keyExists(id)) {
-        Logger().w('useDatabase true but user not found in database.');
-        return fetchUser(id,
-            fromSnapshot: fromSnapshot,
-            withBlocks: withBlocks,
-            withIcon: withIcon,
-            withInfos: withInfos,
-            withViews: withViews,
-            withLikes: withLikes);
-      }
-      return UserDatabase().getUser(id);
-    }
+    // if (useCache && useDatabase)
+    //   Logger().e(
+    //       'fetchUser(): useCache and useDatabase should not be used together');
+    // if (useDatabase) {
+    //   if (!UserDatabase().keyExists(id)) {
+    //     Logger().w('useDatabase true but user not found in database.');
+    //     return fetchUser(id,
+    //         fromSnapshot: fromSnapshot,
+    //         withBlocks: withBlocks,
+    //         withIcon: withIcon,
+    //         withInfos: withInfos,
+    //         withViews: withViews,
+    //         withLikes: withLikes);
+    //   }
+    //   return UserDatabase().getUser(id);
+    // }
     if (useCache) {
       if (!MemoryStore().userExists(id)) {
         Logger().w('useCache true but user not found in cache.');
@@ -204,7 +204,7 @@ class UserRepository {
         withLikes: withLikes);
 
     // Stores the user fetched from firestore to the UserDatabase cache.
-    UserDatabase().putUser(user);
+    // UserDatabase().putUser(user);
     return user;
   }
 

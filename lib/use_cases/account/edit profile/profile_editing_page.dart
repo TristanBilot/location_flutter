@@ -31,7 +31,10 @@ class _ProfileEditingPageState extends State<ProfileEditingPage> {
     ];
   }
 
-  _checkIfMainPictureChanged() async {}
+  _updateIfMainPictureChanged() async {
+    final newPictureURL = UserStore().user.mainPictureURL;
+    if (newPictureURL != _mainUserPictureURL) {}
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +45,10 @@ class _ProfileEditingPageState extends State<ProfileEditingPage> {
             CupertinoSliverNavigationBar(
               automaticallyImplyLeading: false,
               trailing: GestureDetector(
-                onTap: () => Navigator.of(context).pop(),
+                onTap: () {
+                  _updateIfMainPictureChanged();
+                  Navigator.of(context).pop();
+                },
                 child: Text('Done',
                     style: TextStyle(color: CupertinoColors.activeBlue)),
               ),

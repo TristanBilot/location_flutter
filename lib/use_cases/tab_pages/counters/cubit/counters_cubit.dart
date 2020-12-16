@@ -19,11 +19,13 @@ import 'package:location_project/utils/toaster/types/view_toaster.dart';
 part 'counters_state.dart';
 
 class CountersCubit extends Cubit<CountersState> {
-  final MessagingDatabase _database;
+  // final MessagingDatabase _database;
   final BuildContext context;
 
-  CountersCubit(this.context, this._database)
-      : super(CountersInitial(Counter(0, 0, 0, 0, 0, 0)));
+  CountersCubit(
+    this.context,
+    // this._database,
+  ) : super(CountersInitial(Counter(0, 0, 0, 0, 0, 0)));
 
   Set<String> _previousChats;
   Set<String> _previousRequests;
@@ -46,10 +48,10 @@ class CountersCubit extends Cubit<CountersState> {
           .where((request) => request.myActivitySeen == false)
           .length;
 
-      MessagingDatabase().put(nbChats: nbChats);
-      MessagingDatabase().put(nbRequests: nbRequests);
-      MessagingDatabase().put(nbUnreadChats: nbUnreadChats);
-      MessagingDatabase().put(nbUnreadRequests: nbUnreadRequests);
+      // MessagingDatabase().put(nbChats: nbChats);
+      // MessagingDatabase().put(nbRequests: nbRequests);
+      // MessagingDatabase().put(nbUnreadChats: nbUnreadChats);
+      // MessagingDatabase().put(nbUnreadRequests: nbUnreadRequests);
 
       _triggerChatToaster(filteredChats);
       _triggerRequestToaster(filteredRequests);
@@ -61,8 +63,8 @@ class CountersCubit extends Cubit<CountersState> {
     viewsStream.listen((views) {
       int nbViews = views.length;
       int nbUnreadViews = views.where((view) => !view.isViewed).length;
-      MessagingDatabase().put(nbViews: nbViews);
-      MessagingDatabase().put(nbUnreadViews: nbUnreadViews);
+      // MessagingDatabase().put(nbViews: nbViews);
+      // MessagingDatabase().put(nbUnreadViews: nbUnreadViews);
 
       _triggerViewToaster(views);
 
@@ -71,14 +73,15 @@ class CountersCubit extends Cubit<CountersState> {
   }
 
   void _emitCounters() {
-    emit(CounterStoreState(Counter(
-      _database.get(nbChats: true),
-      _database.get(nbRequests: true),
-      _database.get(nbViews: true),
-      _database.get(nbUnreadChats: true),
-      _database.get(nbUnreadRequests: true),
-      _database.get(nbUnreadViews: true),
-    )));
+    // emit(CounterStoreState(
+    //   Counter()
+    // _database.get(nbChats: true),
+    // _database.get(nbRequests: true),
+    // _database.get(nbViews: true),
+    // _database.get(nbUnreadChats: true),
+    // _database.get(nbUnreadRequests: true),
+    // _database.get(nbUnreadViews: true),
+    // )));
     AppBadgeController().updateAppBadge();
   }
 

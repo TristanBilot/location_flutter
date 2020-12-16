@@ -59,6 +59,8 @@ class ImageRepository {
     });
   }
 
+  Future<void> addOrUpdateMainUserPicture() async {}
+
   Future<void> deletePictureFromPictureURL(String pictureURL) async {
     final ref = await FirebaseStorage.instance.getReferenceFromUrl(pictureURL);
     ref.delete();

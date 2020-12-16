@@ -36,9 +36,9 @@ class _HomePageState extends State<HomePage> {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-            create: (context) =>
-                CountersCubit(context, MessagingDatabase())..init()),
+        // BlocProvider(
+        //     create: (context) =>
+        //         CountersCubit(context, MessagingDatabase())..init()),
         BlocProvider(create: (context) => SwipeCubit()..fetchUsersFeed()),
         BlocProvider(create: (context) => AreaCubit(AreaFetchingRepository())),
         BlocProvider(create: (context) => BlockingCubit()),

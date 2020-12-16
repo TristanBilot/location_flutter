@@ -30,7 +30,7 @@ class ChatCubit extends Cubit<ChatState> {
       emit(ChatDeletingState());
       _msgRepository.deleteMessages(chat.chatID);
       _msgRepository.deleteChat(chat.chatID);
-      await UserDatabase().deleteUser(chat.requesterID);
+      // await UserDatabase().deleteUser(chat.requesterID);
       emit(ChatDeletedState());
     } on Exception {
       emit(ChatError("Couldn't delete chats. Is the device online?"));

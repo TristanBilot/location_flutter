@@ -65,7 +65,7 @@ class _TabPageViewsPageState extends State<TabPageViewsPage> {
               builder: (context, state) {
                 if (state is ViewFetchedState) {
                   final views = state.viewerIDs;
-                  MessagingDatabase().put(nbViews: views.length);
+                  // MessagingDatabase().put(nbViews: views.length);
 
                   return views.length != 0
                       ? CustomScrollView(

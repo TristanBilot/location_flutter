@@ -55,17 +55,15 @@ class InitController {
   Future _initHiveDatabases() async {
     Directory dir = await getApplicationDocumentsDirectory();
     Hive.init(dir.path);
-    Hive.registerAdapter(GenderAdapter());
-    Hive.registerAdapter(UserSettingsAdapter());
-    Hive.registerAdapter(UserAdapter());
+    // Hive.registerAdapter(GenderAdapter());
+    // Hive.registerAdapter(UserSettingsAdapter());
+    // Hive.registerAdapter(UserAdapter());
 
     await _openHiveDatabases();
   }
 
   Future _openHiveDatabases() async {
-    await UserDatabase.initHiveDatabase();
-    await MessagingDatabase.initHiveDatabase();
-    await UserDatabase().clear();
-    await MessagingDatabase().clear();
+    // await UserDatabase.initHiveDatabase();
+    // await MessagingDatabase.initHiveDatabase();
   }
 }

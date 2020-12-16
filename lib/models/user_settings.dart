@@ -1,25 +1,16 @@
-import 'package:hive/hive.dart';
 import 'package:location_project/adapters/gender_value_adapter.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/models/gender.dart';
 import 'package:location_project/conf/extensions.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif.dart';
 
-part 'user_settings.g.dart';
-
-@HiveType(typeId: 1)
 class UserSettings {
   UserSettings.defaultConstructor();
 
-  @HiveField(0)
   List<int> wantedAgeRange;
-  @HiveField(1)
   List<Gender> wantedGenders;
-  @HiveField(2)
   bool showMyprofile;
-  @HiveField(3)
   bool showMyDistance;
-  @HiveField(4)
   bool connected;
   Map<String, bool> notificationSettings;
 

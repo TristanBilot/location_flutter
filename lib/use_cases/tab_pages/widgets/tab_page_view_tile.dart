@@ -30,11 +30,11 @@ class TabPageViewTile extends StatefulWidget {
 class _TabPageViewTileState extends State<TabPageViewTile> {
   Future<User> _fetchUser() async {
     final id = widget.view.id;
-    bool useDatabase =
-        !widget.shouldRefreshCache && UserDatabase().keyExists(id);
+    // bool useDatabase =
+    //     !widget.shouldRefreshCache && UserDatabase().keyExists(id);
     return await UserRepository().fetchUser(
       id,
-      useDatabase: useDatabase,
+      // useDatabase: useDatabase,
       withInfos: true,
       withViews: true,
       withLikes: true,
