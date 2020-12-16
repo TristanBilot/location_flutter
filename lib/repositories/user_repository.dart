@@ -70,8 +70,8 @@ class UserRepository {
           user.pictureURLs,
         ).toFirestoreObject());
     File userPicture = await _imageRepo.urlToFile(user.mainPictureURL);
-    return await _imageRepo.uploadFile(
-        userPicture, user.id + Store.defaultProfilePictureExtension);
+    await _imageRepo.uploadFile(
+        user.id, userPicture, user.id + Store.defaultProfilePictureExtension);
   }
 
   Future<void> updateUserLocation(User user, GeoFirePoint location) async {

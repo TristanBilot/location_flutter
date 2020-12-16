@@ -53,8 +53,8 @@ class StartPathStore {
   }
 
   Future<void> uploadPictures() async {
-    int count = 0;
-    _userPictures.forEach((p) async => await ImageRepository().uploadFile(p,
-        '${_userInBuilding.id}${Store.defaultProfilePictureExtension}${count == 0 ? "" : count}'));
+    final pictureURLs = await ImageRepository()
+        .uploadAllUserPictures(_userInBuilding.id, _userPictures);
+    _userInBuilding.pictureURLs = pictureURLs;
   }
 }

@@ -20,6 +20,7 @@ class InitController {
     await LocalStore.initAsynchronously();
     await DeviceIDController().storeDeviceID();
     await _initHiveDatabases();
+    // await AuthRepository().logOut();
     // LocalStore().forgetLoggedUser();
     // return;
     if (LocalStore().isUserLoggedIn()) {

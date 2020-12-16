@@ -13,14 +13,25 @@ admin.initializeApp()
 
 /**
  * When an image is uploaded in the Storage bucket, we want to 
- * resize it and circle it.
+ * create a copy resized it and circle it.
  */
 exports.onFileUploaded = functions.storage.object().onFinalize(async (file) => {
+  // File path in the bucket.
+  const filePath = file.name;
+  // Get the file name.
+  const fileName = path.basename(filePath);
+
+  // We do not want to convert all images but only the main picture which
+  // not have a '_n' at the end
+  const lastDotIndex = fileName.lastIndexOf('.');
+  if (lastDotIndex === -1 || fileName.charAt(lastDotIndex - 2) === '_') {
+    return;
+  }
+
   /* prefix used to break infinite loop in the firestore trigger */
   const outputFilePrefix = 'circle_';
   const size = 150;
   const fileBucket = file.bucket; // The Storage bucket that contains the file.
-  const filePath = file.name; // File path in the bucket.
   const contentType = file.contentType; // File content type.
 
   // Exit if this is triggered on a file that is not an image.
@@ -28,8 +39,6 @@ exports.onFileUploaded = functions.storage.object().onFinalize(async (file) => {
     return console.log('This is not an image.');
   }
 
-  // Get the file name.
-  const fileName = path.basename(filePath);
   // Exit if the image is already a thumbnail.
   if (fileName.startsWith(outputFilePrefix)) {
     return console.log('This file had already been modified.');

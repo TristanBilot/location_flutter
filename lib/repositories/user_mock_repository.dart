@@ -82,7 +82,7 @@ class UserMockRepository {
     await UserRepository().deleteCollection(id, UserField.UserIDsWhoWiewedMe);
     await _firestore.collection(UserRepository.RootKey).doc(id).delete();
 
-    String pictureURL = await _insertMockPicture(id);
+    List<String> pictureURLs = await _insertMockPicture(id);
 
     _firestore
         .collection(UserRepository.RootKey)
@@ -96,7 +96,7 @@ class UserMockRepository {
           UserSettings.DefaultUserSettings,
           [],
           UserSettings.DefaultNotificationSettings,
-          [pictureURL],
+          pictureURLs,
         ).toFirestoreObject());
     await UserRepository().addLikeField(
         id, UserField.LikedUsers, id == id1['id'] ? id2['id'] : id1['id']);
@@ -106,10 +106,13 @@ class UserMockRepository {
     print('$id successfully inserted to Firestore.');
   }
 
-  Future<String> _insertMockPicture(String id) async {
+  Future<List<String>> _insertMockPicture(String id) async {
     final ext = Store.defaultProfilePictureExtension;
-    final assetImage = await ImageRepository()
+    final picture1 = await ImageRepository()
         .getImageFileFromAssets('$id$ext', additionalPath: MockAssetPath);
-    return _imageRepo.uploadFile(assetImage, '$id$ext');
+    final picture2 = await ImageRepository().getImageFileFromAssets(
+        'damien.duprat@hotmail.fr.png',
+        additionalPath: MockAssetPath);
+    return _imageRepo.uploadAllUserPictures(id, [picture1, picture2]);
   }
 }

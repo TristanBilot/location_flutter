@@ -45,11 +45,11 @@ class ImageRepository {
 
       final picturePath = '$prefix$id$ext';
       final defaultPath = '$prefix$defaultName$ext';
-      StorageReference ref = _getFirestoreImageReference(picturePath);
+      StorageReference ref = _getFirestoreImageReference(id, picturePath);
 
       return ref.getDownloadURL().then((url) => url).catchError((_) {
         /* if the picture is not found, set the default user image in FireStore */
-        ref = _getFirestoreImageReference(defaultPath);
+        ref = _getFirestoreImageReference(id, defaultPath);
         return ref.getDownloadURL().then((url) => url).catchError((error) {
           print(
               '++++ Error: the user does not have an image and the default image is not found in Firestore.');
@@ -58,17 +58,32 @@ class ImageRepository {
     });
   }
 
-  /// Returns the picture url uploaded
-  Future<String> pickImageAndUpload(String id) async {
+  /// Pick upload and returns the picture url uploaded
+  Future<String> pickImageAndUpload(String id, int num) async {
     final File pickedImage = await IconPicker().pickImageFromGalery();
     if (pickedImage == null) return null;
-    return await uploadFile(
-        pickedImage, id + Store.defaultProfilePictureExtension);
+    return _uploadNthUserPicture(id, num, pickedImage);
   }
 
-  /// Returns the picture url uploaded
-  Future<String> uploadFile(File file, String name) async {
-    final ref = _getFirestoreImageReference(name);
+  Future<List<String>> uploadAllUserPictures(
+      String id, List<File> pictures) async {
+    int num = 0;
+    List<String> pictureURLs = List();
+    await Future.forEach(
+        pictures,
+        (p) async =>
+            pictureURLs.add(await _uploadNthUserPicture(id, num++, p)));
+    return pictureURLs;
+  }
+
+  Future<String> _uploadNthUserPicture(String id, int num, File picture) async {
+    String fileName = formatUserPictureFileName(id, num);
+    return uploadFile(id, picture, fileName);
+  }
+
+  /// Upload and returns the picture url uploaded
+  Future<String> uploadFile(String id, File file, String fileName) async {
+    final ref = _getFirestoreImageReference(id, fileName);
     final StorageUploadTask uploadTask = ref.putFile(file);
     final snapshot = await uploadTask.onComplete;
     return await snapshot.ref.getDownloadURL();
@@ -98,11 +113,16 @@ class ImageRepository {
     return file;
   }
 
+  String formatUserPictureFileName(String id, int num) {
+    if (num == 0) return '$id${Store.defaultProfilePictureExtension}';
+    return '${id}_$num${Store.defaultProfilePictureExtension}';
+  }
+
   /* ++++++++++ private methods ++++++++++ */
 
-  StorageReference _getFirestoreImageReference(String element) {
+  StorageReference _getFirestoreImageReference(String id, String fileName) {
     return FirebaseStorage.instance
         .ref()
-        .child(Store.fireStoreUserIconPath + element);
+        .child('${Store.fireStoreUserIconPath}$id/$fileName');
   }
 }
