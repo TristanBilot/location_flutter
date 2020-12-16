@@ -32,6 +32,12 @@ class _DraggableImageCollectionState extends State<DraggableImageCollection> {
     super.initState();
   }
 
+  _onDeletePictureTap(int index) {
+    setState(() {
+      imageURLs.removeAt(index);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return DragAndDropGridView(
@@ -71,6 +77,7 @@ class _DraggableImageCollectionState extends State<DraggableImageCollection> {
             ),
           ),
           RoundedCloseButton(
+            onPressed: () => _onDeletePictureTap(index),
             color: MediaQuery.of(context).platformBrightness == Brightness.dark
                 ? DarkTheme.PrimaryDarkColor
                 : Theme.of(context).backgroundColor,

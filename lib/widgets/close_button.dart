@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 class RoundedCloseButton extends StatefulWidget {
   final Color color;
   final Color iconColor;
+  final Function onPressed;
   const RoundedCloseButton({
     this.color,
     this.iconColor,
+    this.onPressed,
   });
 
   @override
@@ -30,7 +32,7 @@ class _RoundedCloseButtonState extends State<RoundedCloseButton> {
             shape: BoxShape.circle,
             color: widget.color ?? _closeIconColor),
       ),
-      onTap: () => Navigator.pop(context),
+      onTap: widget.onPressed ?? () => Navigator.pop(context),
     );
   }
 }
