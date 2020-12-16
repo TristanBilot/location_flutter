@@ -1,5 +1,6 @@
 import 'package:drag_and_drop_gridview/devdrag.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:location_project/themes/dark_theme.dart';
 import 'package:location_project/widgets/close_button.dart';
 
@@ -15,6 +16,7 @@ class DraggableImageCollection extends StatefulWidget {
 
 class _DraggableImageCollectionState extends State<DraggableImageCollection> {
   List<String> imageURLs;
+  List<bool> imageDeleteButtonList;
 
   int pos;
   List<String> tmpList;
@@ -29,14 +31,26 @@ class _DraggableImageCollectionState extends State<DraggableImageCollection> {
   void initState() {
     tmpList = [...imageURLs];
     _scrollController = ScrollController();
+    imageDeleteButtonList = List();
     super.initState();
   }
 
   _onDeletePictureTap(int index) {
     setState(() {
       imageURLs.removeAt(index);
+      tmpList = [...imageURLs];
     });
   }
+
+  Widget _closeButton(int index) => RoundedCloseButton(
+        onPressed: () => _onDeletePictureTap(index),
+        color: MediaQuery.of(context).platformBrightness == Brightness.dark
+            ? DarkTheme.PrimaryDarkColor
+            : Theme.of(context).backgroundColor,
+        iconColor: MediaQuery.of(context).platformBrightness == Brightness.dark
+            ? Colors.white
+            : Theme.of(context).primaryColor,
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -48,47 +62,46 @@ class _DraggableImageCollectionState extends State<DraggableImageCollection> {
         childAspectRatio: 3 / 4.5,
       ),
       padding: EdgeInsets.all(10),
-      itemBuilder: (context, index) => Opacity(
-        opacity: pos != null
-            ? pos == index
-                ? 0.6
-                : 1
-            : 1,
-        child: Stack(alignment: Alignment.bottomRight, children: [
-          Padding(
-            padding: EdgeInsets.all(5),
-            child: Card(
-              elevation: 4,
-              child: LayoutBuilder(builder: (context, constraints) {
-                if (variableSet == 0) {
-                  height = constraints.maxHeight;
-                  width = constraints.maxWidth;
-                  variableSet++;
-                }
-                return GridTile(
-                  child: Image.network(
-                    imageURLs[index],
-                    fit: BoxFit.cover,
-                    height: height,
-                    width: width,
-                  ),
-                );
-              }),
+      itemBuilder: (context, index) {
+        imageDeleteButtonList.add(true);
+        return Opacity(
+          opacity: pos != null
+              ? pos == index
+                  ? 0.6
+                  : 1
+              : 1,
+          child: Stack(alignment: Alignment.bottomRight, children: [
+            Padding(
+              padding: EdgeInsets.all(5),
+              child: Card(
+                elevation: 4,
+                child: LayoutBuilder(builder: (context, constraints) {
+                  if (variableSet == 0) {
+                    height = constraints.maxHeight;
+                    width = constraints.maxWidth;
+                    variableSet++;
+                  }
+                  return GridTile(
+                    child: Image.network(
+                      imageURLs[index],
+                      fit: BoxFit.cover,
+                      height: height,
+                      width: width,
+                    ),
+                  );
+                }),
+              ),
             ),
-          ),
-          RoundedCloseButton(
-            onPressed: () => _onDeletePictureTap(index),
-            color: MediaQuery.of(context).platformBrightness == Brightness.dark
-                ? DarkTheme.PrimaryDarkColor
-                : Theme.of(context).backgroundColor,
-            iconColor:
-                MediaQuery.of(context).platformBrightness == Brightness.dark
-                    ? Colors.white
-                    : Theme.of(context).primaryColor,
-          )
-        ]),
-      ),
+            if (imageDeleteButtonList[index]) _closeButton(index)
+          ]),
+        );
+      },
       onWillAccept: (oldIndex, newIndex) {
+        HapticFeedback.lightImpact();
+        setState(() {
+          imageDeleteButtonList[oldIndex] = false;
+        });
+
         imageURLs = [...tmpList];
         int indexOfFirstItem = imageURLs.indexOf(imageURLs[oldIndex]);
         int indexOfSecondItem = imageURLs.indexOf(imageURLs[newIndex]);
@@ -119,6 +132,9 @@ class _DraggableImageCollectionState extends State<DraggableImageCollection> {
         return true;
       },
       onReorder: (oldIndex, newIndex) {
+        setState(() {
+          imageDeleteButtonList[oldIndex] = true;
+        });
         imageURLs = [...tmpList];
         int indexOfFirstItem = imageURLs.indexOf(imageURLs[oldIndex]);
         int indexOfSecondItem = imageURLs.indexOf(imageURLs[newIndex]);
