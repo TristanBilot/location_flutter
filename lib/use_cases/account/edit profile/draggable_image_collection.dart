@@ -49,13 +49,6 @@ class _DraggableImageCollectionState extends State<DraggableImageCollection> {
     super.initState();
   }
 
-  _onDeletePictureTap(int index) {
-    setState(() {
-      imageURLs.removeAt(index);
-      tmpList = [...imageURLs];
-    });
-  }
-
   _resetAnimationSizes(int index) {
     _imageAnimationWidthsMap[index] = width;
     _imageAnimationHeightsMap[index] = height;
@@ -101,12 +94,12 @@ class _DraggableImageCollectionState extends State<DraggableImageCollection> {
         }),
       ),
       if (_imageDeleteButtonList[index] && !_isAddButton(imageURLs[index]))
-        _closeButton(index)
+        _deleteButton(index)
     ]);
   }
 
-  Widget _closeButton(int index) => RoundedCloseButton(
-        onPressed: () => _onDeletePictureTap(index),
+  Widget _deleteButton(int index) => RoundedCloseButton(
+        onPressed: () => _onDeleteButtonTap(index),
         color: _buttonColor,
         iconColor: _buttonIconColor,
         iconSize: 18,
@@ -130,9 +123,18 @@ class _DraggableImageCollectionState extends State<DraggableImageCollection> {
     if (pictureURL != null) {
       setState(() {
         imageURLs.insert(imageURLs.length - 1, pictureURL);
-        UserStore().updatePictureURLs(imageURLs..removeLast());
+        UserStore().updatePictureURLs([...imageURLs]..removeLast());
       });
     }
+  }
+
+  _onDeleteButtonTap(int index) async {
+    ImageRepository().deletePictureFromPictureURL(imageURLs[index]);
+    setState(() {
+      imageURLs.removeAt(index);
+      tmpList = [...imageURLs];
+    });
+    UserStore().updatePictureURLs([...imageURLs]..removeLast());
   }
 
   Color get _buttonColor =>

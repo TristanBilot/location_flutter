@@ -58,6 +58,11 @@ class ImageRepository {
     });
   }
 
+  Future<void> deletePictureFromPictureURL(String pictureURL) async {
+    final ref = await FirebaseStorage.instance.getReferenceFromUrl(pictureURL);
+    ref.delete();
+  }
+
   /// Pick upload and returns the picture url uploaded
   Future<String> pickImageAndUpload(String id, int num) async {
     final File pickedImage = await IconPicker().pickImageFromGalery();
