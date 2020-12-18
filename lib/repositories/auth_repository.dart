@@ -100,17 +100,16 @@ class AuthRepository {
     Function(my.User newUser) successUserDoesNotExists,
   ) async {
     final id = data['email'];
-    final icon = await _repo.fetchUserIcon(id);
 
     my.User fbUser = my.User(
-      data['email'],
+      id,
       data['first_name'],
       data['last_name'],
       List<double>.from([
         0,
         0
       ]), // FIXME UPDATE LOCATION FOR THE LOGGED USER LocationCache().location
-      icon,
+      null,
       (data['picture']['data']['url'] as List)?.cast<String>(),
       0,
       null,

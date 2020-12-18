@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/adapters/time_adapter.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/repositories/user/user_mandatory_info_fetcher.dart';
-import 'package:location_project/repositories/user/user_pictures_fetcher.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/use_cases/start_path/basic_alert_button.dart';
@@ -77,8 +76,7 @@ class _ChatTileState extends State<ChatTile> {
 
     final lastMsgStream = futureLastMSg();
     final userInfoStream = futureUser();
-    final userPictures = UserIconInfoFetcher().fetch(remainingID);
-    return Future.wait([lastMsgStream, userInfoStream, userPictures]);
+    return Future.wait([lastMsgStream, userInfoStream]);
   }
 
   bool _shouldMarkMsgAsUnread(bool lastMessageExists, Message msg) {
@@ -248,16 +246,13 @@ class _ChatTileState extends State<ChatTile> {
         if (snapshot.hasData) {
           final lastMsgStream = snapshot.data[0] as Stream<List<Message>>;
           final userInfoStream = snapshot.data[1] as Stream<UserMandatoryInfo>;
-          final userPictures = snapshot.data[2] as UserIconInfo;
 
           return StreamBuilder(
             stream: userInfoStream,
             builder: (context, userSnapshot) {
               if (userSnapshot.hasData) {
                 final userInfo = userSnapshot.data as UserMandatoryInfo;
-                final user = User.public()
-                  ..build(infos: userInfo)
-                  ..build(pictures: userPictures);
+                final user = User.public()..build(infos: userInfo);
 
                 return StreamBuilder(
                     stream: lastMsgStream,

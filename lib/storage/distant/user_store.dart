@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:location_project/helpers/logger.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/storage/shared preferences/local_store.dart';
@@ -46,7 +45,6 @@ class UserStore {
         await _repo.fetchUser(
           id,
           withBlocks: true,
-          withIcon: true,
           withInfos: true,
           withViews: true,
           withLikes: true,

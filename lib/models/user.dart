@@ -4,7 +4,6 @@ import 'package:location_project/models/user_settings.dart';
 import 'package:location_project/repositories/user/user_blocked_info_fetcher.dart';
 import 'package:location_project/repositories/user/user_likes_info_fetcher.dart';
 import 'package:location_project/repositories/user/user_mandatory_info_fetcher.dart';
-import 'package:location_project/repositories/user/user_pictures_fetcher.dart';
 import 'package:location_project/repositories/user/user_views_info.fetcher.dart';
 import 'package:location_project/models/gender.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/view.dart';
@@ -101,7 +100,6 @@ class User extends HiveObject {
 
   User build({
     UserMandatoryInfo infos,
-    UserIconInfo pictures,
     UserBlockInfo blocks,
     UserViewsInfo views,
     UserLikesInfo likes,
@@ -126,9 +124,6 @@ class User extends HiveObject {
     if (views != null) {
       this.viewedUserIDs = views.viewedUserIDs;
       this.userIDsWhoWiewedMe = views.userIDsWhoWiewedMe;
-    }
-    if (pictures != null) {
-      this.icon = pictures.icon;
     }
     if (likes != null) {
       this.unlikedUsers = likes.unlikedUsers;

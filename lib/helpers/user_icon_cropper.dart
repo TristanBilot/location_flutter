@@ -5,32 +5,24 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location_project/repositories/image_repository.dart';
 import 'dart:async';
 import 'dart:typed_data';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 import 'dart:ui' as ui;
 import 'dart:math' as math;
 import 'package:image/image.dart' as img;
 
-class ImageCropper {
+class UserIconCropper {
   static const PictureIconSize = 200;
-
   final String pictureURL;
-  final Function(BitmapDescriptor) callback;
 
   ui.Image image;
 
-  ImageCropper(this.pictureURL, this.callback);
+  UserIconCropper(this.pictureURL);
 
   Future<BitmapDescriptor> crop() async {
     File imageFile = await ImageRepository().urlToFile(pictureURL);
     Uint8List byteData = imageFile.readAsBytesSync();
-
     this.image = await _resizeAndConvertImage(
-      byteData,
-      PictureIconSize,
-      PictureIconSize,
-    );
-    return _saveCanvas(Size.zero);
+        byteData, PictureIconSize, PictureIconSize);
+    return _paintToCanvas(Size.zero);
   }
 
   Future<ui.Image> _resizeAndConvertImage(
@@ -46,7 +38,23 @@ class ImageCropper {
     return frameInfo.image;
   }
 
-  Canvas _drawCanvas(Size size, Canvas canvas) {
+  Future<BitmapDescriptor> _paintToCanvas(Size size) async {
+    var pictureRecorder = ui.PictureRecorder();
+    var canvas = Canvas(pictureRecorder);
+    var paint = Paint();
+    paint.isAntiAlias = true;
+
+    _performCircleCrop(size, canvas);
+
+    var pic = pictureRecorder.endRecording();
+    ui.Image img = await pic.toImage(image.width, image.height);
+    var byteData = await img.toByteData(format: ui.ImageByteFormat.png);
+    var buffer = byteData.buffer.asUint8List();
+
+    return BitmapDescriptor.fromBytes(buffer);
+  }
+
+  Canvas _performCircleCrop(Size size, Canvas canvas) {
     final center = Offset(150, 50);
     final radius = math.min(size.width, size.height) / 8;
 
@@ -59,9 +67,6 @@ class ImageCropper {
     canvas.drawCircle(center, radius, paintCircle);
     canvas.drawCircle(center, radius, paintBorder);
 
-    // resize
-    // canvas.scale(0.22);
-
     double drawImageWidth = 0;
     var drawImageHeight = -size.height * 0.8;
 
@@ -70,32 +75,7 @@ class ImageCropper {
           image.width.toDouble(), image.height.toDouble()));
 
     canvas.clipPath(path);
-
     canvas.drawImage(image, Offset(drawImageWidth, drawImageHeight), Paint());
     return canvas;
-  }
-
-  Future<BitmapDescriptor> _saveCanvas(Size size) async {
-    var pictureRecorder = ui.PictureRecorder();
-    var canvas = Canvas(pictureRecorder);
-    var paint = Paint();
-    paint.isAntiAlias = true;
-
-    _drawCanvas(size, canvas);
-
-    var pic = pictureRecorder.endRecording();
-    ui.Image img = await pic.toImage(image.width, image.height);
-    var byteData = await img.toByteData(format: ui.ImageByteFormat.png);
-    var buffer = byteData.buffer.asUint8List();
-
-    // var response = await get(imgUrl);
-    var documentDirectory = await getApplicationDocumentsDirectory();
-    File file = File(join(documentDirectory.path,
-        '${DateTime.now().toUtc().toIso8601String()}.png'));
-    file.writeAsBytesSync(buffer);
-    // TODO: delete file
-    print(file.path);
-
-    return BitmapDescriptor.fromBytes(buffer);
   }
 }

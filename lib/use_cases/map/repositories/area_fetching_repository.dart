@@ -4,6 +4,7 @@ import 'package:location_project/adapters/gender_value_adapter.dart';
 import 'package:location_project/conf/conf.dart';
 import 'package:location_project/conf/store.dart';
 import 'package:location_project/helpers/logger.dart';
+import 'package:location_project/helpers/user_icon_cropper.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/storage/memory/location_cache.dart';
@@ -69,9 +70,10 @@ class AreaFetchingRepository {
             fromSnapshot: user,
             useCache: true,
             withBlocks: true,
-            withIcon: true,
             withInfos: true,
           );
+          final icon = await UserIconCropper(newUser.mainPictureURL).crop();
+          newUser.icon = icon;
           // updates the coords in the cache.
           newUser.coord =
               List<double>.from([geoPoint.latitude, geoPoint.longitude]);

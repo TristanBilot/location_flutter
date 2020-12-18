@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/repositories/user/user_mandatory_info_fetcher.dart';
-import 'package:location_project/repositories/user/user_pictures_fetcher.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/message_page.dart';
@@ -25,8 +24,7 @@ class _MatchImageState extends State<MatchImage> {
         UserRepository().fetchUserInfoStream(widget.id);
 
     final userInfoStream = futureUser();
-    final userPictures = UserIconInfoFetcher().fetch(widget.id);
-    return Future.wait([userInfoStream, userPictures]);
+    return Future.wait([userInfoStream]);
   }
 
   _onTap(BuildContext thisContext, User user) {
@@ -51,16 +49,13 @@ class _MatchImageState extends State<MatchImage> {
             if (snapshot.hasData) {
               final userInfoStream =
                   snapshot.data[0] as Stream<UserMandatoryInfo>;
-              final userPictures = snapshot.data[1] as UserIconInfo;
 
               return StreamBuilder(
                   stream: userInfoStream,
                   builder: (context, userSnapshot) {
                     if (userSnapshot.hasData) {
                       final userInfo = userSnapshot.data as UserMandatoryInfo;
-                      final user = User.public()
-                        ..build(infos: userInfo)
-                        ..build(pictures: userPictures);
+                      final user = User.public()..build(infos: userInfo);
                       return GestureDetector(
                         onTap: () => _onTap(context, user),
                         child: Column(

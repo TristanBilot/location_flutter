@@ -1,7 +1,5 @@
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:location_project/conf/store.dart';
@@ -11,70 +9,16 @@ import 'dart:math';
 import '../helpers/icon_picker.dart';
 
 class ImageRepository {
-  static const FirestoreBaseURL = 'https://firebasestorage.googleapis.com';
-  static const OutputFilePrefix = 'circle_';
-  static const MainPictureFilePrefix = 'toCircle_';
-
-  /// Return the bitmap of the user's image used in the map.
-  Future<BitmapDescriptor> fetchUserIcon(String id) async {
-    final String firestoreURL =
-        await getPictureDownloadURL(id, withCircleImage: true);
-    final String uploadedFileURL =
-        firestoreURL.substring(FirestoreBaseURL.length);
-
-    final Uint8List data =
-        (await NetworkAssetBundle(Uri.parse(FirestoreBaseURL))
-                .load(uploadedFileURL))
-            .buffer
-            .asUint8List();
-
-    return BitmapDescriptor.fromBytes(data);
-  }
-
-  /// Return the string url to download the Firestorage user image.
-  /// `withCircleImage` used to determine if we should fetch an original
-  /// image or a resized+circled image.
-  Future<dynamic> getPictureDownloadURL(
-    String id, {
-    bool withCircleImage = false,
-  }) async {
-    return Future.sync(() {
-      /* prefix used to determine if we should fetch a circular resized image */
-      final prefix = withCircleImage ? ImageRepository.OutputFilePrefix : '';
-      final ext = Store.defaultProfilePictureExtension;
-      final defaultName = Store.defaultProfilePictureName;
-
-      final picturePath = '$prefix$id$ext';
-      final defaultPath = '$prefix$defaultName$ext';
-      StorageReference ref = _getFirestoreImageReference(id, picturePath);
-
-      return ref.getDownloadURL().then((url) => url).catchError((_) {
-        /* if the picture is not found, set the default user image in FireStore */
-        ref = _getFirestoreImageReference(id, defaultPath);
-        return ref.getDownloadURL().then((url) => url).catchError((error) {
-          print(
-              '++++ Error: the user does not have an image and the default image is not found in Firestore.');
-        });
-      });
-    });
-  }
-
-  Future<void> addOrUpdateMainUserPicture() async {}
-
   Future<void> deletePictureFromPictureURL(String pictureURL) async {
     final ref = await FirebaseStorage.instance.getReferenceFromUrl(pictureURL);
     ref.delete();
   }
 
   /// Pick upload and returns the picture url uploaded
-  Future<String> pickImageAndUpload(
-    String id, {
-    bool isMainPicture = false,
-  }) async {
+  Future<String> pickImageAndUpload(String id) async {
     final File pickedImage = await IconPicker().pickImageFromGalery();
     if (pickedImage == null) return null;
-    String fileName = (isMainPicture ? MainPictureFilePrefix : '') +
-        formatUserPictureFileName();
+    String fileName = formatUserPictureFileName();
     return uploadFile(id, pickedImage, fileName);
   }
 
@@ -126,8 +70,6 @@ class ImageRepository {
   String formatUserPictureFileName() {
     return Uuid().v4() + Store.defaultProfilePictureExtension; // random string
   }
-
-  /* ++++++++++ private methods ++++++++++ */
 
   StorageReference _getFirestoreImageReference(String id, String fileName) {
     return FirebaseStorage.instance

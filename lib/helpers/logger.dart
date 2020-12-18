@@ -37,7 +37,6 @@ class Logger {
   void logUserInfo(
     String id, {
     TimeMeasurable infos,
-    TimeMeasurable pictures,
     TimeMeasurable blocks,
     TimeMeasurable views,
     TimeMeasurable likes,
@@ -55,10 +54,6 @@ class Logger {
     if (views != null) {
       str += '\nviews fetching: \t${views.timeToFetch}ms';
       sum += views.timeToFetch;
-    }
-    if (pictures != null) {
-      str += '\npictures fetching: \t${pictures.timeToFetch}ms';
-      sum += pictures.timeToFetch;
     }
     if (likes != null) {
       str += '\nlikes fetching: \t${likes.timeToFetch}ms';

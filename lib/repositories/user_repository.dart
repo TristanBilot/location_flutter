@@ -10,10 +10,7 @@ import 'package:location_project/models/user_settings.dart';
 import 'package:location_project/repositories/user/user_blocked_info_fetcher.dart';
 import 'package:location_project/repositories/user/user_likes_info_fetcher.dart';
 import 'package:location_project/repositories/user/user_mandatory_info_fetcher.dart';
-import 'package:location_project/repositories/user/user_pictures_fetcher.dart';
 import 'package:location_project/repositories/user/user_views_info.fetcher.dart';
-import 'package:location_project/storage/databases/user_database.dart';
-import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/storage/memory/location_cache.dart';
 import 'package:location_project/storage/memory/memory_store.dart';
 import 'package:location_project/use_cases/swipe_card/models/like_field.dart';
@@ -27,7 +24,6 @@ import '../models/user.dart';
 class UserRepository {
   static const RootKey = 'locations';
 
-  Geoflutterfire _geo;
   FirebaseFirestore _firestore;
   ImageRepository _imageRepo;
 
@@ -35,17 +31,14 @@ class UserRepository {
   UserMandatoryInfoFetcher _mandatoryInfoFetcher;
   UserBlockInfoFetcher _blockInfoFetcher;
   UserViewsInfoFetcher _viewsInfoFetcher;
-  UserIconInfoFetcher _picturesInfoFetcher;
   UserLikesInfoFetcher _likesInfoFetcher;
 
   UserRepository() {
-    _geo = Geoflutterfire();
     _firestore = FirebaseFirestore.instance;
     _imageRepo = ImageRepository();
     _mandatoryInfoFetcher = UserMandatoryInfoFetcher();
     _blockInfoFetcher = UserBlockInfoFetcher();
     _viewsInfoFetcher = UserViewsInfoFetcher();
-    _picturesInfoFetcher = UserIconInfoFetcher();
     _likesInfoFetcher = UserLikesInfoFetcher();
   }
 
@@ -161,7 +154,6 @@ class UserRepository {
     // bool useDatabase = false,
     DocumentSnapshot fromSnapshot,
     bool withBlocks = false,
-    bool withIcon = false,
     bool withInfos = false,
     bool withViews = false,
     bool withLikes = false,
@@ -188,7 +180,6 @@ class UserRepository {
         return fetchUser(id,
             fromSnapshot: fromSnapshot,
             withBlocks: withBlocks,
-            withIcon: withIcon,
             withInfos: withInfos,
             withViews: withViews,
             withLikes: withLikes);
@@ -199,7 +190,6 @@ class UserRepository {
     User user = await _fetchUserWithSpecificInfos(id,
         withBlocks: withBlocks,
         withInfos: withInfos,
-        withIcon: withIcon,
         withViews: withViews,
         withLikes: withLikes);
 
@@ -212,7 +202,6 @@ class UserRepository {
     String id, {
     DocumentSnapshot snapshot,
     bool withBlocks,
-    bool withIcon,
     bool withInfos,
     bool withViews,
     bool withLikes,
@@ -220,7 +209,6 @@ class UserRepository {
     User user = User.public();
 
     UserMandatoryInfo userInfos;
-    UserIconInfo userPictures;
     UserBlockInfo userBlocks;
     UserViewsInfo userViews;
     UserLikesInfo userLikes;
@@ -230,10 +218,6 @@ class UserRepository {
           ? _mandatoryInfoFetcher.fetchFromSnapshot(snapshot)
           : await _mandatoryInfoFetcher.fetch(id);
       user.build(infos: userInfos);
-    }
-    if (withIcon) {
-      userPictures = await _picturesInfoFetcher.fetch(id);
-      user.build(pictures: userPictures);
     }
     if (withBlocks) {
       userBlocks = await _blockInfoFetcher.fetch(id);
@@ -251,7 +235,6 @@ class UserRepository {
         blocks: userBlocks,
         views: userViews,
         infos: userInfos,
-        pictures: userPictures,
         likes: userLikes);
     return user;
   }
