@@ -5,33 +5,27 @@ import 'package:location_project/conf/conf.dart';
 import 'package:location_project/conf/store.dart';
 import 'package:location_project/helpers/logger.dart';
 import 'package:location_project/helpers/user_icon_cropper.dart';
+import 'package:location_project/models/user.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/storage/memory/location_cache.dart';
 import 'package:location_project/storage/memory/memory_store.dart';
 import 'package:location_project/conf/extensions.dart';
 import 'dart:async';
-import '../../../repositories/image_repository.dart';
-import '../../../models/user.dart';
 
 class AreaFetchingRepository {
   Geoflutterfire _geo;
   FirebaseFirestore _firestore;
-  ImageRepository _imageRepo;
 
   static final double radius = 30000; // in meters
 
   AreaFetchingRepository() {
     _geo = Geoflutterfire();
     _firestore = FirebaseFirestore.instance;
-    _imageRepo = ImageRepository();
   }
 
-  /// Get the current location and fetch all the users
-  /// in the defined radius thanks to Geoflutterfire.
-  /// It returns the stream of User snapshots.
   Stream<List<DocumentSnapshot>> fetch() {
-    final ref = _firestore.collection('locations');
+    final ref = _firestore.collection(UserRepository.RootKey);
 
     final GeoFirePoint center = Conf.testMode
         ? Store.parisGeoPosition
@@ -42,51 +36,50 @@ class AreaFetchingRepository {
             center: center,
             radius: radius / 1000,
             field: UserField.Position.value);
-    // return _listenAreaStream(stream, completion);
     return stream;
   }
 
-  /// Listens to the stream of users around the current location.
-  /// For each user around, the picture is fetched and a User object
-  /// is created. The completion is used to setState() in the view
-  /// to update the list of markers to display to the map.
   Future<void> listenAreaStream(
-      Stream<List<DocumentSnapshot>> stream, Function completion) async {
-    stream.listen((List<DocumentSnapshot> users) async {
-      Logger().v('=> ${users.length} users in area.');
-      int userCount = 0;
+    Stream<List<DocumentSnapshot>> stream,
+    Function(List<User>) completion,
+  ) async {
+    stream.listen((List<DocumentSnapshot> snapshots) async {
+      Logger().v('=> ${snapshots.length} users in area.');
       List<User> usersList = List();
-      users.forEach((user) async {
-        userCount++;
-        final data = user.data();
-        final id = user.id;
 
-        if (_displayConditions(data, id)) {
-          // fresh position of each user.
-          final geoPoint = user.data()[UserField.Position.value]['geopoint'];
+      for (int i = 0; i < snapshots.length; i++) {
+        User user = await _fetchUserFromDataIfDisplayable(snapshots[i]);
+        if (user == null) continue;
 
-          User newUser = await UserRepository().fetchUser(
-            id,
-            fromSnapshot: user,
-            useCache: true,
-            withBlocks: true,
-            withInfos: true,
-          );
-          final icon = await UserIconCropper(newUser.mainPictureURL).crop();
-          newUser.icon = icon;
-          // updates the coords in the cache.
-          newUser.coord =
-              List<double>.from([geoPoint.latitude, geoPoint.longitude]);
+        MemoryStore().putUser(user);
+        usersList.add(user);
+        completion(usersList);
 
-          MemoryStore().putUser(newUser);
-          usersList.add(newUser);
-          print(
-              '=> in area: ${newUser.email} at ${newUser.distance} meters (cached).');
-        }
-        /* userCount used to know when the last user is reached */
-        if (userCount == users.length) completion(usersList);
-      });
+        print('=> in area: ${user.email} at ${user.distance} meters (cached).');
+      }
     });
+  }
+
+  Future<User> _fetchUserFromDataIfDisplayable(
+    DocumentSnapshot snapshot,
+  ) async {
+    final data = snapshot.data();
+    final id = snapshot.id;
+    final geoPoint = data[UserField.Position.value]['geopoint'];
+
+    if (!_displayConditions(data, id)) return null;
+    if (MemoryStore().containsUser(id)) return MemoryStore().getUser(id);
+
+    User user = await UserRepository().fetchUser(
+      id,
+      fromSnapshot: snapshot,
+      useCache: true,
+      withBlocks: true,
+      withInfos: true,
+    );
+    user.icon = await UserIconCropper(user.mainPictureURL).crop();
+    user.coord = List<double>.from([geoPoint.latitude, geoPoint.longitude]);
+    return user;
   }
 
   /// Return true if a user should be shown on the map.

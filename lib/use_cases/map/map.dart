@@ -8,6 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location_project/conf/conf.dart';
 import 'package:location_project/conf/store.dart';
 import 'package:location_project/controllers/location_controller.dart';
+import 'package:location_project/models/user.dart';
 import 'package:location_project/use_cases/blocking/cubit/blocking_cubit.dart';
 import 'package:location_project/use_cases/map/cubit/area_cubit.dart';
 import 'package:location_project/use_cases/map/repositories/area_fetching_repository.dart';
@@ -53,17 +54,20 @@ class MapState extends State<Map> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  _updateUserMarkers() {
-    context.read<AreaCubit>().fetchArea((users) {
+  void _fetchAreaAndUpdateMarkers() {
+    context.read<AreaCubit>().fetchArea((List<User> users) {
       setStateIfMounted(() {
         _markers.clear();
         users.forEach((user) {
           if (!UserStore().user.userIDsWhoBlockedMe.contains(user.id))
-            _markers.add(UserMarker(
+            _markers.add(
+              UserMarker(
                 user: user,
                 icon: user.icon,
                 position: LatLng(user.coord[0], user.coord[1]),
-                onTap: () => UserMapCard(context, user).show()));
+                onTap: () => UserMapCard(context, user).show(),
+              ),
+            );
         });
       });
     });
@@ -146,7 +150,7 @@ class MapState extends State<Map> with WidgetsBindingObserver {
                   ),
                   onMapCreated: (GoogleMapController controller) {
                     _controller.complete(controller);
-                    _updateUserMarkers();
+                    _fetchAreaAndUpdateMarkers();
                   }),
             );
           }
