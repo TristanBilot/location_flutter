@@ -2,83 +2,8 @@
 
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-const path = require('path');
-const os = require('os');
-const fs = require('fs');
-const gm = require('gm').subClass({ imageMagick: true });
 
 admin.initializeApp()
-
-/// ------------------ Picture processing  ------------------ ///
-
-/**
- * When an image is uploaded in the Storage bucket, we want to 
- * create a copy resized it and circle it.
- */
-exports.onFileUploaded = functions.storage.object().onFinalize(async (file) => {
-  // File path in the bucket.
-  const filePath = file.name;
-  // Get the file name.
-  const fileName = path.basename(filePath);
-
-  // We do not want to convert all images but only the main picture which
-  // not have a '_n' at the end
-  if (!fileName.startsWith('mainPicture_'))
-    return;
-
-
-  /* prefix used to break infinite loop in the firestore trigger */
-  const outputFilePrefix = 'circle_';
-  const size = 150;
-  const fileBucket = file.bucket; // The Storage bucket that contains the file.
-  const contentType = file.contentType; // File content type.
-
-  // Exit if this is triggered on a file that is not an image.
-  if (!contentType.startsWith('image/')) {
-    return console.log('This is not an image.');
-  }
-
-  // Exit if the image is already a thumbnail.
-  if (fileName.startsWith(outputFilePrefix)) {
-    return console.log('This file had already been modified.');
-  }
-
-  // Download file from bucket.
-  const bucket = admin.storage().bucket(fileBucket);
-  const fileNameWithPng = fileName.substr(0, fileName.lastIndexOf(".")) + ".png";
-  const inTmpPath = path.join(os.tmpdir(), 'in_' + fileName);
-  const outTmpPath = path.join(os.tmpdir(), fileNameWithPng);
-  const metadata = { contentType: contentType };
-
-  // Download the file from Firestore to a tmp folder.
-  await bucket.file(filePath).download({destination: inTmpPath});
-  console.log('Image downloaded locally to', inTmpPath);
-
-  gm(inTmpPath) // could use crop()
-  .resize(size, size, "!") // force the image to resize
-  .write(outTmpPath, async () => {
-    console.log('writing');
-    gm(size, size, 'none')
-        .fill(outTmpPath) // scale
-        .drawCircle(size / 2, size / 2, size / 2, 0)
-        .write(outTmpPath, async () => {
-          console.log('Circles photo created at', outTmpPath);
-        
-          const firestoreFilePath = path.join(path.dirname(filePath), outputFilePrefix + fileNameWithPng);
-          // Remove old photo.
-          // await bucket.file(filePath).delete();
-          // Uploading the output photo to firestore.
-          await bucket.upload(outTmpPath, {
-            destination: firestoreFilePath,
-            metadata: metadata,
-          });
-          // Delete the local files to free up disk space.
-          fs.unlinkSync(outTmpPath);
-          return fs.unlinkSync(inTmpPath);
-        });
-  });
-  return null;
-});
 
 /// ------------------ Messaging push notifs  ------------------ ///
 
