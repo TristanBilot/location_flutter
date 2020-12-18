@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/controllers/app_badge_controller.dart';
 import 'package:location_project/controllers/location_controller.dart';
-import 'package:location_project/helpers/image_croper3.dart';
+import 'package:location_project/helpers/image_cropper.dart';
 import 'package:location_project/pages/messaging_page.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/use_cases/blocking/cubit/blocking_cubit.dart';

@@ -11,7 +11,7 @@ import 'dart:ui' as ui;
 import 'dart:math' as math;
 import 'package:image/image.dart' as img;
 
-class ImageCroper {
+class ImageCropper {
   static const PictureIconSize = 200;
 
   final String pictureURL;
@@ -19,11 +19,9 @@ class ImageCroper {
 
   ui.Image image;
 
-  ImageCroper(this.pictureURL, this.callback) {
-    _init();
-  }
+  ImageCropper(this.pictureURL, this.callback);
 
-  Future<Null> _init() async {
+  Future<BitmapDescriptor> crop() async {
     File imageFile = await ImageRepository().urlToFile(pictureURL);
     Uint8List byteData = imageFile.readAsBytesSync();
 
@@ -32,7 +30,7 @@ class ImageCroper {
       PictureIconSize,
       PictureIconSize,
     );
-    _saveCanvas(Size.zero);
+    return _saveCanvas(Size.zero);
   }
 
   Future<ui.Image> _resizeAndConvertImage(
@@ -77,7 +75,7 @@ class ImageCroper {
     return canvas;
   }
 
-  _saveCanvas(Size size) async {
+  Future<BitmapDescriptor> _saveCanvas(Size size) async {
     var pictureRecorder = ui.PictureRecorder();
     var canvas = Canvas(pictureRecorder);
     var paint = Paint();
@@ -95,10 +93,9 @@ class ImageCroper {
     File file = File(join(documentDirectory.path,
         '${DateTime.now().toUtc().toIso8601String()}.png'));
     file.writeAsBytesSync(buffer);
-
-    BitmapDescriptor icon = BitmapDescriptor.fromBytes(buffer);
-    callback(icon);
-
+    // TODO: delete file
     print(file.path);
+
+    return BitmapDescriptor.fromBytes(buffer);
   }
 }
