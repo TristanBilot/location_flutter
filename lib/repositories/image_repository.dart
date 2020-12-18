@@ -11,9 +11,9 @@ import 'dart:math';
 import '../helpers/icon_picker.dart';
 
 class ImageRepository {
-  static const String FirestoreBaseURL =
-      'https://firebasestorage.googleapis.com';
-  static const String OutputFilePrefix = 'circle_';
+  static const FirestoreBaseURL = 'https://firebasestorage.googleapis.com';
+  static const OutputFilePrefix = 'circle_';
+  static const MainPictureFilePrefix = 'toCircle_';
 
   /// Return the bitmap of the user's image used in the map.
   Future<BitmapDescriptor> fetchUserIcon(String id) async {
@@ -67,10 +67,15 @@ class ImageRepository {
   }
 
   /// Pick upload and returns the picture url uploaded
-  Future<String> pickImageAndUpload(String id) async {
+  Future<String> pickImageAndUpload(
+    String id, {
+    bool isMainPicture = false,
+  }) async {
     final File pickedImage = await IconPicker().pickImageFromGalery();
     if (pickedImage == null) return null;
-    return _uploadNthUserPicture(id, pickedImage);
+    String fileName = (isMainPicture ? MainPictureFilePrefix : '') +
+        formatUserPictureFileName();
+    return uploadFile(id, pickedImage, fileName);
   }
 
   Future<List<String>> uploadAllUserPictures(

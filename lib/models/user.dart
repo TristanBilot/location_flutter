@@ -11,8 +11,6 @@ import 'package:location_project/use_cases/tab_pages/messaging/models/view.dart'
 import 'package:location_project/conf/extensions.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif.dart';
 
-part 'user.g.dart';
-
 enum UserField {
   // Root fields
   FirstName,

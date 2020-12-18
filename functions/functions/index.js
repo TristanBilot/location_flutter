@@ -23,10 +23,9 @@ exports.onFileUploaded = functions.storage.object().onFinalize(async (file) => {
 
   // We do not want to convert all images but only the main picture which
   // not have a '_n' at the end
-  const lastDotIndex = fileName.lastIndexOf('.');
-  if (lastDotIndex === -1 || fileName.charAt(lastDotIndex - 2) === '_') {
+  if (!fileName.startsWith('mainPicture_'))
     return;
-  }
+
 
   /* prefix used to break infinite loop in the firestore trigger */
   const outputFilePrefix = 'circle_';

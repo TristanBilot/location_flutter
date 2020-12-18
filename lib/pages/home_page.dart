@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/controllers/app_badge_controller.dart';
 import 'package:location_project/controllers/location_controller.dart';
+import 'package:location_project/helpers/image_croper3.dart';
 import 'package:location_project/pages/messaging_page.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/use_cases/blocking/cubit/blocking_cubit.dart';
@@ -67,7 +68,8 @@ class _HomePageContainerState extends State<HomePageContainer>
     SwipePage(),
     MapPage(),
     MessagingPage(),
-    MessagingTabsPage(),
+    // CustomImageCanvas(
+    //     'https://firebasestorage.googleapis.com/v0/b/location-abed9.appspot.com/o/photos%2Fbilot.tristan.carrieres%40hotmail.fr%2Fba43bb0f-6400-4eb8-9786-2dc448cd6ef4.png?alt=media&token=b82efcba-77c8-41a4-ab29-ce5d18955ab1'),
   ];
 
   @override
@@ -127,14 +129,14 @@ class _HomePageContainerState extends State<HomePageContainer>
                       alignment: Alignment.center,
                       children: [
                         HomePageTabBarIcon(Icons.textsms, _tabIndex == 3),
-                        BlocBuilder<CountersCubit, CountersState>(
-                            builder: (context, state) {
-                          if (state.isANotificationUnread())
-                            return Align(
-                                alignment: Alignment.topRight,
-                                child: HomePageStatusWithoutCount());
-                          return SizedBox();
-                        })
+                        // BlocBuilder<CountersCubit, CountersState>(
+                        //     builder: (context, state) {
+                        //   if (state.isANotificationUnread())
+                        //     return Align(
+                        //         alignment: Alignment.topRight,
+                        //         child: HomePageStatusWithoutCount());
+                        //   return SizedBox();
+                        // })
                       ],
                     )),
                 label: ''),
