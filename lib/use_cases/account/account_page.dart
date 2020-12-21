@@ -2,16 +2,17 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/conf/routes.dart';
 import 'package:location_project/conf/store.dart';
 import 'package:location_project/repositories/auth_repository.dart';
-import 'package:location_project/repositories/image_repository.dart';
 import 'package:location_project/repositories/user_mock_repository.dart';
 import 'package:location_project/storage/memory/memory_store.dart';
 import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/themes/dark_theme.dart';
 import 'package:location_project/themes/light_theme.dart';
 import 'package:location_project/themes/theme_utils.dart';
+import 'package:location_project/use_cases/account/edit%20profile/cubit/edit_profile_cubit.dart';
 import 'package:location_project/use_cases/account/edit%20profile/profile_editing_page.dart';
 import 'package:location_project/use_cases/account/widgets/account_list_tile.dart';
 import 'package:location_project/use_cases/account/widgets/account_log_out_list_tile.dart';
@@ -35,25 +36,17 @@ class AccountPage extends StatefulWidget {
 
 class _AccountPageState extends State<AccountPage>
     with SelectableSmallCardDelegate {
-  Set<Gender> _selectedGenders;
-  bool _isShowMyProfile;
-  bool _isShowMyDistance;
-  List<double> _wantedAgeValues;
-  String _name;
-  int _age;
-  double _picSize = AccountPage.userImageSize;
+  static const double PicSize = AccountPage.userImageSize;
 
+  Set<Gender> _selectedGenders;
   AuthRepository _authRepo;
   Timer _sliderTimer;
 
   @override
   void initState() {
     _init();
-    super.initState();
-
-    _selectedGenders = Set();
     _authRepo = AuthRepository();
-    _loadUserData();
+    super.initState();
   }
 
   void _init() {
@@ -70,27 +63,14 @@ class _AccountPageState extends State<AccountPage>
     });
   }
 
-  _loadUserData() {
-    _isShowMyProfile = UserStore().user.settings.showMyprofile;
-    _isShowMyDistance = UserStore().user.settings.showMyDistance;
-    _wantedAgeValues = UserStore()
-        .user
-        .settings
-        .wantedAgeRange
-        .map((e) => e.toDouble())
-        .toList();
-    _name = UserStore().user.firstName;
-    _age = UserStore().user.age;
-    _selectedGenders = UserStore().user.settings.wantedGenders.toSet();
-  }
-
-  void _handleWantedAgeModify(int index, double value) {
-    setState(() => _wantedAgeValues[index] = value);
+  void _handleWantedAgeModify(
+      List<double> wantedAgeValues, int index, double value) {
+    setState(() => wantedAgeValues[index] = value);
     if (_sliderTimer != null) _sliderTimer.cancel();
     _sliderTimer = Timer(
         Duration(milliseconds: 500),
-        () => UserStore().setWantedAgeRange(
-            _wantedAgeValues.map((e) => e.round()).toList()));
+        () => UserStore()
+            .setWantedAgeRange(wantedAgeValues.map((e) => e.round()).toList()));
   }
 
   Color _getHeaderBackground() {
@@ -100,10 +80,10 @@ class _AccountPageState extends State<AccountPage>
 
   _onPicturePress() async {
     // Animation.
-    // setState(() => _picSize = AccountPage.userImageSize - 20);
+    // setState(() => PicSize = AccountPage.userImageSize - 20);
     // await Future.delayed(Duration(milliseconds: AccountPage.picAnimDuration));
     // HapticFeedback.mediumImpact();
-    // setState(() => _picSize = AccountPage.userImageSize);
+    // setState(() => PicSize = AccountPage.userImageSize);
     // await Future.delayed(Duration(milliseconds: AccountPage.picAnimDuration));
 
     // final pictureURL =
@@ -116,218 +96,232 @@ class _AccountPageState extends State<AccountPage>
   }
 
   void _pushProfileEditingPageWithAnimation() {
-    Navigator.of(context).push(PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) =>
-          ProfileEditingPage(),
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        var begin = Offset(0.0, 1.0);
-        var end = Offset.zero;
-        var curve = Curves.ease;
+    Navigator.push(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context2, animation, secondaryAnimation) =>
+              ProfileEditingPage(context),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            var begin = Offset(0.0, 1.0);
+            var end = Offset.zero;
+            var curve = Curves.ease;
 
-        var tween = Tween(begin: begin, end: end);
-        var curvedAnimation = CurvedAnimation(
-          parent: animation,
-          curve: curve,
-        );
+            var tween = Tween(begin: begin, end: end);
+            var curvedAnimation = CurvedAnimation(
+              parent: animation,
+              curve: curve,
+            );
 
-        return SlideTransition(
-          position: tween.animate(curvedAnimation),
-          child: child,
-        );
-      },
-    ));
+            return SlideTransition(
+              position: tween.animate(curvedAnimation),
+              child: child,
+            );
+          },
+        ));
   }
 
   @override
   Widget build(BuildContext context) {
+    final wantedAgeValues = UserStore()
+        .user
+        .settings
+        .wantedAgeRange
+        .map((e) => e.toDouble())
+        .toList();
+
+    _selectedGenders = UserStore().user.settings.wantedGenders.toSet();
+
     return Scaffold(
       body: Material(
         color: ThemeUtils.getListBackgroundColor(context),
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            SliverAppBar(
-              // pinned: true,
-              expandedHeight: 200,
-              // title: Text('Title'),
-              backgroundColor: _getHeaderBackground(),
-              stretch: true,
-              flexibleSpace: FlexibleSpaceBar(
-                background: Stack(children: [
-                  Container(
-                    height: AccountPage.curveContainerHeight,
-                    decoration: BoxDecoration(
-                      gradient: ThemeUtils.getResponsiveGradient(context),
-                      borderRadius: BorderRadius.vertical(
-                        bottom: Radius.elliptical(
-                            MediaQuery.of(context).size.width, 100.0),
+        child: BlocListener<EditProfileCubit, EditProfileState>(
+          listener: (context, state) {
+            if (state is DidEditProfileState) setState(() {});
+          },
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              SliverAppBar(
+                // pinned: true,
+                expandedHeight: 200,
+                // title: Text('Title'),
+                backgroundColor: _getHeaderBackground(),
+                stretch: true,
+                flexibleSpace: FlexibleSpaceBar(
+                  background: Stack(children: [
+                    Container(
+                      height: AccountPage.curveContainerHeight,
+                      decoration: BoxDecoration(
+                        gradient: ThemeUtils.getResponsiveGradient(context),
+                        borderRadius: BorderRadius.vertical(
+                          bottom: Radius.elliptical(
+                              MediaQuery.of(context).size.width, 100.0),
+                        ),
                       ),
                     ),
-                  ),
-                  Center(
-                    child: GestureDetector(
-                      onTap: _onPicturePress,
-                      child: AnimatedContainer(
-                        width: _picSize,
-                        height: _picSize,
-                        duration:
-                            Duration(milliseconds: AccountPage.picAnimDuration),
-                        child: Stack(
-                          alignment: Alignment.topRight,
-                          children: [
-                            CachedCircleUserImage(
-                              UserStore().user.mainPictureURL,
-                              size: AccountPage.userImageSize,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 6, right: 6),
-                              child: Container(
-                                child: Icon(
-                                  Icons.edit,
-                                  size: 20,
-                                ),
-                                padding: EdgeInsets.all(5),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Theme.of(context).backgroundColor,
+                    Center(
+                      child: GestureDetector(
+                        onTap: _onPicturePress,
+                        child: AnimatedContainer(
+                          width: PicSize,
+                          height: PicSize,
+                          duration: Duration(
+                              milliseconds: AccountPage.picAnimDuration),
+                          child: Stack(
+                            alignment: Alignment.topRight,
+                            children: [
+                              CachedCircleUserImage(
+                                UserStore().user.mainPictureURL,
+                                size: AccountPage.userImageSize,
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(top: 6, right: 6),
+                                child: Container(
+                                  child: Icon(
+                                    Icons.edit,
+                                    size: 20,
+                                  ),
+                                  padding: EdgeInsets.all(5),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Theme.of(context).backgroundColor,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ]),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.only(bottom: 20),
-                    color: _getHeaderBackground(),
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: TextSF(
-                          '$_name, $_age',
-                          fontSize: 22,
-                        ),
-                      ),
-                    ),
-                  ),
-                ]..addAll(
-                    [
-                      AccountSectionTitle('I\'m looking for'),
-                      AccountListTile(
-                        title: 'Gender',
-                        bottom: Padding(
-                          padding: const EdgeInsets.only(
-                              left: AccountListTile.SidePadding),
-                          child: Row(children: [
-                            SelectableSmallCard(Gender.Female, this,
-                                _selectedGenders.contains(Gender.Female)),
-                            SelectableSmallCard(Gender.Male, this,
-                                _selectedGenders.contains(Gender.Male)),
-                            SelectableSmallCard(Gender.Other, this,
-                                _selectedGenders.contains(Gender.Other)),
-                          ]),
-                        ),
-                      ),
-                      AccountListTile(
-                        withDivider: false,
-                        title: 'Age range',
-                        trailing: TextSF(
-                          '${_wantedAgeValues[0].round()} - ${_wantedAgeValues[1].round()}${_wantedAgeValues[1].round() == Store.maxAgeRange ? "+" : ""} ',
-                          color: MediaQuery.of(context).platformBrightness ==
-                                  Brightness.light
-                              ? Colors.black54
-                              : Colors.white,
-                        ),
-                        bottom: Container(
-                          width: MediaQuery.of(context).size.width -
-                              2 * AccountListTile.SidePadding,
-                          child: CupertinoRangeSlider(
-                            activeColor: LogoOrangeColor,
-                            minValue: _wantedAgeValues[0],
-                            maxValue: _wantedAgeValues[1],
-                            min: Store.minAgeRange,
-                            max: Store.maxAgeRange,
-                            onMinChanged: (value) =>
-                                _handleWantedAgeModify(0, value),
-                            onMaxChanged: (value) =>
-                                _handleWantedAgeModify(1, value),
+                            ],
                           ),
                         ),
                       ),
-                      AccountSectionTitle('Parameters'),
-                      AccountListTile(
-                        title: 'Show my profile',
-                        trailing: Switch.adaptive(
-                            value: _isShowMyProfile,
-                            onChanged: (newvalue) {
-                              setState(() {
-                                _isShowMyProfile = newvalue;
-                                UserStore().setShowMyProfile(_isShowMyProfile);
-                              });
-                            }),
-                      ),
-                      AccountListTile(
-                        title: 'Show my distance',
-                        trailing: Switch.adaptive(
-                            value: _isShowMyDistance,
-                            onChanged: (newvalue) {
-                              setState(() {
-                                _isShowMyDistance = newvalue;
-                                UserStore()
-                                    .setShowMyDistance(_isShowMyDistance);
-                              });
-                            }),
-                      ),
-                      AccountListTile(
-                        title: 'App language',
-                        trailing: Icon(Icons.chevron_right),
-                        onTap: () => Navigator.of(context)
-                            .pushNamed(Routes.languages.value),
-                      ),
-                      AccountListTile(
-                        title: 'Blocked users',
-                        trailing: Icon(Icons.chevron_right),
-                        onTap: () => Navigator.of(context)
-                            .pushNamed(Routes.blockedUsers.value),
-                      ),
-                      AccountListTile(
-                        withDivider: false,
-                        title: 'Notifications',
-                        trailing: Icon(Icons.chevron_right),
-                        onTap: () => Navigator.of(context)
-                            .pushNamed(Routes.notifications.value),
-                      ),
-                      AccountLogOutListTile('LOG OUT', onPressed: () {
-                        _authRepo.logOut().then((_) => Navigator.of(context)
-                            .pushReplacementNamed(Routes.login.value));
-                      }),
-                      AccountLogOutListTile(
-                        'DELETE MY ACCOUNT',
-                        color: Colors.red[500],
-                        onPressed: () {
-                          UserMockRepository().putParisDataset();
-                          UserMockRepository().putCarrieresDataset();
-                          MessagingMockRepository().insertChatMock().then(
-                              (value) => MessagingMockRepository()
-                                  .insertMessageMock());
-                        },
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            bottom: AccountLogOutListTile.Padding),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ]),
+                ),
               ),
-            ),
-          ],
+              SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.only(bottom: 20),
+                      color: _getHeaderBackground(),
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: TextSF(
+                            '${UserStore().user.firstName}, ${UserStore().user.age}',
+                            fontSize: 22,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ]..addAll(
+                      [
+                        AccountSectionTitle('I\'m looking for'),
+                        AccountListTile(
+                          title: 'Gender',
+                          bottom: Padding(
+                            padding: const EdgeInsets.only(
+                                left: AccountListTile.SidePadding),
+                            child: Row(children: [
+                              SelectableSmallCard(Gender.Female, this,
+                                  _selectedGenders.contains(Gender.Female)),
+                              SelectableSmallCard(Gender.Male, this,
+                                  _selectedGenders.contains(Gender.Male)),
+                              SelectableSmallCard(Gender.Other, this,
+                                  _selectedGenders.contains(Gender.Other)),
+                            ]),
+                          ),
+                        ),
+                        AccountListTile(
+                          withDivider: false,
+                          title: 'Age range',
+                          trailing: TextSF(
+                            '${wantedAgeValues[0].round()} - ${wantedAgeValues[1].round()}${wantedAgeValues[1].round() == Store.maxAgeRange ? "+" : ""} ',
+                            color: MediaQuery.of(context).platformBrightness ==
+                                    Brightness.light
+                                ? Colors.black54
+                                : Colors.white,
+                          ),
+                          bottom: Container(
+                            width: MediaQuery.of(context).size.width -
+                                2 * AccountListTile.SidePadding,
+                            child: CupertinoRangeSlider(
+                              activeColor: LogoOrangeColor,
+                              minValue: wantedAgeValues[0],
+                              maxValue: wantedAgeValues[1],
+                              min: Store.minAgeRange,
+                              max: Store.maxAgeRange,
+                              onMinChanged: (value) => _handleWantedAgeModify(
+                                  wantedAgeValues, 0, value),
+                              onMaxChanged: (value) => _handleWantedAgeModify(
+                                  wantedAgeValues, 1, value),
+                            ),
+                          ),
+                        ),
+                        AccountSectionTitle('Parameters'),
+                        AccountListTile(
+                          title: 'Show my profile',
+                          trailing: Switch.adaptive(
+                              value: UserStore().user.settings.showMyprofile,
+                              onChanged: (newvalue) {
+                                setState(() {
+                                  UserStore().setShowMyProfile(newvalue);
+                                });
+                              }),
+                        ),
+                        AccountListTile(
+                          title: 'Show my distance',
+                          trailing: Switch.adaptive(
+                              value: UserStore().user.settings.showMyDistance,
+                              onChanged: (newvalue) {
+                                setState(() {
+                                  UserStore().setShowMyDistance(newvalue);
+                                });
+                              }),
+                        ),
+                        AccountListTile(
+                          title: 'App language',
+                          trailing: Icon(Icons.chevron_right),
+                          onTap: () => Navigator.of(context)
+                              .pushNamed(Routes.languages.value),
+                        ),
+                        AccountListTile(
+                          title: 'Blocked users',
+                          trailing: Icon(Icons.chevron_right),
+                          onTap: () => Navigator.of(context)
+                              .pushNamed(Routes.blockedUsers.value),
+                        ),
+                        AccountListTile(
+                          withDivider: false,
+                          title: 'Notifications',
+                          trailing: Icon(Icons.chevron_right),
+                          onTap: () => Navigator.of(context)
+                              .pushNamed(Routes.notifications.value),
+                        ),
+                        AccountLogOutListTile('LOG OUT', onPressed: () {
+                          _authRepo.logOut().then((_) => Navigator.of(context)
+                              .pushReplacementNamed(Routes.login.value));
+                        }),
+                        AccountLogOutListTile(
+                          'DELETE MY ACCOUNT',
+                          color: Colors.red[500],
+                          onPressed: () {
+                            UserMockRepository().putParisDataset();
+                            UserMockRepository().putCarrieresDataset();
+                            MessagingMockRepository().insertChatMock().then(
+                                (value) => MessagingMockRepository()
+                                    .insertMessageMock());
+                          },
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              bottom: AccountLogOutListTile.Padding),
+                        ),
+                      ],
+                    ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

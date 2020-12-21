@@ -1,15 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/conf/store.dart';
 import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/themes/light_theme.dart';
 import 'package:location_project/themes/theme_utils.dart';
+import 'package:location_project/use_cases/account/edit%20profile/cubit/edit_profile_cubit.dart';
 import 'package:location_project/use_cases/account/edit%20profile/draggable_image_collection.dart';
 import 'package:location_project/use_cases/account/widgets/account_subtitle_text.dart';
-import 'package:location_project/widgets/cupertino_range_slider.dart';
 import 'package:location_project/widgets/textSF.dart';
 
 class ProfileEditingPage extends StatefulWidget {
+  final BuildContext contextToUse;
+
+  const ProfileEditingPage(this.contextToUse);
   @override
   _ProfileEditingPageState createState() => _ProfileEditingPageState();
 }
@@ -39,6 +43,15 @@ class _ProfileEditingPageState extends State<ProfileEditingPage> {
 
   void _initAge() {
     _age = UserStore().user.age.toDouble();
+  }
+
+  _onDoneTap() {
+    widget.contextToUse.read<EditProfileCubit>().didEditProfile(
+          _textControllerBio.text,
+          _textControllerName.text,
+          _age.toInt(),
+        );
+    Navigator.pop(context);
   }
 
   List<String> get _pictureURLsWithAddButton {
@@ -154,7 +167,7 @@ class _ProfileEditingPageState extends State<ProfileEditingPage> {
               CupertinoSliverNavigationBar(
                 automaticallyImplyLeading: false,
                 trailing: GestureDetector(
-                  onTap: () => Navigator.of(context).pop(),
+                  onTap: _onDoneTap,
                   child: Text('Done',
                       style: TextStyle(color: CupertinoColors.activeBlue)),
                 ),

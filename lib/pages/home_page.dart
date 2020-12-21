@@ -4,6 +4,7 @@ import 'package:location_project/controllers/app_badge_controller.dart';
 import 'package:location_project/controllers/location_controller.dart';
 import 'package:location_project/pages/messaging_page.dart';
 import 'package:location_project/repositories/user_repository.dart';
+import 'package:location_project/use_cases/account/edit%20profile/cubit/edit_profile_cubit.dart';
 import 'package:location_project/use_cases/blocking/cubit/blocking_cubit.dart';
 import 'package:location_project/use_cases/map/cubit/area_cubit.dart';
 import 'package:location_project/use_cases/map/map_page.dart';
@@ -42,6 +43,7 @@ class _HomePageState extends State<HomePage> {
         BlocProvider(create: (context) => SwipeButtonsCubit()),
         BlocProvider(create: (context) => ChatCubit(MessagingReposiory())),
         BlocProvider(create: (context) => ViewCubit(UserRepository())),
+        BlocProvider(create: (context) => EditProfileCubit(UserRepository())),
       ],
       child: HomePageContainer(),
     );

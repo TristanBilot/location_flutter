@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:location_project/repositories/image_repository.dart';
 import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/themes/dark_theme.dart';
+import 'package:location_project/themes/theme_utils.dart';
 import 'package:location_project/widgets/cached_image.dart';
 import 'package:location_project/widgets/close_button.dart';
 
@@ -99,7 +100,7 @@ class _DraggableImageCollectionState extends State<DraggableImageCollection> {
 
   Widget _deleteButton(int index) => RoundedCloseButton(
         onPressed: () => _onDeleteButtonTap(index),
-        color: _buttonColor,
+        color: ThemeUtils.getPrimaryDarkOrLightGrey(context),
         iconColor: _buttonIconColor,
         iconSize: 18,
       );
@@ -108,8 +109,8 @@ class _DraggableImageCollectionState extends State<DraggableImageCollection> {
         onTap: _onAddButtonTap,
         child: Container(
           decoration: BoxDecoration(
+            color: ThemeUtils.getPrimaryDarkOrLightGrey(context),
             borderRadius: BorderRadius.circular(ImageBorderRadius),
-            color: _buttonColor,
           ),
           child: Icon(Icons.add, size: 38, color: _buttonIconColor),
         ),
@@ -134,11 +135,6 @@ class _DraggableImageCollectionState extends State<DraggableImageCollection> {
     });
     UserStore().updatePictureURLs([...imageURLs]..removeLast());
   }
-
-  Color get _buttonColor =>
-      MediaQuery.of(context).platformBrightness == Brightness.dark
-          ? DarkTheme.PrimaryDarkColor
-          : Theme.of(context).backgroundColor;
 
   Color get _buttonIconColor =>
       MediaQuery.of(context).platformBrightness == Brightness.dark
