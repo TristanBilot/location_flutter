@@ -20,22 +20,22 @@ class NavigationBarItem {
         NavigationBarItem(
           page: AccountPage(),
           icon: Icon(Icons.home),
-          title: "Home",
+          title: '',
         ),
         NavigationBarItem(
           page: SwipePage(),
           icon: Icon(Icons.shopping_basket),
-          title: "Shop",
+          title: '',
         ),
         NavigationBarItem(
           page: MapPage(),
           icon: Icon(Icons.search),
-          title: "Search",
+          title: '',
         ),
         NavigationBarItem(
           page: MessagingTabsPage(),
           icon: Icon(Icons.search),
-          title: "Search",
+          title: '',
         ),
       ];
 }

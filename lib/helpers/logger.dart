@@ -40,6 +40,7 @@ class Logger {
     TimeMeasurable blocks,
     TimeMeasurable views,
     TimeMeasurable likes,
+    TimeMeasurable pictures,
   }) {
     String str = '=> Fetch $id';
     int sum = 0;
@@ -58,6 +59,10 @@ class Logger {
     if (likes != null) {
       str += '\nlikes fetching: \t${likes.timeToFetch}ms';
       sum += likes.timeToFetch;
+    }
+    if (pictures != null) {
+      str += '\npictures fetching: \t${pictures.timeToFetch}ms';
+      sum += pictures.timeToFetch;
     }
     str += '\t=> ${sum}ms';
     Logger().v(str);

@@ -1,9 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hive/hive.dart';
 import 'package:location_project/models/user_settings.dart';
 import 'package:location_project/repositories/user/user_blocked_info_fetcher.dart';
 import 'package:location_project/repositories/user/user_likes_info_fetcher.dart';
 import 'package:location_project/repositories/user/user_mandatory_info_fetcher.dart';
+import 'package:location_project/repositories/user/user_pictures_info_fetcher.dart';
 import 'package:location_project/repositories/user/user_views_info.fetcher.dart';
 import 'package:location_project/models/gender.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/view.dart';
@@ -51,6 +53,7 @@ class User extends HiveObject {
   Gender gender;
   UserSettings settings;
   List<String> deviceTokens;
+  List<Image> pictures;
 
   // List<int> wantedAgeRange;
   // final List<String> wantedGenders;
@@ -103,6 +106,7 @@ class User extends HiveObject {
     UserBlockInfo blocks,
     UserViewsInfo views,
     UserLikesInfo likes,
+    UserPicturesInfo pictures,
   }) {
     if (blocks != null) {
       this.blockedUserIDs = blocks.blockedUserIDs;
@@ -128,6 +132,9 @@ class User extends HiveObject {
     if (likes != null) {
       this.unlikedUsers = likes.unlikedUsers;
       this.likedUsers = likes.likedUsers;
+    }
+    if (pictures != null) {
+      this.pictures = pictures.pictures;
     }
     return this;
   }

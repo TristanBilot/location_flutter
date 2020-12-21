@@ -1,20 +1,48 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/services.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/themes/dark_theme.dart';
 import 'package:location_project/themes/light_theme.dart';
-import 'package:location_project/use_cases/swipe_card/buttons%20cubit/swipe_buttons_cubit.dart';
-import 'package:location_project/use_cases/swipe_card/swipe_page.dart';
+import 'package:location_project/use_cases/swipe_card/swipe_widget/swipe_card_section_image.dart';
 import 'package:location_project/widgets/gradient_icon.dart';
+import 'package:uuid/uuid.dart';
 
-class SwipeCardSection extends StatelessWidget {
+class SwipeCardSection extends StatefulWidget {
+  final int index;
+  final Key key;
   final User user;
-  final SwipePageDelegate delegate;
-  SwipeCardSection(this.user, this.delegate);
+  final Function(User, int index) likeCallback;
+  final Function(User, int index) unlikeCallback;
 
+  static Map<int, int> CurrentlyDisplayedPictureIndex = Map();
+
+  const SwipeCardSection(
+    this.index,
+    this.key,
+    this.user,
+    this.likeCallback,
+    this.unlikeCallback,
+  ) : super(key: key);
+
+  @override
+  _SwipeCardSectionState createState() => _SwipeCardSectionState();
+}
+
+class _SwipeCardSectionState extends State<SwipeCardSection> {
   final double _cardBorderRadius = 15.0;
   final double _descriptionContainerHeight = 110.0;
+  final String _cardID = Uuid().v4();
+
+  int _displayedPictureIndex;
+  String _displayedPictureURL;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _displayedPictureIndex = 0;
+    _displayedPictureURL = widget.user.mainPictureURL;
+  }
 
   Color _getCardShadowColor(BuildContext context) {
     return MediaQuery.of(context).platformBrightness == Brightness.dark
@@ -48,20 +76,14 @@ class SwipeCardSection extends StatelessWidget {
           Padding(padding: EdgeInsets.only(right: 8.0)),
           FloatingActionButton(
             heroTag: null,
-            onPressed: () {
-              delegate.swipe(left: true);
-              context.read<SwipeButtonsCubit>().unlike(user);
-            },
+            onPressed: () => widget.unlikeCallback(widget.user, widget.index),
             backgroundColor: color,
             child: GradientIcon(Icons.close, 26, GreyGradient),
           ),
           Padding(padding: EdgeInsets.only(right: 8.0)),
           FloatingActionButton(
             heroTag: null,
-            onPressed: () {
-              delegate.swipe(left: false);
-              context.read<SwipeButtonsCubit>().like(user, context);
-            },
+            onPressed: () => widget.likeCallback(widget.user, widget.index),
             backgroundColor: color,
             child: GradientIcon(Icons.favorite, 26, AppGradient),
           ),
@@ -78,26 +100,89 @@ class SwipeCardSection extends StatelessWidget {
     );
   }
 
+  /* ! linked to the max width of swipe_card.dart */
+  double _getExactlyHalfOfCardWidth() {
+    double minWidth = MediaQuery.of(context).size.width * 0.82;
+    double maxWidth = MediaQuery.of(context).size.width * 0.92;
+    double average = (minWidth + maxWidth) / 2;
+    return average / 2;
+  }
+
+  _updateCurrentlyDisplayedPicture({@required bool increment}) {
+    int index =
+        increment ? _displayedPictureIndex + 1 : _displayedPictureIndex - 1;
+    if (index >= widget.user.pictureURLs.length || index < 0) {
+      HapticFeedback.vibrate();
+    } else {
+      HapticFeedback.mediumImpact();
+      setState(() {
+        SwipeCardSection.CurrentlyDisplayedPictureIndex[widget.index] = index;
+        _displayedPictureIndex = index;
+        _displayedPictureURL = widget.user.pictureURLs[index];
+      });
+      // _displayedPictureIndex = index;
+      // context
+      //     .read<SwipeImageCubit>()
+      //     .changeDisplayedImage(_cardID, widget.user.pictureURLs[index]);
+    }
+  }
+
+  void _updateDisplayedPictureIfNeeded() {
+    _displayedPictureURL = widget.user.pictureURLs[
+        SwipeCardSection.CurrentlyDisplayedPictureIndex[widget.index]];
+    _displayedPictureIndex =
+        SwipeCardSection.CurrentlyDisplayedPictureIndex[widget.index];
+  }
+
   @override
   Widget build(BuildContext context) {
+    _updateDisplayedPictureIfNeeded();
     return Card(
       elevation: 6,
       shadowColor: _getCardShadowColor(context),
       color: Colors.transparent,
       child: Stack(
         alignment: Alignment.bottomCenter,
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.only(bottom: _descriptionContainerHeight - 10),
-            child: SizedBox.expand(
-              child: ClipRRect(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(_cardBorderRadius),
-                    topRight: Radius.circular(_cardBorderRadius)),
-                child: CachedNetworkImage(
-                    imageUrl: user.mainPictureURL, fit: BoxFit.cover),
+        children: [
+          Stack(
+            children: [
+              Container(
+                padding:
+                    EdgeInsets.only(bottom: _descriptionContainerHeight - 10),
+                child: SizedBox.expand(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(_cardBorderRadius),
+                        topRight: Radius.circular(_cardBorderRadius)),
+                    child: SwipeCardSectionImage(
+                      UniqueKey(),
+                      _cardID,
+                      _displayedPictureURL,
+                    ),
+                  ),
+                ),
               ),
-            ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      width: _getExactlyHalfOfCardWidth(),
+                      child: GestureDetector(
+                        onTap: () =>
+                            _updateCurrentlyDisplayedPicture(increment: false),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: _getExactlyHalfOfCardWidth(),
+                    child: GestureDetector(
+                      onTap: () =>
+                          _updateCurrentlyDisplayedPicture(increment: true),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
           Container(
             height: _descriptionContainerHeight,
@@ -121,9 +206,9 @@ class SwipeCardSection extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                        user == null
+                        widget.user == null
                             ? 'mock'
-                            : '${user.firstName}, ${user.age}',
+                            : '${widget.user.firstName}, ${widget.user.age}',
                         style: TextStyle(
                             fontSize: 20.0, fontWeight: FontWeight.w700)),
                     Padding(padding: EdgeInsets.only(bottom: 8.0)),

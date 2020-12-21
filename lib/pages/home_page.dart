@@ -2,26 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/controllers/app_badge_controller.dart';
 import 'package:location_project/controllers/location_controller.dart';
-import 'package:location_project/helpers/user_icon_cropper.dart';
 import 'package:location_project/pages/messaging_page.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/use_cases/blocking/cubit/blocking_cubit.dart';
 import 'package:location_project/use_cases/map/cubit/area_cubit.dart';
 import 'package:location_project/use_cases/map/map_page.dart';
-import 'package:location_project/pages/messaging_tabs_page.dart';
-import 'package:location_project/storage/databases/messaging_database.dart';
 import 'package:location_project/use_cases/account/account_page.dart';
 import 'package:location_project/use_cases/map/repositories/area_fetching_repository.dart';
 import 'package:location_project/use_cases/swipe_card/buttons%20cubit/swipe_buttons_cubit.dart';
 import 'package:location_project/use_cases/swipe_card/swipe%20cubit/swipe_cubit.dart';
 import 'package:location_project/use_cases/swipe_card/swipe_page.dart';
-import 'package:location_project/use_cases/tab_pages/counters/cubit/counters_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif_listener.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/views/cubit/view_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/navigation/cubit/navigation_cubit.dart';
-import 'package:location_project/widgets/home_page_status_without_count.dart';
 import 'package:location_project/widgets/home_page_tab_bar_icon.dart';
 import 'package:location_project/widgets/home_page_tab_bar_image_icon.dart';
 
@@ -68,8 +63,6 @@ class _HomePageContainerState extends State<HomePageContainer>
     SwipePage(),
     MapPage(),
     MessagingPage(),
-    // CustomImageCanvas(
-    //     'https://firebasestorage.googleapis.com/v0/b/location-abed9.appspot.com/o/photos%2Fbilot.tristan.carrieres%40hotmail.fr%2Fba43bb0f-6400-4eb8-9786-2dc448cd6ef4.png?alt=media&token=b82efcba-77c8-41a4-ab29-ce5d18955ab1'),
   ];
 
   @override

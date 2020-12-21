@@ -7,6 +7,7 @@ import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/storage/memory/memory_store.dart';
 import 'package:location_project/themes/theme_utils.dart';
 import 'package:location_project/use_cases/start_path/widgets/basic_button.dart';
+import 'package:location_project/use_cases/swipe_card/buttons%20cubit/swipe_buttons_cubit.dart';
 import 'package:location_project/use_cases/swipe_card/swipe%20cubit/swipe_cubit.dart';
 import 'package:location_project/use_cases/swipe_card/swipe_widget/swipe_card_section.dart';
 import 'package:location_project/use_cases/swipe_card/swipe_widget/wave_clipper.dart';
@@ -14,18 +15,14 @@ import 'package:location_project/use_cases/tab_pages/navigation/cubit/navigation
 import 'package:location_project/widgets/cached_circle_user_image.dart';
 import 'package:location_project/widgets/textSF.dart';
 
-mixin SwipePageDelegate {
-  void swipe({@required bool left});
-}
-
 class SwipePage extends StatefulWidget {
   @override
   _SwipePageState createState() => _SwipePageState();
 }
 
-class _SwipePageState extends State<SwipePage>
-    with TickerProviderStateMixin, SwipePageDelegate {
+class _SwipePageState extends State<SwipePage> with TickerProviderStateMixin {
   CardController _cardController;
+  List<User> _users;
 
   @override
   void initState() {
@@ -36,30 +33,63 @@ class _SwipePageState extends State<SwipePage>
     super.initState();
   }
 
-  @override
-  void swipe({@required bool left}) {
-    if (left)
+  _unlike(User user, int index) {
+    setState(() {
       _cardController.triggerLeft();
-    else
-      _cardController.triggerRight();
+      _handleRight(user);
+    });
   }
 
-  Widget _buildSwipeFeed(List<User> users) {
+  _like(User user, int index) {
+    setState(() {
+      _cardController.triggerRight();
+      _handleLeft(user);
+    });
+  }
+
+  _handleLeft(User user) {
+    context.read<SwipeButtonsCubit>().unlike(user);
+    _resetCurrentlyDisplayedPictureIndexes();
+  }
+
+  _handleRight(User user) {
+    context.read<SwipeButtonsCubit>().like(user, context);
+    _resetCurrentlyDisplayedPictureIndexes();
+  }
+
+  void _resetCurrentlyDisplayedPictureIndexes() {
+    for (int i = 0; i < _users.length; i++)
+      SwipeCardSection.CurrentlyDisplayedPictureIndex[i] = 0;
+  }
+
+  Widget _buildSwipeFeed() {
     return Container(
       height: MediaQuery.of(context).size.height * 0.74,
       child: TinderSwapCard(
         swipeUp: true,
         swipeDown: true,
         orientation: AmassOrientation.BOTTOM,
-        totalNum: users.length,
-        stackNum: 3,
+        totalNum: _users.length,
+        stackNum: 2,
         swipeEdge: 4.0,
-        maxWidth: MediaQuery.of(context).size.width * 0.92,
-        maxHeight: MediaQuery.of(context).size.height * 0.72,
+
+        /* /!\ min & max widths are linked to the width of 
+        * gesture destector of swipe_card_section.dart
+        */
         minWidth: MediaQuery.of(context).size.width * 0.82,
+        maxWidth: MediaQuery.of(context).size.width * 0.92,
         minHeight: MediaQuery.of(context).size.height * 0.66,
-        cardBuilder: (context, index) => SwipeCardSection(users[index], this),
+        maxHeight: MediaQuery.of(context).size.height * 0.72,
         cardController: _cardController,
+        cardBuilder: (context, index) {
+          return SwipeCardSection(
+            index,
+            UniqueKey(),
+            _users[index],
+            _like,
+            _unlike,
+          );
+        },
         swipeUpdateCallback: (DragUpdateDetails details, Alignment align) {
           /// Get swiping card's alignment
           if (align.x < 0) {
@@ -70,6 +100,12 @@ class _SwipePageState extends State<SwipePage>
         },
         swipeCompleteCallback: (CardSwipeOrientation orientation, int index) {
           /// Get orientation & index of swiped card!
+          if (orientation == CardSwipeOrientation.LEFT) {
+            _handleLeft(_users[index]);
+          } else if (orientation == CardSwipeOrientation.RIGHT) {
+            _handleRight(_users[index]);
+          }
+          // TODO:  gérer les autres cas (haut bas etc)
         },
       ),
     );
@@ -129,13 +165,19 @@ class _SwipePageState extends State<SwipePage>
         ),
         Column(mainAxisAlignment: MainAxisAlignment.end, children: [
           Padding(padding: EdgeInsets.only(top: curveHeight - 30)),
-          BlocBuilder<SwipeCubit, SwipeState>(builder: (context, state) {
-            if (state is SwipableUsersFetched) {
-              return _buildSwipeFeed(state.users);
-            }
-            return SizedBox();
-          }),
-          SizedBox(height: 10)
+          BlocListener<SwipeCubit, SwipeState>(
+              listener: (context, state) {
+                if (state is SwipableUsersFetched) {
+                  setState(() {
+                    _users = state.users;
+                    _resetCurrentlyDisplayedPictureIndexes();
+                  });
+                  // return _buildSwipeFeed(state.users);
+                }
+              },
+              child: (_users == null || _users.isEmpty)
+                  ? SizedBox(height: 10)
+                  : _buildSwipeFeed()),
         ]),
       ],
     );
