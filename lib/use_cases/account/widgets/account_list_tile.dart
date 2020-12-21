@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:location_project/use_cases/account/widgets/account_subtitle_text.dart';
 import 'package:location_project/widgets/textSF.dart';
 
 class AccountListTile extends StatefulWidget {
@@ -41,7 +42,10 @@ class _AccountListTileState extends State<AccountListTile> {
                 left: AccountListTile.SidePadding,
                 right: AccountListTile.SidePadding,
                 top: widget.extraTopPadding),
-            title: TextSF(widget.title),
+            title: AccountSubtitleText(
+              widget.title,
+              fontSize: 15,
+            ),
             subtitle:
                 widget.substitle != null ? TextSF(widget.substitle) : null,
             trailing: widget.trailing,

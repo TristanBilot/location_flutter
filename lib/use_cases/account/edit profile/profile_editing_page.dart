@@ -1,8 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:location_project/conf/store.dart';
 import 'package:location_project/storage/distant/user_store.dart';
+import 'package:location_project/themes/light_theme.dart';
 import 'package:location_project/themes/theme_utils.dart';
 import 'package:location_project/use_cases/account/edit%20profile/draggable_image_collection.dart';
+import 'package:location_project/use_cases/account/widgets/account_subtitle_text.dart';
+import 'package:location_project/widgets/cupertino_range_slider.dart';
 import 'package:location_project/widgets/textSF.dart';
 
 class ProfileEditingPage extends StatefulWidget {
@@ -13,20 +17,28 @@ class ProfileEditingPage extends StatefulWidget {
 class _ProfileEditingPageState extends State<ProfileEditingPage> {
   static const int NbMaxUserPictures = 6;
   static const HPadding = 20.0;
-  static const VPadding = 5.0;
+  static const VPadding = 8.0;
 
-  TextEditingController _textController;
+  TextEditingController _textControllerBio;
+  TextEditingController _textControllerName;
+
+  double _age;
 
   @override
   void initState() {
     super.initState();
-    _initBioTextField();
+    _initTextFields();
+    _initAge();
   }
 
-  void _initBioTextField() {
-    final initialBio = UserStore().user.bio;
-    print(UserStore().user.bio);
-    _textController = TextEditingController(text: initialBio);
+  void _initTextFields() {
+    _textControllerBio = TextEditingController(text: UserStore().user.bio);
+    _textControllerName =
+        TextEditingController(text: UserStore().user.firstName);
+  }
+
+  void _initAge() {
+    _age = UserStore().user.age.toDouble();
   }
 
   List<String> get _pictureURLsWithAddButton {
@@ -44,25 +56,92 @@ class _ProfileEditingPageState extends State<ProfileEditingPage> {
         children: [
           Padding(
             padding: const EdgeInsets.only(left: HPadding, bottom: VPadding),
-            child: TextSF(
-              'Bio',
-              fontWeight: FontWeight.w500,
-              fontSize: 17,
-            ),
+            child: AccountSubtitleText('📌 Bio'),
           ),
           Container(
-            color: Theme.of(context).primaryColor,
+            decoration: BoxDecoration(
+              color: ThemeUtils.getPrimaryDarkOrLightGrey(context),
+              border: _textFieldBorder(),
+            ),
             padding: EdgeInsets.only(
                 left: HPadding, right: HPadding, top: 3, bottom: 3),
             child: TextField(
               decoration: InputDecoration(border: InputBorder.none),
               keyboardType: TextInputType.multiline,
-              controller: _textController,
+              controller: _textControllerBio,
               maxLines: null,
               maxLength: 500,
             ),
           ),
         ],
+      );
+
+  Widget get _nameWidget => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: HPadding, bottom: VPadding),
+            child: AccountSubtitleText('🖌 Name'),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: ThemeUtils.getPrimaryDarkOrLightGrey(context),
+              border: _textFieldBorder(),
+            ),
+            padding: EdgeInsets.only(
+                left: HPadding, right: HPadding, top: 3, bottom: 3),
+            child: TextField(
+              decoration: InputDecoration(border: InputBorder.none),
+              keyboardType: TextInputType.name,
+              controller: _textControllerName,
+              maxLines: 1,
+            ),
+          ),
+        ],
+      );
+
+  Widget get _ageWidget => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: HPadding, bottom: VPadding),
+            child: AccountSubtitleText('🎂 Age'),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: ThemeUtils.getPrimaryDarkOrLightGrey(context),
+              border: _textFieldBorder(),
+            ),
+            padding: EdgeInsets.only(
+                left: HPadding, right: HPadding, top: 6, bottom: 6),
+            child: Column(
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width - 2 * HPadding,
+                  child: CupertinoSlider(
+                    value: _age,
+                    activeColor: LogoOrangeColor,
+                    min: Store.minAgeRange,
+                    max: Store.maxAgeRange,
+                    onChanged: (value) => setState(() => _age = value),
+                  ),
+                ),
+                TextSF(
+                  '${_age.round()}${_age.round() == Store.maxAgeRange ? "+" : ""} ',
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+
+  Border _textFieldBorder() => Border(
+        top: BorderSide(
+            width: 0.6,
+            color: ThemeUtils.getPrimaryDarkOrLightGreyAccent(context)),
+        bottom: BorderSide(
+            width: 0.6,
+            color: ThemeUtils.getPrimaryDarkOrLightGreyAccent(context)),
       );
 
   @override
@@ -93,6 +172,10 @@ class _ProfileEditingPageState extends State<ProfileEditingPage> {
                 _picturesWidget,
                 SizedBox(height: 10),
                 _bioWidget,
+                SizedBox(height: 20),
+                _nameWidget,
+                SizedBox(height: 20),
+                _ageWidget,
               ],
             ),
           ),
