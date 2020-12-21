@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/themes/dark_theme.dart';
 import 'package:location_project/themes/light_theme.dart';
+import 'package:location_project/use_cases/swipe_card/swipe_widget/swipe_card_breadcrumb.dart';
 import 'package:location_project/use_cases/swipe_card/swipe_widget/swipe_card_section_image.dart';
 import 'package:location_project/widgets/gradient_icon.dart';
 import 'package:uuid/uuid.dart';
@@ -182,6 +183,18 @@ class _SwipeCardSectionState extends State<SwipeCardSection> {
                   ),
                 ],
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SwipeCardBreadcrumb(
+                    UniqueKey(),
+                    SwipeCardSection
+                        .CurrentlyDisplayedPictureIndex[widget.index],
+                    widget.user.pictureURLs.length,
+                    _getExactlyHalfOfCardWidth() * 2,
+                  ),
+                ],
+              )
             ],
           ),
           Container(

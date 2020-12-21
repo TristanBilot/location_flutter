@@ -34,17 +34,11 @@ class _SwipePageState extends State<SwipePage> with TickerProviderStateMixin {
   }
 
   _unlike(User user, int index) {
-    setState(() {
-      _cardController.triggerLeft();
-      _handleRight(user);
-    });
+    _cardController.triggerLeft();
   }
 
   _like(User user, int index) {
-    setState(() {
-      _cardController.triggerRight();
-      _handleLeft(user);
-    });
+    _cardController.triggerRight();
   }
 
   _handleLeft(User user) {
@@ -72,6 +66,7 @@ class _SwipePageState extends State<SwipePage> with TickerProviderStateMixin {
         totalNum: _users.length,
         stackNum: 2,
         swipeEdge: 4.0,
+        allowVerticalMovement: false,
 
         /* /!\ min & max widths are linked to the width of 
         * gesture destector of swipe_card_section.dart
@@ -105,7 +100,6 @@ class _SwipePageState extends State<SwipePage> with TickerProviderStateMixin {
           } else if (orientation == CardSwipeOrientation.RIGHT) {
             _handleRight(_users[index]);
           }
-          // TODO:  gérer les autres cas (haut bas etc)
         },
       ),
     );
