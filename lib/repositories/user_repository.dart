@@ -64,6 +64,7 @@ class UserRepository {
           user.deviceTokens,
           UserSettings.DefaultNotificationSettings,
           user.pictureURLs,
+          user.bio,
         ).toFirestoreObject());
     File userPicture = await _imageRepo.urlToFile(user.mainPictureURL);
     await _imageRepo.uploadFile(

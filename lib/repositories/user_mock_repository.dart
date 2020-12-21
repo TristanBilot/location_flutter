@@ -97,6 +97,7 @@ class UserMockRepository {
           [],
           UserSettings.DefaultNotificationSettings,
           pictureURLs,
+          'This is my bio ☀️',
         ).toFirestoreObject());
     await UserRepository().addLikeField(
         id, UserField.LikedUsers, id == id1['id'] ? id2['id'] : id1['id']);

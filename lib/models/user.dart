@@ -21,6 +21,7 @@ enum UserField {
   Gender,
   DeviceTokens,
   PictureURLs,
+  Bio,
 
   // Settings
   WantedGenders,
@@ -54,6 +55,7 @@ class User extends HiveObject {
   UserSettings settings;
   List<String> deviceTokens;
   List<Image> pictures;
+  String bio;
 
   // List<int> wantedAgeRange;
   // final List<String> wantedGenders;
@@ -84,6 +86,7 @@ class User extends HiveObject {
     this.viewedUserIDs,
     this.userIDsWhoWiewedMe,
     this.deviceTokens,
+    this.bio,
   ) {
     this.id = email;
   }
@@ -124,6 +127,7 @@ class User extends HiveObject {
       this.settings = infos.settings;
       this.deviceTokens = infos.deviceTokens;
       this.pictureURLs = infos.pictureURLs;
+      this.bio = infos.bio;
     }
     if (views != null) {
       this.viewedUserIDs = views.viewedUserIDs;
