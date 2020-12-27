@@ -14,7 +14,7 @@ import 'package:location_project/use_cases/map/cubit/area_cubit.dart';
 import 'package:location_project/use_cases/map/repositories/area_fetching_repository.dart';
 import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/storage/memory/location_cache.dart';
-import 'package:location_project/widgets/user_map_card.dart';
+import 'package:location_project/widgets/user_card.dart';
 
 import '../../widgets/user_marker.dart';
 
@@ -65,7 +65,7 @@ class MapState extends State<Map> with WidgetsBindingObserver {
               user: user,
               icon: user.icon,
               position: LatLng(user.coord[0], user.coord[1]),
-              onTap: () => UserMapCard(context, user).show(),
+              onTap: () => UserCard(context, user).show(),
             ),
           );
         });

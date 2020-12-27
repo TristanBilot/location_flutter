@@ -11,7 +11,7 @@ import 'package:location_project/use_cases/tab_pages/widgets/tab_page_rich_text.
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_slidable.dart';
 import 'package:location_project/widgets/home_page_status_without_count.dart';
 import 'package:location_project/widgets/user_card.dart';
-import 'package:location_project/widgets/user_map_card.dart';
+import 'package:location_project/widgets/user_card.dart';
 
 /// Fetch a user from a user ID and display a tile.
 class TabPageViewTile extends StatefulWidget {
@@ -44,7 +44,7 @@ class _TabPageViewTileState extends State<TabPageViewTile> {
   _onTileTapped(BuildContext context, User user) {
     UserRepository().updateView(
         UserStore().user.id, UserField.UserIDsWhoWiewedMe, widget.view, true);
-    UserMapCard(context, user).show(addViewToStore: false);
+    UserCard(context, user).show(addViewToStore: false);
   }
 
   _onRemoveViewTap(String viewerID) {

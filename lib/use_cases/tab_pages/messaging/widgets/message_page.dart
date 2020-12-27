@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/models/user.dart';
-import 'package:location_project/storage/databases/user_database.dart';
 import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/storage/memory/memory_store.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messages/cubit/messages_cubit.dart';
@@ -15,7 +14,6 @@ import 'package:location_project/use_cases/tab_pages/messaging/widgets/message_t
 import 'package:location_project/use_cases/tab_pages/messaging/message_tile_methods.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/messaging_text_field.dart';
-import 'package:location_project/use_cases/start_path/widgets/basic_button.dart';
 import 'package:location_project/widgets/cached_circle_user_image.dart';
 import 'package:location_project/widgets/textSF.dart';
 import 'package:location_project/widgets/user_card.dart';
@@ -193,101 +191,6 @@ class _MessagePageContentState extends State<MessagePageContent> {
           ],
         ),
       );
-
-  /// Placeholder displayed when the requester user has sent
-  /// a request to the other participant and the requests
-  /// is in a pending state.
-  // Widget get _requestWaitingPlaceholder => Center(
-  //       child: Column(
-  //         children: [
-  //           Spacer(),
-  //           Container(
-  //             width: PlaceholderImageSize,
-  //             height: PlaceholderImageSize,
-  //             decoration: BoxDecoration(
-  //               image: DecorationImage(
-  //                   image: AssetImage("assets/pending.png"),
-  //                   colorFilter:
-  //                       ColorFilter.mode(Colors.white54, BlendMode.modulate),
-  //                   fit: BoxFit.cover),
-  //               // color: Colors.teal[900],
-  //             ),
-  //           ),
-  //           Padding(
-  //             padding: EdgeInsets.all(30),
-  //             child: TextSF(
-  //               'A request had been sent to ${widget.user.firstName}!',
-  //               fontSize: PlaceholderFontSize,
-  //               align: TextAlign.center,
-  //             ),
-  //           ),
-  //           Spacer(),
-  //         ],
-  //       ),
-  //     );
-
-  /// Placeholder displayed when the requested user receives
-  /// a request and should choose to accept or not.
-  // Widget get _requestInvitationPlaceholder => Center(
-  //       child: Column(
-  //         children: [
-  //           Spacer(),
-  //           CachedCircleUserImage(
-  //             widget.user.pictureURL,
-  //             size: PlaceholderImageSize,
-  //           ),
-  //           Padding(
-  //             padding: const EdgeInsets.only(top: 20, bottom: 40),
-  //             child: TextSF(
-  //               '${widget.user.firstName} wants to talk with you.',
-  //               fontSize: PlaceholderFontSize,
-  //             ),
-  //           ),
-  //           Row(
-  //             mainAxisAlignment: MainAxisAlignment.center,
-  //             children: [
-  //               BasicButton('DENY', onPressed: _onRequestDenied),
-  //               SizedBox(width: 20),
-  //               BasicButton('ACCEPT', onPressed: _onRequestAccepted),
-  //             ],
-  //           ),
-  //           Spacer(),
-  //         ],
-  //       ),
-  // //     );
-
-  // /// When a requested user denies a request, delete the chat
-  // /// in the firestore and in the database cache. Then, redireft to
-  // /// chats page.
-  // void _onRequestDenied() {
-  //   MessagingReposiory().deleteChat(widget.chat.chatID);
-  //   UserDatabase()
-  //       .deleteUser(widget.chat.requesterID)
-  //       .then((value) => Navigator.of(context).pop());
-  // }
-
-  // /// When a requested user accepts a request, update the chat to
-  // /// engaged = true to tell that the conversation is engaged between
-  // /// the two participants. Also update the last activity time to be
-  // /// at the top of messages and set seen to true for the moment.
-  // Future<void> _onRequestAccepted() async {
-  //   MemoryStore()
-  //       .setDisplayToastValues(false, true, true, false, widget.user.id);
-  //   await MessagingReposiory().updateChatEngaged(widget.chat.chatID, true);
-  //   await MessagingReposiory().updateChatLastActivity(
-  //     widget.chat,
-  //     lastActivityTime: Message.Time,
-  //     lastActivitySeen: false,
-  //     lastActivitySeenParticipant: Participant.Me,
-  //   );
-  //   await MessagingReposiory().updateChatLastActivity(
-  //     widget.chat,
-  //     lastActivityTime: Message.Time,
-  //     lastActivitySeen: false,
-  //     lastActivitySeenParticipant: Participant.Other,
-  //   );
-  //   setState(() => widget.chat.isChatEngaged = true);
-  // }
 
   @override
   Widget build(BuildContext context) {
