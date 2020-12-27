@@ -43,6 +43,7 @@ class MapState extends State<Map> with WidgetsBindingObserver {
     LocationController().handleLocationIfNeeded();
 
     _loadMapStyles().then((_) => _setMapStyle());
+    _fetchAreaAndUpdateMarkers();
   }
 
   @override
@@ -59,15 +60,14 @@ class MapState extends State<Map> with WidgetsBindingObserver {
       setStateIfMounted(() {
         _markers.clear();
         users.forEach((user) {
-          if (!UserStore().user.userIDsWhoBlockedMe.contains(user.id))
-            _markers.add(
-              UserMarker(
-                user: user,
-                icon: user.icon,
-                position: LatLng(user.coord[0], user.coord[1]),
-                onTap: () => UserMapCard(context, user).show(),
-              ),
-            );
+          _markers.add(
+            UserMarker(
+              user: user,
+              icon: user.icon,
+              position: LatLng(user.coord[0], user.coord[1]),
+              onTap: () => UserMapCard(context, user).show(),
+            ),
+          );
         });
       });
     });
@@ -78,18 +78,6 @@ class MapState extends State<Map> with WidgetsBindingObserver {
         .where((e) => !UserStore().user.userIDsWhoBlockedMe.contains(e.user.id))
         .toSet();
   }
-
-  Widget get _placeholder => Column(children: [
-        Spacer(),
-        Container(
-          width: 50,
-          height: 50,
-          child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(
-                  Theme.of(context).primaryColor)),
-        ),
-        Spacer(),
-      ]);
 
   Future _loadMapStyles() async {
     _darkMapStyle = await rootBundle.loadString('assets/map_styles/dark.json');
@@ -126,35 +114,23 @@ class MapState extends State<Map> with WidgetsBindingObserver {
     if (mounted) setState(f);
   }
 
-  Future<bool> _waitForBuildMap() async =>
-      Future.delayed(Duration(milliseconds: 10), () => true);
-
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: _waitForBuildMap(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return BlocListener<BlockingCubit, BlockingState>(
-              listener: (context, state) => setStateIfMounted(() => {}),
-              child: GoogleMap(
-                  mapType: MapType.normal,
-                  myLocationEnabled: true,
-                  markers: _markersWithoutUsersBlockingMe(),
-                  circles: Conf.displayAreaCircle ? _circles : null,
-                  initialCameraPosition: CameraPosition(
-                    zoom: 18,
-                    target: Conf.testMode
-                        ? Store.parisPosition
-                        : LocationCache().location,
-                  ),
-                  onMapCreated: (GoogleMapController controller) {
-                    _controller.complete(controller);
-                    _fetchAreaAndUpdateMarkers();
-                  }),
-            );
-          }
-          return _placeholder;
-        });
+    return BlocListener<BlockingCubit, BlockingState>(
+      listener: (context, state) => setStateIfMounted(() => {}),
+      child: GoogleMap(
+          mapType: MapType.normal,
+          myLocationEnabled: true,
+          markers: _markersWithoutUsersBlockingMe(),
+          circles: Conf.displayAreaCircle ? _circles : null,
+          initialCameraPosition: CameraPosition(
+            zoom: 18,
+            target:
+                Conf.testMode ? Store.parisPosition : LocationCache().location,
+          ),
+          onMapCreated: (GoogleMapController controller) {
+            _controller.complete(controller);
+          }),
+    );
   }
 }

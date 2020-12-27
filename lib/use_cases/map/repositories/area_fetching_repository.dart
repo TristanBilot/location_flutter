@@ -48,8 +48,24 @@ class AreaFetchingRepository {
       List<User> usersList = List();
 
       for (int i = 0; i < snapshots.length; i++) {
-        User user = await _fetchUserFromDataIfDisplayable(snapshots[i]);
-        if (user == null) continue;
+        final snapshot = snapshots[i];
+        final data = snapshot.data();
+        final id = snapshot.id;
+        final geoPoint = data[UserField.Position.value]['geopoint'];
+        User user;
+
+        if (!_displayConditions(data, id)) continue;
+        if (MemoryStore().containsUser(id)) user = MemoryStore().getUser(id);
+
+        user = await UserRepository().fetchUser(
+          id,
+          fromSnapshot: snapshot,
+          useCache: true,
+          withBlocks: true,
+          withInfos: true,
+        );
+        user.icon = await UserIconCropper(user.mainPictureURL).crop();
+        user.coord = List<double>.from([geoPoint.latitude, geoPoint.longitude]);
 
         MemoryStore().putUser(user);
         usersList.add(user);
@@ -58,28 +74,6 @@ class AreaFetchingRepository {
         print('=> in area: ${user.email} at ${user.distance} meters (cached).');
       }
     });
-  }
-
-  Future<User> _fetchUserFromDataIfDisplayable(
-    DocumentSnapshot snapshot,
-  ) async {
-    final data = snapshot.data();
-    final id = snapshot.id;
-    final geoPoint = data[UserField.Position.value]['geopoint'];
-
-    if (!_displayConditions(data, id)) return null;
-    if (MemoryStore().containsUser(id)) return MemoryStore().getUser(id);
-
-    User user = await UserRepository().fetchUser(
-      id,
-      fromSnapshot: snapshot,
-      useCache: true,
-      withBlocks: true,
-      withInfos: true,
-    );
-    user.icon = await UserIconCropper(user.mainPictureURL).crop();
-    user.coord = List<double>.from([geoPoint.latitude, geoPoint.longitude]);
-    return user;
   }
 
   /// Return true if a user should be shown on the map.

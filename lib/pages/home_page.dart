@@ -20,6 +20,7 @@ import 'package:location_project/use_cases/tab_pages/messaging/views/cubit/view_
 import 'package:location_project/use_cases/tab_pages/navigation/cubit/navigation_cubit.dart';
 import 'package:location_project/widgets/home_page_tab_bar_icon.dart';
 import 'package:location_project/widgets/home_page_tab_bar_image_icon.dart';
+import 'package:preload_page_view/preload_page_view.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -59,7 +60,8 @@ class HomePageContainer extends StatefulWidget {
 
 class _HomePageContainerState extends State<HomePageContainer>
     with SingleTickerProviderStateMixin, WidgetsBindingObserver {
-  int _tabIndex = 2;
+  static const int BaseTabIndex = 2;
+
   final _pages = [
     AccountPage(),
     SwipePage(),
@@ -67,9 +69,13 @@ class _HomePageContainerState extends State<HomePageContainer>
     MessagingPage(),
   ];
 
+  PreloadPageController _pageController;
+  int _tabIndex = BaseTabIndex;
+
   @override
   void initState() {
     super.initState();
+    _pageController = PreloadPageController(initialPage: BaseTabIndex);
 
     WidgetsBinding.instance.addObserver(this);
   }
@@ -95,10 +101,22 @@ class _HomePageContainerState extends State<HomePageContainer>
     }
   }
 
+  _onPageChanged(int index) {
+    setState(() {
+      _tabIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_tabIndex],
+      body: PreloadPageView(
+        physics: NeverScrollableScrollPhysics(),
+        children: _pages,
+        controller: _pageController,
+        onPageChanged: _onPageChanged,
+        preloadPagesCount: _pages.length,
+      ),
       bottomNavigationBar: BlocListener<NavigationCubit, NavigationState>(
         listener: (context, state) {
           if (state is NavigateToIndexState)
@@ -140,7 +158,7 @@ class _HomePageContainerState extends State<HomePageContainer>
                 label: ''),
           ],
           onTap: (index) {
-            setState(() => _tabIndex = index);
+            _pageController.jumpToPage(index);
           },
         ),
       ),

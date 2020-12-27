@@ -21,7 +21,8 @@ class SwipePage extends StatefulWidget {
   _SwipePageState createState() => _SwipePageState();
 }
 
-class _SwipePageState extends State<SwipePage> with TickerProviderStateMixin {
+class _SwipePageState extends State<SwipePage>
+    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   CardController _cardController;
   List<User> _users;
 
@@ -33,6 +34,9 @@ class _SwipePageState extends State<SwipePage> with TickerProviderStateMixin {
     });
     super.initState();
   }
+
+  @override
+  bool get wantKeepAlive => true;
 
   _unlike(User user, int index) {
     _cardController.triggerLeft();
@@ -139,17 +143,11 @@ class _SwipePageState extends State<SwipePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     double curveHeight = MediaQuery.of(context).padding.top + 90;
-    List<User> alreadyDisplayedUsers =
-        Provider.of<SwipeButtonsCubit>(context).usersDisplayedQueue;
     return Stack(
       children: [
-        if ((alreadyDisplayedUsers != null &&
-                _users != null &&
-                alreadyDisplayedUsers.length == _users.length) ||
-            _users == null ||
-            _users.length == 0)
-          _emptyUsersPlaceholder(),
+        _emptyUsersPlaceholder(),
         BottomWaveContainer(
           !MemoryStore().isCurvedAnimationDisplayed,
           Container(

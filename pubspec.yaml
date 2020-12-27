@@ -70,6 +70,7 @@ dependencies:
   flutter_app_badger: ^1.1.2
   drag_and_drop_gridview: ^1.0.8
   uuid: ^2.2.2
+  preload_page_view: ^0.1.4
 
   intl: 0.16.1
   flutter_localizations:
