@@ -144,12 +144,14 @@ class _UserCardState extends State<UserMapCard> {
 
   _unlike(User user, int index) {
     widget.contextToUse.read<SwipeButtonsCubit>().unlike(user);
+    Navigator.of(context).pop();
   }
 
   _like(User user, int index) {
     widget.contextToUse
         .read<SwipeButtonsCubit>()
         .like(user, widget.contextToUse);
+    Navigator.of(context).pop();
   }
 
   _chat(User user, Chat chat) {
@@ -211,16 +213,6 @@ class _UserCardState extends State<UserMapCard> {
                           )
                         : null,
                   );
-                  // return UserMapCardContent(
-                  //   user: widget.user,
-                  //   onSendTap: _sendMessage,
-                  //   onLikeTap: _onLikeTap,
-                  //   onUnlikeTap: _onUnlikeTap,
-                  //   onBlockTap: () => _blockUser(context),
-                  //   messageEditingController: _messageEditingController,
-                  //   blockButtonController: _blockButtonController,
-                  //   chatEntryIfExists: chatEntryIfExists,
-                  // );
                 }
                 return Container();
               },
