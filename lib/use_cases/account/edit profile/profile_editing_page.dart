@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/conf/store.dart';
 import 'package:location_project/storage/distant/user_store.dart';
@@ -22,6 +23,9 @@ class _ProfileEditingPageState extends State<ProfileEditingPage> {
   static const int NbMaxUserPictures = 6;
   static const HPadding = 20.0;
   static const VPadding = 8.0;
+
+  static const BioMaxCharacters = 500;
+  static const NameMaxCharacters = 25;
 
   TextEditingController _textControllerBio;
   TextEditingController _textControllerName;
@@ -83,7 +87,7 @@ class _ProfileEditingPageState extends State<ProfileEditingPage> {
               keyboardType: TextInputType.multiline,
               controller: _textControllerBio,
               maxLines: null,
-              maxLength: 500,
+              maxLength: BioMaxCharacters,
             ),
           ),
         ],
@@ -104,6 +108,9 @@ class _ProfileEditingPageState extends State<ProfileEditingPage> {
             padding: EdgeInsets.only(
                 left: HPadding, right: HPadding, top: 3, bottom: 3),
             child: TextField(
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(NameMaxCharacters),
+              ],
               decoration: InputDecoration(border: InputBorder.none),
               keyboardType: TextInputType.name,
               controller: _textControllerName,
