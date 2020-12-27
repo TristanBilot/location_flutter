@@ -14,6 +14,7 @@ import 'package:location_project/use_cases/swipe_card/swipe_widget/wave_clipper.
 import 'package:location_project/use_cases/tab_pages/navigation/cubit/navigation_cubit.dart';
 import 'package:location_project/widgets/cached_circle_user_image.dart';
 import 'package:location_project/widgets/textSF.dart';
+import 'package:provider/provider.dart';
 
 class SwipePage extends StatefulWidget {
   @override
@@ -44,11 +45,13 @@ class _SwipePageState extends State<SwipePage> with TickerProviderStateMixin {
   _handleLeft(User user) {
     context.read<SwipeButtonsCubit>().unlike(user);
     _resetCurrentlyDisplayedPictureIndexes();
+    setState(() {});
   }
 
   _handleRight(User user) {
     context.read<SwipeButtonsCubit>().like(user, context);
     _resetCurrentlyDisplayedPictureIndexes();
+    setState(() {});
   }
 
   void _resetCurrentlyDisplayedPictureIndexes() {
@@ -137,9 +140,16 @@ class _SwipePageState extends State<SwipePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     double curveHeight = MediaQuery.of(context).padding.top + 90;
+    List<User> alreadyDisplayedUsers =
+        Provider.of<SwipeButtonsCubit>(context).usersDisplayedQueue;
     return Stack(
       children: [
-        _emptyUsersPlaceholder(),
+        if ((alreadyDisplayedUsers != null &&
+                _users != null &&
+                alreadyDisplayedUsers.length == _users.length) ||
+            _users == null ||
+            _users.length == 0)
+          _emptyUsersPlaceholder(),
         BottomWaveContainer(
           !MemoryStore().isCurvedAnimationDisplayed,
           Container(
@@ -157,22 +167,25 @@ class _SwipePageState extends State<SwipePage> with TickerProviderStateMixin {
             ),
           ),
         ),
-        Column(mainAxisAlignment: MainAxisAlignment.end, children: [
-          Padding(padding: EdgeInsets.only(top: curveHeight - 30)),
-          BlocListener<SwipeCubit, SwipeState>(
+        Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            BlocListener<SwipeCubit, SwipeState>(
               listener: (context, state) {
                 if (state is SwipableUsersFetched) {
                   setState(() {
                     _users = state.users;
                     _resetCurrentlyDisplayedPictureIndexes();
                   });
-                  // return _buildSwipeFeed(state.users);
                 }
               },
               child: (_users == null || _users.isEmpty)
                   ? SizedBox(height: 10)
-                  : _buildSwipeFeed()),
-        ]),
+                  : _buildSwipeFeed(),
+            ),
+            Padding(padding: EdgeInsets.only(bottom: 30)),
+          ],
+        ),
       ],
     );
   }

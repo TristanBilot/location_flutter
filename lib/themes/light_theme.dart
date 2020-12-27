@@ -59,7 +59,7 @@ class LightTheme {
       ),
       scaffoldBackgroundColor: Background,
       cardColor: Background,
-      textSelectionColor: PrimaryColorLight,
+      // textSelectionColor: PrimaryColorLight,
       backgroundColor: Background,
       canvasColor: Colors.white, // used by BottomNavigationBar
       // cardTheme: base.cardTheme.copyWith(

@@ -9,7 +9,6 @@ import 'package:location_project/repositories/auth_repository.dart';
 import 'package:location_project/repositories/user_mock_repository.dart';
 import 'package:location_project/storage/memory/memory_store.dart';
 import 'package:location_project/storage/distant/user_store.dart';
-import 'package:location_project/themes/dark_theme.dart';
 import 'package:location_project/themes/light_theme.dart';
 import 'package:location_project/themes/theme_utils.dart';
 import 'package:location_project/use_cases/account/account_wanted_genders_page.dart';
@@ -27,7 +26,7 @@ import 'package:location_project/models/gender.dart';
 
 class AccountPage extends StatefulWidget {
   static const curveContainerHeight = 150.0;
-  static const userImageSize = 150.0;
+  static const userImageSize = 160.0;
   static const picAnimDuration = 100;
 
   @override
@@ -71,11 +70,6 @@ class _AccountPageState extends State<AccountPage>
         Duration(milliseconds: 500),
         () => UserStore()
             .setWantedAgeRange(wantedAgeValues.map((e) => e.round()).toList()));
-  }
-
-  Color _getHeaderBackground() {
-    bool isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
-    return isDark ? DarkTheme.BackgroundLightColor : Colors.white;
   }
 
   _onPicturePress() async {
@@ -145,7 +139,7 @@ class _AccountPageState extends State<AccountPage>
                 // pinned: true,
                 expandedHeight: 200,
                 // title: Text('Title'),
-                backgroundColor: _getHeaderBackground(),
+                backgroundColor: Theme.of(context).backgroundColor,
                 stretch: true,
                 flexibleSpace: FlexibleSpaceBar(
                   background: Stack(children: [
@@ -201,15 +195,12 @@ class _AccountPageState extends State<AccountPage>
                 child: Column(
                   children: [
                     Container(
-                      padding: const EdgeInsets.only(bottom: 20),
-                      color: _getHeaderBackground(),
+                      color: Theme.of(context).backgroundColor,
+                      padding: const EdgeInsets.only(bottom: 25),
                       child: Center(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: TextSF(
-                            '${UserStore().user.firstName}, ${UserStore().user.age}',
-                            fontSize: 22,
-                          ),
+                        child: TextSF(
+                          '${UserStore().user.firstName}, ${UserStore().user.age}',
+                          fontSize: 22,
                         ),
                       ),
                     ),

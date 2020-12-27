@@ -10,7 +10,7 @@ class AccountSectionTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: ThemeUtils.getListBackgroundColor(context),
+      color: ThemeUtils.getTabColor(context),
       alignment: Alignment.bottomLeft,
       padding: EdgeInsets.fromLTRB(20, 30, 0, 10),
       child: TextSF(

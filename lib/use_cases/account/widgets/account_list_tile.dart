@@ -32,9 +32,7 @@ class AccountListTile extends StatefulWidget {
 class _AccountListTileState extends State<AccountListTile> {
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      margin: EdgeInsets.all(0),
+    return Container(
       child: Column(
         children: [
           ListTile(

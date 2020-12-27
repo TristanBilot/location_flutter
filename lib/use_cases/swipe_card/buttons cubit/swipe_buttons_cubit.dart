@@ -15,6 +15,8 @@ part 'swipe_buttons_state.dart';
 class SwipeButtonsCubit extends Cubit<SwipeButtonsState> {
   SwipeButtonsCubit() : super(SwipeButtonsInitial());
 
+  List<User> _usersDisplayedQueue = List();
+
   Future<void> like(User likedUser, BuildContext context) async {
     // Match
     if (MemoryStore().containsUserWhoLikedMe(likedUser.id)) {
@@ -32,11 +34,15 @@ class SwipeButtonsCubit extends Cubit<SwipeButtonsState> {
       // Not a match (yet)
       UserStore().addLike(likedUser.id);
     }
+    _usersDisplayedQueue.add(likedUser);
   }
 
   Future<void> unlike(User unlikedUser) async {
     await UserStore().addUnlike(unlikedUser.id);
+    _usersDisplayedQueue.add(unlikedUser);
   }
+
+  List<User> get usersDisplayedQueue => _usersDisplayedQueue;
 
   void _showNewMatchDialog(BuildContext context, User matchedUser, Chat chat) {
     showDialog(
