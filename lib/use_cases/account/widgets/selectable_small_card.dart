@@ -7,18 +7,18 @@ import 'package:location_project/use_cases/account/widgets/selectable_small_card
 import 'package:location_project/widgets/textSF.dart';
 import 'package:location_project/conf/extensions.dart';
 
-class SelectableSmallCard extends StatefulWidget {
+class GenderSmallCard extends StatefulWidget {
   final Gender gender;
-  final SelectableSmallCardDelegate delegate;
+  final GenderSmallCardDelegate delegate;
   final bool isSelected;
-  const SelectableSmallCard(this.gender, this.delegate, this.isSelected);
+  const GenderSmallCard(this.gender, this.delegate, this.isSelected);
 
   @override
   _SelectableSmallCardState createState() =>
       _SelectableSmallCardState(isSelected);
 }
 
-class _SelectableSmallCardState extends State<SelectableSmallCard> {
+class _SelectableSmallCardState extends State<GenderSmallCard> {
   bool _isSelected = false;
 
   _SelectableSmallCardState(this._isSelected);
@@ -43,34 +43,47 @@ class _SelectableSmallCardState extends State<SelectableSmallCard> {
     return Colors.black45;
   }
 
+  String _getGenderIcon(Gender gender) {
+    switch (gender) {
+      case Gender.Female:
+        return '💁‍♀️';
+      case Gender.Male:
+        return '🙋‍♂️';
+      case Gender.Other:
+        return '🤷‍';
+      default:
+        return '';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        RawMaterialButton(
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          shape: CircleBorder(),
-          elevation: 1.0,
-          onPressed: () {
-            HapticFeedback.heavyImpact();
-            setState(() => _isSelected = !_isSelected);
-            widget.delegate.toggle(widget.gender, _isSelected);
-          },
-          child: Container(
+    return GestureDetector(
+      onTap: () {
+        HapticFeedback.heavyImpact();
+        setState(() => _isSelected = !_isSelected);
+        widget.delegate.toggle(widget.gender, _isSelected);
+      },
+      child: Column(
+        children: [
+          Text(
+            _getGenderIcon(widget.gender),
+            style: TextStyle(fontSize: 50),
+          ),
+          Container(
+            padding: EdgeInsets.fromLTRB(17, 6, 17, 6),
             decoration: BoxDecoration(
               gradient: _getCardColor(),
               borderRadius: BorderRadius.circular(20),
             ),
-            padding: EdgeInsets.fromLTRB(17, 6, 17, 6),
             child: TextSF(
               widget.gender.value,
-              fontSize: 15,
+              fontSize: 18,
               color: _getCardTextColor(),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -2,9 +2,12 @@ enum Routes {
   login,
   map,
   account,
+
+  /* From account */
   languages,
   blockedUsers,
   notifications,
+
   startPathStep0,
   startPathStep1,
   startPathStep2,

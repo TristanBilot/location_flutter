@@ -8,7 +8,7 @@ import 'package:location_project/use_cases/account/widgets/account_list_tile.dar
 import 'package:location_project/use_cases/start_path/widgets/basic_button.dart';
 import 'package:location_project/widgets/basic_placeholder.dart';
 import 'package:location_project/widgets/cached_circle_user_image.dart';
-import 'package:location_project/widgets/textSF.dart';
+import 'package:location_project/widgets/scaffold_title.dart';
 
 class AccountBlockedUsersPage extends StatefulWidget {
   AccountBlockedUsersPage({Key key}) : super(key: key);
@@ -50,11 +50,7 @@ class _AccountBlockedUsersPageState extends State<AccountBlockedUsersPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          title: TextSF(
-        'Blocked users',
-        fontSize: 16,
-      )),
+      appBar: AppBar(title: ScaffoldTitle('Blocked users')),
       body: Material(
         child: FutureBuilder(
           future: _fetchBlockedIDsAndUsers(),

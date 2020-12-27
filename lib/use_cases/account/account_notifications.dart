@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:location_project/models/user_settings.dart';
 import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/use_cases/account/widgets/account_list_tile.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif.dart';
-import 'package:location_project/widgets/textSF.dart';
+import 'package:location_project/widgets/scaffold_title.dart';
 
 class AccountNotificationsPage extends StatefulWidget {
   @override
@@ -15,11 +14,7 @@ class _AccountNotificationsPageState extends State<AccountNotificationsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          title: TextSF(
-        'Notifications',
-        fontSize: 16,
-      )),
+      appBar: AppBar(title: ScaffoldTitle('Notifications')),
       body: Material(
         child: ListView(children: [
           AccountListTile(

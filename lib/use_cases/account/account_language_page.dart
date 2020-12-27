@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:location_project/use_cases/account/widgets/account_list_tile.dart';
-import 'package:location_project/widgets/textSF.dart';
+import 'package:location_project/widgets/scaffold_title.dart';
 
 enum Language { French, English }
 
@@ -17,11 +17,7 @@ class _AccountLanguagePageState extends State<AccountLanguagePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          title: TextSF(
-        'Languages',
-        fontSize: 16,
-      )),
+      appBar: AppBar(title: ScaffoldTitle('Languages')),
       body: Material(
         child: ListView(children: [
           AccountListTile(

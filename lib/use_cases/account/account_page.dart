@@ -12,12 +12,12 @@ import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/themes/dark_theme.dart';
 import 'package:location_project/themes/light_theme.dart';
 import 'package:location_project/themes/theme_utils.dart';
+import 'package:location_project/use_cases/account/account_wanted_genders_page.dart';
 import 'package:location_project/use_cases/account/edit%20profile/cubit/edit_profile_cubit.dart';
 import 'package:location_project/use_cases/account/edit%20profile/profile_editing_page.dart';
 import 'package:location_project/use_cases/account/widgets/account_list_tile.dart';
 import 'package:location_project/use_cases/account/widgets/account_log_out_list_tile.dart';
 import 'package:location_project/use_cases/account/widgets/account_section_title.dart';
-import 'package:location_project/use_cases/account/widgets/selectable_small_card.dart';
 import 'package:location_project/use_cases/account/widgets/selectable_small_card_delegate.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_mock_repository.dart';
 import 'package:location_project/widgets/cached_circle_user_image.dart';
@@ -35,7 +35,7 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage>
-    with SelectableSmallCardDelegate {
+    with GenderSmallCardDelegate {
   static const double PicSize = AccountPage.userImageSize;
 
   Set<Gender> _selectedGenders;
@@ -218,18 +218,13 @@ class _AccountPageState extends State<AccountPage>
                         AccountSectionTitle('I\'m looking for'),
                         AccountListTile(
                           title: 'Gender',
-                          bottom: Padding(
-                            padding: const EdgeInsets.only(
-                                left: AccountListTile.SidePadding),
-                            child: Row(children: [
-                              SelectableSmallCard(Gender.Female, this,
-                                  _selectedGenders.contains(Gender.Female)),
-                              SelectableSmallCard(Gender.Male, this,
-                                  _selectedGenders.contains(Gender.Male)),
-                              SelectableSmallCard(Gender.Other, this,
-                                  _selectedGenders.contains(Gender.Other)),
-                            ]),
-                          ),
+                          trailing: Icon(Icons.chevron_right),
+                          onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      AccountWantedGendersPage(
+                                          _selectedGenders, this))),
                         ),
                         AccountListTile(
                           withDivider: false,

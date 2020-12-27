@@ -121,10 +121,6 @@ class _SwipeCardSectionState extends State<SwipeCardSection> {
         _displayedPictureIndex = index;
         _displayedPictureURL = widget.user.pictureURLs[index];
       });
-      // _displayedPictureIndex = index;
-      // context
-      //     .read<SwipeImageCubit>()
-      //     .changeDisplayedImage(_cardID, widget.user.pictureURLs[index]);
     }
   }
 
