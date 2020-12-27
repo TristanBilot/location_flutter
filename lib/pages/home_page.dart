@@ -59,7 +59,7 @@ class HomePageContainer extends StatefulWidget {
 
 class _HomePageContainerState extends State<HomePageContainer>
     with SingleTickerProviderStateMixin, WidgetsBindingObserver {
-  int _tabIndex = 0;
+  int _tabIndex = 2;
   final _pages = [
     AccountPage(),
     SwipePage(),

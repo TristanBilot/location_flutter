@@ -328,7 +328,6 @@ class _MessagePageContentState extends State<MessagePageContent> {
               Container(
                 width: MediaQuery.of(context).size.width,
                 child: Container(
-                  height: 80,
                   padding: EdgeInsets.fromLTRB(10, 15, 10, 30),
                   color: Theme.of(context).scaffoldBackgroundColor,
                   child: MessagingTextField(

@@ -37,4 +37,16 @@ class ThemeUtils {
     bool isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
     return isDark ? Color(0xFF161616) : Color(0xFFEBEBEB);
   }
+
+  static getBackgroundDarkOrLightGrey(BuildContext context) {
+    bool isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    return isDark ? DarkTheme.BackgroundDarkColor : Color(0xFFF9F9F9);
+  }
+
+  static getBackgroundDarkOrBackgroundLight(BuildContext context) {
+    bool isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    return isDark
+        ? DarkTheme.BackgroundDarkColor
+        : Theme.of(context).backgroundColor;
+  }
 }

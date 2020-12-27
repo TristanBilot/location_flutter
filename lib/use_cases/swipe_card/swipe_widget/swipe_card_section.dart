@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:location_project/helpers/distance_adapter.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/themes/dark_theme.dart';
 import 'package:location_project/themes/light_theme.dart';
@@ -14,6 +15,8 @@ class SwipeCardSection extends StatefulWidget {
   final User user;
   final Function(User, int index) likeCallback;
   final Function(User, int index) unlikeCallback;
+  final Widget actionButtonsWidget;
+  final bool useSectionOutsideOfSwipeCard;
 
   static Map<int, int> CurrentlyDisplayedPictureIndex = Map();
 
@@ -22,8 +25,10 @@ class SwipeCardSection extends StatefulWidget {
     this.key,
     this.user,
     this.likeCallback,
-    this.unlikeCallback,
-  ) : super(key: key);
+    this.unlikeCallback, {
+    this.actionButtonsWidget,
+    this.useSectionOutsideOfSwipeCard = false,
+  }) : super(key: key);
 
   @override
   _SwipeCardSectionState createState() => _SwipeCardSectionState();
@@ -31,7 +36,7 @@ class SwipeCardSection extends StatefulWidget {
 
 class _SwipeCardSectionState extends State<SwipeCardSection> {
   final double _cardBorderRadius = 15.0;
-  final double _descriptionContainerHeight = 110.0;
+  final double _descriptionContainerHeight = 160.0;
   final String _cardID = Uuid().v4();
 
   int _displayedPictureIndex;
@@ -117,6 +122,11 @@ class _SwipeCardSectionState extends State<SwipeCardSection> {
     } else {
       HapticFeedback.mediumImpact();
       setState(() {
+        if (widget.useSectionOutsideOfSwipeCard) {
+          _displayedPictureIndex = index;
+          _displayedPictureURL =
+              widget.user.pictureURLs[_displayedPictureIndex];
+        }
         SwipeCardSection.CurrentlyDisplayedPictureIndex[widget.index] = index;
         _displayedPictureIndex = index;
         _displayedPictureURL = widget.user.pictureURLs[index];
@@ -125,10 +135,14 @@ class _SwipeCardSectionState extends State<SwipeCardSection> {
   }
 
   void _updateDisplayedPictureIfNeeded() {
-    _displayedPictureURL = widget.user.pictureURLs[
-        SwipeCardSection.CurrentlyDisplayedPictureIndex[widget.index]];
-    _displayedPictureIndex =
-        SwipeCardSection.CurrentlyDisplayedPictureIndex[widget.index];
+    if (widget.useSectionOutsideOfSwipeCard) {
+      _displayedPictureURL = widget.user.pictureURLs[_displayedPictureIndex];
+    } else {
+      _displayedPictureURL = widget.user.pictureURLs[
+          SwipeCardSection.CurrentlyDisplayedPictureIndex[widget.index]];
+      _displayedPictureIndex =
+          SwipeCardSection.CurrentlyDisplayedPictureIndex[widget.index];
+    }
   }
 
   @override
@@ -203,28 +217,45 @@ class _SwipeCardSectionState extends State<SwipeCardSection> {
             ),
           ),
           Positioned(
-            bottom: 67,
-            child: _buttonsRow(context),
+            bottom: 118,
+            child: widget.actionButtonsWidget ?? _buttonsRow(context),
           ),
-          Align(
-            alignment: Alignment.bottomLeft,
-            child: Container(
-                padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Container(
+                height: _descriptionContainerHeight,
+                padding: EdgeInsets.symmetric(vertical: 30, horizontal: 16),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                        widget.user == null
-                            ? 'mock'
-                            : '${widget.user.firstName}, ${widget.user.age}',
-                        style: TextStyle(
-                            fontSize: 20.0, fontWeight: FontWeight.w700)),
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                            widget.user == null
+                                ? 'mock'
+                                : '${widget.user.firstName}, ${widget.user.age}',
+                            style: TextStyle(
+                                fontSize: 22.0, fontWeight: FontWeight.w700)),
+                        Text(
+                          DistanceAdapter().adapt(widget.user.distance),
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
                     Padding(padding: EdgeInsets.only(bottom: 8.0)),
-                    Text('A short description.', textAlign: TextAlign.start),
+                    Text(
+                      widget.user.bio,
+                      textAlign: TextAlign.start,
+                      maxLines: 4,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ],
-                )),
-          )
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );

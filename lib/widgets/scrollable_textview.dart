@@ -1,7 +1,6 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:location_project/helpers/logger.dart';
+import 'package:location_project/themes/theme_utils.dart';
 import 'package:location_project/widgets/textSF.dart';
 
 class ScrollableTextView extends StatelessWidget {
@@ -46,7 +45,7 @@ class ScrollableTextView extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(
-              color: Theme.of(context).backgroundColor,
+              color: ThemeUtils.getBackgroundDarkOrLightGrey(context),
               borderRadius: BorderRadius.circular(10),
             ),
             padding: EdgeInsets.fromLTRB(

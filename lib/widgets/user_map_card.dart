@@ -6,33 +6,34 @@ import 'package:location_project/controllers/messaging_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/helpers/logger.dart';
 import 'package:location_project/storage/distant/user_store.dart';
+import 'package:location_project/themes/light_theme.dart';
+import 'package:location_project/themes/theme_utils.dart';
 import 'package:location_project/use_cases/blocking/cubit/blocking_cubit.dart';
 import 'package:location_project/use_cases/swipe_card/buttons%20cubit/swipe_buttons_cubit.dart';
+import 'package:location_project/use_cases/swipe_card/swipe_widget/swipe_card_section.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/request_sender.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/message_page.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/message_sender.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
+import 'package:location_project/widgets/gradient_icon.dart';
 import 'package:location_project/widgets/user_card.dart';
-import 'package:location_project/widgets/user_map_card_content.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import '../models/user.dart';
 
 class UserMapCard extends StatefulWidget implements Showable {
-  static const double UserMapCardHeight = 430;
-
-  final BuildContext context;
+  final BuildContext contextToUse;
   final User user;
 
   UserMapCard(
-    this.context,
+    this.contextToUse,
     this.user,
   );
 
   void show({bool addViewToStore = true}) {
     if (addViewToStore) UserStore().addView(user.id);
     showGeneralDialog(
-        transitionBuilder: (context, a1, a2, widget) {
+        transitionBuilder: (context2, a1, a2, widget) {
           return Transform.scale(
             scale: a1.value,
             child: Opacity(
@@ -45,7 +46,7 @@ class UserMapCard extends StatefulWidget implements Showable {
         barrierColor: Colors.black.withOpacity(0.5),
         barrierDismissible: true,
         barrierLabel: '',
-        context: context,
+        context: contextToUse,
         pageBuilder: (context, animation1, animation2) {});
   }
 
@@ -141,6 +142,29 @@ class _UserCardState extends State<UserMapCard> {
     return Future.wait([chat]);
   }
 
+  _unlike(User user, int index) {
+    widget.contextToUse.read<SwipeButtonsCubit>().unlike(user);
+  }
+
+  _like(User user, int index) {
+    widget.contextToUse
+        .read<SwipeButtonsCubit>()
+        .like(user, widget.contextToUse);
+  }
+
+  _chat(User user, Chat chat) {
+    Navigator.of(context).pop();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MessagePage(
+          chat: chat,
+          user: widget.user,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // To dismiss keyboard.
@@ -154,25 +178,49 @@ class _UserCardState extends State<UserMapCard> {
           padding:
               EdgeInsets.only(bottom: MediaQuery.of(context).size.height / 5),
           child: Container(
-            height: UserMapCard.UserMapCardHeight,
             child: FutureBuilder(
               future: _fetchChatInfo(widget.user.id),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  final chatIfExists = snapshot.data[0].data();
-                  final chatEntryIfExists = chatIfExists == null
-                      ? null
-                      : Chat.fromFirestoreObject(chatIfExists);
-                  return UserMapCardContent(
-                    user: widget.user,
-                    onSendTap: _sendMessage,
-                    onLikeTap: _onLikeTap,
-                    onUnlikeTap: _onUnlikeTap,
-                    onBlockTap: () => _blockUser(context),
-                    messageEditingController: _messageEditingController,
-                    blockButtonController: _blockButtonController,
-                    chatEntryIfExists: chatEntryIfExists,
+                  final data = snapshot.data[0].data();
+                  final chatEntryIfExists =
+                      data == null ? null : Chat.fromFirestoreObject(data);
+
+                  return SwipeCardSection(
+                    0,
+                    UniqueKey(),
+                    widget.user,
+                    _like,
+                    _unlike,
+                    useSectionOutsideOfSwipeCard: true,
+                    actionButtonsWidget: chatEntryIfExists != null
+                        ? Container(
+                            margin: EdgeInsets.symmetric(vertical: 15),
+                            child: FloatingActionButton(
+                              onPressed: () =>
+                                  _chat(widget.user, chatEntryIfExists),
+                              backgroundColor:
+                                  ThemeUtils.getBackgroundDarkOrBackgroundLight(
+                                      context),
+                              child: GradientIcon(
+                                Icons.chat,
+                                30,
+                                GoldGradient,
+                              ),
+                            ),
+                          )
+                        : null,
                   );
+                  // return UserMapCardContent(
+                  //   user: widget.user,
+                  //   onSendTap: _sendMessage,
+                  //   onLikeTap: _onLikeTap,
+                  //   onUnlikeTap: _onUnlikeTap,
+                  //   onBlockTap: () => _blockUser(context),
+                  //   messageEditingController: _messageEditingController,
+                  //   blockButtonController: _blockButtonController,
+                  //   chatEntryIfExists: chatEntryIfExists,
+                  // );
                 }
                 return Container();
               },
