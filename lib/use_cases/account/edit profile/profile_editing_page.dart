@@ -54,6 +54,7 @@ class _ProfileEditingPageState extends State<ProfileEditingPage> {
           _textControllerBio.text,
           _textControllerName.text,
           _age.toInt(),
+          DraggableImageCollection.StateImageURLs,
         );
     Navigator.pop(context);
   }

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:location_project/repositories/image_repository.dart';
 import 'package:location_project/storage/distant/user_store.dart';
-import 'package:location_project/themes/dark_theme.dart';
 import 'package:location_project/themes/theme_utils.dart';
 import 'package:location_project/widgets/cached_image.dart';
 import 'package:location_project/widgets/close_button.dart';
@@ -15,6 +14,8 @@ class DraggableImageCollection extends StatefulWidget {
   final List<String> imageURLs;
   final int nbMaxImages;
   const DraggableImageCollection(this.imageURLs, this.nbMaxImages);
+
+  static List<String> StateImageURLs;
 
   @override
   _DraggableImageCollectionState createState() =>
@@ -46,6 +47,8 @@ class _DraggableImageCollectionState extends State<DraggableImageCollection> {
     _imageDeleteButtonList = List();
     _imageAnimationWidthsMap = HashMap();
     _imageAnimationHeightsMap = HashMap();
+
+    DraggableImageCollection.StateImageURLs = [...tmpList];
     super.initState();
   }
 
@@ -157,6 +160,8 @@ class _DraggableImageCollectionState extends State<DraggableImageCollection> {
 
   @override
   Widget build(BuildContext context) {
+    DraggableImageCollection.StateImageURLs = [...tmpList]..removeLast();
+
     return DragAndDropGridView(
       controller: _scrollController,
       itemCount: imageURLs.length,

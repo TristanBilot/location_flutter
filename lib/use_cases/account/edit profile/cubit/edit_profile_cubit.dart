@@ -17,6 +17,7 @@ class EditProfileCubit extends Cubit<EditProfileState> {
     String bio,
     String name,
     int age,
+    List<String> pictureURLs,
   ) {
     final id = UserStore().user.id;
     if (bio != UserStore().user.bio) {
@@ -33,6 +34,17 @@ class EditProfileCubit extends Cubit<EditProfileState> {
       _repo.updateUserValue(id, UserField.Age, age);
       UserStore().user.age = age;
     }
+
+    if (!_isSameArray(pictureURLs, UserStore().user.pictureURLs)) {
+      _repo.updateUserValue(id, UserField.Bio, bio);
+      UserStore().updatePictureURLs(pictureURLs);
+    }
     emit(DidEditProfileState());
+  }
+
+  bool _isSameArray(List<String> a, List<String> b) {
+    if (a.length != b.length) return false;
+    for (int i = 0; i < a.length; i++) if (a[i] != b[i]) return false;
+    return true;
   }
 }

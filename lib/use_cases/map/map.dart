@@ -47,7 +47,9 @@ class MapState extends State<Map> with WidgetsBindingObserver {
   }
 
   @override
-  void didChangePlatformBrightness() => setState(() => _setMapStyle());
+  void didChangePlatformBrightness() {
+    _setMapStyle().then((value) => setStateIfMounted(() => {}));
+  }
 
   @override
   void dispose() {

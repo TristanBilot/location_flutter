@@ -10,7 +10,8 @@ class IconPicker {
   */
   Future<File> pickImageFromGalery() async {
     final picker = ImagePicker();
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    final pickedFile =
+        await picker.getImage(source: ImageSource.gallery, imageQuality: 1);
     if (pickedFile == null) return null;
     return _cropCirclePhoto(pickedFile.path);
   }
