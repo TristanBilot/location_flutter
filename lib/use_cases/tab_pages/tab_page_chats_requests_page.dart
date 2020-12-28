@@ -59,7 +59,7 @@ class _TabPageRequestsPageState extends State<TabPageChatsRequestsPage>
       _filter = ChatsFilter();
       MemoryStore().setDisplayToastValues(false, true, true, false, '');
     } else if (widget.type == TabPageType.Requests) {
-      _filter = RequestFilter();
+      _filter = NewMatchFilter();
       MemoryStore().setDisplayToastValues(true, false, true, true, '');
     }
   }

@@ -8,8 +8,9 @@ abstract class CountersState extends Equatable {
 
   bool isANotificationUnread() {
     return counter.nbUnreadChats != 0 ||
-        counter.nbUnreadRequests != 0 ||
-        counter.nbUnreadViews != 0;
+        counter.nbNewMatches != 0 ||
+        counter.nbNewViews != 0 ||
+        counter.nbNewLikes != 0;
   }
 }
 

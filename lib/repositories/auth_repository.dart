@@ -67,7 +67,7 @@ class AuthRepository {
     UserStore().setConnectedStatus(false);
     await DeviceIDController().forgetDeviceID();
     await LocalStore().clear();
-    // await MessagingDatabase().clear();
+    await MessagingDatabase().clear();
     // await UserDatabase().clear();
     await _facebookLogin.logOut();
   }

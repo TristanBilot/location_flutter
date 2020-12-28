@@ -2,7 +2,7 @@ import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/use_cases/tab_pages/filters/filter.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
 
-class RequestFilter extends ChatFilter {
+class NewMatchFilter extends ChatFilter {
   List<Chat> filter(List<Chat> chats, String pattern) {
     return _sortChatsByMostRecent(_filterChatsByName(chats, pattern))
         .where((chat) => !chat.isChatEngaged)

@@ -1,18 +1,21 @@
 class Counter {
-  int nbChats;
-  int nbRequests;
-  int nbViews;
-
+  int nbMatches;
+  int nbNewMatches;
   int nbUnreadChats;
-  int nbUnreadRequests;
-  int nbUnreadViews;
+
+  int nbLikes;
+  int nbNewLikes;
+
+  int nbViews;
+  int nbNewViews;
 
   Counter(
-    this.nbChats,
-    this.nbRequests,
-    this.nbViews,
+    this.nbMatches,
+    this.nbNewMatches,
     this.nbUnreadChats,
-    this.nbUnreadRequests,
-    this.nbUnreadViews,
+    this.nbViews,
+    this.nbNewViews,
+    this.nbLikes,
+    this.nbNewLikes,
   );
 }

@@ -4,6 +4,7 @@ import 'package:location_project/controllers/app_badge_controller.dart';
 import 'package:location_project/controllers/location_controller.dart';
 import 'package:location_project/pages/messaging_page.dart';
 import 'package:location_project/repositories/user_repository.dart';
+import 'package:location_project/storage/databases/messaging_database.dart';
 import 'package:location_project/use_cases/account/edit%20profile/cubit/edit_profile_cubit.dart';
 import 'package:location_project/use_cases/blocking/cubit/blocking_cubit.dart';
 import 'package:location_project/use_cases/map/cubit/area_cubit.dart';
@@ -13,11 +14,13 @@ import 'package:location_project/use_cases/map/repositories/area_fetching_reposi
 import 'package:location_project/use_cases/swipe_card/buttons%20cubit/swipe_buttons_cubit.dart';
 import 'package:location_project/use_cases/swipe_card/swipe%20cubit/swipe_cubit.dart';
 import 'package:location_project/use_cases/swipe_card/swipe_page.dart';
+import 'package:location_project/use_cases/tab_pages/counters/cubit/counters_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif_listener.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/views/cubit/view_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/navigation/cubit/navigation_cubit.dart';
+import 'package:location_project/widgets/home_page_status_without_count.dart';
 import 'package:location_project/widgets/home_page_tab_bar_icon.dart';
 import 'package:location_project/widgets/home_page_tab_bar_image_icon.dart';
 import 'package:preload_page_view/preload_page_view.dart';
@@ -34,9 +37,9 @@ class _HomePageState extends State<HomePage> {
 
     return MultiBlocProvider(
       providers: [
-        // BlocProvider(
-        //     create: (context) =>
-        //         CountersCubit(context, MessagingDatabase())..init()),
+        BlocProvider(
+            create: (context) =>
+                CountersCubit(context, MessagingDatabase())..init()),
         BlocProvider(create: (context) => SwipeCubit()..fetchUsersFeed()),
         BlocProvider(create: (context) => AreaCubit(AreaFetchingRepository())),
         BlocProvider(create: (context) => BlockingCubit()),
@@ -142,14 +145,14 @@ class _HomePageContainerState extends State<HomePageContainer>
                       alignment: Alignment.center,
                       children: [
                         HomePageTabBarIcon(Icons.textsms, _tabIndex == 3),
-                        // BlocBuilder<CountersCubit, CountersState>(
-                        //     builder: (context, state) {
-                        //   if (state.isANotificationUnread())
-                        //     return Align(
-                        //         alignment: Alignment.topRight,
-                        //         child: HomePageStatusWithoutCount());
-                        //   return SizedBox();
-                        // })
+                        BlocBuilder<CountersCubit, CountersState>(
+                            builder: (context, state) {
+                          if (state.isANotificationUnread())
+                            return Align(
+                                alignment: Alignment.topRight,
+                                child: HomePageStatusWithoutCount());
+                          return SizedBox();
+                        })
                       ],
                     )),
                 label: ''),

@@ -12,7 +12,7 @@ class AccountLanguagePage extends StatefulWidget {
 }
 
 class _AccountLanguagePageState extends State<AccountLanguagePage> {
-  final List<String> _languages = List.from(['French', 'English']);
+  final List<String> _languages = ['French', 'English'];
 
   @override
   Widget build(BuildContext context) {

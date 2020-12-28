@@ -121,7 +121,7 @@ class _MessagingPageState extends State<MessagingPage> {
                       if (state is ChatFetchedState) {
                         List<Chat> chats = _filter.filter(
                             state.chats, _messageEditingController.text);
-                        List<Chat> requests = RequestFilter().filter(
+                        List<Chat> requests = NewMatchFilter().filter(
                             state.chats, _messageEditingController.text);
                         // MessagingDatabase().put(nbChats: chats.length);
 
