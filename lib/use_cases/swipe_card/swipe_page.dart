@@ -65,7 +65,7 @@ class _SwipePageState extends State<SwipePage>
 
   Widget _buildSwipeFeed() {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.74,
+      height: MediaQuery.of(context).size.height * 0.77,
       child: TinderSwapCard(
         swipeUp: true,
         swipeDown: true,
@@ -78,10 +78,11 @@ class _SwipePageState extends State<SwipePage>
         /* /!\ min & max widths are linked to the width of 
         * gesture destector of swipe_card_section.dart
         */
-        minWidth: MediaQuery.of(context).size.width * 0.82,
+        minWidth: MediaQuery.of(context).size.width * 0.9,
         maxWidth: MediaQuery.of(context).size.width * 0.92,
-        minHeight: MediaQuery.of(context).size.height * 0.66,
-        maxHeight: MediaQuery.of(context).size.height * 0.72,
+        minHeight: MediaQuery.of(context).size.height * 0.75,
+        /* /!\ maxHeight linked to height of this container (top of this function) */
+        maxHeight: MediaQuery.of(context).size.height * 0.77,
         cardController: _cardController,
         cardBuilder: (context, index) {
           return SwipeCardSection(
@@ -144,7 +145,7 @@ class _SwipePageState extends State<SwipePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    double curveHeight = MediaQuery.of(context).padding.top + 90;
+    double curveHeight = MediaQuery.of(context).padding.top + 80;
     return Stack(
       children: [
         _emptyUsersPlaceholder(),
@@ -161,7 +162,7 @@ class _SwipePageState extends State<SwipePage>
               style: CupertinoTheme.of(context)
                   .textTheme
                   .navLargeTitleTextStyle
-                  .copyWith(color: Colors.white, fontSize: 32),
+                  .copyWith(color: Colors.white, fontSize: 28),
             ),
           ),
         ),
@@ -181,7 +182,7 @@ class _SwipePageState extends State<SwipePage>
                   ? SizedBox(height: 10)
                   : _buildSwipeFeed(),
             ),
-            Padding(padding: EdgeInsets.only(bottom: 30)),
+            Padding(padding: EdgeInsets.only(bottom: 10)),
           ],
         ),
       ],

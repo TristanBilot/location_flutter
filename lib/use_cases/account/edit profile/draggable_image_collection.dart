@@ -180,11 +180,6 @@ class _DraggableImageCollectionState extends State<DraggableImageCollection> {
   @override
   Widget build(BuildContext context) {
     DraggableImageCollection.StateImageURLs = [...tmpList]..removeLast();
-    print(tmpList.length);
-    print(tmpList.last);
-    print(tmpList);
-    print(tmpList.length >= widget.nbMaxImages &&
-        tmpList.last == DraggableImageCollection.AddButtonKey);
 
     return DragAndDropGridView(
       controller: _scrollController,

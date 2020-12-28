@@ -36,7 +36,7 @@ class SwipeCardSection extends StatefulWidget {
 
 class _SwipeCardSectionState extends State<SwipeCardSection> {
   final double _cardBorderRadius = 15.0;
-  final double _descriptionContainerHeight = 160.0;
+  final double _descriptionContainerHeight = 146.0;
   final String _cardID = Uuid().v4();
 
   int _displayedPictureIndex;
@@ -108,7 +108,7 @@ class _SwipeCardSectionState extends State<SwipeCardSection> {
 
   /* ! linked to the max width of swipe_card.dart */
   double _getExactlyHalfOfCardWidth() {
-    double minWidth = MediaQuery.of(context).size.width * 0.82;
+    double minWidth = MediaQuery.of(context).size.width * 0.9;
     double maxWidth = MediaQuery.of(context).size.width * 0.92;
     double average = (minWidth + maxWidth) / 2;
     return average / 2;
@@ -217,7 +217,7 @@ class _SwipeCardSectionState extends State<SwipeCardSection> {
             ),
           ),
           Positioned(
-            bottom: 118,
+            bottom: 104,
             child: widget.actionButtonsWidget ?? _buttonsRow(context),
           ),
           Column(
@@ -248,7 +248,7 @@ class _SwipeCardSectionState extends State<SwipeCardSection> {
                     Text(
                       widget.user.bio,
                       textAlign: TextAlign.start,
-                      maxLines: 4,
+                      maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],

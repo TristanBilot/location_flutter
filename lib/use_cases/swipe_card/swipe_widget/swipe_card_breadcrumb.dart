@@ -33,7 +33,7 @@ class SwipeCardBreadcrumb extends StatelessWidget {
   Widget build(BuildContext context) {
     final selectedColor = DarkTheme.BackgroundDarkColor.withAlpha(180);
     final unselectedColor = selectedColor.withAlpha(100);
-    final sideMargin = 10.0;
+    final sideMargin = 15.0;
     final elementWidth = (cardWidth / max) - (2 * sideMargin);
 
     return Row(

@@ -38,8 +38,8 @@ class _NewMatchDialogState extends State<NewMatchDialog> {
       backgroundColor: _backgroundColor,
       content: Builder(
         builder: (context) => Container(
-          height: MediaQuery.of(context).size.height * 0.7,
-          width: MediaQuery.of(context).size.width * 1.3,
+          height: 450,
+          width: MediaQuery.of(context).size.width,
           child: Center(
             child: Stack(
               children: [
