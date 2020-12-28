@@ -20,7 +20,7 @@ class ProfileEditingPage extends StatefulWidget {
 }
 
 class _ProfileEditingPageState extends State<ProfileEditingPage> {
-  static const int NbMaxUserPictures = 6;
+  static const int NbMaxUserPictures = 5;
   static const HPadding = 20.0;
   static const VPadding = 8.0;
 
@@ -59,15 +59,10 @@ class _ProfileEditingPageState extends State<ProfileEditingPage> {
     Navigator.pop(context);
   }
 
-  List<String> get _pictureURLsWithAddButton {
-    return [
-      ...UserStore().user.pictureURLs,
-      ...[DraggableImageCollection.AddButtonKey]
-    ];
-  }
-
-  Widget get _picturesWidget =>
-      DraggableImageCollection(_pictureURLsWithAddButton, NbMaxUserPictures);
+  Widget get _picturesWidget => DraggableImageCollection(
+        [...UserStore().user.pictureURLs],
+        NbMaxUserPictures,
+      );
 
   Widget get _bioWidget => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -187,18 +182,16 @@ class _ProfileEditingPageState extends State<ProfileEditingPage> {
               ),
             ];
           },
-          body: Container(
-            child: Column(
-              children: [
-                _picturesWidget,
-                SizedBox(height: 10),
-                _bioWidget,
-                SizedBox(height: 20),
-                _nameWidget,
-                SizedBox(height: 20),
-                _ageWidget,
-              ],
-            ),
+          body: ListView(
+            children: [
+              _picturesWidget,
+              SizedBox(height: 10),
+              _bioWidget,
+              SizedBox(height: 20),
+              _nameWidget,
+              SizedBox(height: 20),
+              _ageWidget,
+            ],
           ),
         ),
       ),

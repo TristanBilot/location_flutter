@@ -42,6 +42,10 @@ class _DraggableImageCollectionState extends State<DraggableImageCollection> {
 
   @override
   void initState() {
+    // add add button at the end of the list only if the size is not at max
+    if (imageURLs.length < widget.nbMaxImages)
+      imageURLs.add(DraggableImageCollection.AddButtonKey);
+
     tmpList = [...imageURLs];
     _scrollController = ScrollController();
     _imageDeleteButtonList = List();
@@ -64,39 +68,39 @@ class _DraggableImageCollectionState extends State<DraggableImageCollection> {
   Widget _pictureView(int index) {
     _resetAnimationSizes(index);
     return Stack(alignment: Alignment.bottomRight, children: [
-      Padding(
-        padding: EdgeInsets.all(0),
-        child: LayoutBuilder(builder: (context, constraints) {
-          if (variableSet == 0) {
-            height = constraints.maxHeight;
-            width = constraints.maxWidth;
-            variableSet++;
-            _resetAnimationSizes(index);
-          }
+      LayoutBuilder(builder: (context, constraints) {
+        if (variableSet == 0) {
+          height = constraints.maxHeight;
+          width = constraints.maxWidth;
+          variableSet++;
+          _resetAnimationSizes(index);
+        }
 
-          return GridTile(
-              child: AnimatedContainer(
-            duration: Duration(milliseconds: OnLongPressAnimationDuration),
-            width: _imageAnimationWidthsMap[index],
-            height: _imageAnimationHeightsMap[
-                index], // _imageAnimationWidthsMap[index], for square size
+        return GridTile(
+            child: AnimatedContainer(
+          duration: Duration(milliseconds: OnLongPressAnimationDuration),
+          width: _imageAnimationWidthsMap[index],
+          height: _imageAnimationHeightsMap[
+              index], // _imageAnimationWidthsMap[index], for square size
 
-            child: Padding(
-              padding: EdgeInsets.all(10),
-              child: Container(
-                decoration: BoxDecoration(
-                  boxShadow: [BoxShadow(blurRadius: 8, color: Colors.black38)],
-                ),
-                child: _isAddButton(imageURLs[index])
-                    ? _addButton
-                    : CachedImage(imageURLs[index],
-                        fit: BoxFit.cover, borderRadius: ImageBorderRadius),
+          child: Padding(
+            padding: EdgeInsets.all(10),
+            child: Container(
+              decoration: BoxDecoration(
+                boxShadow: [BoxShadow(blurRadius: 8, color: Colors.black38)],
               ),
+              child: _isAddButton(imageURLs[index])
+                  ? _addButton
+                  : CachedImage(imageURLs[index],
+                      fit: BoxFit.cover, borderRadius: ImageBorderRadius),
             ),
-          ));
-        }),
-      ),
-      if (_imageDeleteButtonList[index] && !_isAddButton(imageURLs[index]))
+          ),
+        ));
+      }),
+      if (_imageDeleteButtonList[index] &&
+          !_isAddButton(imageURLs[index]) &&
+          tmpList.length >
+              1 + 1) // should not remove last img, counting the add button
         _deleteButton(index)
     ]);
   }
@@ -125,6 +129,8 @@ class _DraggableImageCollectionState extends State<DraggableImageCollection> {
     if (pictureURL != null) {
       setState(() {
         imageURLs.insert(imageURLs.length - 1, pictureURL);
+        tmpList = [...imageURLs];
+        _clearOrAddAddButtonIfNeeded();
         UserStore().updatePictureURLs([...imageURLs]..removeLast());
       });
     }
@@ -135,8 +141,9 @@ class _DraggableImageCollectionState extends State<DraggableImageCollection> {
     setState(() {
       imageURLs.removeAt(index);
       tmpList = [...imageURLs];
+      _clearOrAddAddButtonIfNeeded();
+      UserStore().updatePictureURLs([...imageURLs]..removeLast());
     });
-    UserStore().updatePictureURLs([...imageURLs]..removeLast());
   }
 
   Color get _buttonIconColor =>
@@ -158,9 +165,26 @@ class _DraggableImageCollectionState extends State<DraggableImageCollection> {
     await Future.delayed(Duration(milliseconds: OnLongPressAnimationDuration));
   }
 
+  void _clearOrAddAddButtonIfNeeded() {
+    if (tmpList.length < widget.nbMaxImages &&
+        tmpList.last != DraggableImageCollection.AddButtonKey) {
+      tmpList = [...imageURLs, DraggableImageCollection.AddButtonKey];
+      imageURLs = [...tmpList];
+    } else if (tmpList.length >= widget.nbMaxImages &&
+        tmpList.last == DraggableImageCollection.AddButtonKey) {
+      tmpList.removeLast();
+      imageURLs = [...tmpList];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     DraggableImageCollection.StateImageURLs = [...tmpList]..removeLast();
+    print(tmpList.length);
+    print(tmpList.last);
+    print(tmpList);
+    print(tmpList.length >= widget.nbMaxImages &&
+        tmpList.last == DraggableImageCollection.AddButtonKey);
 
     return DragAndDropGridView(
       controller: _scrollController,
