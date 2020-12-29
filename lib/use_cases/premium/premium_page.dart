@@ -1,13 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/storage/databases/messaging_database.dart';
 import 'package:location_project/themes/theme_utils.dart';
 import 'package:location_project/use_cases/premium/premium_likes_page.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_cubit.dart';
 import 'package:location_project/widgets/textSF.dart';
-import 'package:provider/provider.dart';
 
 class PremiumPage extends StatefulWidget {
   @override
@@ -24,11 +21,6 @@ class _PremiumPageState extends State<PremiumPage> {
 
     _index = 0;
     _messagingDatabase = MessagingDatabase();
-    _fetch();
-  }
-
-  void _fetch() {
-    context.read<ChatCubit>().fetchChats();
   }
 
   String _formatViewsIndicatorText() {

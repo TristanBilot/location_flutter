@@ -40,7 +40,7 @@ class TextSF extends StatelessWidget {
     this.fontWeight = Weight,
     this.isTitle = false,
     this.letterSpacing,
-    this.overflow,
+    this.overflow = TextOverflow.ellipsis,
     this.color,
     TextStyle style = const TextStyle(),
   }) : style = isTitle
