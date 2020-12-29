@@ -9,6 +9,7 @@ import 'package:location_project/themes/dark_theme.dart';
 import 'package:location_project/themes/light_theme.dart';
 import 'package:location_project/themes/theme_utils.dart';
 import 'package:location_project/use_cases/premium/widgets/custom_rectangular_indicator.dart';
+import 'package:location_project/use_cases/start_path/widgets/textsf_gradient.dart';
 import 'package:location_project/use_cases/tab_pages/filters/chats_filter.dart';
 import 'package:location_project/use_cases/tab_pages/filters/filter.dart';
 import 'package:location_project/use_cases/tab_pages/filters/request_filter.dart';
@@ -45,9 +46,14 @@ class _PremiumPageState extends State<PremiumPage> {
     context.read<ChatCubit>().fetchChats();
   }
 
-  Gradient _getIndicatorBackgroundGradient() {
+  Widget _getIndicatorTextWidget(String text) {
     bool isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
-    return isDark ? null : AppGradient;
+    return TextSF(
+      text,
+      fontSize: 19,
+      fontWeight: FontWeight.w700,
+      color: isDark ? Colors.white : Colors.black,
+    );
   }
 
   @override
@@ -56,43 +62,52 @@ class _PremiumPageState extends State<PremiumPage> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          elevation: 0,
           backgroundColor: ThemeUtils.getPrimaryDarkOrLightGrey(context),
           bottom: PreferredSize(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 16),
-                  child: Text(
-                    'Who like you',
-                    style: CupertinoTheme.of(context)
-                        .textTheme
-                        .navLargeTitleTextStyle
-                        .copyWith(
-                            color: ThemeUtils.getBlackIfLightAndWhiteIfDark(
-                                context)),
-                  ),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                      width: 0.4,
+                      color:
+                          ThemeUtils.getPrimaryDarkOrLightGreyAccent(context)),
                 ),
-                SizedBox(height: spaceBetweenTitleAndTabBar),
-                TabBar(
-                  indicator: CustomRectangularIndicator(
-                    horizontalPadding: 10,
-                    paintingStyle: PaintingStyle.fill,
-                    bottomLeftRadius: tabBarIndicatorRadius,
-                    bottomRightRadius: tabBarIndicatorRadius,
-                    topLeftRadius: tabBarIndicatorRadius,
-                    topRightRadius: tabBarIndicatorRadius,
-                    // only used when gradient is null
-                    color: DarkTheme.DarkColor,
-                    gradient: _getIndicatorBackgroundGradient(),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16),
+                    child: Text(
+                      'Who like you',
+                      style: CupertinoTheme.of(context)
+                          .textTheme
+                          .navLargeTitleTextStyle
+                          .copyWith(
+                              color: ThemeUtils.getBlackIfLightAndWhiteIfDark(
+                                  context)),
+                    ),
                   ),
-                  tabs: [
-                    Tab(child: TextSF('23 likes', fontSize: 17)),
-                    Tab(child: TextSF('126 views', fontSize: 17)),
-                  ],
-                ),
-                SizedBox(height: spaceUnderTabBar),
-              ],
+                  SizedBox(height: spaceBetweenTitleAndTabBar),
+                  TabBar(
+                    indicator: CustomRectangularIndicator(
+                      horizontalPadding: 10,
+                      paintingStyle: PaintingStyle.stroke,
+                      bottomLeftRadius: tabBarIndicatorRadius,
+                      bottomRightRadius: tabBarIndicatorRadius,
+                      topLeftRadius: tabBarIndicatorRadius,
+                      topRightRadius: tabBarIndicatorRadius,
+                      gradient: AppGradient,
+                    ),
+                    tabs: [
+                      Tab(child: _getIndicatorTextWidget('23 likes')),
+                      Tab(child: _getIndicatorTextWidget('127 views')),
+                    ],
+                  ),
+                  SizedBox(height: spaceUnderTabBar),
+                ],
+              ),
             ),
             preferredSize: Size.fromHeight(
                 80 + spaceBetweenTitleAndTabBar + spaceUnderTabBar),
