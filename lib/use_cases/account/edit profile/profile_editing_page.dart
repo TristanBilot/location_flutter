@@ -168,6 +168,7 @@ class _ProfileEditingPageState extends State<ProfileEditingPage> {
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return [
               CupertinoSliverNavigationBar(
+                heroTag: 'tag3',
                 automaticallyImplyLeading: false,
                 trailing: GestureDetector(
                   onTap: _onDoneTap,

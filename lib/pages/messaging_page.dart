@@ -99,6 +99,7 @@ class _MessagingPageState extends State<MessagingPage> {
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return [
               CupertinoSliverNavigationBar(
+                heroTag: 'tag2',
                 largeTitle: Text(
                   'Messages',
                   style: TextStyle(

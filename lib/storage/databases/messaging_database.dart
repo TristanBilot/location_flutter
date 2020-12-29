@@ -40,7 +40,7 @@ class MessagingDatabase {
     if (nbNewMatches != null) _prefs.setInt(NbNewChatsKey, nbNewMatches);
     if (nbUnreadChats != null) _prefs.setInt(NbUnreadChatsKey, nbUnreadChats);
     if (nbLikes != null) _prefs.setInt(NbLikesKey, nbLikes);
-    if (nbNewLikes != null) _prefs.setInt(NbLikesKey, nbNewLikes);
+    if (nbNewLikes != null) _prefs.setInt(NbNewLikesKey, nbNewLikes);
     if (nbViews != null) _prefs.setInt(NbViewsKey, nbViews);
     if (nbNewViews != null) _prefs.setInt(NbNewViewsKey, nbNewViews);
   }

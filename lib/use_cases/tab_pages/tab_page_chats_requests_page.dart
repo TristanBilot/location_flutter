@@ -106,6 +106,7 @@ class _TabPageRequestsPageState extends State<TabPageChatsRequestsPage>
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return [
               CupertinoSliverNavigationBar(
+                heroTag: 'tag1',
                 largeTitle: Text(
                   'Messages',
                   style: TextStyle(

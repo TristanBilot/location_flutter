@@ -9,6 +9,8 @@ class PremiumLikesPage extends StatefulWidget {
 }
 
 class _PremiumLikesPageState extends State<PremiumLikesPage> {
+  static final double spacing = 15.0;
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CountersCubit, CountersState>(builder: (context, state) {
@@ -16,7 +18,9 @@ class _PremiumLikesPageState extends State<PremiumLikesPage> {
         final likes = state.likes;
         return GridView.count(
           crossAxisCount: 2,
-          padding: EdgeInsets.all(10),
+          crossAxisSpacing: spacing,
+          mainAxisSpacing: spacing,
+          padding: EdgeInsets.all(spacing),
           children: likes.map((user) => PremiumUserCard(user)).toList(),
         );
       }
