@@ -52,12 +52,12 @@ class _MessagingTabsPageState extends State<MessagingTabsPage>
                     labelColor: Theme.of(context).textTheme.headline6.color,
                     indicatorColor: Theme.of(context).primaryColor,
                     tabs: [
-                      TabPageElementCountStatus(
-                          'Messages', state.counter.nbUnreadChats),
-                      TabPageElementCountStatus(
-                          'Requests', state.counter.nbNewMatches),
-                      TabPageElementCountStatus(
-                          'Views', state.counter.nbNewViews),
+                      // TabPageElementCountStatus(
+                      //     'Messages', state.counter.nbUnreadChats),
+                      // TabPageElementCountStatus(
+                      //     'Requests', state.counter.nbNewMatches),
+                      // TabPageElementCountStatus(
+                      //     'Views', state.counter.nbNewViews),
                     ],
                   ),
                 );

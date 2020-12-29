@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:location_project/models/user.dart';
+import 'package:location_project/repositories/user/usersFromIDsFetcher.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/storage/memory/memory_store.dart';
@@ -49,19 +50,14 @@ class SwipeCubit extends Cubit<SwipeState> {
   }
 
   Future _fetchUsersRangeFromIDs(List<String> allUsers, int atIndex) async {
-    List<Future<User>> fetchedUsers;
-    if (allUsers.length > atIndex) fetchedUsers = [];
-    final sublist = _getUserSublistToFetch(allUsers, atIndex);
-    Future<User> getAsync(String id) async => MemoryStore().getUser(id);
-    for (var id in sublist) {
-      if (MemoryStore().containsUser(id))
-        fetchedUsers.add(getAsync(id));
-      else
-        fetchedUsers.add(UserRepository().fetchUser(id, withInfos: true));
+    if (allUsers.length <= atIndex) {
+      throw ('Invalid index at _fetchUsersRangeFromIDs()');
     }
-    final users = await Future.wait(fetchedUsers);
-    emit(SwipableUsersFetched(users));
+    final sublist = _getUserSublistToFetch(allUsers, atIndex);
+    final users = await UsersFromIDsFetcher().fetch(sublist);
+
     users.forEach((e) => MemoryStore().putUser(e));
+    emit(SwipableUsersFetched(users));
   }
 
   List<String> _getUserSublistToFetch(List<String> allUsers, int atIndex) {

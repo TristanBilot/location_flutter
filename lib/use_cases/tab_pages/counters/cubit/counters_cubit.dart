@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:location_project/controllers/app_badge_controller.dart';
 import 'package:location_project/models/user.dart';
+import 'package:location_project/repositories/user/usersFromIDsFetcher.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/storage/databases/messaging_database.dart';
 import 'package:location_project/storage/distant/user_store.dart';
@@ -73,7 +76,7 @@ class CountersCubit extends Cubit<CountersState> {
     });
 
     /// Listens to new incoming likes.
-    likesStream.listen((likes) {
+    likesStream.listen((likes) async {
       int nbLikes = likes.length;
       int nbNewLikes = _previousLikes == null
           ? nbLikes
@@ -82,9 +85,13 @@ class CountersCubit extends Cubit<CountersState> {
       _database.put(nbLikes: nbLikes);
       _database.put(nbNewLikes: nbNewLikes);
 
+      final users = await UsersFromIDsFetcher().fetch(likes);
+      users.forEach((e) => MemoryStore().putUser(e));
+
       _triggerLikeToaster(likes);
 
       _emitCounters();
+      _emitLikes(users);
     });
   }
 
@@ -101,6 +108,10 @@ class CountersCubit extends Cubit<CountersState> {
       ),
     ));
     AppBadgeController().updateAppBadge();
+  }
+
+  void _emitLikes(List<User> likes) {
+    emit(NewLikesState(likes));
   }
 
   void _triggerChatToaster(List<Chat> filteredMatches) {
