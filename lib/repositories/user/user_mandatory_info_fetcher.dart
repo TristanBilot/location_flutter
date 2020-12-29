@@ -3,13 +3,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location_project/adapters/gender_value_adapter.dart';
 import 'package:location_project/conf/conf.dart';
 import 'package:location_project/conf/store.dart';
+import 'package:location_project/helpers/logger.dart';
 import 'package:location_project/models/gender.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/models/user_settings.dart';
+import 'package:location_project/repositories/image_repository.dart';
 import 'package:location_project/repositories/user/time_measurable.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/storage/memory/location_cache.dart';
 import 'package:location_project/conf/extensions.dart';
+import 'package:location_project/storage/shared%20preferences/local_store.dart';
 
 class UserMandatoryInfo implements TimeMeasurable {
   int timeToFetch;
@@ -41,6 +44,21 @@ class UserMandatoryInfo implements TimeMeasurable {
     this.pictureURLs,
     this.bio,
   );
+
+  static final UserMandatoryInfo userMandatoryInfoNotFound = UserMandatoryInfo(
+      0,
+      null,
+      null,
+      null,
+      null,
+      [0, 0],
+      0,
+      0,
+      Gender.Other,
+      UserSettings.DefaultUserSettings,
+      [],
+      [LocalStore().getNotFoundImagePictureURL()],
+      '?');
 }
 
 class UserMandatoryInfoFetcher {
@@ -53,6 +71,10 @@ class UserMandatoryInfoFetcher {
     Stopwatch stopwatch = Stopwatch()..start();
     final id = snapshot.id;
     final Map<String, dynamic> data = snapshot.data();
+    if (data == null) {
+      Logger().e('An invalid id or invalid snapshot has been fetched');
+      return UserMandatoryInfo.userMandatoryInfoNotFound;
+    }
     final realPosition = //await LocationController().isLocationEnabled() &&
         LocationCache().isLocationAvailable
             ? LocationCache().locationGeoPoint

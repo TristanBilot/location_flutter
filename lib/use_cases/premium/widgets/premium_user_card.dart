@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:location_project/helpers/distance_adapter.dart';
 import 'package:location_project/models/user.dart';
+import 'package:location_project/use_cases/premium/premium_page.dart';
 import 'package:location_project/widgets/cached_image.dart';
 import 'package:location_project/widgets/textSF.dart';
 import 'package:location_project/widgets/user_card.dart';
@@ -17,7 +18,29 @@ class _PremiumUserCardState extends State<PremiumUserCard> {
   static final double radius = 10.0;
 
   _onCardTap() {
-    UserCard(context, widget.user).show();
+    UserCard(PremiumPage.scaffoldKey.currentContext, widget.user).show();
+  }
+
+  Widget get _userInfoRow {
+    String nameAge;
+    String distance;
+    if (widget.user.firstName == null || widget.user.age == null) {
+      nameAge = '';
+      distance = '';
+    } else {
+      nameAge = '${widget.user.firstName}, ${widget.user.age}';
+      distance = '${DistanceAdapter().adapt(widget.user.distance)}';
+    }
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Flexible(
+          child: TextSF(nameAge, fontSize: 19),
+        ),
+        TextSF(distance),
+      ],
+    );
   }
 
   @override
@@ -53,17 +76,7 @@ class _PremiumUserCardState extends State<PremiumUserCard> {
             Padding(
               padding:
                   const EdgeInsets.only(bottom: 5.0, left: 8.0, right: 8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
-                    child: TextSF(
-                        '${widget.user.firstName}, ${widget.user.age}',
-                        fontSize: 19),
-                  ),
-                  TextSF('${DistanceAdapter().adapt(widget.user.distance)}'),
-                ],
-              ),
+              child: _userInfoRow,
             ),
           ],
         ),

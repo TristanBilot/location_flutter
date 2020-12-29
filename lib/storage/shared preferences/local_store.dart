@@ -10,6 +10,7 @@ class LocalStore {
   static const LocationAskedKey = 'locationAsked';
   static const CurrentDeviceIDKey = 'deviceID';
   static const IsFirstAppLaunchKey = 'isFirstAppLaunch';
+  static const NotFoundImageKey = 'notFoundImage';
 
   SharedPreferences _prefs;
 
@@ -99,5 +100,14 @@ class LocalStore {
   bool getIsFirstAppLaunch() {
     if (!_prefs.containsKey(IsFirstAppLaunchKey)) return true;
     return _prefs.getBool(IsFirstAppLaunchKey);
+  }
+
+  Future<void> setNotFoundImagePictureURL(String url) async {
+    await _prefs.setString(NotFoundImageKey, url);
+  }
+
+  String getNotFoundImagePictureURL() {
+    if (!_prefs.containsKey(NotFoundImageKey)) return null;
+    return _prefs.getString(NotFoundImageKey);
   }
 }

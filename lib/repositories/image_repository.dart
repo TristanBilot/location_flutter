@@ -71,6 +71,14 @@ class ImageRepository {
     return Uuid().v4() + Store.defaultProfilePictureExtension; // random string
   }
 
+  Future<dynamic> fetchNotFoundImageURL() {
+    final notFoundImageName = 'not_found_image.png';
+    return FirebaseStorage.instance
+        .ref()
+        .child(notFoundImageName)
+        .getDownloadURL();
+  }
+
   StorageReference _getFirestoreImageReference(String id, String fileName) {
     return FirebaseStorage.instance
         .ref()

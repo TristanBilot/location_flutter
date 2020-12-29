@@ -1,19 +1,15 @@
-import 'dart:io';
-
 import 'package:location_project/controllers/device_id_controller.dart';
 import 'package:location_project/controllers/location_controller.dart';
+import 'package:location_project/repositories/image_repository.dart';
 import 'package:location_project/storage/shared preferences/local_store.dart';
 import 'package:location_project/storage/databases/messaging_database.dart';
 import 'package:location_project/storage/distant/user_store.dart';
-import 'package:hive/hive.dart';
 import 'package:location_project/models/user.dart';
-import 'package:path_provider/path_provider.dart';
 
 class InitController {
   Future initFromMain() async {
     await LocalStore.initAsynchronously();
     await DeviceIDController().storeDeviceID();
-    await _initHiveDatabases();
     // await AuthRepository().logOut();
     // LocalStore().forgetLoggedUser();
     // return;
@@ -23,8 +19,9 @@ class InitController {
         await UserStore().initAsynchronously();
       }
       await _initDatabases();
+      await _initNotFoundImageURL();
     }
-    initAtFirstAppLaunch();
+    _initAtFirstAppLaunch();
   }
 
   Future initAfterLogin(String loggedID) async {
@@ -39,19 +36,21 @@ class InitController {
     await UserStore().initAsynchronously(fromUser: newUser);
   }
 
-  Future initAtFirstAppLaunch() async {
+  Future _initAtFirstAppLaunch() async {
     if (LocalStore().getIsFirstAppLaunch()) {
       DeviceIDController().removeDuplicateExistingDeviceID();
     }
     LocalStore().setIsFirstAppLaunch(false);
   }
 
-  Future _initHiveDatabases() async {
-    Directory dir = await getApplicationDocumentsDirectory();
-    Hive.init(dir.path);
-  }
-
   Future _initDatabases() async {
     await MessagingDatabase.initAsynchronously();
+  }
+
+  Future _initNotFoundImageURL() async {
+    if (LocalStore().getNotFoundImagePictureURL() == null) {
+      final url = (await ImageRepository().fetchNotFoundImageURL()) as String;
+      await LocalStore().setNotFoundImagePictureURL(url);
+    }
   }
 }

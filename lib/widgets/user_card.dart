@@ -9,6 +9,7 @@ import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/themes/light_theme.dart';
 import 'package:location_project/themes/theme_utils.dart';
 import 'package:location_project/use_cases/blocking/cubit/blocking_cubit.dart';
+import 'package:location_project/use_cases/premium/premium_page.dart';
 import 'package:location_project/use_cases/swipe_card/buttons%20cubit/swipe_buttons_cubit.dart';
 import 'package:location_project/use_cases/swipe_card/swipe_widget/swipe_card_section.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
@@ -46,7 +47,7 @@ class UserCard extends StatefulWidget {
         barrierDismissible: true,
         barrierLabel: '',
         context: contextToUse,
-        pageBuilder: (context, animation1, animation2) {});
+        pageBuilder: (_, __, ___) {});
   }
 
   static _UserCardState of(BuildContext context) =>

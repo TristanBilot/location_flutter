@@ -9,6 +9,8 @@ import 'package:location_project/use_cases/tab_pages/counters/cubit/counters_cub
 import 'package:location_project/widgets/textSF.dart';
 
 class PremiumPage extends StatefulWidget {
+  static final GlobalKey<ScaffoldState> scaffoldKey =
+      GlobalKey<ScaffoldState>();
   @override
   _PremiumPageState createState() => _PremiumPageState();
 }
@@ -65,6 +67,7 @@ class _PremiumPageState extends State<PremiumPage> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
+      key: PremiumPage.scaffoldKey,
       child: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return [

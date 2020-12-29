@@ -145,6 +145,30 @@ class _SwipeCardSectionState extends State<SwipeCardSection> {
     }
   }
 
+  Widget get _userInfoRow {
+    String nameAge;
+    String distance;
+    if (widget.user.firstName == null || widget.user.age == null) {
+      nameAge = '';
+      distance = '';
+    } else {
+      nameAge = '${widget.user.firstName}, ${widget.user.age}';
+      distance = '${DistanceAdapter().adapt(widget.user.distance)}';
+    }
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(nameAge,
+            style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w700)),
+        Text(
+          distance,
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     _updateDisplayedPictureIfNeeded();
@@ -229,21 +253,7 @@ class _SwipeCardSectionState extends State<SwipeCardSection> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                            widget.user == null
-                                ? 'mock'
-                                : '${widget.user.firstName}, ${widget.user.age}',
-                            style: TextStyle(
-                                fontSize: 22.0, fontWeight: FontWeight.w700)),
-                        Text(
-                          DistanceAdapter().adapt(widget.user.distance),
-                          style: TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                      ],
-                    ),
+                    _userInfoRow,
                     Padding(padding: EdgeInsets.only(bottom: 8.0)),
                     Text(
                       widget.user.bio,
