@@ -3,6 +3,7 @@ import 'package:location_project/themes/light_theme.dart';
 
 class DarkTheme {
   static final ThemeData defaultTheme = _buildTheme();
+  static const DarkColor = Color.fromRGBO(18, 18, 18, 1);
   static const PrimaryDarkColor = Color.fromRGBO(33, 33, 33, 1);
   static const BackgroundDarkColor = Color.fromRGBO(48, 48, 48, 1);
   static const BackgroundLightColor = Color.fromRGBO(66, 66, 66, 1);

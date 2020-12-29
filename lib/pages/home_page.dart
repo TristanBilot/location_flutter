@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/controllers/app_badge_controller.dart';
 import 'package:location_project/controllers/location_controller.dart';
 import 'package:location_project/pages/messaging_page.dart';
+import 'package:location_project/pages/premium_page.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/storage/databases/messaging_database.dart';
 import 'package:location_project/use_cases/account/edit%20profile/cubit/edit_profile_cubit.dart';
@@ -70,6 +71,7 @@ class _HomePageContainerState extends State<HomePageContainer>
     SwipePage(),
     MapPage(),
     MessagingPage(),
+    PremiumPage(),
   ];
 
   PreloadPageController _pageController;

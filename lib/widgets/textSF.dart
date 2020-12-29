@@ -39,7 +39,7 @@ class TextSF extends StatelessWidget {
     this.fontSize = FontSize,
     this.fontWeight = Weight,
     this.isTitle = false,
-    this.letterSpacing = LetterSpacing,
+    this.letterSpacing,
     this.overflow,
     this.color,
     TextStyle style = const TextStyle(),
