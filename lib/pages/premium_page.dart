@@ -6,7 +6,9 @@ import 'package:location_project/storage/databases/messaging_database.dart';
 import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/storage/memory/memory_store.dart';
 import 'package:location_project/themes/dark_theme.dart';
+import 'package:location_project/themes/light_theme.dart';
 import 'package:location_project/themes/theme_utils.dart';
+import 'package:location_project/use_cases/premium/widgets/custom_rectangular_indicator.dart';
 import 'package:location_project/use_cases/tab_pages/filters/chats_filter.dart';
 import 'package:location_project/use_cases/tab_pages/filters/filter.dart';
 import 'package:location_project/use_cases/tab_pages/filters/request_filter.dart';
@@ -43,6 +45,11 @@ class _PremiumPageState extends State<PremiumPage> {
     context.read<ChatCubit>().fetchChats();
   }
 
+  Gradient _getIndicatorBackgroundGradient() {
+    bool isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    return isDark ? null : AppGradient;
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -68,14 +75,16 @@ class _PremiumPageState extends State<PremiumPage> {
                 ),
                 SizedBox(height: spaceBetweenTitleAndTabBar),
                 TabBar(
-                  indicator: RectangularIndicator(
+                  indicator: CustomRectangularIndicator(
                     horizontalPadding: 10,
-                    color: DarkTheme.DarkColor,
                     paintingStyle: PaintingStyle.fill,
                     bottomLeftRadius: tabBarIndicatorRadius,
                     bottomRightRadius: tabBarIndicatorRadius,
                     topLeftRadius: tabBarIndicatorRadius,
                     topRightRadius: tabBarIndicatorRadius,
+                    // only used when gradient is null
+                    color: DarkTheme.DarkColor,
+                    gradient: _getIndicatorBackgroundGradient(),
                   ),
                   tabs: [
                     Tab(child: TextSF('23 likes', fontSize: 17)),
