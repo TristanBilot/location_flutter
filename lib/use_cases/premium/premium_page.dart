@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/storage/databases/messaging_database.dart';
 import 'package:location_project/themes/theme_utils.dart';
 import 'package:location_project/use_cases/premium/premium_likes_page.dart';
+import 'package:location_project/use_cases/premium/premium_views_page.dart';
 import 'package:location_project/use_cases/tab_pages/counters/cubit/counters_cubit.dart';
 import 'package:location_project/widgets/textSF.dart';
 
@@ -123,8 +124,8 @@ class _PremiumPageState extends State<PremiumPage> {
                 child: IndexedStack(
                   index: _index,
                   children: [
-                    PremiumLikesPage(),
-                    Text('page 2'),
+                    Builder(builder: (context) => PremiumLikesPage()),
+                    Builder(builder: (context) => PremiumViewsPage()),
                   ],
                 ),
               )

@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hive/hive.dart';
@@ -41,7 +42,7 @@ enum UserField {
   UsersWhoLikedMe,
 }
 
-class User extends HiveObject {
+class User extends Equatable {
   String id;
   String email;
   String firstName;
@@ -90,6 +91,26 @@ class User extends HiveObject {
   ) {
     this.id = email;
   }
+
+  @override
+  List<Object> get props => [
+        this.email,
+        this.firstName,
+        this.lastName,
+        this.coord,
+        this.icon,
+        this.pictureURLs,
+        this.distance,
+        this.age,
+        this.gender,
+        this.settings,
+        this.blockedUserIDs,
+        this.userIDsWhoBlockedMe,
+        this.viewedUserIDs,
+        this.userIDsWhoWiewedMe,
+        this.deviceTokens,
+        this.bio,
+      ];
 
   bool getNotifSett(NotifType key) => settings.notificationSettings[key.value];
 

@@ -5,12 +5,12 @@ import 'package:location_project/use_cases/premium/widgets/premium_user_grid.dar
 import 'package:location_project/use_cases/tab_pages/counters/cubit/counters_cubit.dart';
 import 'package:location_project/widgets/textSF.dart';
 
-class PremiumLikesPage extends StatefulWidget {
+class PremiumViewsPage extends StatefulWidget {
   @override
-  _PremiumLikesPageState createState() => _PremiumLikesPageState();
+  _PremiumViewsPageState createState() => _PremiumViewsPageState();
 }
 
-class _PremiumLikesPageState extends State<PremiumLikesPage> {
+class _PremiumViewsPageState extends State<PremiumViewsPage> {
   List<User> _users;
 
   Widget placeholder() => Container(
@@ -19,12 +19,12 @@ class _PremiumLikesPageState extends State<PremiumLikesPage> {
             children: [
               Spacer(),
               Icon(
-                Icons.favorite,
+                Icons.remove_red_eye_rounded,
                 size: 60,
               ),
               SizedBox(height: 15),
               TextSF(
-                'Nobody liked your profile yet.',
+                'Nobody viewed your profile yet.',
                 fontSize: 18,
               ),
               Spacer(),
@@ -37,9 +37,9 @@ class _PremiumLikesPageState extends State<PremiumLikesPage> {
   Widget build(BuildContext context) {
     return BlocListener<CountersCubit, CountersState>(
       listener: (context, state) {
-        if (state is NewLikesState) {
+        if (state is NewViewsState) {
           setState(() {
-            _users = state.likes;
+            _users = state.views;
           });
         }
       },

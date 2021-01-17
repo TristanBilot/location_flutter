@@ -63,16 +63,18 @@ class CountersCubit extends Cubit<CountersState> {
     });
 
     /// Listens to new views.
-    viewsStream.listen((views) {
+    viewsStream.listen((views) async {
       int nbViews = views.length;
       int nbNewViews = views.where((view) => !view.isViewed).length;
 
       _database.put(nbViews: nbViews);
       _database.put(nbNewViews: nbNewViews);
 
-      _triggerViewToaster(views);
+      final ids = views.map((e) => e.id).toList();
+      final users = await UsersFromIDsFetcher().fetch(ids);
+      users.forEach((e) => MemoryStore().putUser(e));
 
-      _emitCounters();
+      emit(NewViewsState(users));
     });
 
     /// Listens to new incoming likes.
@@ -88,10 +90,7 @@ class CountersCubit extends Cubit<CountersState> {
       final users = await UsersFromIDsFetcher().fetch(likes);
       users.forEach((e) => MemoryStore().putUser(e));
 
-      _triggerLikeToaster(likes);
-
-      _emitCounters();
-      _emitLikes(users);
+      emit(NewLikesState(users));
     });
   }
 
@@ -108,10 +107,6 @@ class CountersCubit extends Cubit<CountersState> {
       ),
     ));
     AppBadgeController().updateAppBadge();
-  }
-
-  void _emitLikes(List<User> likes) {
-    emit(NewLikesState(likes));
   }
 
   void _triggerChatToaster(List<Chat> filteredMatches) {

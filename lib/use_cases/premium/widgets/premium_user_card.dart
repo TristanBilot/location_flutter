@@ -8,7 +8,7 @@ import 'package:location_project/widgets/user_card.dart';
 
 class PremiumUserCard extends StatefulWidget {
   final User user;
-  const PremiumUserCard(this.user);
+  const PremiumUserCard(this.user, {Key key}) : super(key: key);
 
   @override
   _PremiumUserCardState createState() => _PremiumUserCardState();
@@ -32,13 +32,15 @@ class _PremiumUserCardState extends State<PremiumUserCard> {
       distance = '${DistanceAdapter().adapt(widget.user.distance)}';
     }
 
+    Color textColor = Colors.white;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Flexible(
-          child: TextSF(nameAge, fontSize: 19),
+          child: TextSF(nameAge, fontSize: 17, color: textColor),
         ),
-        TextSF(distance),
+        TextSF(distance, color: textColor),
       ],
     );
   }
