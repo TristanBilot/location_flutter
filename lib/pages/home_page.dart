@@ -150,7 +150,9 @@ class _HomePageContainerState extends State<HomePageContainer>
                         BlocBuilder<CountersCubit, CountersState>(
                             builder: (context, state) {
                           if (state is CounterStoreState &&
-                              state.isANotificationUnread())
+                              state.isANotificationUnread() &&
+                              (state.counter.nbUnreadChats > 0 ||
+                                  state.counter.nbNewMatches > 0))
                             return Align(
                                 alignment: Alignment.topRight,
                                 child: HomePageStatusWithoutCount());
@@ -160,7 +162,26 @@ class _HomePageContainerState extends State<HomePageContainer>
                     )),
                 label: ''),
             BottomNavigationBarItem(
-                icon: HomePageTabBarIcon(Icons.favorite, _tabIndex == 4),
+                icon: Container(
+                    width: 40, // to fix position of status
+                    height: 30,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        HomePageTabBarIcon(Icons.favorite, _tabIndex == 4),
+                        BlocBuilder<CountersCubit, CountersState>(
+                            builder: (context, state) {
+                          if (state is CounterStoreState &&
+                              state.isANotificationUnread() &&
+                              (state.counter.nbNewLikes > 0 ||
+                                  state.counter.nbNewViews > 0))
+                            return Align(
+                                alignment: Alignment.topRight,
+                                child: HomePageStatusWithoutCount());
+                          return SizedBox();
+                        })
+                      ],
+                    )),
                 label: ''),
           ],
           onTap: (index) {

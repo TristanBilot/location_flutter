@@ -75,6 +75,7 @@ class CountersCubit extends Cubit<CountersState> {
       users.forEach((e) => MemoryStore().putUser(e));
 
       emit(NewViewsState(users));
+      _emitCounters();
     });
 
     /// Listens to new incoming likes.
@@ -91,6 +92,7 @@ class CountersCubit extends Cubit<CountersState> {
       users.forEach((e) => MemoryStore().putUser(e));
 
       emit(NewLikesState(users));
+      _emitCounters();
     });
   }
 

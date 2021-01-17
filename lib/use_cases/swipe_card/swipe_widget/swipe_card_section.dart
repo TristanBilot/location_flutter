@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:location_project/helpers/distance_adapter.dart';
@@ -118,7 +120,9 @@ class _SwipeCardSectionState extends State<SwipeCardSection> {
     int index =
         increment ? _displayedPictureIndex + 1 : _displayedPictureIndex - 1;
     if (index >= widget.user.pictureURLs.length || index < 0) {
-      HapticFeedback.vibrate();
+      HapticFeedback.mediumImpact();
+      sleep(const Duration(milliseconds: 200));
+      HapticFeedback.lightImpact();
     } else {
       HapticFeedback.mediumImpact();
       setState(() {
