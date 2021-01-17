@@ -43,7 +43,9 @@ class _PremiumViewsPageState extends State<PremiumViewsPage> {
           });
         }
       },
-      child: _users != null ? PremiumUserGrid(_users) : placeholder(),
+      child: _users != null && _users.isNotEmpty
+          ? PremiumUserGrid(_users)
+          : placeholder(),
     );
   }
 }
