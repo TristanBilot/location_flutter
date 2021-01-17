@@ -108,6 +108,7 @@ class _SwipePageState extends State<SwipePage>
           } else if (orientation == CardSwipeOrientation.RIGHT) {
             _handleRight(_users[index]);
           }
+          UserStore().addView(_users[index].id);
         },
       ),
     );
