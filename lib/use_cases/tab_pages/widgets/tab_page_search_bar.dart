@@ -2,18 +2,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:location_project/widgets/basic_cupertino_text_field.dart';
 
-class TabPageSearchBar extends StatefulWidget {
+class SearchBar extends StatefulWidget {
   final TextEditingController messageEditingController;
 
-  TabPageSearchBar({
+  SearchBar({
     @required this.messageEditingController,
   });
 
   @override
-  _TabPageSearchBarState createState() => _TabPageSearchBarState();
+  _SearchBarState createState() => _SearchBarState();
 }
 
-class _TabPageSearchBarState extends State<TabPageSearchBar> {
+class _SearchBarState extends State<SearchBar> {
   @override
   Widget build(BuildContext context) {
     return BasicCupertinoTextField(

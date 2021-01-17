@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:location_project/helpers/distance_adapter.dart';
 
-class TabPageRichText extends StatelessWidget {
+class ChatTileRichText extends StatelessWidget {
   final String firstName;
   final int distance;
   final bool isMsgUnread;
   final FontWeight readWeight;
   final FontWeight unreadWeight;
 
-  TabPageRichText(
+  ChatTileRichText(
     this.firstName,
     this.distance, {
     this.isMsgUnread = false,

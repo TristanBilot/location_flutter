@@ -19,7 +19,6 @@ import 'package:location_project/use_cases/tab_pages/counters/cubit/counters_cub
 import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif_listener.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/views/cubit/view_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/navigation/cubit/navigation_cubit.dart';
 import 'package:location_project/widgets/home_page_status_without_count.dart';
 import 'package:location_project/widgets/home_page_tab_bar_icon.dart';
@@ -47,7 +46,6 @@ class _HomePageState extends State<HomePage> {
         BlocProvider(create: (context) => NavigationCubit()),
         BlocProvider(create: (context) => SwipeButtonsCubit()),
         BlocProvider(create: (context) => ChatCubit(MessagingReposiory())),
-        BlocProvider(create: (context) => ViewCubit(UserRepository())),
         BlocProvider(create: (context) => EditProfileCubit(UserRepository())),
       ],
       child: HomePageContainer(),

@@ -7,7 +7,6 @@ import 'package:location_project/use_cases/tab_pages/messaging/messaging_reposit
 import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif.dart';
 import 'package:location_project/conf/extensions.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/message_page.dart';
-import 'package:location_project/use_cases/tab_pages/tab_page_views_page.dart';
 
 final _firebaseMessaging = FirebaseMessaging();
 
@@ -48,8 +47,8 @@ Future<dynamic> _onPushNotificationTap(
     return null;
   }
   if (notifType == NotifType.Views) {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => TabPageViewsPage()));
+    // Navigator.push(
+    //     context, MaterialPageRoute(builder: (context) => TabPageViewsPage()));
     return;
   }
   final chatID = MessagingReposiory.getChatID(UserStore().user.id, fromID);

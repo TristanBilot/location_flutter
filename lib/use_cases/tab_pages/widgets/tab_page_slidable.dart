@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-class TabPageSlidable extends StatefulWidget {
+class SlidablePanel extends StatefulWidget {
   final String text1; // Right
   final String text2; // Left
   final Function action1;
@@ -13,7 +13,7 @@ class TabPageSlidable extends StatefulWidget {
   final bool isOnlyOneAction;
   final Widget child;
 
-  TabPageSlidable({
+  SlidablePanel({
     this.text1,
     this.action1,
     this.text2,
@@ -27,10 +27,10 @@ class TabPageSlidable extends StatefulWidget {
   });
 
   @override
-  _TabPageSlidableState createState() => _TabPageSlidableState();
+  _SlidablePanelState createState() => _SlidablePanelState();
 }
 
-class _TabPageSlidableState extends State<TabPageSlidable> {
+class _SlidablePanelState extends State<SlidablePanel> {
   Widget get _defaultCloseIcon => IconSlideAction(
         caption: widget.text1 ?? 'Unmatch',
         color: widget.color1 ?? Colors.redAccent,

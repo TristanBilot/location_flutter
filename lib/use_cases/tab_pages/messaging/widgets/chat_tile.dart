@@ -146,8 +146,8 @@ class _ChatTileState extends State<ChatTile> {
     ]);
   }
 
-  TabPageSlidable _getSlidableWithChild(User user, {@required Widget child}) {
-    return TabPageSlidable(
+  SlidablePanel _getSlidableWithChild(User user, {@required Widget child}) {
+    return SlidablePanel(
       child: child,
       action1: () => _onUnmatchTap(user.firstName),
       action2: () => _onblockTap(user),
@@ -202,7 +202,7 @@ class _ChatTileState extends State<ChatTile> {
                                           children: [
                                             Expanded(
                                               // display name and distance
-                                              child: TabPageRichText(
+                                              child: ChatTileRichText(
                                                 user.firstName,
                                                 user.distance,
                                                 isMsgUnread: isMsgUnread,
