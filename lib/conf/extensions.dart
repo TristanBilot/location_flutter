@@ -7,7 +7,6 @@ import 'package:location_project/use_cases/tab_pages/messaging/models/message.da
 import 'package:location_project/use_cases/tab_pages/messaging/models/reaction.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/view.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif.dart';
-import 'package:location_project/use_cases/tab_pages/tab_page_type.dart';
 
 extension GenderExtension on Gender {
   String get value =>
@@ -30,11 +29,6 @@ extension ChatFieldExtension on ChatField {
 }
 
 extension MessageFieldExtension on MessageField {
-  String get value =>
-      this.toString().substring(this.toString().indexOf('.') + 1);
-}
-
-extension ChatsPageTypeExtension on TabPageType {
   String get value =>
       this.toString().substring(this.toString().indexOf('.') + 1);
 }

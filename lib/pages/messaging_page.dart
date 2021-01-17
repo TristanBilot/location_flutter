@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:location_project/storage/databases/messaging_database.dart';
 import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/storage/memory/memory_store.dart';
 import 'package:location_project/themes/theme_utils.dart';
@@ -13,8 +12,6 @@ import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/chat_tile.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/match_image.dart';
-import 'package:location_project/use_cases/tab_pages/tab_page_type.dart';
-import 'package:location_project/use_cases/tab_pages/widgets/cached_circle_user_image_with_active_status.dart';
 import 'package:location_project/widgets/basic_placeholder.dart';
 import 'package:location_project/widgets/textSF.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +24,6 @@ class MessagingPage extends StatefulWidget {
 }
 
 class _MessagingPageState extends State<MessagingPage> {
-  static const NumberOfChatsToDisplaySearchBar = 10;
   TextEditingController _messageEditingController;
   ScrollController _scrollController;
   ChatFilter _filter;
@@ -160,32 +156,12 @@ class _MessagingPageState extends State<MessagingPage> {
                                             delegate:
                                                 SliverChildBuilderDelegate(
                                           (context, index) {
-                                            bool isFirstIndex = index == 0;
-                                            bool shouldDisplaySearchBar = chats
-                                                    .length >=
-                                                NumberOfChatsToDisplaySearchBar;
-                                            bool
-                                                isLimitBetweenRequestedAndRequests =
-                                                index ==
-                                                    chats.indexWhere((chat) =>
-                                                        chat.requesterID ==
-                                                        UserStore().user.id);
-
+                                            // bool shouldDisplaySearchBar = chats
+                                            //         .length >=
+                                            //     NumberOfChatsToDisplaySearchBar;
                                             return Builder(
                                               builder: (context) => ChatTile(
-                                                tabPageType:
-                                                    TabPageType.Discussions,
                                                 chat: chats[index],
-                                                shouldRefreshCache:
-                                                    _shouldRefreshCache,
-                                                isFirstIndex: isFirstIndex,
-                                                isLimitBetweenRequestedAndRequests:
-                                                    isLimitBetweenRequestedAndRequests,
-                                                shouldDisplaySearchBar:
-                                                    shouldDisplaySearchBar,
-                                                messageEditingController:
-                                                    _messageEditingController,
-                                                setStateDelegate: null,
                                               ),
                                             );
                                           },

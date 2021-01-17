@@ -9,15 +9,12 @@ import 'package:location_project/storage/distant/user_store.dart';
 import 'package:location_project/use_cases/start_path/basic_alert_button.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_cubit.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
-import 'package:location_project/use_cases/tab_pages/tab_page_chats_requests_page.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/cached_circle_user_image_with_active_status.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/message.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/message_page.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
-import 'package:location_project/use_cases/tab_pages/tab_page_type.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/cancelable_dialog.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_rich_text.dart';
-import 'package:location_project/use_cases/tab_pages/widgets/tab_page_search_bar.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_slidable.dart';
 import 'package:location_project/widgets/home_page_status_without_count.dart';
 import 'package:location_project/widgets/textSF.dart';
@@ -26,28 +23,9 @@ import 'package:provider/provider.dart';
 
 class ChatTile extends StatefulWidget {
   final Chat chat;
-  final bool shouldRefreshCache;
-  final TabPageType tabPageType;
-
-  /// Should display a section title for incoming requests on the first tile
-  final bool isFirstIndex;
-
-  /// Should display a section title for requests sent when the first
-  /// requester tile is reached.
-  final bool isLimitBetweenRequestedAndRequests;
-  final bool shouldDisplaySearchBar;
-  final TextEditingController messageEditingController;
-  final SetStateDelegate setStateDelegate;
 
   const ChatTile({
     @required this.chat,
-    @required this.shouldRefreshCache,
-    @required this.tabPageType,
-    this.isFirstIndex = false,
-    this.isLimitBetweenRequestedAndRequests = false,
-    this.shouldDisplaySearchBar,
-    this.messageEditingController,
-    this.setStateDelegate,
   });
 
   @override
@@ -66,7 +44,6 @@ class _ChatTileState extends State<ChatTile> {
   Future<List<dynamic>> _fetch() async {
     final loggedUserID = UserStore().user.id;
     final remainingID = (widget.chat.userIDs..remove(loggedUserID)).first;
-    bool useDatabase = !widget.shouldRefreshCache;
 
     Future<Stream<List<Message>>> futureLastMSg() async =>
         MessagingReposiory().getLastMessage(widget.chat.chatID);
@@ -170,65 +147,10 @@ class _ChatTileState extends State<ChatTile> {
   }
 
   TabPageSlidable _getSlidableWithChild(User user, {@required Widget child}) {
-    switch (widget.tabPageType) {
-      case TabPageType.Discussions:
-        return TabPageSlidable(
-          child: child,
-          action1: () => _onUnmatchTap(user.firstName),
-          action2: () => _onblockTap(user),
-        );
-      case TabPageType.Requests:
-        return TabPageSlidable(
-          isOnlyOneAction: true,
-          child: child,
-          action1: () => _onUnmatchTap(user.firstName),
-          action2: () => _onblockTap(user),
-          text1: 'Remove',
-        );
-      default:
-        return null;
-    }
-  }
-
-  Widget get _searchBar => Padding(
-        padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-        child: TabPageSearchBar(
-          messageEditingController: widget.messageEditingController,
-          setStateDelegate: widget.setStateDelegate,
-        ),
-      );
-
-  Widget _getSectionTitleIfNeeded() {
-    if (widget.tabPageType != TabPageType.Requests ||
-        (!widget.isFirstIndex && !widget.isLimitBetweenRequestedAndRequests))
-      return SizedBox();
-    String text = '';
-    if (widget.isLimitBetweenRequestedAndRequests)
-      text = 'Requests';
-    else if (widget.isFirstIndex) text = 'Invitations';
-    bool isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
-    Color backgroundColor = isDark
-        ? Theme.of(context).primaryColor
-        : Color.fromRGBO(240, 240, 240, 1);
-
-    return Padding(
-      padding: const EdgeInsets.only(top: 10),
-      child: Column(
-        children: [
-          if (widget.isFirstIndex && widget.shouldDisplaySearchBar) _searchBar,
-          Container(
-            width: MediaQuery.of(context).size.width,
-            padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: backgroundColor,
-            ),
-            child: TextSF(
-              text,
-              fontSize: 13,
-            ),
-          ),
-        ],
-      ),
+    return TabPageSlidable(
+      child: child,
+      action1: () => _onUnmatchTap(user.firstName),
+      action2: () => _onblockTap(user),
     );
   }
 
@@ -269,7 +191,6 @@ class _ChatTileState extends State<ChatTile> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _getSectionTitleIfNeeded(),
                             Column(
                               children: [
                                 _getSlidableWithChild(

@@ -7,8 +7,6 @@ import 'package:location_project/use_cases/tab_pages/messaging/messaging_reposit
 import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif.dart';
 import 'package:location_project/conf/extensions.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/widgets/message_page.dart';
-import 'package:location_project/use_cases/tab_pages/tab_page_chats_requests_page.dart';
-import 'package:location_project/use_cases/tab_pages/tab_page_type.dart';
 import 'package:location_project/use_cases/tab_pages/tab_page_views_page.dart';
 
 final _firebaseMessaging = FirebaseMessaging();
@@ -39,11 +37,14 @@ Future<dynamic> _onPushNotificationTap(
   final notifType = Notif.fromString(message[NotifField.type.value]);
   if (fromID.isEmpty || notifType == NotifType.Unknown) {
     Logger().w('listenToNotiofications(): invalid id or type');
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                TabPageChatsRequestsPage(TabPageType.Discussions)));
+
+    /// TODO: change route
+    ///
+    // Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //         builder: (context) =>
+    //             TabPageChatsRequestsPage(TabPageType.Discussions)));
     return null;
   }
   if (notifType == NotifType.Views) {
