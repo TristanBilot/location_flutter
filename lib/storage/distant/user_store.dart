@@ -129,7 +129,7 @@ class UserStore {
     final view = View(_user.id, false);
     _user.viewedUserIDs.add(viewed);
     await _repo.addView(_user.id, UserField.ViewedUserIDs, viewed);
-    await _repo.addView(viewedID, UserField.UserIDsWhoWiewedMe, view);
+    await _repo.addView(viewedID, UserField.UserIDsWhoViewedMe, view);
   }
 
   /// Delete a blocked user in the local store and in the firestore.
@@ -140,34 +140,34 @@ class UserStore {
     await _repo.deleteCollectionSnapshot(
         _user.id, UserField.ViewedUserIDs, viewedID);
     await _repo.deleteCollectionSnapshot(
-        viewedID, UserField.UserIDsWhoWiewedMe, _user.id);
+        viewedID, UserField.UserIDsWhoViewedMe, _user.id);
   }
 
   Future<void> toggleNotificationSettings(NotifType field) async {
-    var messages = NotifType.Messages.value;
-    var chats = NotifType.Chats.value;
-    var requests = NotifType.Requests.value;
-    var views = NotifType.Views.value;
+    var message = NotifType.Message.value;
+    var match = NotifType.Match.value;
+    var view = NotifType.View.value;
+    var like = NotifType.Like.value;
     switch (field) {
-      case NotifType.Messages:
-        var toggle = !_user.settings.notificationSettings[messages];
-        _user.settings.notificationSettings[messages] = toggle;
-        _repo.updateNotificationSettings(_user.id, messages: toggle);
+      case NotifType.Message:
+        var toggle = !_user.settings.notificationSettings[message];
+        _user.settings.notificationSettings[message] = toggle;
+        _repo.updateNotificationSettings(_user.id, message: toggle);
         break;
-      case NotifType.Chats:
-        var toggle = !_user.settings.notificationSettings[chats];
-        _user.settings.notificationSettings[chats] = toggle;
-        _repo.updateNotificationSettings(_user.id, chats: toggle);
+      case NotifType.Match:
+        var toggle = !_user.settings.notificationSettings[match];
+        _user.settings.notificationSettings[match] = toggle;
+        _repo.updateNotificationSettings(_user.id, match: toggle);
         break;
-      case NotifType.Requests:
-        var toggle = !_user.settings.notificationSettings[requests];
-        _user.settings.notificationSettings[requests] = toggle;
-        _repo.updateNotificationSettings(_user.id, requests: toggle);
+      case NotifType.View:
+        var toggle = !_user.settings.notificationSettings[view];
+        _user.settings.notificationSettings[view] = toggle;
+        _repo.updateNotificationSettings(_user.id, view: toggle);
         break;
-      case NotifType.Views:
-        var toggle = !_user.settings.notificationSettings[views];
-        _user.settings.notificationSettings[views] = toggle;
-        _repo.updateNotificationSettings(_user.id, views: toggle);
+      case NotifType.Like:
+        var toggle = !_user.settings.notificationSettings[like];
+        _user.settings.notificationSettings[like] = toggle;
+        _repo.updateNotificationSettings(_user.id, like: toggle);
         break;
       case NotifType.Unknown:
         Logger().w('toggleNotificationSettings(): unknown notif type');

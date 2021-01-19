@@ -5,16 +5,18 @@ const admin = require('firebase-admin');
 
 admin.initializeApp()
 
+const AppName = 'Near';
+
 /// ------------------ Messaging push notifs  ------------------ ///
 
 const DeviceTokensKey = 'DeviceTokens';
 const NotificationSettingsKey = 'NotificationSettings';
 
 /// notif types
-const MessageType = 'Messages';
-const ChatType = 'Chats';
-const RequestType = 'Requests';
-const ViewType = 'Views';
+const MessageType = 'Message';
+const MatchType = 'Match';
+const ViewType = 'View';
+const LikeType = 'Like';
 
 /**
 * Trigger new messages.
@@ -22,6 +24,7 @@ const ViewType = 'Views';
 exports.sendMessage = functions.firestore
 .document('/messages/{chatID}/chats/{msgID}')
 .onCreate((doc, context) => {
+  console.log('++++++++ enter  new message');
   const msg = doc.data();
   const sentToID = msg.SentTo;
   const fromID = msg.SentBy;
@@ -31,26 +34,25 @@ exports.sendMessage = functions.firestore
   const conditionToSendNotifCallback = (userNotifSettings) => {
     return Boolean(userNotifSettings[MessageType]);
   }
-  return _sendPushNotification(sentToID, fromID, title, body, notifType, conditionToSendNotifCallback);
+  return _sendPushNotification(sentToID, fromID, body, title, notifType, conditionToSendNotifCallback);
   });
 
 
 /**
-* Trigger new chats or requests.
+* Trigger new chats (matches).
 */
-exports.sendChatOrRequest = functions.firestore
+exports.sendNewMatch = functions.firestore
 .document('/messages/{chatID}')
 .onCreate((doc, context) => {
+  console.log('++++++++ enter  new match');
   const chat = doc.data();
   const sentToID = chat.UserIDs[1]; // requested ID
   const fromID = chat.UserIDs[0]; // requester ID
-  const isChat = Boolean(chat.IsChatEngaged); // or request
-  const title = chat.UserNames[1];
-  const body = isChat ? 'New chat 🔥' : 'New request 🔥'; // penser à traduire en checkant le language du user
-  const notifType = isChat ? ChatType : RequestType;
+  const title = AppName;
+  const body = 'New match with ' + chat.UserNames[0] + ' 🔥'; // penser à traduire en checkant le language du user
+  const notifType = MatchType;
   const conditionToSendNotifCallback = (userNotifSettings) => {
-    return (isChat && Boolean(userNotifSettings[ChatType])) ||
-    (!isChat && Boolean(userNotifSettings[RequestType]));
+    return Boolean(userNotifSettings[MatchType]);
   }
   return _sendPushNotification(sentToID, fromID, body, title, notifType, conditionToSendNotifCallback);
   });
@@ -59,15 +61,34 @@ exports.sendChatOrRequest = functions.firestore
 * Trigger new profile views.
 */
 exports.sendView = functions.firestore
-.document('/locations/{userID}/UserIDsWhoWiewedMe/{fromID}')
+.document('/locations/{userID}/UserIDsWhoViewedMe/{fromID}')
 .onCreate((doc, context) => {
+  console.log('++++++++ enter  new view');
   const sentToID = context.params.userID;
   const fromID = context.params.fromID;
-  const title = 'Someone viewed your profile!';
-  const body = 'Engage now a conversation 😍'; // penser à traduire en checkant le language du user
+  const title = AppName;
+  const body = 'Someone viewed your profile 😍'; // penser à traduire en checkant le language du user
   const notifType = ViewType;
   const conditionToSendNotifCallback = (userNotifSettings) => {
     return Boolean(userNotifSettings[ViewType]);
+  }
+  return _sendPushNotification(sentToID, fromID, body, title, notifType, conditionToSendNotifCallback);
+  });
+
+  /**
+* Trigger new profile likes.
+*/
+exports.sendLike = functions.firestore
+.document('/locations/{userID}/UsersWhoLikedMe/{fromID}')
+.onCreate((doc, context) => {
+  console.log('++++++++ enter  new like');
+  const sentToID = context.params.userID;
+  const fromID = context.params.fromID;
+  const title = AppName;
+  const body = 'Someone liked your profile ❤️'; // penser à traduire en checkant le language du user
+  const notifType = LikeType;
+  const conditionToSendNotifCallback = (userNotifSettings) => {
+    return Boolean(userNotifSettings[LikeType]);
   }
   return _sendPushNotification(sentToID, fromID, body, title, notifType, conditionToSendNotifCallback);
   });

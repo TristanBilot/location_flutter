@@ -21,7 +21,6 @@ class InitController {
       await _initDatabases();
       await _initNotFoundImageURL();
     }
-    _initAtFirstAppLaunch();
   }
 
   Future initAfterLogin(String loggedID) async {
@@ -34,13 +33,6 @@ class InitController {
   Future initAfterStartPath(User newUser) async {
     await LocalStore().rememberLoggedUser(newUser.id);
     await UserStore().initAsynchronously(fromUser: newUser);
-  }
-
-  Future _initAtFirstAppLaunch() async {
-    if (LocalStore().getIsFirstAppLaunch()) {
-      DeviceIDController().removeDuplicateExistingDeviceID();
-    }
-    LocalStore().setIsFirstAppLaunch(false);
   }
 
   Future _initDatabases() async {

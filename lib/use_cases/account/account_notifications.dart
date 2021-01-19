@@ -20,38 +20,38 @@ class _AccountNotificationsPageState extends State<AccountNotificationsPage> {
           AccountListTile(
             title: 'Messages',
             trailing: Switch.adaptive(
-              value: UserStore().user.getNotifSett(NotifType.Messages),
+              value: UserStore().user.getNotifSett(NotifType.Message),
               onChanged: (_) {
-                UserStore().toggleNotificationSettings(NotifType.Messages);
+                UserStore().toggleNotificationSettings(NotifType.Message);
                 setState(() => {});
               },
             ),
           ),
           AccountListTile(
-            title: 'Conversations',
+            title: 'Matches',
             trailing: Switch.adaptive(
-                value: UserStore().user.getNotifSett(NotifType.Chats),
+                value: UserStore().user.getNotifSett(NotifType.Match),
                 onChanged: (_) {
-                  UserStore().toggleNotificationSettings(NotifType.Chats);
+                  UserStore().toggleNotificationSettings(NotifType.Match);
                   setState(() => {});
                 }),
           ),
           AccountListTile(
-            title: 'Requests',
+            title: 'Views',
             trailing: Switch.adaptive(
-                value: UserStore().user.getNotifSett(NotifType.Requests),
+                value: UserStore().user.getNotifSett(NotifType.View),
                 onChanged: (_) {
-                  UserStore().toggleNotificationSettings(NotifType.Requests);
+                  UserStore().toggleNotificationSettings(NotifType.View);
                   setState(() => {});
                 }),
           ),
           AccountListTile(
-            title: 'Profile views',
+            title: 'Likes',
             withDivider: false,
             trailing: Switch.adaptive(
-                value: UserStore().user.getNotifSett(NotifType.Views),
+                value: UserStore().user.getNotifSett(NotifType.Like),
                 onChanged: (_) {
-                  UserStore().toggleNotificationSettings(NotifType.Views);
+                  UserStore().toggleNotificationSettings(NotifType.Like);
                   setState(() => {});
                 }),
           ),

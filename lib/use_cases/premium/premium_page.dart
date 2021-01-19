@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/storage/databases/messaging_database.dart';
 import 'package:location_project/themes/theme_utils.dart';
 import 'package:location_project/use_cases/premium/premium_likes_page.dart';
+import 'package:location_project/use_cases/premium/premium_nav_cubit/premium_nav_cubit.dart';
 import 'package:location_project/use_cases/premium/premium_views_page.dart';
 import 'package:location_project/use_cases/tab_pages/counters/cubit/counters_cubit.dart';
 import 'package:location_project/widgets/textSF.dart';
@@ -12,6 +13,11 @@ import 'package:location_project/widgets/textSF.dart';
 class PremiumPage extends StatefulWidget {
   static final GlobalKey<ScaffoldState> scaffoldKey =
       GlobalKey<ScaffoldState>();
+
+  final initialIndex;
+
+  PremiumPage({this.initialIndex = 0});
+
   @override
   _PremiumPageState createState() => _PremiumPageState();
 }
@@ -26,7 +32,7 @@ class _PremiumPageState extends State<PremiumPage> {
   void initState() {
     super.initState();
 
-    _index = 0;
+    _index = widget.initialIndex;
     _messagingDatabase = MessagingDatabase();
     _initCounters();
   }
@@ -46,6 +52,10 @@ class _PremiumPageState extends State<PremiumPage> {
     return '$_nbLikes like${_nbLikes == 1 ? "" : "s"}';
   }
 
+  void _onSwitchPage(int index) {
+    setState(() => _index = index);
+  }
+
   Widget _getIndicatorTextWidget(String text, int index) {
     bool isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
     bool isSelected = index == _index;
@@ -55,7 +65,7 @@ class _PremiumPageState extends State<PremiumPage> {
     else
       color = isDark ? Colors.white60 : Colors.black38;
     return GestureDetector(
-      onTap: () => setState(() => _index = index),
+      onTap: () => _onSwitchPage(index),
       child: TextSF(
         text,
         fontSize: 22,
@@ -67,69 +77,76 @@ class _PremiumPageState extends State<PremiumPage> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      key: PremiumPage.scaffoldKey,
-      child: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return [
-            CupertinoSliverNavigationBar(
-              heroTag: 'tag4',
-              largeTitle: Text(
-                'Who like you',
-                style: TextStyle(
-                    color: ThemeUtils.getBlackIfLightAndWhiteIfDark(context)),
-              ),
-            )
-          ];
-        },
-        body: GestureDetector(
-          onTap: () {
-            FocusScopeNode currentFocus = FocusScope.of(context);
-            if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
-          },
-          child: Column(
-            children: [
-              Container(
-                padding: EdgeInsets.only(top: 20, bottom: 10),
-                child: BlocListener<CountersCubit, CountersState>(
-                  listener: (context, state) {
-                    if (state is CounterStoreState)
-                      setState(() {
-                        _nbLikes = state.counter.nbLikes;
-                        _nbViews = state.counter.nbViews;
-                      });
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Spacer(),
-                      Flexible(
-                        child: _getIndicatorTextWidget(
-                          _formatLikesIndicatorText(),
-                          0,
-                        ),
-                      ),
-                      Spacer(),
-                      _getIndicatorTextWidget(
-                        _formatViewsIndicatorText(),
-                        1,
-                      ),
-                      Spacer(),
-                    ],
-                  ),
-                ),
-              ),
-              Divider(),
-              Flexible(
-                child: IndexedStack(
-                  index: _index,
-                  children: [
-                    Builder(builder: (context) => PremiumLikesPage()),
-                    Builder(builder: (context) => PremiumViewsPage()),
-                  ],
+    return BlocListener<PremiumNavCubit, PremiumNavState>(
+      listener: (context, state) {
+        if (state is PremiumNavCubitIndexSwitched) {
+          _onSwitchPage(state.index);
+        }
+      },
+      child: CupertinoPageScaffold(
+        key: PremiumPage.scaffoldKey,
+        child: NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return [
+              CupertinoSliverNavigationBar(
+                heroTag: 'tag4',
+                largeTitle: Text(
+                  'Who like you',
+                  style: TextStyle(
+                      color: ThemeUtils.getBlackIfLightAndWhiteIfDark(context)),
                 ),
               )
-            ],
+            ];
+          },
+          body: GestureDetector(
+            onTap: () {
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
+            },
+            child: Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.only(top: 20, bottom: 10),
+                  child: BlocListener<CountersCubit, CountersState>(
+                    listener: (context, state) {
+                      if (state is CounterStoreState)
+                        setState(() {
+                          _nbLikes = state.counter.nbLikes;
+                          _nbViews = state.counter.nbViews;
+                        });
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Spacer(),
+                        Flexible(
+                          child: _getIndicatorTextWidget(
+                            _formatLikesIndicatorText(),
+                            0,
+                          ),
+                        ),
+                        Spacer(),
+                        _getIndicatorTextWidget(
+                          _formatViewsIndicatorText(),
+                          1,
+                        ),
+                        Spacer(),
+                      ],
+                    ),
+                  ),
+                ),
+                Divider(),
+                Flexible(
+                  child: IndexedStack(
+                    index: _index,
+                    children: [
+                      Builder(builder: (context) => PremiumLikesPage()),
+                      Builder(builder: (context) => PremiumViewsPage()),
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

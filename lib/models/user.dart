@@ -36,7 +36,7 @@ enum UserField {
   BlockedUserIDs,
   UserIDsWhoBlockedMe,
   ViewedUserIDs,
-  UserIDsWhoWiewedMe,
+  UserIDsWhoViewedMe,
   LikedUsers,
   UnlikedUsers,
   UsersWhoLikedMe,
@@ -65,7 +65,7 @@ class User extends Equatable {
   List<String> blockedUserIDs;
   List<String> userIDsWhoBlockedMe;
   List<View> viewedUserIDs;
-  List<View> userIDsWhoWiewedMe;
+  List<View> userIDsWhoViewedMe;
   List<String> unlikedUsers;
   List<String> likedUsers;
 
@@ -85,7 +85,7 @@ class User extends Equatable {
     this.blockedUserIDs,
     this.userIDsWhoBlockedMe,
     this.viewedUserIDs,
-    this.userIDsWhoWiewedMe,
+    this.userIDsWhoViewedMe,
     this.deviceTokens,
     this.bio,
   ) {
@@ -107,7 +107,7 @@ class User extends Equatable {
         this.blockedUserIDs,
         this.userIDsWhoBlockedMe,
         this.viewedUserIDs,
-        this.userIDsWhoWiewedMe,
+        this.userIDsWhoViewedMe,
         this.deviceTokens,
         this.bio,
       ];
@@ -115,13 +115,13 @@ class User extends Equatable {
   bool getNotifSett(NotifType key) => settings.notificationSettings[key.value];
 
   bool get isMessageNotifEnable =>
-      settings.notificationSettings[NotifType.Messages.value];
+      settings.notificationSettings[NotifType.Message.value];
   bool get isChatNotifEnable =>
-      settings.notificationSettings[NotifType.Chats.value];
+      settings.notificationSettings[NotifType.Match.value];
   bool get isRequestNotifEnable =>
-      settings.notificationSettings[NotifType.Requests.value];
+      settings.notificationSettings[NotifType.View.value];
   bool get isViewNotifEnable =>
-      settings.notificationSettings[NotifType.Views.value];
+      settings.notificationSettings[NotifType.Like.value];
 
   String get mainPictureURL => pictureURLs.first;
 
@@ -152,7 +152,7 @@ class User extends Equatable {
     }
     if (views != null) {
       this.viewedUserIDs = views.viewedUserIDs;
-      this.userIDsWhoWiewedMe = views.userIDsWhoWiewedMe;
+      this.userIDsWhoViewedMe = views.userIDsWhoViewedMe;
     }
     if (likes != null) {
       this.unlikedUsers = likes.unlikedUsers;

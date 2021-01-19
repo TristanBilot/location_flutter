@@ -121,7 +121,7 @@ class _SwipeCardSectionState extends State<SwipeCardSection> {
         increment ? _displayedPictureIndex + 1 : _displayedPictureIndex - 1;
     if (index >= widget.user.pictureURLs.length || index < 0) {
       HapticFeedback.mediumImpact();
-      sleep(const Duration(milliseconds: 200));
+      sleep(const Duration(milliseconds: 150));
       HapticFeedback.lightImpact();
     } else {
       HapticFeedback.mediumImpact();

@@ -42,10 +42,10 @@ class UserSettings {
     Gender.Male
   ];
   static final Map<String, bool> DefaultNotificationSettings = {
-    NotifType.Messages.value: true,
-    NotifType.Chats.value: true,
-    NotifType.Requests.value: true,
-    NotifType.Views.value: true,
+    NotifType.Message.value: true,
+    NotifType.Match.value: true,
+    NotifType.View.value: true,
+    NotifType.Like.value: true,
   };
 
   static UserSettings fromFirestoreObject(dynamic data) {

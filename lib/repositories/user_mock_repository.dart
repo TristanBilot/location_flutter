@@ -79,7 +79,7 @@ class UserMockRepository {
     await UserRepository().deleteCollection(id, UserField.BlockedUserIDs);
     await UserRepository().deleteCollection(id, UserField.UserIDsWhoBlockedMe);
     await UserRepository().deleteCollection(id, UserField.ViewedUserIDs);
-    await UserRepository().deleteCollection(id, UserField.UserIDsWhoWiewedMe);
+    await UserRepository().deleteCollection(id, UserField.UserIDsWhoViewedMe);
     await _firestore.collection(UserRepository.RootKey).doc(id).delete();
 
     List<String> pictureURLs = await _insertMockPicture(id);
@@ -97,7 +97,7 @@ class UserMockRepository {
           [],
           UserSettings.DefaultNotificationSettings,
           pictureURLs,
-          'This is my bio ☀️',
+          'This is my bio ☀️ \n' + id,
         ).toFirestoreObject());
     await UserRepository().addLikeField(
         id, UserField.LikedUsers, id == id1['id'] ? id2['id'] : id1['id']);

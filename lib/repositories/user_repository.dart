@@ -302,7 +302,7 @@ class UserRepository {
     return _firestore
         .collection(RootKey)
         .doc(id)
-        .collection(UserField.UserIDsWhoWiewedMe.value)
+        .collection(UserField.UserIDsWhoViewedMe.value)
         .snapshots()
         .transform(StreamAdapter().mapToListOfEntries<View>());
   }
@@ -311,7 +311,7 @@ class UserRepository {
     return (await _firestore
             .collection(RootKey)
             .doc(id)
-            .collection(UserField.UserIDsWhoWiewedMe.value)
+            .collection(UserField.UserIDsWhoViewedMe.value)
             .get())
         .docs
         .map((view) => View.fromFirestoreObject(view.data()))
@@ -346,6 +346,10 @@ class UserRepository {
   /// still in the user's device IDs, so at the next login from another account,
   /// after the app has been reinstalled, we need to delete the obsolete existing device ID
   /// from the previous account used when that app had been uninstalled.
+  ///
+  /// Edit: Normally not necessary to use, because of automatic regeneration of
+  /// the device ID at each app reinstallation
+  @deprecated
   Future<void> removeDuplicateExistingDeviceID(String deviceID) async {
     List<String> userIDsToUpdate = List();
     await _firestore
@@ -360,27 +364,27 @@ class UserRepository {
 
   Future<void> updateNotificationSettings(
     String id, {
-    bool messages,
-    bool chats,
-    bool requests,
-    bool views,
+    bool message,
+    bool match,
+    bool view,
+    bool like,
   }) async {
-    if (messages == null && chats == null && requests == null && views == null)
+    if (message == null && match == null && view == null && like == null)
       return;
     String key = '${UserField.NotificationSettings.value}.';
     bool value;
-    if (messages != null) {
-      key += NotifType.Messages.value;
-      value = messages;
-    } else if (chats != null) {
-      key += NotifType.Chats.value;
-      value = chats;
-    } else if (requests != null) {
-      key += NotifType.Requests.value;
-      value = requests;
-    } else if (views != null) {
-      key += NotifType.Views.value;
-      value = views;
+    if (message != null) {
+      key += NotifType.Message.value;
+      value = message;
+    } else if (match != null) {
+      key += NotifType.Match.value;
+      value = match;
+    } else if (view != null) {
+      key += NotifType.View.value;
+      value = view;
+    } else if (like != null) {
+      key += NotifType.Like.value;
+      value = like;
     }
     _firestore.collection(RootKey).doc(id).update({key: value});
   }

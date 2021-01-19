@@ -1,8 +1,12 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/helpers/logger.dart';
+import 'package:location_project/pages/home_page.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/storage/distant/user_store.dart';
+import 'package:location_project/use_cases/premium/premium_nav_cubit/premium_nav_cubit.dart';
+import 'package:location_project/use_cases/premium/premium_page.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif.dart';
 import 'package:location_project/conf/extensions.dart';
@@ -34,33 +38,67 @@ Future<dynamic> _onPushNotificationTap(
 ) async {
   final fromID = (message[NotifField.fromID.value] ?? '') as String;
   final notifType = Notif.fromString(message[NotifField.type.value]);
-  if (fromID.isEmpty || notifType == NotifType.Unknown) {
-    Logger().w('listenToNotiofications(): invalid id or type');
 
-    /// TODO: change route
-    ///
-    // Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //         builder: (context) =>
-    //             TabPageChatsRequestsPage(TabPageType.Discussions)));
+  if (fromID.isEmpty) {
+    Logger().w('listenToNotiofications(): invalid id or type');
+    _handleUnknown(context);
     return null;
   }
-  if (notifType == NotifType.Views) {
-    // Navigator.push(
-    //     context, MaterialPageRoute(builder: (context) => TabPageViewsPage()));
-    return;
+
+  switch (notifType) {
+    case NotifType.Message:
+      await _handleNewMessage(fromID, context);
+      break;
+    case NotifType.Match:
+      await _handleNewMatch(fromID, context);
+      break;
+    case NotifType.View:
+      _handleNewView(context);
+      break;
+    case NotifType.Like:
+      _handleNewLike(context);
+      break;
+    case NotifType.Unknown:
+      Logger().w(
+          'listenToNotiofications(): received an "Unknown" push notification.');
+      _handleUnknown(context);
+      break;
   }
+}
+
+void _logNotif(Map<String, dynamic> message, String handler) {
+  final from = message[NotifField.fromID.value] ?? '';
+  Logger().i('New notification $handler from $from');
+}
+
+Future _handleNewMessage(String fromID, BuildContext context) async {
   final chatID = MessagingReposiory.getChatID(UserStore().user.id, fromID);
   final user = await UserRepository().fetchUser(fromID, withInfos: true);
   final chat = await MessagingReposiory().getChatAsChat(chatID);
+
   Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) => MessagePage(chat: chat, user: user)));
 }
 
-void _logNotif(Map<String, dynamic> message, String handler) {
-  final from = message[NotifField.fromID.value] ?? '';
-  Logger().i('New notification $handler from $from');
+Future _handleNewMatch(String fromID, BuildContext context) async {
+  _handleNewMessage(fromID, context);
+}
+
+Future _handleNewView(BuildContext context) async {
+  PremiumPage.scaffoldKey.currentContext.read<PremiumNavCubit>().goTo(1);
+  final BottomNavigationBar appBar = HomePage.appBarNavigationKey.currentWidget;
+  appBar.onTap(4);
+}
+
+Future _handleNewLike(BuildContext context) async {
+  PremiumPage.scaffoldKey.currentContext.read<PremiumNavCubit>().goTo(0);
+  final BottomNavigationBar appBar = HomePage.appBarNavigationKey.currentWidget;
+  appBar.onTap(4);
+}
+
+Future _handleUnknown(BuildContext context) async {
+  final BottomNavigationBar appBar = HomePage.appBarNavigationKey.currentWidget;
+  appBar.onTap(3);
 }

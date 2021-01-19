@@ -93,13 +93,13 @@ class LocalStore {
     return _prefs.getString(CurrentDeviceIDKey);
   }
 
+  // FirstAppLaunch not used now
   Future<void> setIsFirstAppLaunch(bool isLaunch) async {
     await _prefs.setBool(IsFirstAppLaunchKey, isLaunch);
   }
 
   bool getIsFirstAppLaunch() {
-    if (!_prefs.containsKey(IsFirstAppLaunchKey)) return true;
-    return _prefs.getBool(IsFirstAppLaunchKey);
+    return _prefs.getBool(IsFirstAppLaunchKey) ?? true;
   }
 
   Future<void> setNotFoundImagePictureURL(String url) async {

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/controllers/app_badge_controller.dart';
 import 'package:location_project/controllers/location_controller.dart';
 import 'package:location_project/pages/messaging_page.dart';
+import 'package:location_project/use_cases/premium/premium_nav_cubit/premium_nav_cubit.dart';
 import 'package:location_project/use_cases/premium/premium_page.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/storage/databases/messaging_database.dart';
@@ -26,6 +27,9 @@ import 'package:location_project/widgets/home_page_tab_bar_image_icon.dart';
 import 'package:preload_page_view/preload_page_view.dart';
 
 class HomePage extends StatefulWidget {
+  static final GlobalKey appBarNavigationKey =
+      GlobalKey(debugLabel: 'app_bar_global_key');
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -47,6 +51,7 @@ class _HomePageState extends State<HomePage> {
         BlocProvider(create: (context) => SwipeButtonsCubit()),
         BlocProvider(create: (context) => ChatCubit(MessagingReposiory())),
         BlocProvider(create: (context) => EditProfileCubit(UserRepository())),
+        BlocProvider(create: (context) => PremiumNavCubit()),
       ],
       child: HomePageContainer(),
     );
@@ -126,6 +131,7 @@ class _HomePageContainerState extends State<HomePageContainer>
             setState(() => _tabIndex = state.index);
         },
         child: BottomNavigationBar(
+          key: HomePage.appBarNavigationKey,
           currentIndex: _tabIndex,
           type: BottomNavigationBarType.shifting,
           items: [

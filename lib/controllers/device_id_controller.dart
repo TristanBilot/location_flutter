@@ -22,6 +22,7 @@ class DeviceIDController {
     UserRepository().removeDeviceID(id, deviceID);
   }
 
+  @deprecated
   Future removeDuplicateExistingDeviceID() async {
     final deviceID = LocalStore().getCurrentDeviceID();
     UserRepository().removeDuplicateExistingDeviceID(deviceID);
