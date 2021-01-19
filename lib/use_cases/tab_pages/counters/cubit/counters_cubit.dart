@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +14,8 @@ import 'package:location_project/use_cases/tab_pages/filters/request_filter.dart
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/view.dart';
-import 'package:location_project/utils/toaster/types/chat_toaster.dart';
-import 'package:location_project/utils/toaster/types/request_toaster.dart';
+import 'package:location_project/utils/toaster/types/like_toaster.dart';
+import 'package:location_project/utils/toaster/types/new_match_toaster.dart';
 import 'package:location_project/utils/toaster/types/view_toaster.dart';
 
 part 'counters_state.dart';
@@ -32,7 +30,6 @@ class CountersCubit extends Cubit<CountersState> {
   ) : super(CountersInitial(Counter(0, 0, 0, 0, 0, 0, 0)));
 
   Set<String> _previousChats;
-  Set<String> _previousRequests;
   Set<String> _previousViews;
   Set<String> _previousLikes;
 
@@ -43,7 +40,7 @@ class CountersCubit extends Cubit<CountersState> {
     final likesStream =
         UserRepository().getCollectionListOfIDs(id, UserField.UsersWhoLikedMe);
 
-    /// Listens to new chats & requests.
+    /// Listens to new chats.
     chatsStream.listen((chats) {
       final filteredMatches = ChatsFilter().filter(chats, '');
       final filteredNewMatches = NewMatchFilter().filter(chats, '');
@@ -56,8 +53,7 @@ class CountersCubit extends Cubit<CountersState> {
       _database.put(nbNewMatches: nbNewMatches);
       _database.put(nbUnreadChats: nbUnreadChats);
 
-      _triggerChatToaster(filteredMatches);
-      _triggerRequestToaster(filteredNewMatches);
+      _triggerNewMatchToaster(filteredNewMatches);
 
       _emitCounters();
     });
@@ -73,6 +69,8 @@ class CountersCubit extends Cubit<CountersState> {
       final ids = views.map((e) => e.id).toList();
       final users = await UsersFromIDsFetcher().fetch(ids);
       users.forEach((e) => MemoryStore().putUser(e));
+
+      _triggerViewToaster(views);
 
       emit(NewViewsState(users));
       _emitCounters();
@@ -90,6 +88,8 @@ class CountersCubit extends Cubit<CountersState> {
 
       final users = await UsersFromIDsFetcher().fetch(likes);
       users.forEach((e) => MemoryStore().putUser(e));
+
+      _triggerLikeToaster(likes);
 
       emit(NewLikesState(users));
       _emitCounters();
@@ -111,30 +111,17 @@ class CountersCubit extends Cubit<CountersState> {
     AppBadgeController().updateAppBadge();
   }
 
-  void _triggerChatToaster(List<Chat> filteredMatches) {
+  void _triggerNewMatchToaster(List<Chat> filteredNewMatches) {
     if (_previousChats != null)
-      for (var chat in filteredMatches)
-        if (!_previousChats.contains(chat.chatID) &&
-            MemoryStore().shouldDisplayChatToast &&
-            UserStore().user.isChatNotifEnable &&
-            !chat.iAmRequester)
-          ChatToaster(context, chat, chat.otherParticipantID).show();
-    Set<String> newChats = Set();
-    filteredMatches.forEach((chat) => newChats.add(chat.chatID));
-    _previousChats = newChats;
-  }
-
-  void _triggerRequestToaster(List<Chat> filteredNewMatches) {
-    if (_previousRequests != null)
       for (var chat in filteredNewMatches)
-        if (!_previousRequests.contains(chat.chatID) &&
+        if (!_previousChats.contains(chat.chatID) &&
             MemoryStore().shouldDisplayRequestToast &&
             UserStore().user.isRequestNotifEnable &&
             !chat.iAmRequester)
-          RequestToaster(context, chat, chat.otherParticipantID).show();
+          NewMatchToaster(context, chat, chat.otherParticipantID).show();
     Set<String> newRequests = Set();
     filteredNewMatches.forEach((req) => newRequests.add(req.chatID));
-    _previousRequests = newRequests;
+    _previousChats = newRequests;
   }
 
   void _triggerViewToaster(List<View> views) {
@@ -153,9 +140,9 @@ class CountersCubit extends Cubit<CountersState> {
     if (_previousLikes != null)
       for (var like in likeIDs)
         if (!_previousLikes.contains(like) &&
-            MemoryStore().shouldDisplayViewToast && // TODO: A FAIRE
+            MemoryStore().shouldDisplayViewToast &&
             UserStore().user.isViewNotifEnable)
-          ViewToaster(context, like).show();
+          LikeToaster(context, like).show();
     Set<String> newLikes = Set();
     likeIDs.forEach((like) => newLikes.add(like));
     _previousLikes = newLikes;

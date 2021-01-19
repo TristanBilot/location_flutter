@@ -1,16 +1,12 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:location_project/controllers/navigation_controller.dart';
 import 'package:location_project/helpers/logger.dart';
-import 'package:location_project/pages/home_page.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/storage/distant/user_store.dart';
-import 'package:location_project/use_cases/premium/premium_nav_cubit/premium_nav_cubit.dart';
-import 'package:location_project/use_cases/premium/premium_page.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/notifications/notif.dart';
 import 'package:location_project/conf/extensions.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/widgets/message_page.dart';
 
 final _firebaseMessaging = FirebaseMessaging();
 
@@ -76,10 +72,7 @@ Future _handleNewMessage(String fromID, BuildContext context) async {
   final user = await UserRepository().fetchUser(fromID, withInfos: true);
   final chat = await MessagingReposiory().getChatAsChat(chatID);
 
-  Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => MessagePage(chat: chat, user: user)));
+  NavigationController().navigateToMessagePage(user, chat, context);
 }
 
 Future _handleNewMatch(String fromID, BuildContext context) async {
@@ -87,18 +80,13 @@ Future _handleNewMatch(String fromID, BuildContext context) async {
 }
 
 Future _handleNewView(BuildContext context) async {
-  PremiumPage.scaffoldKey.currentContext.read<PremiumNavCubit>().goTo(1);
-  final BottomNavigationBar appBar = HomePage.appBarNavigationKey.currentWidget;
-  appBar.onTap(4);
+  NavigationController().navigateToPremiumViewPage();
 }
 
 Future _handleNewLike(BuildContext context) async {
-  PremiumPage.scaffoldKey.currentContext.read<PremiumNavCubit>().goTo(0);
-  final BottomNavigationBar appBar = HomePage.appBarNavigationKey.currentWidget;
-  appBar.onTap(4);
+  NavigationController().navigateToPremiumLikePage();
 }
 
 Future _handleUnknown(BuildContext context) async {
-  final BottomNavigationBar appBar = HomePage.appBarNavigationKey.currentWidget;
-  appBar.onTap(3);
+  NavigationController().navigateToMessagingPage();
 }

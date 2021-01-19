@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_project/adapters/time_adapter.dart';
+import 'package:location_project/controllers/navigation_controller.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/repositories/user/user_mandatory_info_fetcher.dart';
 import 'package:location_project/repositories/user_repository.dart';
@@ -11,7 +12,6 @@ import 'package:location_project/use_cases/tab_pages/messaging/chats/cubit/chat_
 import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/cached_circle_user_image_with_active_status.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/message.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/widgets/message_page.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/messaging_repository.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/cancelable_dialog.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/tab_page_rich_text.dart';
@@ -66,17 +66,14 @@ class _ChatTileState extends State<ChatTile> {
     return chat.myActivitySeen == false;
   }
 
-  _onTileTap(BuildContext thisContext, User user, bool isChatEngaged,
-      Message lastMsg) {
-    Navigator.push(
-      thisContext,
-      MaterialPageRoute(
-        builder: (context) => MessagePage(
-          chat: widget.chat,
-          user: user,
-        ),
-      ),
-    );
+  _onTileTap(
+    BuildContext thisContext,
+    User user,
+    bool isChatEngaged,
+    Message lastMsg,
+  ) {
+    NavigationController()
+        .navigateToMessagePage(user, widget.chat, thisContext);
   }
 
   _onblockTap(User user) {

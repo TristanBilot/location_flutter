@@ -1,5 +1,6 @@
 import 'package:location_project/controllers/device_id_controller.dart';
 import 'package:location_project/controllers/location_controller.dart';
+import 'package:location_project/controllers/messaging_controller.dart';
 import 'package:location_project/repositories/image_repository.dart';
 import 'package:location_project/storage/shared preferences/local_store.dart';
 import 'package:location_project/storage/databases/messaging_database.dart';
@@ -20,6 +21,7 @@ class InitController {
       }
       await _initDatabases();
       await _initNotFoundImageURL();
+      MessagingController().handleMessages();
     }
   }
 

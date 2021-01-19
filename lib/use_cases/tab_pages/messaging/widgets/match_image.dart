@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:location_project/controllers/navigation_controller.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/repositories/user/user_mandatory_info_fetcher.dart';
 import 'package:location_project/repositories/user_repository.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/widgets/message_page.dart';
 import 'package:location_project/use_cases/tab_pages/widgets/cached_circle_user_image_with_active_status.dart';
 import 'package:location_project/widgets/textSF.dart';
 
@@ -28,15 +28,8 @@ class _MatchImageState extends State<MatchImage> {
   }
 
   _onTap(BuildContext thisContext, User user) {
-    Navigator.push(
-      thisContext,
-      MaterialPageRoute(
-        builder: (context) => MessagePage(
-          chat: widget.chat,
-          user: user,
-        ),
-      ),
-    );
+    NavigationController()
+        .navigateToMessagePage(user, widget.chat, thisContext);
   }
 
   @override

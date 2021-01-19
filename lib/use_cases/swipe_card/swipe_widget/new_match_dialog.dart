@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:location_project/controllers/navigation_controller.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/themes/dark_theme.dart';
 import 'package:location_project/themes/light_theme.dart';
 import 'package:location_project/use_cases/tab_pages/messaging/models/chat.dart';
-import 'package:location_project/use_cases/tab_pages/messaging/widgets/message_page.dart';
 import 'package:location_project/widgets/cached_circle_user_image.dart';
 import 'package:location_project/use_cases/start_path/widgets/basic_button.dart';
 import 'package:location_project/use_cases/start_path/widgets/basic_gradient_border_button.dart';
@@ -92,11 +92,8 @@ class _NewMatchDialogState extends State<NewMatchDialog> {
                       width: MediaQuery.of(context).size.width * 0.7,
                       onPressed: () {
                         Navigator.of(context).pop();
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => MessagePage(
-                                    chat: widget.chat, user: widget.user)));
+                        NavigationController().navigateToMessagePage(
+                            widget.user, widget.chat, context);
                       },
                     ),
                     SizedBox(height: 10),

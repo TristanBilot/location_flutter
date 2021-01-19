@@ -1,4 +1,3 @@
-// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:location_project/models/user.dart';
 import 'package:location_project/themes/dark_theme.dart';
@@ -6,14 +5,9 @@ import 'package:location_project/utils/toaster/toaster_library.dart';
 import 'package:location_project/widgets/cached_circle_user_image.dart';
 import 'package:location_project/widgets/textSF.dart';
 
-enum MessageToastType {
-  Discussion,
-  Request,
-  View,
-  Message,
+abstract class Toaster {
+  Future show();
 }
-
-abstract class Toaster {}
 
 class ToasterWidget extends StatelessWidget {
   final FToast fToast = FToast();
