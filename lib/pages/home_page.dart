@@ -139,7 +139,7 @@ class _HomePageContainerState extends State<HomePageContainer>
                 icon: HomePageTabBarIcon(Icons.account_circle, _tabIndex == 0),
                 label: ''),
             BottomNavigationBarItem(
-                icon: HomePageTabBarIcon(Icons.swipe, _tabIndex == 1),
+                icon: HomePageTabBarIcon(Icons.swap_horiz, _tabIndex == 1),
                 label: ''),
             BottomNavigationBarItem(
                 icon: HomePageTabBarImageIcon(_tabIndex == 2), label: ''),

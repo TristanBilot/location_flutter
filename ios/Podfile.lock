@@ -148,9 +148,9 @@ PODS:
   - Protobuf (3.13.0)
   - shared_preferences (0.0.1):
     - Flutter
-  - sqflite (0.0.2):
+  - sqflite (0.0.1):
     - Flutter
-    - FMDB (>= 2.7.5)
+    - FMDB (~> 2.7.2)
   - TOCropViewController (2.5.5)
 
 DEPENDENCIES:
@@ -289,9 +289,9 @@ SPEC CHECKSUMS:
   PromisesObjC: 8c196f5a328c2cba3e74624585467a557dcb482f
   Protobuf: 3dac39b34a08151c6d949560efe3f86134a3f748
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
-  sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
+  sqflite: 4001a31ff81d210346b500c55b17f4d6c7589dd0
   TOCropViewController: da59f531f8ac8a94ef6d6c0fc34009350f9e8bfe
 
 PODFILE CHECKSUM: 7b393096426e3b3c575039f0f2e56b4aad5328f0
 
-COCOAPODS: 1.10.0
+COCOAPODS: 1.10.0.rc.1
